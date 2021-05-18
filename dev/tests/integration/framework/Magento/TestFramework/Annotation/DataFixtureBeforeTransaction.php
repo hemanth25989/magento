@@ -24,7 +24,7 @@ class DataFixtureBeforeTransaction extends AbstractDataFixture
     {
         $fixtures = $this->_getFixtures($test);
         if ($fixtures) {
-            $this->_applyFixtures($fixtures, $test);
+            $this->_applyFixtures($fixtures);
         }
     }
 
@@ -37,7 +37,7 @@ class DataFixtureBeforeTransaction extends AbstractDataFixture
     {
         /* Isolate other tests from test-specific fixtures */
         if ($this->_appliedFixtures && $this->_getFixtures($test)) {
-            $this->_revertFixtures($test);
+            $this->_revertFixtures();
         }
     }
 

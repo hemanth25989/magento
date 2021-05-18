@@ -935,7 +935,7 @@ class Url extends \Magento\Framework\DataObject implements \Magento\Framework\Ur
             if (is_string($query)) {
                 $this->_setQuery($query);
             } elseif (is_array($query)) {
-                $this->addQueryParams($query);
+                $this->addQueryParams($query, !empty($routeParams['_current']));
             }
             if ($query === false) {
                 $this->addQueryParams([]);

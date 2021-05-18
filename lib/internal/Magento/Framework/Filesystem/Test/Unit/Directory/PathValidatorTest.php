@@ -59,8 +59,8 @@ class PathValidatorTest extends TestCase
             ->method('getRealPathSafety')
             ->willReturnMap(
                 [
-                    [$directoryPath, rtrim($directoryPath, DIRECTORY_SEPARATOR)],
-                    [null, $prefix . $directoryPath . ltrim($path, DIRECTORY_SEPARATOR)],
+                    [$directoryPath, $directoryPath],
+                    [null, $prefix . $directoryPath . ltrim($path, '/')],
                 ]
             );
 

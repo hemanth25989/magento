@@ -94,7 +94,8 @@
         <see stepKey="seeSuccess" selector="{{AdminCategoryMessagesSection.SuccessMessage}}" userInput="You added"/>
 
         <!-- Assert that taxes are applied correctly for NY -->
-        <actionGroup ref="StorefrontOpenCheckoutPageActionGroup" stepKey="goToCheckout"/>
+        <amOnPage url="{{CheckoutPage.url}}" stepKey="goToCheckout"/>
+        <waitForPageLoad stepKey="waitForShippingSection"/>
         <see stepKey="seeAddress" selector="{{CheckoutShippingSection.selectedShippingAddress}}" userInput="{{SimpleTaxNY.state}}"/>
         <actionGroup ref="StorefrontCheckoutClickNextOnShippingStepActionGroup" stepKey="clickNext"/>
 
@@ -114,8 +115,9 @@
             <argument name="Address" value="US_Address_CA"/>
             <argument name="classPrefix" value="._show"/>
         </actionGroup>
-        <actionGroup ref="StorefrontCheckoutClickSaveAddressButtonActionGroup" stepKey="saveAddress"/>
-        <comment userInput="Adding the comment to replace waitForAddressSaved action for preserving Backward Compatibility" stepKey="waitForAddressSaved"/>
+        <click stepKey="saveAddress" selector="{{CheckoutShippingSection.saveAddress}}"/>
+
+        <waitForPageLoad stepKey="waitForAddressSaved"/>
         <see stepKey="seeAddress2" selector="{{CheckoutShippingSection.selectedShippingAddress}}" userInput="{{SimpleTaxCA.state}}"/>
         <actionGroup ref="StorefrontCheckoutClickNextOnShippingStepActionGroup" stepKey="clickNext2"/>
 

@@ -219,6 +219,7 @@ define([
             _.each(tmpData, function (row, index) {
                 path = this.dataScope + '.' + this.index + '.' + (this.startIndex + index);
                 row.attributes = $('<i></i>').text(row.attributes).html();
+                row.sku = row.sku;
                 this.source.set(path, row);
             }, this);
 
@@ -226,11 +227,11 @@ define([
             this.parsePagesData(data);
 
             // Render
-            dataCount = tmpData.length;
+            dataCount = data.length;
             elemsCount = this.elems().length;
 
             if (dataCount > elemsCount) {
-                tmpData.each(function (elemData, index) {
+                this.getChildItems().each(function (elemData, index) {
                     this.addChild(elemData, this.startIndex + index);
                 }, this);
             } else {
@@ -240,15 +241,6 @@ define([
             }
 
             this.generateAssociatedProducts();
-        },
-
-        /**
-         * Set initial property to records data
-         *
-         * @returns {Object} Chainable.
-         */
-        setInitialProperty: function () {
-            return this;
         },
 
         /**

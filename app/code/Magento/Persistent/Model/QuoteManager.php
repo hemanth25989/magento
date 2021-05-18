@@ -5,7 +5,6 @@
  */
 namespace Magento\Persistent\Model;
 
-use Magento\Customer\Api\Data\CustomerInterfaceFactory;
 use Magento\Customer\Api\Data\GroupInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Persistent\Helper\Data;
@@ -66,18 +65,12 @@ class QuoteManager
     private $cartExtensionFactory;
 
     /**
-     * @var CustomerInterfaceFactory
-     */
-    private $customerDataFactory;
-
-    /**
      * @param \Magento\Persistent\Helper\Session $persistentSession
      * @param Data $persistentData
      * @param \Magento\Checkout\Model\Session $checkoutSession
      * @param CartRepositoryInterface $quoteRepository
      * @param CartExtensionFactory|null $cartExtensionFactory
      * @param ShippingAssignmentProcessor|null $shippingAssignmentProcessor
-     * @param CustomerInterfaceFactory|null $customerDataFactory
      */
     public function __construct(
         \Magento\Persistent\Helper\Session $persistentSession,
@@ -85,8 +78,7 @@ class QuoteManager
         \Magento\Checkout\Model\Session $checkoutSession,
         CartRepositoryInterface $quoteRepository,
         ?CartExtensionFactory $cartExtensionFactory = null,
-        ?ShippingAssignmentProcessor $shippingAssignmentProcessor = null,
-        ?CustomerInterfaceFactory $customerDataFactory = null
+        ?ShippingAssignmentProcessor $shippingAssignmentProcessor = null
     ) {
         $this->persistentSession = $persistentSession;
         $this->persistentData = $persistentData;
@@ -96,8 +88,6 @@ class QuoteManager
             ?? ObjectManager::getInstance()->get(CartExtensionFactory::class);
         $this->shippingAssignmentProcessor = $shippingAssignmentProcessor
             ?? ObjectManager::getInstance()->get(ShippingAssignmentProcessor::class);
-        $this->customerDataFactory = $customerDataFactory
-            ?? ObjectManager::getInstance()->get(CustomerInterfaceFactory::class);
     }
 
     /**
@@ -119,11 +109,14 @@ class QuoteManager
             $quote->getPaymentsCollection()->walk('delete');
             $quote->getAddressesCollection()->walk('delete');
             $this->_setQuotePersistent = false;
-            $this->cleanCustomerData($quote);
             $quote->setIsActive(true)
+                ->setCustomerId(null)
+                ->setCustomerEmail(null)
+                ->setCustomerFirstname(null)
+                ->setCustomerLastname(null)
+                ->setCustomerGroupId(GroupInterface::NOT_LOGGED_IN_ID)
                 ->setIsPersistent(false)
                 ->removeAllAddresses();
-
             //Create guest addresses
             $quote->getShippingAddress();
             $quote->getBillingAddress();
@@ -134,27 +127,6 @@ class QuoteManager
 
         $this->persistentSession->getSession()->removePersistentCookie();
         $this->persistentSession->setSession(null);
-    }
-
-    /**
-     * Clear customer data in quote
-     *
-     * @param Quote $quote
-     */
-    private function cleanCustomerData($quote)
-    {
-        /**
-         * Set empty customer object in quote to avoid restore customer id
-         * @see Quote::beforeSave()
-         */
-        if ($quote->getCustomerId()) {
-            $quote->setCustomer($this->customerDataFactory->create());
-        }
-        $quote->setCustomerId(null)
-            ->setCustomerEmail(null)
-            ->setCustomerFirstname(null)
-            ->setCustomerLastname(null)
-            ->setCustomerGroupId(GroupInterface::NOT_LOGGED_IN_ID);
     }
 
     /**

@@ -11,7 +11,6 @@ use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Store\Api\WebsiteRepositoryInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
-use Magento\Customer\Model\Group;
 
 Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple.php');
 
@@ -58,36 +57,6 @@ $pricesForCustomerGroupsInput = [
         'percentage_value'=> null,
         'qty'=> 5,
         'value'=> 7
-    ],
-    [
-        'customer_group_id' => Group::CUST_GROUP_ALL,
-        'percentage_value'=> null,
-        'qty'=> 7,
-        'value'=> 9.25
-    ],
-    [
-        'customer_group_id' => '1',
-        'percentage_value'=> null,
-        'qty'=> 7,
-        'value'=> 9.00
-    ],
-    [
-        'customer_group_id' => Group::NOT_LOGGED_IN_ID,
-        'percentage_value'=> null,
-        'qty'=> 7,
-        'value'=> 8.25
-    ],
-    [
-        'customer_group_id' => Group::CUST_GROUP_ALL,
-        'percentage_value'=> null,
-        'qty'=> 8,
-        'value'=> 7.25
-    ],
-    [
-        'customer_group_id' => Group::NOT_LOGGED_IN_ID,
-        'percentage_value'=> null,
-        'qty'=> 8,
-        'value'=> 9
     ]
 ];
 $productTierPrices = [];

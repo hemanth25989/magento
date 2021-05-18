@@ -48,7 +48,8 @@
         <waitForLoadingMaskToDisappear stepKey="waitForLoadingMask"/>
         <click selector="{{CheckoutShippingGuestInfoSection.firstShippingMethod}}" stepKey="selectFirstShippingMethod"/>
         <!-- Check that have the same values after page reload -->
-        <actionGroup ref="StorefrontOpenCheckoutPageActionGroup" stepKey="amOnCheckoutShippingInfoPage"/>
+        <amOnPage url="{{CheckoutPage.url}}" stepKey="amOnCheckoutShippingInfoPage"/>
+        <waitForPageLoad stepKey="waitForShippingPageReload"/>
         <seeInField selector="{{CheckoutShippingGuestInfoSection.email}}" userInput="{{CustomerEntityOne.email}}" stepKey="seeEmailOnCheckout" />
         <seeInField selector="{{CheckoutShippingGuestInfoSection.firstName}}" userInput="{{CustomerEntityOne.firstName}}" stepKey="seeFirstnameOnCheckout" />
         <seeInField selector="{{CheckoutShippingGuestInfoSection.lastName}}" userInput="{{CustomerEntityOne.lastName}}" stepKey="seeLastnameOnCheckout" />

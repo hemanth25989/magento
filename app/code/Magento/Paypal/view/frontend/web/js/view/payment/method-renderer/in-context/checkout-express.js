@@ -85,6 +85,7 @@ define([
          */
         onClick: function () {
             additionalValidators.validate();
+            this.selectPaymentMethod();
         },
 
         /**

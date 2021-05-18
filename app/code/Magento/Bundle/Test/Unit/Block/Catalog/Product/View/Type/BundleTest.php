@@ -21,7 +21,6 @@ use Magento\Catalog\Pricing\Price\FinalPrice;
 use Magento\Catalog\Pricing\Price\RegularPrice;
 use Magento\CatalogRule\Model\ResourceModel\Product\CollectionProcessor;
 use Magento\Framework\DataObject;
-use Magento\Framework\Escaper;
 use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Json\Encoder;
 use Magento\Framework\Pricing\Amount\AmountInterface;
@@ -67,11 +66,6 @@ class BundleTest extends TestCase
      */
     private $bundleBlock;
 
-    /**
-     * @var Escaper|MockObject
-     */
-    private $escaperMock;
-
     protected function setUp(): void
     {
         $objectHelper = new ObjectManager($this);
@@ -109,9 +103,6 @@ class BundleTest extends TestCase
         $this->catalogProduct = $this->getMockBuilder(Product::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->escaperMock = $this->getMockBuilder(Escaper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
         /** @var BundleBlock $bundleBlock */
         $this->bundleBlock = $objectHelper->getObject(
             \Magento\Bundle\Block\Catalog\Product\View\Type\Bundle::class,
@@ -120,8 +111,7 @@ class BundleTest extends TestCase
                 'eventManager' => $this->eventManager,
                 'jsonEncoder' => $this->jsonEncoder,
                 'productPrice' => $this->bundleProductPriceFactory,
-                'catalogProduct' => $this->catalogProduct,
-                'escaper' => $this->escaperMock,
+                'catalogProduct' => $this->catalogProduct
             ]
         );
 
@@ -143,16 +133,16 @@ class BundleTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $option->expects($this->any())->method('getType')->willReturn('checkbox');
-        $this->escaperMock->expects($this->once())->method('escapeHtml')->willReturn('checkbox');
-        $expected='There is no defined renderer for "checkbox" option type.';
+
         $layout = $this->getMockBuilder(Layout::class)
             ->setMethods(['getChildName', 'getBlock'])
             ->disableOriginalConstructor()
             ->getMock();
         $layout->expects($this->any())->method('getChildName')->willReturn(false);
         $this->bundleBlock->setLayout($layout);
+
         $this->assertEquals(
-            $expected,
+            'There is no defined renderer for "checkbox" option type.',
             $this->bundleBlock->getOptionHtml($option)
         );
     }

@@ -136,10 +136,10 @@ class StoreConfigManagerTest extends TestCase
         $secureBaseUrl = 'https://magento/base_url';
         $baseLinkUrl = 'http://magento/base_url/links';
         $secureBaseLinkUrl = 'https://magento/base_url/links';
-        $baseStaticUrl = 'http://magento/base_url/static';
+        $baseStaticUrl = 'http://magento/base_url/pub/static';
         $secureBaseStaticUrl = 'https://magento/base_url/static';
-        $baseMediaUrl = 'http://magento/base_url/media';
-        $secureBaseMediaUrl = 'https://magento/base_url/media';
+        $baseMediaUrl = 'http://magento/base_url/pub/media';
+        $secureBaseMediaUrl = 'https://magento/base_url/pub/media';
         $locale = 'en_US';
         $timeZone = 'America/Los_Angeles';
         $baseCurrencyCode = 'USD';

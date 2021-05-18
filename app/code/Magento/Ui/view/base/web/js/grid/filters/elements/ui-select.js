@@ -18,15 +18,13 @@ define([
             loadedOption: [],
             validationLoading: true,
             imports: {
-                applied: '${ $.filterChipsProvider }:applied',
                 activeIndex: '${ $.bookmarkProvider }:activeIndex'
             },
             modules: {
                 filterChips: '${ $.filterChipsProvider }'
             },
             listens: {
-                activeIndex: 'validateInitialValue',
-                applied: 'validateInitialValue'
+                activeIndex: 'validateInitialValue'
             }
 
         },

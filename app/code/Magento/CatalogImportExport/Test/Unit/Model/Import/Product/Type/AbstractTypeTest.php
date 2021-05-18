@@ -6,7 +6,6 @@
  */
 namespace Magento\CatalogImportExport\Test\Unit\Model\Import\Product\Type;
 
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory as AttributeCollectionFactory;
 use Magento\CatalogImportExport\Model\Import\Product;
 use Magento\CatalogImportExport\Model\Import\Product\RowValidatorInterface;
 use Magento\CatalogImportExport\Model\Import\Product\Type\AbstractType as AbstractType;
@@ -14,7 +13,6 @@ use Magento\CatalogImportExport\Model\Import\Product\Type\Simple;
 use Magento\Eav\Model\Entity\Attribute;
 use Magento\Eav\Model\Entity\Attribute\Set;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\Collection;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory as AttributeSetCollectionFactory;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Adapter\Pdo\Mysql;
@@ -70,12 +68,12 @@ class AbstractTypeTest extends TestCase
     {
         $this->entityModel = $this->createMock(Product::class);
         $attrSetColFactory = $this->createPartialMock(
-            AttributeSetCollectionFactory::class,
+            \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory::class,
             ['create']
         );
         $attrSetCollection = $this->createMock(Collection::class);
         $attrColFactory = $this->createPartialMock(
-            AttributeCollectionFactory::class,
+            \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory::class,
             ['create']
         );
         $attributeSet = $this->createMock(Set::class);
@@ -102,22 +100,14 @@ class AbstractTypeTest extends TestCase
             )
             ->disableOriginalConstructor()
             ->getMock();
-        $attribute->method('getIsVisible')
-            ->willReturn(true);
-        $attribute->method('getIsGlobal')
-            ->willReturn(true);
-        $attribute->method('getIsRequired')
-            ->willReturn(true);
-        $attribute->method('getIsUnique')
-            ->willReturn(true);
-        $attribute->method('getFrontendLabel')
-            ->willReturn('frontend_label');
-        $attribute->method('getApplyTo')
-            ->willReturn(['simple']);
-        $attribute->method('getDefaultValue')
-            ->willReturn('default_value');
-        $attribute->method('usesSource')
-            ->willReturn(true);
+        $attribute->expects($this->any())->method('getIsVisible')->willReturn(true);
+        $attribute->expects($this->any())->method('getIsGlobal')->willReturn(true);
+        $attribute->expects($this->any())->method('getIsRequired')->willReturn(true);
+        $attribute->expects($this->any())->method('getIsUnique')->willReturn(true);
+        $attribute->expects($this->any())->method('getFrontendLabel')->willReturn('frontend_label');
+        $attribute->expects($this->any())->method('getApplyTo')->willReturn(['simple']);
+        $attribute->expects($this->any())->method('getDefaultValue')->willReturn('default_value');
+        $attribute->expects($this->any())->method('usesSource')->willReturn(true);
 
         $entityAttributes = [
             [
@@ -133,54 +123,38 @@ class AbstractTypeTest extends TestCase
         $attribute2 = clone $attribute;
         $attribute3 = clone $attribute;
 
-        $attribute1->method('getId')
-            ->willReturn('1');
-        $attribute1->method('getAttributeCode')
-            ->willReturn('attr_code');
-        $attribute1->method('getFrontendInput')
-            ->willReturn('multiselect');
-        $attribute1->method('isStatic')
-            ->willReturn(true);
+        $attribute1->expects($this->any())->method('getId')->willReturn('1');
+        $attribute1->expects($this->any())->method('getAttributeCode')->willReturn('attr_code');
+        $attribute1->expects($this->any())->method('getFrontendInput')->willReturn('multiselect');
+        $attribute1->expects($this->any())->method('isStatic')->willReturn(true);
 
-        $attribute2->method('getId')
-            ->willReturn('2');
-        $attribute2->method('getAttributeCode')
-            ->willReturn('boolean_attribute');
-        $attribute2->method('getFrontendInput')
-            ->willReturn('boolean');
-        $attribute2->method('isStatic')
-            ->willReturn(false);
+        $attribute2->expects($this->any())->method('getId')->willReturn('2');
+        $attribute2->expects($this->any())->method('getAttributeCode')->willReturn('boolean_attribute');
+        $attribute2->expects($this->any())->method('getFrontendInput')->willReturn('boolean');
+        $attribute2->expects($this->any())->method('isStatic')->willReturn(false);
 
-        $attribute3->method('getId')
-            ->willReturn('3');
-        $attribute3->method('getAttributeCode')
-            ->willReturn('Text_attribute');
-        $attribute3->method('getFrontendInput')
-            ->willReturn('text');
-        $attribute3->method('isStatic')
-            ->willReturn(false);
+        $attribute3->expects($this->any())->method('getId')->willReturn('3');
+        $attribute3->expects($this->any())->method('getAttributeCode')->willReturn('text_attribute');
+        $attribute3->expects($this->any())->method('getFrontendInput')->willReturn('text');
+        $attribute3->expects($this->any())->method('isStatic')->willReturn(false);
 
-        $this->entityModel->method('getEntityTypeId')
-            ->willReturn(3);
-        $this->entityModel->method('getAttributeOptions')
-            ->willReturnOnConsecutiveCalls(
-                ['option1', 'option2'],
-                ['yes' => 1, 'no' => 0]
-            );
-        $attrSetColFactory->method('create')
-            ->willReturn($attrSetCollection);
-        $attrSetCollection->method('setEntityTypeFilter')
-            ->willReturn([$attributeSet]);
-        $attrColFactory->method('create')
-            ->willReturn($attrCollection);
-        $attrCollection->method('setAttributeSetFilter')
+        $this->entityModel->expects($this->any())->method('getEntityTypeId')->willReturn(3);
+        $this->entityModel->expects($this->any())->method('getAttributeOptions')->willReturnOnConsecutiveCalls(
+            ['option1', 'option2'],
+            ['yes' => 1, 'no' => 0]
+        );
+        $attrSetColFactory->expects($this->any())->method('create')->willReturn($attrSetCollection);
+        $attrSetCollection->expects($this->any())->method('setEntityTypeFilter')->willReturn([$attributeSet]);
+        $attrColFactory->expects($this->any())->method('create')->willReturn($attrCollection);
+        $attrCollection->expects($this->any())
+            ->method('setAttributeSetFilter')
             ->willReturn([$attribute1, $attribute2, $attribute3]);
-        $attributeSet->method('getId')
-            ->willReturn(1);
-        $attributeSet->method('getAttributeSetName')
-            ->willReturn('attribute_set_name');
+        $attributeSet->expects($this->any())->method('getId')->willReturn(1);
+        $attributeSet->expects($this->any())->method('getAttributeSetName')->willReturn('attribute_set_name');
 
-        $attrCollection->method('addFieldToFilter')
+        $attrCollection
+            ->expects($this->any())
+            ->method('addFieldToFilter')
             ->with(
                 ['main_table.attribute_id', 'main_table.attribute_code'],
                 [
@@ -219,26 +193,19 @@ class AbstractTypeTest extends TestCase
                 'getConnection',
             ]
         );
-        $this->select->method('from')
-            ->willReturnSelf();
-        $this->select->method('where')
-            ->willReturnSelf();
-        $this->select->method('joinLeft')
-            ->willReturnSelf();
-        $this->connection->method('select')
-            ->willReturn($this->select);
+        $this->select->expects($this->any())->method('from')->willReturnSelf();
+        $this->select->expects($this->any())->method('where')->willReturnSelf();
+        $this->select->expects($this->any())->method('joinLeft')->willReturnSelf();
+        $this->connection->expects($this->any())->method('select')->willReturn($this->select);
         $connection = $this->createMock(Mysql::class);
-        $connection->method('quoteInto')
-            ->willReturn('query');
-        $this->select->method('getConnection')
-            ->willReturn($connection);
-        $this->connection->method('insertOnDuplicate')
-            ->willReturnSelf();
-        $this->connection->method('delete')
-            ->willReturnSelf();
-        $this->connection->method('quoteInto')
-            ->willReturn('');
-        $this->connection->method('fetchAll')
+        $connection->expects($this->any())->method('quoteInto')->willReturn('query');
+        $this->select->expects($this->any())->method('getConnection')->willReturn($connection);
+        $this->connection->expects($this->any())->method('insertOnDuplicate')->willReturnSelf();
+        $this->connection->expects($this->any())->method('delete')->willReturnSelf();
+        $this->connection->expects($this->any())->method('quoteInto')->willReturn('');
+        $this->connection
+            ->expects($this->any())
+            ->method('fetchAll')
             ->willReturn($entityAttributes);
 
         $this->resource = $this->createPartialMock(
@@ -248,10 +215,12 @@ class AbstractTypeTest extends TestCase
                 'getTableName',
             ]
         );
-        $this->resource->method('getConnection')
-            ->willReturn($this->connection);
-        $this->resource->method('getTableName')
-            ->willReturn('tableName');
+        $this->resource->expects($this->any())->method('getConnection')->willReturn(
+            $this->connection
+        );
+        $this->resource->expects($this->any())->method('getTableName')->willReturn(
+            'tableName'
+        );
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->simpleType = $this->objectManagerHelper->getObject(
@@ -264,7 +233,9 @@ class AbstractTypeTest extends TestCase
             ]
         );
 
-        $this->abstractType = $this->getMockBuilder(AbstractType::class)
+        $this->abstractType = $this->getMockBuilder(
+            \Magento\CatalogImportExport\Model\Import\Product\Type\AbstractType::class
+        )
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
     }
@@ -306,10 +277,8 @@ class AbstractTypeTest extends TestCase
     {
         $rowData = ['_attribute_set' => 'attribute_set_name'];
         $rowNum = 1;
-        $this->entityModel->method('getRowScope')
-            ->willReturn(null);
-        $this->entityModel->expects($this->never())
-            ->method('addRowError');
+        $this->entityModel->expects($this->any())->method('getRowScope')->willReturn(null);
+        $this->entityModel->expects($this->never())->method('addRowError');
         $this->setPropertyValue(
             $this->simpleType,
             '_attributes',
@@ -327,9 +296,8 @@ class AbstractTypeTest extends TestCase
             'sku' => 'sku'
         ];
         $rowNum = 1;
-        $this->entityModel->method('getRowScope')
-            ->willReturn(1);
-        $this->entityModel->method('addRowError')
+        $this->entityModel->expects($this->any())->method('getRowScope')->willReturn(1);
+        $this->entityModel->expects($this->once())->method('addRowError')
             ->with(
                 RowValidatorInterface::ERROR_VALUE_IS_REQUIRED,
                 1,

@@ -11,7 +11,6 @@ use Magento\Customer\Model\Metadata\Form;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\AuthorizationInterface;
 use Magento\Framework\Message\MessageInterface;
-use Magento\Framework\Validator\Exception as ValidatorException;
 use Magento\LoginAsCustomerAssistance\Api\IsAssistanceEnabledInterface;
 use Magento\LoginAsCustomerAssistance\Model\ResourceModel\GetLoginAsCustomerAssistanceAllowed;
 
@@ -49,7 +48,7 @@ class CustomerDataValidatePlugin
      * @param RequestInterface $request
      * @param null|string $scope
      * @param bool $scopeOnly
-     * @throws ValidatorException
+     * @throws \Magento\Framework\Validator\Exception
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function beforeExtractData(
@@ -75,7 +74,11 @@ class CustomerDataValidatePlugin
                     ],
                 ];
 
-                throw new ValidatorException(null, null, $errorMessages);
+                throw new \Magento\Framework\Validator\Exception(
+                    null,
+                    null,
+                    $errorMessages
+                );
             }
         }
     }

@@ -146,12 +146,7 @@ class HttpTest extends TestCase
 
         $this->cookieMetadataFactoryMock->expects($this->once())
             ->method('createSensitiveCookieMetadata')
-            ->with(
-                [
-                    CookieMetadata::KEY_DURATION => $this->cookieLifeTime,
-                    CookieMetadata::KEY_SAME_SITE => 'Lax'
-                ]
-            )
+            ->with([CookieMetadata::KEY_DURATION => $this->cookieLifeTime])
             ->willReturn($sensitiveCookieMetadataMock);
 
         $this->cookieManagerMock->expects($this->once())

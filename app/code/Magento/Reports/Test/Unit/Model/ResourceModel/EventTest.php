@@ -134,13 +134,9 @@ class EventTest extends TestCase
     }
 
     /**
-     * @dataProvider getApplyLogToCollectionDataProvider
-     * @param null|array $storeId
-     * @param null|array $storeIdSelect
-     *
      * @return void
      */
-    public function testApplyLogToCollection($storeId, $storeIdSelect)
+    public function testApplyLogToCollection()
     {
         $derivedSelect = 'SELECT * FROM table';
         $idFieldName = 'IdFieldName';
@@ -164,7 +160,6 @@ class EventTest extends TestCase
             ->willReturnSelf();
 
         $collectionMock = $this->getMockBuilder(AbstractDb::class)
-            ->setMethods(['getResource', 'getIdFieldName', 'getSelect', 'getStoreId'])
             ->disableOriginalConstructor()
             ->getMock();
         $collectionMock
@@ -179,10 +174,6 @@ class EventTest extends TestCase
             ->expects($this->any())
             ->method('getSelect')
             ->willReturn($collectionSelectMock);
-        $collectionMock
-            ->expects($this->any())
-            ->method('getStoreId')
-            ->willReturn($storeId);
 
         $selectMock = $this->getMockBuilder(Select::class)
             ->disableOriginalConstructor()
@@ -204,15 +195,6 @@ class EventTest extends TestCase
             ->expects($this->any())
             ->method('__toString')
             ->willReturn($derivedSelect);
-        $selectMock
-            ->expects($this->any())
-            ->method('where')
-            ->willReturnMap([
-                ['event_type_id = ?', 1],
-                ['subject_id = ?', 1],
-                ['subtype = ?', 1],
-                ['store_id IN(?)', $storeIdSelect]
-            ]);
 
         $this->connectionMock
             ->expects($this->once())
@@ -227,16 +209,6 @@ class EventTest extends TestCase
         $this->event->applyLogToCollection($collectionMock, 1, 1, 1);
     }
 
-    /**
-     * @return array
-     */
-    public function getApplyLogToCollectionDataProvider()
-    {
-        return [
-            ['storeId' => 1, 'storeIdSelect' => [1]],
-            ['storeId' => null, 'storeIdSelect' => [1]],
-        ];
-    }
     /**
      * @return void
      */

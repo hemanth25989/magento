@@ -96,7 +96,7 @@ class SampleTest extends TestCase
      */
     public function testSave($product, array $data, array $modelData)
     {
-        $link = $this->createSampleModel($product, $modelData);
+        $link = $this->createSampleModel($product, $modelData, true);
         $this->metadataMock->expects($this->once())->method('getLinkField')->willReturn('id');
         $this->sampleFactory->expects($this->once())
             ->method('create')

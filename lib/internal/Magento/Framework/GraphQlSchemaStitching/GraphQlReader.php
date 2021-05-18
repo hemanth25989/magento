@@ -11,7 +11,6 @@ use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Config\FileResolverInterface;
 use Magento\Framework\Config\ReaderInterface;
 use Magento\Framework\GraphQlSchemaStitching\GraphQlReader\TypeMetaReaderInterface as TypeReaderComposite;
-use Magento\Framework\GraphQlSchemaStitching\GraphQlReader\Reader\InterfaceType;
 
 /**
  * Reads *.graphqls files from modules and combines the results as array to be used with a library to configure objects
@@ -22,7 +21,6 @@ class GraphQlReader implements ReaderInterface
 
     public const GRAPHQL_SCHEMA_FILE = 'schema.graphqls';
 
-    /** @deprecated */
     public const GRAPHQL_INTERFACE = 'graphql_interface';
 
     /**
@@ -71,7 +69,7 @@ class GraphQlReader implements ReaderInterface
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      *
      * @param string|null $scope
      * @return array
@@ -180,7 +178,7 @@ class GraphQlReader implements ReaderInterface
     private function copyInterfaceFieldsToConcreteTypes(array $source): array
     {
         foreach ($source as $interface) {
-            if ($interface['type'] ?? '' == InterfaceType::GRAPHQL_INTERFACE) {
+            if ($interface['type'] == 'graphql_interface') {
                 foreach ($source as $typeName => $type) {
                     if (isset($type['implements'])
                         && isset($type['implements'][$interface['name']])
@@ -255,7 +253,7 @@ class GraphQlReader implements ReaderInterface
     private function addPlaceHolderInSchema(string $graphQlSchemaContent) :string
     {
         $placeholderField = self::GRAPHQL_PLACEHOLDER_FIELD_NAME;
-        $typesKindsPattern = '(type|interface|input|union)';
+        $typesKindsPattern = '(type|interface|input)';
         $enumKindsPattern = '(enum)';
         $typeNamePattern = '([_A-Za-z][_0-9A-Za-z]+)';
         $typeDefinitionPattern = '([^\{]*)(\{[\s\t\n\r^\}]*\})';
@@ -330,14 +328,13 @@ class GraphQlReader implements ReaderInterface
      */
     private function addModuleNameToTypes(array $source, string $filePath): array
     {
-        foreach ($source as $typeName => $typeDefinition) {
-            if (!isset($typeDefinition['module'])) {
-                $hasTypeResolver = (bool)($typeDefinition['typeResolver'] ?? false);
-                $hasImplements = (bool)($typeDefinition['implements'] ?? false);
-                $typeDefinition = (bool)($typeDefinition['type'] ?? false);
-                if ((($typeDefinition === InterfaceType::GRAPHQL_INTERFACE && $hasTypeResolver) || $hasImplements)) {
-                    $source[$typeName]['module'] = self::getModuleNameForRelevantFile($filePath);
-                }
+        foreach ($source as $typeName => $type) {
+            if (!isset($type['module']) && (
+                ($type['type'] === self::GRAPHQL_INTERFACE && isset($type['typeResolver']))
+                    || isset($type['implements'])
+            )
+            ) {
+                $source[$typeName]['module'] = self::getModuleNameForRelevantFile($filePath);
             }
         }
 

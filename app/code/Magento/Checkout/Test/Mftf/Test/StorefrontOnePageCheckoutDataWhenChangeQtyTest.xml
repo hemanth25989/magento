@@ -73,7 +73,7 @@
 			<actualResult type="const">$grabQty</actualResult>
 			<expectedResult type="const">2</expectedResult>
         </assertEquals>
-        <actionGroup ref="StorefrontClickProceedToCheckoutActionGroup" stepKey="clickProceedToCheckout"/>
+        <click selector="{{CheckoutCartSummarySection.proceedToCheckout}}" stepKey="clickProceedToCheckout"/>
 
         <!--Check that form is filled with customer data-->
         <grabValueFrom selector="{{CheckoutShippingSection.email}}" stepKey="grabEmail1"/>

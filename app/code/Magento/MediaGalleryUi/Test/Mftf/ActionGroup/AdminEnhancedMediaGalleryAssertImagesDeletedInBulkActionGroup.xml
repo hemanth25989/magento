@@ -12,9 +12,7 @@
         <annotations>
             <description>Asserts images has been deleted in mass action.</description>
         </annotations>
-        <arguments>
-            <argument name="numberOfAssetsDeleted" type="string"/>
-        </arguments>
-        <waitForText userInput='{{numberOfAssetsDeleted}} assets have been successfully deleted.' stepKey="verifyDeleteImages"/>
+
+        <see userInput='Assets have been successfully deleted' stepKey="verifyDeleteImages"/>
     </actionGroup>
 </actionGroups>

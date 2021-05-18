@@ -18,8 +18,6 @@ namespace Magento\Shipping\Model\Tracking\Result;
  */
 class Status extends AbstractResult
 {
-    public const STATUS_TYPE = 0;
-
     /**
      * Returns all Status data
      *

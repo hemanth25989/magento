@@ -42,6 +42,7 @@ class DataTest extends TestCase
             $this->createMock(Auth::class),
             $this->_frontResolverMock,
             $this->createMock(Random::class),
+            $this->getMockForAbstractClass(RequestInterface::class)
         );
     }
 

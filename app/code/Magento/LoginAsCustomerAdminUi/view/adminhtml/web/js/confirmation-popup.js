@@ -10,10 +10,8 @@ define([
     'ko',
     'mage/translate',
     'mage/template',
-    'underscore',
-    'Magento_Ui/js/modal/alert',
     'text!Magento_LoginAsCustomerAdminUi/template/confirmation-popup/store-view-ptions.html'
-], function (Component, confirm, $, ko, $t, template, _, alert, selectTpl) {
+], function (Component, confirm, $, ko, $t, template, selectTpl) {
 
     'use strict';
 
@@ -57,63 +55,13 @@ define([
                          * Confirm action.
                          */
                         confirm: function () {
-                            var storeId = $('#lac-confirmation-popup-store-id').val(),
-                                formKey = $('input[name="form_key"]').val(),
-                                params = {};
+                            var storeId = $('#lac-confirmation-popup-store-id').val();
 
-                            // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
                             if (storeId) {
-                                params.store_id = storeId;
+                                url += url.indexOf('?') === -1 ? '?' : '&';
+                                url += 'store_id=' + storeId;
                             }
-
-                            if (formKey) {
-                                params.form_key = formKey;
-                            }
-                            // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
-
-                            $.ajax({
-                                url: url,
-                                type: 'POST',
-                                dataType: 'json',
-                                data: params,
-                                showLoader: true,
-
-                                /**
-                                 * Open redirect URL in new window, or show messages if they are present
-                                 *
-                                 * @param {Object} data
-                                 */
-                                success: function (data) {
-                                    var messages = data.messages || [];
-
-                                    if (data.message) {
-                                        messages.push(data.message);
-                                    }
-
-                                    if (data.redirectUrl) {
-                                        window.open(data.redirectUrl);
-                                    } else if (messages.length) {
-                                        messages = messages.map(function (message) {
-                                            return _.escape(message);
-                                        });
-
-                                        alert({
-                                            content: messages.join('<br>')
-                                        });
-                                    }
-                                },
-
-                                /**
-                                 * Show XHR response text
-                                 *
-                                 * @param {Object} jqXHR
-                                 */
-                                error: function (jqXHR) {
-                                    alert({
-                                        content: _.escape(jqXHR.responseText)
-                                    });
-                                }
-                            });
+                            window.open(url);
                         }
                     },
                     buttons: [{

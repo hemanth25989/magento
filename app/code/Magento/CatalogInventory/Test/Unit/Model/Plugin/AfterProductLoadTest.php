@@ -31,6 +31,11 @@ class AfterProductLoadTest extends TestCase
     protected $productMock;
 
     /**
+     * @var ProductExtensionFactory|MockObject
+     */
+    protected $productExtensionFactoryMock;
+
+    /**
      * @var ProductExtensionInterface|MockObject
      */
     protected $productExtensionMock;
@@ -38,9 +43,16 @@ class AfterProductLoadTest extends TestCase
     protected function setUp(): void
     {
         $stockRegistryMock = $this->getMockForAbstractClass(StockRegistryInterface::class);
+        $this->productExtensionFactoryMock = $this->getMockBuilder(
+            ProductExtensionFactory::class
+        )
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->plugin = new AfterProductLoad(
-            $stockRegistryMock
+            $stockRegistryMock,
+            $this->productExtensionFactoryMock
         );
 
         $productId = 5494;
@@ -76,6 +88,8 @@ class AfterProductLoadTest extends TestCase
         $this->productMock->expects($this->once())
             ->method('getExtensionAttributes')
             ->willReturn($this->productExtensionMock);
+        $this->productExtensionFactoryMock->expects($this->never())
+            ->method('create');
 
         $this->assertEquals(
             $this->productMock,

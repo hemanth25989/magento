@@ -85,7 +85,8 @@ class BaseTest extends TestCase
             ->method('create')
             ->willReturn($this->createFileMock());
         $this->themeMock->expects($this->once())
-            ->method('getArea')
+            ->method('getData')
+            ->with('area')
             ->willReturn('frontend');
 
         $result = $this->fileCollector->getFiles($this->themeMock, '*.xml');

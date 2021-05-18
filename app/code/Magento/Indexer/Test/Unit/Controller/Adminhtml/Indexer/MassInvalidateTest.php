@@ -196,7 +196,7 @@ class MassInvalidateTest extends TestCase
         $this->title = $this->createMock(Title::class);
         $this->messageManager = $this->getMockForAbstractClass(
             ManagerInterface::class,
-            ['addErrorMessage', 'addSuccess'],
+            ['addError', 'addSuccess'],
             '',
             false
         );
@@ -233,7 +233,7 @@ class MassInvalidateTest extends TestCase
 
         if (!is_array($indexerIds)) {
             $this->messageManager->expects($this->once())
-                ->method('addErrorMessage')->with(__('Please select indexers.'))
+                ->method('addError')->with(__('Please select indexers.'))
                 ->willReturn(1);
         } else {
             $indexerInterface = $this->getMockForAbstractClass(
@@ -261,7 +261,7 @@ class MassInvalidateTest extends TestCase
 
                 if ($exception instanceof LocalizedException) {
                     $this->messageManager->expects($this->once())
-                        ->method('addErrorMessage')
+                        ->method('addError')
                         ->with($exception->getMessage());
                 } else {
                     $this->messageManager->expects($this->once())

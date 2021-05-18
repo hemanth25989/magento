@@ -13,7 +13,6 @@ use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Math\Random;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\LoginAsCustomerApi\Api\Data\AuthenticationDataInterface;
-use Magento\LoginAsCustomerApi\Api\GenerateAuthenticationSecretInterface;
 use Magento\LoginAsCustomerApi\Api\SaveAuthenticationDataInterface;
 
 /**
@@ -42,30 +41,21 @@ class SaveAuthenticationData implements SaveAuthenticationDataInterface
     private $random;
 
     /**
-     * @var GenerateAuthenticationSecretInterface
-     */
-    private $generateAuthenticationSecret;
-
-    /**
      * @param ResourceConnection $resourceConnection
      * @param DateTime $dateTime
      * @param Random $random
-     * @param EncryptorInterface|null $encryptor
-     * @param GenerateAuthenticationSecretInterface|null $generateAuthenticationSecret
+     * @param EncryptorInterface $encryptor
      */
     public function __construct(
         ResourceConnection $resourceConnection,
         DateTime $dateTime,
         Random $random,
-        ?EncryptorInterface $encryptor = null,
-        ?GenerateAuthenticationSecretInterface $generateAuthenticationSecret = null
+        ?EncryptorInterface $encryptor = null
     ) {
         $this->resourceConnection = $resourceConnection;
         $this->dateTime = $dateTime;
         $this->random = $random;
         $this->encryptor = $encryptor ?? ObjectManager::getInstance()->get(EncryptorInterface::class);
-        $this->generateAuthenticationSecret = $generateAuthenticationSecret
-            ?? ObjectManager::getInstance()->get(GenerateAuthenticationSecretInterface::class);
     }
 
     /**
@@ -76,8 +66,8 @@ class SaveAuthenticationData implements SaveAuthenticationDataInterface
         $connection = $this->resourceConnection->getConnection();
         $tableName = $this->resourceConnection->getTableName('login_as_customer');
 
-        $key = $this->random->getRandomString(64);
-        $hash = $this->encryptor->hash($key);
+        $secret = $this->random->getRandomString(64);
+        $hash = $this->encryptor->hash($secret);
 
         $connection->insert(
             $tableName,
@@ -89,6 +79,6 @@ class SaveAuthenticationData implements SaveAuthenticationDataInterface
             ]
         );
 
-        return $this->generateAuthenticationSecret->execute($authenticationData);
+        return $secret;
     }
 }

@@ -9,7 +9,6 @@ namespace Magento\SalesRule\Test\Unit\Model\Rule\Condition;
 
 use Magento\Backend\Helper\Data;
 use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Catalog\Model\ProductCategoryList;
 use Magento\Catalog\Model\ProductFactory;
 use Magento\Catalog\Model\ResourceModel\Product;
 use Magento\Directory\Model\CurrencyFactory;
@@ -35,7 +34,6 @@ use PHPUnit\Framework\TestCase;
  */
 class ProductTest extends TestCase
 {
-    const STUB_CATEGORY_ID = 5;
     /** @var SalesRuleProduct */
     protected $model;
 
@@ -71,9 +69,6 @@ class ProductTest extends TestCase
 
     /** @var Select|MockObject */
     protected $selectMock;
-
-    /** @var MockObject|ProductCategoryList */
-    private $productCategoryListMock;
 
     /**
      * Setup the test
@@ -143,10 +138,6 @@ class ProductTest extends TestCase
         $this->collectionMock = $this->getMockBuilder(Collection::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->productCategoryListMock = $this->getMockBuilder(ProductCategoryList::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['getCategoryIds'])
-            ->getMock();
         $this->format = new Format(
             $this->getMockBuilder(ScopeResolverInterface::class)
                 ->disableOriginalConstructor()
@@ -167,9 +158,7 @@ class ProductTest extends TestCase
             $this->productRepositoryMock,
             $this->productMock,
             $this->collectionMock,
-            $this->format,
-            [],
-            $this->productCategoryListMock
+            $this->format
         );
     }
 
@@ -239,22 +228,28 @@ class ProductTest extends TestCase
             ->setMethods(['getAttribute', 'getId', 'setQuoteItemQty', 'setQuoteItemPrice'])
             ->getMock();
         $product
+            ->expects($this->any())
             ->method('setQuoteItemQty')
             ->willReturnSelf();
         $product
+            ->expects($this->any())
             ->method('setQuoteItemPrice')
             ->willReturnSelf();
         /* @var AbstractItem|MockObject $item */
         $item = $this->getMockBuilder(AbstractItem::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['getProduct'])
+            ->setMethods(['getProduct'])
             ->getMockForAbstractClass();
         $item->expects($this->any())
             ->method('getProduct')
             ->willReturn($product);
         $this->model->setAttribute('category_ids');
-        $this->productCategoryListMock->method('getCategoryIds')
-            ->willReturn([self::STUB_CATEGORY_ID]);
+
+        $this->selectMock
+            ->expects($this->once())
+            ->method('where')
+            ->with($this->logicalNot($this->stringContains('visibility')), $this->anything(), $this->anything());
+
         $this->model->validate($item);
     }
 

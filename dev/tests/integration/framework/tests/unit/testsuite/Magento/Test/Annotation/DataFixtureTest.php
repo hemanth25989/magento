@@ -8,12 +8,10 @@ declare(strict_types=1);
 namespace Magento\Test\Annotation;
 
 use Magento\Framework\Component\ComponentRegistrar;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\TestFramework\Annotation\DataFixture;
 use Magento\TestFramework\Event\Param\Transaction;
 use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 use PHPUnit\Framework\TestCase;
-use Magento\TestFramework\Annotation\TestsIsolation;
 
 /**
  * Test class for \Magento\TestFramework\Annotation\DataFixture.
@@ -28,11 +26,6 @@ class DataFixtureTest extends TestCase
     protected $object;
 
     /**
-     * @var TestsIsolation|\PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $testsIsolationMock;
-
-    /**
      * @inheritdoc
      */
     protected function setUp(): void
@@ -40,18 +33,6 @@ class DataFixtureTest extends TestCase
         $this->object = $this->getMockBuilder(DataFixture::class)
             ->setMethods(['_applyOneFixture', 'getComponentRegistrar', 'getTestKey'])
             ->getMock();
-        $this->testsIsolationMock = $this->getMockBuilder(TestsIsolation::class)
-            ->setMethods(['createDbSnapshot', 'checkTestIsolation'])
-            ->getMock();
-        /** @var ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject $objectManager */
-        $objectManager = $this->getMockBuilder(ObjectManagerInterface::class)
-            ->setMethods(['get'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $objectManager->expects($this->atLeastOnce())->method('get')->with(TestsIsolation::class)
-            ->willReturn($this->testsIsolationMock);
-        \Magento\TestFramework\Helper\Bootstrap::setObjectManager($objectManager);
-
         $directory = __DIR__;
         if (!defined('INTEGRATION_TESTS_DIR')) {
             define('INTEGRATION_TESTS_DIR', dirname($directory, 4));

@@ -7,8 +7,6 @@ declare(strict_types=1);
 
 namespace Magento\MediaGallerySynchronization\Model;
 
-use Magento\Framework\Exception\LocalizedException;
-use Magento\MediaGallerySynchronizationApi\Api\SynchronizeFilesInterface;
 use Magento\MediaGallerySynchronizationApi\Api\SynchronizeInterface;
 
 /**
@@ -22,34 +20,18 @@ class Consume
     private $synchronize;
 
     /**
-     * @var SynchronizeFilesInterface
-     */
-    private $synchronizeFiles;
-
-    /**
      * @param SynchronizeInterface $synchronize
-     * @param SynchronizeFilesInterface $synchronizeFiles
      */
-    public function __construct(
-        SynchronizeInterface $synchronize,
-        SynchronizeFilesInterface $synchronizeFiles
-    ) {
+    public function __construct(SynchronizeInterface $synchronize)
+    {
         $this->synchronize = $synchronize;
-        $this->synchronizeFiles = $synchronizeFiles;
     }
 
     /**
      * Run media files synchronization.
-     *
-     * @param array $paths
-     * @throws LocalizedException
      */
-    public function execute(array $paths) : void
+    public function execute() : void
     {
-        if (!empty($paths)) {
-            $this->synchronizeFiles->execute($paths);
-        } else {
-            $this->synchronize->execute();
-        }
+        $this->synchronize->execute();
     }
 }

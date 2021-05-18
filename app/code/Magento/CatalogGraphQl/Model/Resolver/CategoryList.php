@@ -7,15 +7,14 @@ declare(strict_types=1);
 
 namespace Magento\CatalogGraphQl\Model\Resolver;
 
-use Magento\CatalogGraphQl\Model\Category\CategoryFilter;
-use Magento\CatalogGraphQl\Model\Resolver\Products\DataProvider\CategoryTree;
 use Magento\CatalogGraphQl\Model\Resolver\Products\DataProvider\ExtractDataFromCategoryTree;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
-use Magento\Framework\GraphQl\Query\Resolver\ArgumentsProcessorInterface;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
+use Magento\CatalogGraphQl\Model\Resolver\Products\DataProvider\CategoryTree;
+use Magento\CatalogGraphQl\Model\Category\CategoryFilter;
 
 /**
  * Category List resolver, used for GraphQL category data request processing.
@@ -38,26 +37,18 @@ class CategoryList implements ResolverInterface
     private $extractDataFromCategoryTree;
 
     /**
-     * @var ArgumentsProcessorInterface
-     */
-    private $argsSelection;
-
-    /**
      * @param CategoryTree $categoryTree
      * @param ExtractDataFromCategoryTree $extractDataFromCategoryTree
      * @param CategoryFilter $categoryFilter
-     * @param ArgumentsProcessorInterface $argsSelection
      */
     public function __construct(
         CategoryTree $categoryTree,
         ExtractDataFromCategoryTree $extractDataFromCategoryTree,
-        CategoryFilter $categoryFilter,
-        ArgumentsProcessorInterface $argsSelection
+        CategoryFilter $categoryFilter
     ) {
         $this->categoryTree = $categoryTree;
         $this->extractDataFromCategoryTree = $extractDataFromCategoryTree;
         $this->categoryFilter = $categoryFilter;
-        $this->argsSelection = $argsSelection;
     }
 
     /**
@@ -74,9 +65,7 @@ class CategoryList implements ResolverInterface
             $args['filters']['ids'] = ['eq' => $store->getRootCategoryId()];
         }
         try {
-            $processedArgs = $this->argsSelection->process($info->fieldName, $args);
-            $filterResults = $this->categoryFilter->getResult($processedArgs, $store, [], $context);
-
+            $filterResults = $this->categoryFilter->getResult($args, $store);
             $rootCategoryIds = $filterResults['category_ids'];
         } catch (InputException $e) {
             throw new GraphQlInputException(__($e->getMessage()));

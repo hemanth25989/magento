@@ -44,9 +44,19 @@ class ReportUrlProviderTest extends TestCase
     private $flagManagerMock;
 
     /**
+     * @var ObjectManagerHelper
+     */
+    private $objectManagerHelper;
+
+    /**
      * @var ReportUrlProvider
      */
-    private $model;
+    private $reportUrlProvider;
+
+    /**
+     * @var string
+     */
+    private $urlReportConfigPath = 'path/url/report';
 
     /**
      * @return void
@@ -61,15 +71,16 @@ class ReportUrlProviderTest extends TestCase
 
         $this->flagManagerMock = $this->createMock(FlagManager::class);
 
-        $objectManagerHelper = new ObjectManagerHelper($this);
+        $this->objectManagerHelper = new ObjectManagerHelper($this);
 
-        $this->model = $objectManagerHelper->getObject(
+        $this->reportUrlProvider = $this->objectManagerHelper->getObject(
             ReportUrlProvider::class,
             [
                 'config' => $this->configMock,
                 'analyticsToken' => $this->analyticsTokenMock,
                 'otpRequest' => $this->otpRequestMock,
                 'flagManager' => $this->flagManagerMock,
+                'urlReportConfigPath' => $this->urlReportConfigPath,
             ]
         );
     }
@@ -77,12 +88,10 @@ class ReportUrlProviderTest extends TestCase
     /**
      * @param bool $isTokenExist
      * @param string|null $otp If null OTP was not received.
-     * @param string $configPath
-     * @return void
      *
      * @dataProvider getUrlDataProvider
      */
-    public function testGetUrl(bool $isTokenExist, ?string $otp, string $configPath): void
+    public function testGetUrl($isTokenExist, $otp)
     {
         $reportUrl = 'https://example.com/report';
         $url = '';
@@ -90,7 +99,7 @@ class ReportUrlProviderTest extends TestCase
         $this->configMock
             ->expects($this->once())
             ->method('getValue')
-            ->with($configPath)
+            ->with($this->urlReportConfigPath)
             ->willReturn($reportUrl);
         $this->analyticsTokenMock
             ->expects($this->once())
@@ -105,19 +114,18 @@ class ReportUrlProviderTest extends TestCase
         if ($isTokenExist && $otp) {
             $url = $reportUrl . '?' . http_build_query(['otp' => $otp], '', '&');
         }
-
-        $this->assertSame($url ?: $reportUrl, $this->model->getUrl());
+        $this->assertSame($url ?: $reportUrl, $this->reportUrlProvider->getUrl());
     }
 
     /**
      * @return array
      */
-    public function getUrlDataProvider(): array
+    public function getUrlDataProvider()
     {
         return [
-            'TokenDoesNotExist' => [false, null, 'analytics/url/documentation'],
-            'TokenExistAndOtpEmpty' => [true, null, 'analytics/url/report'],
-            'TokenExistAndOtpValid' => [true, '249e6b658877bde2a77bc4ab', 'analytics/url/report'],
+            'TokenDoesNotExist' => [false, null],
+            'TokenExistAndOtpEmpty' => [true, null],
+            'TokenExistAndOtpValid' => [true, '249e6b658877bde2a77bc4ab'],
         ];
     }
 
@@ -132,6 +140,6 @@ class ReportUrlProviderTest extends TestCase
             ->with(SubscriptionUpdateHandler::PREVIOUS_BASE_URL_FLAG_CODE)
             ->willReturn('http://store.com');
         $this->expectException(SubscriptionUpdateException::class);
-        $this->model->getUrl();
+        $this->reportUrlProvider->getUrl();
     }
 }

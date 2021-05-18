@@ -254,11 +254,8 @@ class ConfigurableTest extends TestCase
      * @param string|null $priceCurrency
      * @param int|null $customerGroupId
      */
-    public function testGetCacheKeyInfo(
-        array $expected,
-        ?string $priceCurrency = null,
-        ?int $customerGroupId = null
-    ): void {
+    public function testGetCacheKeyInfo(array $expected, ?string $priceCurrency = null, ?int $customerGroupId = null)
+    {
         $storeMock = $this->getMockBuilder(StoreInterface::class)
             ->setMethods(['getCurrentCurrency'])
             ->getMockForAbstractClass();
@@ -285,7 +282,7 @@ class ConfigurableTest extends TestCase
     /**
      * Check that getJsonConfig() method returns expected value
      */
-    public function testGetJsonConfig(): void
+    public function testGetJsonConfig()
     {
         $productId = 1;
         $amount = 10.50;
@@ -350,9 +347,6 @@ class ConfigurableTest extends TestCase
             ->with($priceInfoMock)
             ->willReturn(
                 [
-                    'baseOldPrice' => [
-                        'amount' => $amount,
-                    ],
                     'oldPrice' => [
                         'amount' => $amount,
                     ],
@@ -392,9 +386,6 @@ class ConfigurableTest extends TestCase
             'currencyFormat' => '%s',
             'optionPrices' => [
                 $productId => [
-                    'baseOldPrice' => [
-                        'amount' => $amount,
-                    ],
                     'oldPrice' => [
                         'amount' => $amount,
                     ],
@@ -412,15 +403,12 @@ class ConfigurableTest extends TestCase
                         ],
                     ],
                     'msrpPrice' => [
-                        'amount' => null,
+                        'amount' => null    ,
                     ]
                 ],
             ],
             'priceFormat' => [],
             'prices' => [
-                'baseOldPrice' => [
-                    'amount' => $amount,
-                ],
                 'oldPrice' => [
                     'amount' => $amount,
                 ],
@@ -446,7 +434,7 @@ class ConfigurableTest extends TestCase
      * @param MockObject $productMock
      * @return MockObject
      */
-    private function getProductTypeMock(MockObject $productMock): MockObject
+    private function getProductTypeMock(MockObject $productMock)
     {
         $currencyMock = $this->getMockBuilder(Currency::class)
             ->disableOriginalConstructor()

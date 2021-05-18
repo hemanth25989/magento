@@ -54,8 +54,9 @@
         <actionGroup ref="FillShippingZipForm" stepKey="fillShippingZipForm">
             <argument name="address" value="US_Address_CA"/>
         </actionGroup>
-        <actionGroup ref="StorefrontClickProceedToCheckoutActionGroup" stepKey="clickProceedToCheckout"/>
-        <comment userInput="Adding the comment to replace waitForProceedToCheckout action for preserving Backward Compatibility" stepKey="waitForProceedToCheckout"/>
+        <click selector="{{CheckoutCartSummarySection.proceedToCheckout}}" stepKey="clickProceedToCheckout"/>
+        <waitForPageLoad stepKey="waitForProceedToCheckout"/>
+
         <!-- Login using Sign In link from checkout page -->
         <actionGroup ref="LoginAsCustomerUsingSignInLinkActionGroup" stepKey="customerLogin">
             <argument name="customer" value="$$createCustomer$$"/>
@@ -68,8 +69,9 @@
         <actionGroup ref="FillShippingAddressOneStreetActionGroup" stepKey="changeAddress">
             <argument name="address" value="UK_Not_Default_Address"/>
         </actionGroup>
-        <actionGroup ref="StorefrontCheckoutClickSaveAddressButtonActionGroup" stepKey="saveNewAddress"/>
-        <comment userInput="Adding the comment to replace waitForAddressSaving action for preserving Backward Compatibility" stepKey="waitForAddressSaving"/>
+        <click selector="{{CheckoutShippingSection.saveAddress}}" stepKey="saveNewAddress"/>
+        <waitForPageLoad stepKey="waitForAddressSaving"/>
+
         <!-- Click next button to open payment section -->
         <actionGroup ref="StorefrontCheckoutClickNextOnShippingStepActionGroup" stepKey="clickNext"/>
 

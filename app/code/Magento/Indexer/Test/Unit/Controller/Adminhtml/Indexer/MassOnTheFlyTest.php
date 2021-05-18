@@ -171,7 +171,7 @@ class MassOnTheFlyTest extends TestCase
         $this->title = $this->createMock(Title::class);
         $this->messageManager = $this->getMockForAbstractClass(
             ManagerInterface::class,
-            ['addErrorMessage', 'addSuccess'],
+            ['addError', 'addSuccess'],
             '',
             false
         );
@@ -206,7 +206,7 @@ class MassOnTheFlyTest extends TestCase
 
         if (!is_array($indexerIds)) {
             $this->messageManager->expects($this->once())
-                ->method('addErrorMessage')->with(__('Please select indexers.'))
+                ->method('addError')->with(__('Please select indexers.'))
                 ->willReturn(1);
         } else {
             $this->objectManager->expects($this->any())
@@ -234,7 +234,7 @@ class MassOnTheFlyTest extends TestCase
 
             if ($exception !== null) {
                 $this->messageManager->expects($this->exactly($expectsExceptionValues[2]))
-                    ->method('addErrorMessage')
+                    ->method('addError')
                     ->with($exception->getMessage());
                 $this->messageManager->expects($this->exactly($expectsExceptionValues[1]))
                     ->method('addException')

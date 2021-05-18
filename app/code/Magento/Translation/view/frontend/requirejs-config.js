@@ -10,5 +10,8 @@ var config = {
             addClass: 'Magento_Translation/js/add-class',
             'Magento_Translation/add-class': 'Magento_Translation/js/add-class'
         }
-    }
+    },
+    deps: [
+        'mage/translate-inline'
+    ]
 };

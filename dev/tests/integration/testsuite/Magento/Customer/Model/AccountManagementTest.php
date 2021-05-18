@@ -14,7 +14,6 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\State\ExpiredException;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Framework\Session\SessionManagerInterface;
-use Magento\Framework\Stdlib\DateTime;
 use Magento\Framework\Url as UrlBuilder;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -114,10 +113,6 @@ class AccountManagementTest extends \PHPUnit\Framework\TestCase
         $customerRegistry->remove(1);
         $addressRegistry->remove(1);
         $addressRegistry->remove(2);
-        /** @var \Magento\Customer\Model\ResourceModel\Visitor $resourceModel */
-        $resourceModel = $this->objectManager->get(\Magento\Customer\Model\ResourceModel\Visitor::class);
-        $resourceModel->getConnection()->delete($resourceModel->getMainTable());
-        parent::tearDown();
     }
 
     /**
@@ -163,52 +158,19 @@ class AccountManagementTest extends \PHPUnit\Framework\TestCase
     {
         /** @var SessionManagerInterface $session */
         $session = $this->objectManager->get(SessionManagerInterface::class);
-        $time = time();
-
-        $session->start();
-        $guessSessionId = $session->getSessionId();
-        $this->createVisitorSession($guessSessionId);
-        $session->setTestData('guest_session_data');
-
-        // open new session
-        $activeSessionId = uniqid("active-$time-");
-        $this->startNewSession($activeSessionId);
-        $this->createVisitorSession($activeSessionId, 1);
-        $session->setTestData('customer_session_data_1');
-
-        // open new session
-        $currentSessionId = uniqid("current-$time-");
-        $this->startNewSession($currentSessionId);
-        $this->createVisitorSession($currentSessionId, 1);
-        $session->setTestData('customer_session_data_current');
-
-        // change password
+        $oldSessionId = $session->getSessionId();
+        $session->setTestData('test');
         $this->accountManagement->changePassword('customer@example.com', 'password', 'new_Password123');
-        $this->assertEquals(
-            $currentSessionId,
-            $session->getSessionId(),
-            'Current session was renewed'
+
+        $this->assertTrue(
+            $oldSessionId !== $session->getSessionId(),
+            'Customer session id wasn\'t regenerated after change password'
         );
 
-        // open customer active session
-        $this->startNewSession($activeSessionId);
-        $this->assertNull($session->getTestData(), 'Customer active session data wasn\'t cleaned up');
+        $session->destroy();
+        $session->setSessionId($oldSessionId);
 
-        // open customer current session
-        $this->startNewSession($currentSessionId);
-        $this->assertEquals(
-            'customer_session_data_current',
-            $session->getTestData(),
-            'Customer current session data was cleaned up'
-        );
-
-        // open guess session
-        $this->startNewSession($guessSessionId);
-        $this->assertEquals(
-            'guest_session_data',
-            $session->getTestData(),
-            'Guest session data was cleaned up'
-        );
+        $this->assertNull($session->getTestData(), 'Customer session data wasn\'t cleaned');
 
         $this->accountManagement->authenticate('customer@example.com', 'new_Password123');
     }
@@ -430,58 +392,11 @@ class AccountManagementTest extends \PHPUnit\Framework\TestCase
      */
     public function testResetPassword()
     {
-        /** @var SessionManagerInterface $session */
-        $session = $this->objectManager->get(SessionManagerInterface::class);
-        $time = time();
-
-        $session->start();
-        $guessSessionId = $session->getSessionId();
-        $this->createVisitorSession($guessSessionId);
-        $session->setTestData('guest_session_data');
-
-        // open new session
-        $activeSessionId = uniqid("active-$time-");
-        $this->startNewSession($activeSessionId);
-        $this->createVisitorSession($activeSessionId, 1);
-        $session->setTestData('customer_session_data_1');
-
-        // open new session
-        $currentSessionId = uniqid("current-$time-");
-        $this->startNewSession($currentSessionId);
-        $this->createVisitorSession($currentSessionId, 1);
-        $session->setTestData('customer_session_data_current');
-
         $resetToken = 'lsdj579slkj5987slkj595lkj';
         $password = 'new_Password123';
 
         $this->setResetPasswordData($resetToken, 'Y-m-d H:i:s');
         $this->assertTrue($this->accountManagement->resetPassword('customer@example.com', $resetToken, $password));
-
-        $this->assertEquals(
-            $currentSessionId,
-            $session->getSessionId(),
-            'Current session was renewed'
-        );
-
-        // open customer active session
-        $this->startNewSession($activeSessionId);
-        $this->assertNull($session->getTestData(), 'Customer active session data wasn\'t cleaned up');
-
-        // open customer current session
-        $this->startNewSession($currentSessionId);
-        $this->assertEquals(
-            'customer_session_data_current',
-            $session->getTestData(),
-            'Customer current session data was cleaned up'
-        );
-
-        // open guess session
-        $this->startNewSession($guessSessionId);
-        $this->assertEquals(
-            'guest_session_data',
-            $session->getTestData(),
-            'Guest session data was cleaned up'
-        );
     }
 
     /**
@@ -811,36 +726,5 @@ class AccountManagementTest extends \PHPUnit\Framework\TestCase
         $customerModel->setRpToken($resetToken);
         $customerModel->setRpTokenCreatedAt(date($date));
         $customerModel->save();
-    }
-
-    /**
-     * @param string $sessionId
-     */
-    private function startNewSession(string $sessionId): void
-    {
-        /** @var SessionManagerInterface $session */
-        $session = $this->objectManager->get(SessionManagerInterface::class);
-        // close session and cleanup session variable
-        $session->writeClose();
-        $session->clearStorage();
-        // open new session
-        $session->setSessionId($sessionId);
-        $session->start();
-    }
-
-    /**
-     * @param string $sessionId
-     * @param int|null $customerId
-     * @return Visitor
-     */
-    private function createVisitorSession(string $sessionId, ?int $customerId = null): Visitor
-    {
-        /** @var Visitor $visitor */
-        $visitor = Bootstrap::getObjectManager()->create(Visitor::class);
-        $visitor->setCustomerId($customerId);
-        $visitor->setSessionId($sessionId);
-        $visitor->setLastVisitAt((new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT));
-        $visitor->save();
-        return $visitor;
     }
 }

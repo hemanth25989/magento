@@ -7,7 +7,6 @@
 namespace Magento\AdvancedPricingImportExport\Model\Export;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\File\Csv;
 use Magento\TestFramework\Indexer\TestCase;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -104,8 +103,6 @@ class AdvancedPricingTest extends TestCase
             $this->assertEquals(count($origPricingData[$index]), count($newPricingData));
             $this->assertEqualsOtherThanSkippedAttributes($origPricingData[$index], $newPricingData, []);
         }
-
-        $this->removeImportedProducts($skus);
     }
 
     /**
@@ -166,7 +163,6 @@ class AdvancedPricingTest extends TestCase
             $this->assertEquals(count($origPricingData[$index]), count($newPricingData));
             $this->assertEqualsOtherThanSkippedAttributes($origPricingData[$index], $newPricingData, []);
         }
-        $this->removeImportedProducts($skus);
     }
 
     /**
@@ -177,16 +173,14 @@ class AdvancedPricingTest extends TestCase
      */
     public function testExportImportOfAdvancedPricing(): void
     {
-        $simpleSku = 'simple';
-        $secondSimpleSku = 'second_simple';
         $csvfile = uniqid('importexport_') . '.csv';
         $exportContent = $this->exportData($csvfile);
         $this->assertStringContainsString(
-            \sprintf('%s,"All Websites [USD]","ALL GROUPS",10.0000,3.00,Discount', $secondSimpleSku),
+            'second_simple,"All Websites [USD]","ALL GROUPS",10.0000,3.00,Discount',
             $exportContent
         );
         $this->assertStringContainsString(
-            \sprintf('%s,"All Websites [USD]",General,5.0000,95.000000,Fixed', $simpleSku),
+            'simple,"All Websites [USD]",General,5.0000,95.000000,Fixed',
             $exportContent
         );
         $this->updateTierPriceDataInCsv($csvfile);
@@ -230,8 +224,6 @@ class AdvancedPricingTest extends TestCase
             ],
             0.1
         );
-
-        $this->removeImportedProducts([$simpleSku, $secondSimpleSku]);
     }
 
     /**
@@ -338,32 +330,5 @@ class AdvancedPricingTest extends TestCase
                 );
             }
         }
-    }
-
-    /**
-     * Cleanup test by removing imported product.
-     *
-     * @param string[] $skus
-     * @return void
-     */
-    private function removeImportedProducts(array $skus): void
-    {
-        /** @var ProductRepositoryInterface $productRepository */
-        $productRepository = $this->objectManager->create(ProductRepositoryInterface::class);
-        $registry = $this->objectManager->get(\Magento\Framework\Registry::class);
-        /** @var ProductRepositoryInterface $productRepository */
-        $registry->unregister('isSecureArea');
-        $registry->register('isSecureArea', true);
-
-        foreach ($skus as $sku) {
-            try {
-                $productRepository->deleteById($sku);
-            } catch (NoSuchEntityException $e) {
-                // product already deleted
-            }
-        }
-
-        $registry->unregister('isSecureArea');
-        $registry->register('isSecureArea', false);
     }
 }

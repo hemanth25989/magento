@@ -30,7 +30,6 @@ use Magento\TestFramework\TestCase\AbstractController;
 /**
  * Integration test for product view front action.
  *
- * @magentoAppIsolation enabled
  * @magentoAppArea frontend
  * @magentoDbIsolation enabled
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -363,7 +362,7 @@ class ViewTest extends AbstractController
         $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $this->_objectManager->addSharedInstance($logger, LoggerInterface::class, true);
+        $this->_objectManager->addSharedInstance($logger, MagentoMonologLogger::class);
 
         return $logger;
     }

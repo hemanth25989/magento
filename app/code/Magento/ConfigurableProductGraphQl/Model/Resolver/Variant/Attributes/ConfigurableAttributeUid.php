@@ -11,7 +11,6 @@ use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
-use Magento\Framework\GraphQl\Query\Uid;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 
 /**
@@ -23,17 +22,6 @@ class ConfigurableAttributeUid implements ResolverInterface
      * Option type name
      */
     private const OPTION_TYPE = 'configurable';
-
-    /** @var Uid */
-    private $uidEncoder;
-
-    /**
-     * @param Uid $uidEncoder
-     */
-    public function __construct(Uid $uidEncoder)
-    {
-        $this->uidEncoder = $uidEncoder;
-    }
 
     /**
      * Create a option uid for super attribute in "<option-type>/<attribute-id>/<value-index>" format
@@ -73,6 +61,7 @@ class ConfigurableAttributeUid implements ResolverInterface
 
         $content = implode('/', $optionDetails);
 
-        return $this->uidEncoder->encode($content);
+        // phpcs:ignore Magento2.Functions.DiscouragedFunction
+        return base64_encode($content);
     }
 }

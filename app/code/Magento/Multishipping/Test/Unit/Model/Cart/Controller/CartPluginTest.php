@@ -14,7 +14,6 @@ use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Multishipping\Model\Cart\Controller\CartPlugin;
-use Magento\Multishipping\Model\DisableMultishipping;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\Quote\Address;
@@ -48,12 +47,10 @@ class CartPluginTest extends TestCase
         $this->cartRepositoryMock = $this->getMockForAbstractClass(CartRepositoryInterface::class);
         $this->checkoutSessionMock = $this->createMock(Session::class);
         $this->addressRepositoryMock = $this->getMockForAbstractClass(AddressRepositoryInterface::class);
-        $disableMultishippingMock = $this->createMock(DisableMultishipping::class);
         $this->model = new CartPlugin(
             $this->cartRepositoryMock,
             $this->checkoutSessionMock,
-            $this->addressRepositoryMock,
-            $disableMultishippingMock
+            $this->addressRepositoryMock
         );
     }
 
@@ -68,41 +65,33 @@ class CartPluginTest extends TestCase
             'getShippingAddress',
             'getCustomer'
         ]);
-        $this->checkoutSessionMock->method('getQuote')
-            ->willReturn($quoteMock);
+        $this->checkoutSessionMock->expects($this->once())->method('getQuote')->willReturn($quoteMock);
 
         $addressMock = $this->createMock(Address::class);
-        $addressMock->method('getId')
-            ->willReturn($addressId);
+        $addressMock->expects($this->once())->method('getId')->willReturn($addressId);
 
-        $quoteMock->method('isMultipleShippingAddresses')
-            ->willReturn(true);
-        $quoteMock->method('getAllShippingAddresses')
-            ->willReturn([$addressMock]);
-        $quoteMock->method('removeAddress')
-            ->with($addressId)->willReturnSelf();
+        $quoteMock->expects($this->once())->method('isMultipleShippingAddresses')->willReturn(true);
+        $quoteMock->expects($this->once())->method('getAllShippingAddresses')->willReturn([$addressMock]);
+        $quoteMock->expects($this->once())->method('removeAddress')->with($addressId)->willReturnSelf();
 
         $shippingAddressMock = $this->createMock(Address::class);
-        $quoteMock->method('getShippingAddress')
-            ->willReturn($shippingAddressMock);
+        $quoteMock->expects($this->once())->method('getShippingAddress')->willReturn($shippingAddressMock);
         $customerMock = $this->getMockForAbstractClass(CustomerInterface::class);
-        $quoteMock->method('getCustomer')
-            ->willReturn($customerMock);
-        $customerMock->method('getDefaultShipping')
-            ->willReturn($customerAddressId);
+        $quoteMock->expects($this->once())->method('getCustomer')->willReturn($customerMock);
+        $customerMock->expects($this->once())->method('getDefaultShipping')->willReturn($customerAddressId);
 
         $customerAddressMock = $this->getMockForAbstractClass(AddressInterface::class);
-        $this->addressRepositoryMock->method('getById')
+        $this->addressRepositoryMock->expects($this->once())
+            ->method('getById')
             ->with($customerAddressId)
             ->willReturn($customerAddressMock);
 
-        $shippingAddressMock->method('importCustomerAddressData')
+        $shippingAddressMock->expects($this->once())
+            ->method('importCustomerAddressData')
             ->with($customerAddressMock)
             ->willReturnSelf();
 
-        $this->cartRepositoryMock->expects($this->once())
-            ->method('save')
-            ->with($quoteMock);
+        $this->cartRepositoryMock->expects($this->once())->method('save')->with($quoteMock);
 
         $this->model->beforeDispatch(
             $this->createMock(Cart::class),

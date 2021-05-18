@@ -14,8 +14,6 @@ use Magento\TestFramework\CodingStandard\Tool\CodeSniffer\Wrapper;
 use Magento\TestFramework\CodingStandard\Tool\CopyPasteDetector;
 use Magento\TestFramework\CodingStandard\Tool\PhpCompatibility;
 use Magento\TestFramework\CodingStandard\Tool\PhpStan;
-use Magento\TestFramework\Utility\AddedFiles;
-use Magento\TestFramework\Utility\FilesSearch;
 use PHPMD\TextUI\Command;
 
 /**
@@ -115,8 +113,8 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
      */
     private static function getChangedFilesList($changedFilesBaseDir)
     {
-        return FilesSearch::getFilesFromListFile(
-            $changedFilesBaseDir ?: self::getChangedFilesBaseDir(),
+        return self::getFilesFromListFile(
+            $changedFilesBaseDir,
             'changed_files*',
             function () {
                 // if no list files, probably, this is the dev environment
@@ -128,6 +126,65 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
                 return $changedFiles;
             }
         );
+    }
+
+    /**
+     * This method loads list of added files.
+     *
+     * @param string $changedFilesBaseDir
+     * @return string[]
+     */
+    private static function getAddedFilesList($changedFilesBaseDir)
+    {
+        return self::getFilesFromListFile(
+            $changedFilesBaseDir,
+            'changed_files*.added.*',
+            function () {
+                // if no list files, probably, this is the dev environment
+                // phpcs:ignore Generic.PHP.NoSilencedErrors,Magento2.Security.InsecureFunction
+                @exec('git diff --cached --name-only --diff-filter=A', $addedFiles);
+                return $addedFiles;
+            }
+        );
+    }
+
+    /**
+     * Read files from generated lists.
+     *
+     * @param string $listsBaseDir
+     * @param string $listFilePattern
+     * @param callable $noListCallback
+     * @return string[]
+     */
+    private static function getFilesFromListFile($listsBaseDir, $listFilePattern, $noListCallback)
+    {
+        $filesDefinedInList = [];
+
+        $globFilesListPattern = ($listsBaseDir ?: self::getChangedFilesBaseDir())
+            . '/_files/' . $listFilePattern;
+        $listFiles = glob($globFilesListPattern);
+        if (!empty($listFiles)) {
+            foreach ($listFiles as $listFile) {
+                // phpcs:ignore Magento2.Performance.ForeachArrayMerge.ForeachArrayMerge
+                $filesDefinedInList = array_merge(
+                    $filesDefinedInList,
+                    file($listFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)
+                );
+            }
+        } else {
+            $filesDefinedInList = call_user_func($noListCallback);
+        }
+
+        array_walk(
+            $filesDefinedInList,
+            function (&$file) {
+                $file = BP . '/' . $file;
+            }
+        );
+
+        $filesDefinedInList = array_values(array_unique($filesDefinedInList));
+
+        return $filesDefinedInList;
     }
 
     /**
@@ -346,9 +403,9 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
 
         $blackList = [];
         foreach (glob(__DIR__ . '/_files/phpcpd/blacklist/*.txt') as $list) {
-            $blackList[] = file($list, FILE_IGNORE_NEW_LINES);
+            // phpcs:ignore Magento2.Performance.ForeachArrayMerge.ForeachArrayMerge
+            $blackList = array_merge($blackList, file($list, FILE_IGNORE_NEW_LINES));
         }
-        $blackList = array_merge([], ...$blackList);
 
         $copyPasteDetector->setBlackList($blackList);
 
@@ -370,7 +427,7 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
      */
     public function testStrictTypes()
     {
-        $changedFiles = AddedFiles::getAddedFilesList(self::getChangedFilesBaseDir());
+        $changedFiles = self::getAddedFilesList('');
 
         try {
             $blackList = Files::init()->readLists(

@@ -105,7 +105,7 @@ class FaviconTest extends TestCase
     public function testGetFaviconFile()
     {
         $scopeConfigValue = 'path';
-        $urlToMediaDir = 'http://magento.url/media/';
+        $urlToMediaDir = 'http://magento.url/pub/media/';
         $expectedFile = ImageFavicon::UPLOAD_DIR . '/' . $scopeConfigValue;
         $expectedUrl = $urlToMediaDir . $expectedFile;
 

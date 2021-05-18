@@ -65,31 +65,19 @@ class StoreConfigDataProvider
      */
     public function getStoreConfigData(StoreInterface $store): array
     {
-        $defaultWebsiteStore = $this->storeWebsiteRelation->getWebsiteStores(
-            (int) $store->getWebsiteId(),
-            true,
-            (int) $store->getStoreGroupId(),
-            (int) $store->getStoreId()
-        );
-        if (empty($defaultWebsiteStore)) {
-            return [];
-        }
-
-        $storeConfigs = $this->storeConfigManager->getStoreConfigs([$store->getCode()]);
-
-        return $this->prepareStoreConfigData(current($storeConfigs), current($defaultWebsiteStore));
+        $defaultStoreConfig = $this->storeConfigManager->getStoreConfigs([$store->getCode()]);
+        return $this->prepareStoreConfigData(current($defaultStoreConfig), $store->getName());
     }
 
     /**
      * Get available website stores
      *
      * @param int $websiteId
-     * @param int|null $storeGroupId
      * @return array
      */
-    public function getAvailableStoreConfig(int $websiteId, int $storeGroupId = null): array
+    public function getAvailableStoreConfig(int $websiteId): array
     {
-        $websiteStores = $this->storeWebsiteRelation->getWebsiteStores($websiteId, true, $storeGroupId);
+        $websiteStores = $this->storeWebsiteRelation->getWebsiteStores($websiteId, true);
         $storeCodes = array_column($websiteStores, 'code');
 
         $storeConfigs = $this->storeConfigManager->getStoreConfigs($storeCodes);
@@ -97,7 +85,7 @@ class StoreConfigDataProvider
 
         foreach ($storeConfigs as $storeConfig) {
             $key = array_search($storeConfig->getCode(), array_column($websiteStores, 'code'), true);
-            $storesConfigData[] = $this->prepareStoreConfigData($storeConfig, $websiteStores[$key]);
+            $storesConfigData[] = $this->prepareStoreConfigData($storeConfig, $websiteStores[$key]['name']);
         }
 
         return $storesConfigData;
@@ -107,25 +95,15 @@ class StoreConfigDataProvider
      * Prepare store config data
      *
      * @param StoreConfigInterface $storeConfig
-     * @param array $storeData
+     * @param string $storeName
      * @return array
      */
-    private function prepareStoreConfigData(StoreConfigInterface $storeConfig, array $storeData): array
+    private function prepareStoreConfigData(StoreConfigInterface $storeConfig, string $storeName): array
     {
         return array_merge([
             'id' => $storeConfig->getId(),
             'code' => $storeConfig->getCode(),
-            'store_code' => $storeConfig->getCode(),
-            'store_name' => $storeData['name'] ?? null,
-            'store_sort_order' => $storeData['sort_order'] ?? null,
-            'is_default_store' => $storeData['default_store_id'] == $storeConfig->getId() ?? null,
-            'store_group_code' => $storeData['store_group_code'] ?? null,
-            'store_group_name' => $storeData['store_group_name'] ?? null,
-            'is_default_store_group' => $storeData['default_group_id'] == $storeData['group_id'] ?? null,
-            'store_group_default_store_code' => $storeData['store_group_default_store_code'] ?? null,
             'website_id' => $storeConfig->getWebsiteId(),
-            'website_code' => $storeData['website_code'] ?? null,
-            'website_name' => $storeData['website_name'] ?? null,
             'locale' => $storeConfig->getLocale(),
             'base_currency_code' => $storeConfig->getBaseCurrencyCode(),
             'default_display_currency_code' => $storeConfig->getDefaultDisplayCurrencyCode(),
@@ -139,6 +117,7 @@ class StoreConfigDataProvider
             'secure_base_link_url' => $storeConfig->getSecureBaseLinkUrl(),
             'secure_base_static_url' => $storeConfig->getSecureBaseStaticUrl(),
             'secure_base_media_url' => $storeConfig->getSecureBaseMediaUrl(),
+            'store_name' => $storeName,
         ], $this->getExtendedConfigData((int)$storeConfig->getId()));
     }
 

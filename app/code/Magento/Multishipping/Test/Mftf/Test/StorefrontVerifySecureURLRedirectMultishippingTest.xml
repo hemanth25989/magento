@@ -33,7 +33,8 @@
             <amOnPage url="{{StorefrontCategoryPage.url($$category.name$$)}}" stepKey="goToCategoryPage"/>
             <waitForPageLoad stepKey="waitForPageLoad"/>
             <moveMouseOver selector="{{StorefrontCategoryMainSection.ProductItemInfo}}" stepKey="moveMouseOverProduct"/>
-            <actionGroup ref="StorefrontClickAddToCartButtonActionGroup" stepKey="clickAddToCartButton"/>
+            <click selector="{{StorefrontCategoryMainSection.AddToCartBtn}}" stepKey="clickAddToCartButton"/>
+            <waitForPageLoad stepKey="waitForAddToCart"/>
             <waitForElementVisible selector="{{StorefrontCategoryMainSection.SuccessMsg}}" time="30" stepKey="waitForAddedToCartSuccessMessage"/>
             <see selector="{{StorefrontCategoryMainSection.SuccessMsg}}" userInput="You added $$product.name$$ to your shopping cart." stepKey="seeAddedToCartSuccessMessage"/>
             <see selector="{{StorefrontMinicartSection.quantity}}" userInput="1" stepKey="seeCartQuantity"/>

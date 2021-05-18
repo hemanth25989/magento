@@ -90,12 +90,17 @@ class SwatchAttributeCodesTest extends TestCase
             ->withConsecutive(
                 [
                     self::identicalTo(
-                        ['a' => self::ATTRIBUTE_TABLE]
+                        ['a' => self::ATTRIBUTE_TABLE],
+                        [
+                            'attribute_id' => 'a.attribute_id',
+                            'attribute_code' => 'a.attribute_code',
+                        ]
                     )
                 ],
                 [
                     self::identicalTo(
-                        ['o' => self::ATTRIBUTE_OPTION_TABLE]
+                        ['o' => self::ATTRIBUTE_OPTION_TABLE],
+                        ['attribute_id' => 'o.attribute_id']
                     )
                 ]
             )

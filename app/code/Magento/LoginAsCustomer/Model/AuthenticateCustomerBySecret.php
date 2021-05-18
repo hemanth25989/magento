@@ -39,7 +39,7 @@ class AuthenticateCustomerBySecret implements AuthenticateCustomerBySecretInterf
     /**
      * @param GetAuthenticationDataBySecretInterface $getAuthenticationDataBySecret
      * @param Session $customerSession
-     * @param SetLoggedAsCustomerAdminIdInterface|null $setLoggedAsCustomerAdminId
+     * @param SetLoggedAsCustomerAdminIdInterface $setLoggedAsCustomerAdminId
      */
     public function __construct(
         GetAuthenticationDataBySecretInterface $getAuthenticationDataBySecret,
@@ -57,11 +57,7 @@ class AuthenticateCustomerBySecret implements AuthenticateCustomerBySecretInterf
      */
     public function execute(string $secret): void
     {
-        try {
-            $authenticationData = $this->getAuthenticationDataBySecret->execute($secret);
-        } catch (LocalizedException $exception) {
-            throw new LocalizedException(__('Login was not successful.'));
-        }
+        $authenticationData = $this->getAuthenticationDataBySecret->execute($secret);
 
         if ($this->customerSession->getId()) {
             $this->customerSession->logout();
@@ -71,6 +67,7 @@ class AuthenticateCustomerBySecret implements AuthenticateCustomerBySecretInterf
         if (false === $result) {
             throw new LocalizedException(__('Login was not successful.'));
         }
+
         $this->customerSession->regenerateId();
         $this->setLoggedAsCustomerAdminId->execute($authenticationData->getAdminId());
     }

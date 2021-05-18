@@ -11,7 +11,6 @@ namespace Magento\MediaStorage\App;
 use Closure;
 use Exception;
 use LogicException;
-use Magento\Catalog\Model\Config\CatalogMediaConfig;
 use Magento\Catalog\Model\View\Asset\PlaceholderFactory;
 use Magento\Framework\App;
 use Magento\Framework\App\Area;
@@ -19,7 +18,6 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\App\State;
 use Magento\Framework\AppInterface;
-use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\Directory\WriteInterface;
 use Magento\Framework\Filesystem\Driver\File;
@@ -106,11 +104,6 @@ class Media implements AppInterface
     private $imageResize;
 
     /**
-     * @var string
-     */
-    private $mediaUrlFormat;
-
-    /**
      * @param ConfigFactory $configFactory
      * @param SynchronizationFactory $syncFactory
      * @param Response $response
@@ -123,8 +116,6 @@ class Media implements AppInterface
      * @param State $state
      * @param ImageResize $imageResize
      * @param File $file
-     * @param CatalogMediaConfig $catalogMediaConfig
-     * @throws \Magento\Framework\Exception\FileSystemException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -139,19 +130,12 @@ class Media implements AppInterface
         PlaceholderFactory $placeholderFactory,
         State $state,
         ImageResize $imageResize,
-        File $file,
-        CatalogMediaConfig $catalogMediaConfig = null
+        File $file
     ) {
         $this->response = $response;
         $this->isAllowed = $isAllowed;
-        $this->directoryPub = $filesystem->getDirectoryWrite(
-            DirectoryList::PUB,
-            Filesystem\DriverPool::FILE
-        );
-        $this->directoryMedia = $filesystem->getDirectoryWrite(
-            DirectoryList::MEDIA,
-            Filesystem\DriverPool::FILE
-        );
+        $this->directoryPub = $filesystem->getDirectoryWrite(DirectoryList::PUB);
+        $this->directoryMedia = $filesystem->getDirectoryWrite(DirectoryList::MEDIA);
         $mediaDirectory = trim($mediaDirectory);
         if (!empty($mediaDirectory)) {
             // phpcs:ignore Magento2.Functions.DiscouragedFunction
@@ -164,9 +148,6 @@ class Media implements AppInterface
         $this->placeholderFactory = $placeholderFactory;
         $this->appState = $state;
         $this->imageResize = $imageResize;
-
-        $catalogMediaConfig = $catalogMediaConfig ?: App\ObjectManager::getInstance()->get(CatalogMediaConfig::class);
-        $this->mediaUrlFormat = $catalogMediaConfig->getMediaUrlFormat();
     }
 
     /**
@@ -187,16 +168,16 @@ class Media implements AppInterface
             $this->mediaDirectoryPath = $config->getMediaDirectory();
             $allowedResources = $config->getAllowedResources();
             $isAllowed = $this->isAllowed;
-            $fileAbsolutePath = $this->directoryPub->getAbsolutePath($this->relativeFileName);
-            $fileRelativePath = str_replace(rtrim($this->mediaDirectoryPath, '/') . '/', '', $fileAbsolutePath);
-            if (!$isAllowed($fileRelativePath, $allowedResources)) {
+            if (!$isAllowed($this->relativeFileName, $allowedResources)) {
                 throw new LogicException('The path is not allowed: ' . $this->relativeFileName);
             }
         }
 
         try {
-            $this->createLocalCopy();
-
+            /** @var Synchronization $sync */
+            $sync = $this->syncFactory->create(['directory' => $this->directoryPub]);
+            $sync->synchronize($this->relativeFileName);
+            $this->imageResize->resizeFromImageName($this->getOriginalImage($this->relativeFileName));
             if ($this->directoryPub->isReadable($this->relativeFileName)) {
                 $this->response->setFilePath($this->directoryPub->getAbsolutePath($this->relativeFileName));
             } else {
@@ -207,25 +188,6 @@ class Media implements AppInterface
         }
 
         return $this->response;
-    }
-
-    /**
-     * Create local copy of file and perform resizing if necessary.
-     *
-     * @throws NotFoundException
-     */
-    private function createLocalCopy(): void
-    {
-        $this->syncFactory->create(['directory' => $this->directoryPub])
-            ->synchronize($this->relativeFileName);
-
-        if ($this->directoryPub->isReadable($this->relativeFileName)) {
-            return;
-        }
-
-        if ($this->mediaUrlFormat === CatalogMediaConfig::HASH) {
-            $this->imageResize->resizeFromImageName($this->getOriginalImage($this->relativeFileName));
-        }
     }
 
     /**
@@ -257,7 +219,7 @@ class Media implements AppInterface
      */
     private function getOriginalImage(string $resizedImagePath): string
     {
-        return preg_replace('|^.*?((?:/([^/])/([^/])/\2\3)?/?[^/]+$)|', '$1', $resizedImagePath);
+        return preg_replace('|^.*((?:/[^/]+){3})$|', '$1', $resizedImagePath);
     }
 
     /**

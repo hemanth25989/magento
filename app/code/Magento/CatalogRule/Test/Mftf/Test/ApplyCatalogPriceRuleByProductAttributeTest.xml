@@ -8,16 +8,16 @@
 
 <tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/testSchema.xsd">
-    <test name="ApplyCatalogPriceRuleByProductAttributeTest" deprecated="Use AdminApplyCatalogPriceRuleByProductAttributeTest">
+    <test name="ApplyCatalogPriceRuleByProductAttributeTest">
         <annotations>
             <stories value="Catalog price rule"/>
-            <title value="DEPRECATED. Admin should be able to apply the catalog price rule by product attribute"/>
+            <title value="Admin should be able to apply the catalog price rule by product attribute"/>
             <description value="Admin should be able to apply the catalog price rule by product attribute"/>
             <severity value="CRITICAL"/>
             <testCaseId value="MC-148"/>
             <group value="CatalogRule"/>
             <skip>
-                <issueId value="DEPRECATED">Use AdminApplyCatalogPriceRuleByProductAttributeTest instead.</issueId>
+                <issueId value="MC-22577"/>
             </skip>
         </annotations>
         <before>

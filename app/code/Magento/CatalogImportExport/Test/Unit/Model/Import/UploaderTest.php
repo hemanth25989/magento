@@ -9,8 +9,6 @@ namespace Magento\CatalogImportExport\Test\Unit\Model\Import;
 use Magento\CatalogImportExport\Model\Import\Uploader;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\TargetDirectory;
-use Magento\Framework\Filesystem\Directory\Write;
 use Magento\Framework\Filesystem\Driver\Http;
 use Magento\Framework\Filesystem\Driver\Https;
 use Magento\Framework\Filesystem\DriverPool;
@@ -60,7 +58,7 @@ class UploaderTest extends TestCase
     protected $readFactory;
 
     /**
-     * @var WriteInterface|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\Writer|MockObject
      */
     protected $directoryMock;
 
@@ -73,11 +71,6 @@ class UploaderTest extends TestCase
      * @var Uploader|MockObject
      */
     protected $uploader;
-
-    /**
-     * @var TargetDirectory|MockObject
-     */
-    private $targetDirectory;
 
     protected function setUp(): void
     {
@@ -103,7 +96,7 @@ class UploaderTest extends TestCase
             ->setMethods(['create'])
             ->getMock();
 
-        $this->directoryMock = $this->getMockBuilder(Write::class)
+        $this->directoryMock = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\Writer::class)
             ->setMethods(['writeFile', 'getRelativePath', 'isWritable', 'getAbsolutePath'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -121,13 +114,6 @@ class UploaderTest extends TestCase
             ->setMethods(['getRandomString'])
             ->getMock();
 
-        $this->targetDirectory = $this->getMockBuilder(TargetDirectory::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getDirectoryWrite', 'getDirectoryRead'])
-            ->getMock();
-        $this->targetDirectory->method('getDirectoryWrite')->willReturn($this->directoryMock);
-        $this->targetDirectory->method('getDirectoryRead')->willReturn($this->directoryMock);
-
         $this->uploader = $this->getMockBuilder(Uploader::class)
             ->setConstructorArgs(
                 [
@@ -138,8 +124,7 @@ class UploaderTest extends TestCase
                     $this->filesystem,
                     $this->readFactory,
                     null,
-                    $this->random,
-                    $this->targetDirectory
+                    $this->random
                 ]
             )
             ->setMethods(['_setUploadFile', 'save', 'getTmpDir', 'checkAllowedExtension'])
@@ -201,21 +186,14 @@ class UploaderTest extends TestCase
             ->willReturn($destDir . '/' . $expectedFileName);
         $this->uploader->expects($this->once())->method('_setUploadFile')
             ->willReturnSelf();
-
-        $returnFile = $destDir . DIRECTORY_SEPARATOR . $expectedFileName;
-
         $this->uploader->expects($this->once())->method('save')
             ->with($destDir . '/' . $expectedFileName)
-            ->willReturn([
-                'name' => $expectedFileName,
-                'path' => 'absPath',
-                'file' => $returnFile
-            ]);
+            ->willReturn(['name' => $expectedFileName, 'path' => 'absPath']);
 
         $this->uploader->setDestDir($destDir);
         $result = $this->uploader->move($fileUrl);
 
-        $this->assertEquals(['name' => $expectedFileName, 'file' => $returnFile], $result);
+        $this->assertEquals(['name' => $expectedFileName], $result);
         $this->assertArrayNotHasKey('path', $result);
     }
 
@@ -231,50 +209,11 @@ class UploaderTest extends TestCase
         //Check invoking of getTmpDir(), _setUploadFile(), save() methods.
         $this->uploader->expects($this->once())->method('getTmpDir')->willReturn('');
         $this->uploader->expects($this->once())->method('_setUploadFile')->willReturnSelf();
-
-        $returnFile = $destDir . DIRECTORY_SEPARATOR . $fileName;
-
         $this->uploader->expects($this->once())->method('save')->with($destDir . '/' . $fileName)
-            ->willReturn(['name' => $fileName, 'file' => $returnFile]);
+            ->willReturn(['name' => $fileName]);
 
         $this->uploader->setDestDir($destDir);
-        $this->assertEquals(['name' => $fileName, 'file' => $returnFile], $this->uploader->move($fileName));
-    }
-
-    public function testFilenameLength()
-    {
-        $destDir = 'var/tmp/' . str_repeat('testFilenameLength', 13); // 242 characters
-
-        $fileName = \uniqid(); // 13 characters
-
-        $this->directoryMock->expects($this->once())
-            ->method('isWritable')
-            ->with($destDir)
-            ->willReturn(true);
-
-        $this->directoryMock->expects($this->once())
-            ->method('getRelativePath')
-            ->with($fileName)
-            ->willReturn(null);
-
-        $this->directoryMock->expects($this->once())
-            ->method('getAbsolutePath')
-            ->with($destDir)
-            ->willReturn($destDir);
-
-        $this->uploader->expects($this->once())
-            ->method('save')
-            ->with($destDir)
-            ->willReturn([
-                'name' => $fileName,
-                'file' => $destDir . DIRECTORY_SEPARATOR . $fileName // 256 characters
-            ]);
-
-        $this->uploader->setDestDir($destDir);
-
-        $this->expectException(\LengthException::class);
-
-        $this->uploader->move($fileName);
+        $this->assertEquals(['name' => $fileName], $this->uploader->move($fileName));
     }
 
     /**
@@ -288,9 +227,9 @@ class UploaderTest extends TestCase
             ->addMethods(['readAll'])
             ->onlyMethods(['isExists'])
             ->getMock();
-        $driverMock->method('isExists')->willReturn(true);
-        $driverMock->method('readAll')->willReturn(null);
-        $driverPool->method('getDriver')->willReturn($driverMock);
+        $driverMock->expects($this->any())->method('isExists')->willReturn(true);
+        $driverMock->expects($this->any())->method('readAll')->willReturn(null);
+        $driverPool->expects($this->any())->method('getDriver')->willReturn($driverMock);
 
         $readFactory = $this->getMockBuilder(ReadFactory::class)
             ->setConstructorArgs(
@@ -301,11 +240,10 @@ class UploaderTest extends TestCase
             ->setMethods(['create'])
             ->getMock();
 
-        $readFactory->method('create')
+        $readFactory->expects($this->any())->method('create')
             ->with($expectedHost, $expectedScheme)
             ->willReturn($driverMock);
 
-        /** @var Uploader $uploaderMock */
         $uploaderMock = $this->getMockBuilder(Uploader::class)
             ->setConstructorArgs(
                 [
@@ -315,9 +253,6 @@ class UploaderTest extends TestCase
                     $this->validator,
                     $this->filesystem,
                     $readFactory,
-                    null,
-                    $this->random,
-                    $this->targetDirectory
                 ]
             )
             ->getMock();

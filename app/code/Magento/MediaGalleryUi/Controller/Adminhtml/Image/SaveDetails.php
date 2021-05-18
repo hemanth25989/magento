@@ -32,7 +32,7 @@ class SaveDetails extends Action implements HttpPostActionInterface
     /**
      * @see _isAllowed()
      */
-    public const ADMIN_RESOURCE = 'Magento_MediaGalleryUiApi::edit_assets';
+    public const ADMIN_RESOURCE = 'Magento_Cms::media_gallery';
 
     /**
      * @var UpdateAsset

@@ -9,6 +9,7 @@ namespace Magento\CatalogImportExport\Model\Import;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Config as CatalogConfig;
 use Magento\Catalog\Model\Product\Visibility;
+use Magento\Catalog\Model\ResourceModel\Product\Link;
 use Magento\CatalogImportExport\Model\Import\Product\ImageTypeProcessor;
 use Magento\CatalogImportExport\Model\Import\Product\LinkProcessor;
 use Magento\CatalogImportExport\Model\Import\Product\MediaGalleryProcessor;
@@ -22,7 +23,6 @@ use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\Intl\DateTimeFactory;
 use Magento\Framework\Model\ResourceModel\Db\ObjectRelationProcessor;
 use Magento\Framework\Model\ResourceModel\Db\TransactionManagerInterface;
@@ -44,10 +44,9 @@ use Magento\Store\Model\Store;
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @since 100.0.2
  */
-class Product extends AbstractEntity
+class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
 {
-    public const CONFIG_KEY_PRODUCT_TYPES = 'global/importexport/import_product_types';
-    private const HASH_ALGORITHM = 'sha256';
+    const CONFIG_KEY_PRODUCT_TYPES = 'global/importexport/import_product_types';
 
     /**
      * Size of bunch - part of products to save in one step.
@@ -768,11 +767,6 @@ class Product extends AbstractEntity
     private $linkProcessor;
 
     /**
-     * @var File
-     */
-    private $fileDriver;
-
-    /**
      * @param \Magento\Framework\Json\Helper\Data $jsonHelper
      * @param \Magento\ImportExport\Helper\Data $importExportData
      * @param \Magento\ImportExport\Model\ResourceModel\Import\Data $importData
@@ -820,7 +814,6 @@ class Product extends AbstractEntity
      * @param StatusProcessor|null $statusProcessor
      * @param StockProcessor|null $stockProcessor
      * @param LinkProcessor|null $linkProcessor
-     * @param File|null $fileDriver
      * @throws LocalizedException
      * @throws \Magento\Framework\Exception\FileSystemException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -873,8 +866,7 @@ class Product extends AbstractEntity
         ProductRepositoryInterface $productRepository = null,
         StatusProcessor $statusProcessor = null,
         StockProcessor $stockProcessor = null,
-        LinkProcessor $linkProcessor = null,
-        ?File $fileDriver = null
+        LinkProcessor $linkProcessor = null
     ) {
         $this->_eventManager = $eventManager;
         $this->stockRegistry = $stockRegistry;
@@ -938,7 +930,6 @@ class Product extends AbstractEntity
         $this->dateTimeFactory = $dateTimeFactory ?? ObjectManager::getInstance()->get(DateTimeFactory::class);
         $this->productRepository = $productRepository ?? ObjectManager::getInstance()
                 ->get(ProductRepositoryInterface::class);
-        $this->fileDriver = $fileDriver ?: ObjectManager::getInstance()->get(File::class);
     }
 
     /**
@@ -1221,8 +1212,6 @@ class Product extends AbstractEntity
     protected function _initTypeModels()
     {
         $productTypes = $this->_importConfig->getEntityTypes($this->getEntityTypeCode());
-        $fieldsMap = [];
-        $specialAttributes = [];
         foreach ($productTypes as $productTypeName => $productTypeConfig) {
             $params = [$this, $productTypeName];
             if (!($model = $this->_productTypeFactory->create($productTypeConfig['model'], ['params' => $params]))
@@ -1242,13 +1231,14 @@ class Product extends AbstractEntity
             if ($model->isSuitable()) {
                 $this->_productTypeModels[$productTypeName] = $model;
             }
-            $fieldsMap[] = $model->getCustomFieldsMapping();
-            $specialAttributes[] = $model->getParticularAttributes();
+            // phpcs:disable Magento2.Performance.ForeachArrayMerge.ForeachArrayMerge
+            $this->_fieldsMap = array_merge($this->_fieldsMap, $model->getCustomFieldsMapping());
+            $this->_specialAttributes = array_merge($this->_specialAttributes, $model->getParticularAttributes());
+            // phpcs:enable
         }
-        $this->_fieldsMap = array_merge([], $this->_fieldsMap, ...$fieldsMap);
         $this->_initErrorTemplates();
         // remove doubles
-        $this->_specialAttributes = array_unique(array_merge([], $this->_specialAttributes, ...$specialAttributes));
+        $this->_specialAttributes = array_unique($this->_specialAttributes);
 
         return $this;
     }
@@ -1579,10 +1569,7 @@ class Product extends AbstractEntity
             $uploadedImages = [];
             $previousType = null;
             $prevAttributeSet = null;
-
-            $importDir = $this->_mediaDirectory->getAbsolutePath($this->getUploader()->getTmpDir());
             $existingImages = $this->getExistingImages($bunch);
-            $this->addImageHashes($existingImages);
 
             foreach ($bunch as $rowNum => $rowData) {
                 // reset category processor's failed categories array
@@ -1750,8 +1737,7 @@ class Product extends AbstractEntity
                 $position = 0;
                 foreach ($rowImages as $column => $columnImages) {
                     foreach ($columnImages as $columnImageKey => $columnImage) {
-                        $uploadedFile = $this->getAlreadyExistedImage($rowExistingImages, $columnImage, $importDir);
-                        if (!$uploadedFile && !isset($uploadedImages[$columnImage])) {
+                        if (!isset($uploadedImages[$columnImage])) {
                             $uploadedFile = $this->uploadMediaFiles($columnImage);
                             $uploadedFile = $uploadedFile ?: $this->getSystemFile($columnImage);
                             if ($uploadedFile) {
@@ -1766,7 +1752,7 @@ class Product extends AbstractEntity
                                     ProcessingError::ERROR_LEVEL_NOT_CRITICAL
                                 );
                             }
-                        } elseif (isset($uploadedImages[$columnImage])) {
+                        } else {
                             $uploadedFile = $uploadedImages[$columnImage];
                         }
 
@@ -1795,7 +1781,8 @@ class Product extends AbstractEntity
                             }
 
                             if (isset($rowLabels[$column][$columnImageKey])
-                                && $rowLabels[$column][$columnImageKey] !== $currentFileData['label']
+                                && $rowLabels[$column][$columnImageKey] !=
+                                $currentFileData['label']
                             ) {
                                 $labelsForUpdate[] = [
                                     'label' => $rowLabels[$column][$columnImageKey],
@@ -1804,7 +1791,7 @@ class Product extends AbstractEntity
                                 ];
                             }
                         } else {
-                            if ($column === self::COL_MEDIA_IMAGE) {
+                            if ($column == self::COL_MEDIA_IMAGE) {
                                 $rowData[$column][] = $uploadedFile;
                             }
                             $mediaGallery[$storeId][$rowSku][$uploadedFile] = [
@@ -1920,14 +1907,24 @@ class Product extends AbstractEntity
                 }
             }
 
-            $this->saveProductEntity($entityRowsIn, $entityRowsUp)
-                ->_saveProductWebsites($this->websitesCache)
-                ->_saveProductCategories($this->categoriesCache)
-                ->_saveProductTierPrices($tierPrices)
-                ->_saveMediaGallery($mediaGallery)
-                ->_saveProductAttributes($attributes)
-                ->updateMediaGalleryVisibility($imagesForChangeVisibility)
-                ->updateMediaGalleryLabels($labelsForUpdate);
+            $this->saveProductEntity(
+                $entityRowsIn,
+                $entityRowsUp
+            )->_saveProductWebsites(
+                $this->websitesCache
+            )->_saveProductCategories(
+                $this->categoriesCache
+            )->_saveProductTierPrices(
+                $tierPrices
+            )->_saveMediaGallery(
+                $mediaGallery
+            )->_saveProductAttributes(
+                $attributes
+            )->updateMediaGalleryVisibility(
+                $imagesForChangeVisibility
+            )->updateMediaGalleryLabels(
+                $labelsForUpdate
+            );
 
             $this->_eventManager->dispatch(
                 'catalog_product_import_bunch_save_after',
@@ -1942,87 +1939,6 @@ class Product extends AbstractEntity
     // phpcs:enable
 
     /**
-     * Returns image hash by path
-     *
-     * @param string $path
-     * @return string
-     */
-    private function getFileHash(string $path): string
-    {
-        return hash_file(self::HASH_ALGORITHM, $path);
-    }
-
-    /**
-     * Returns existed image
-     *
-     * @param array $imageRow
-     * @param string $columnImage
-     * @param string $importDir
-     * @return string
-     */
-    private function getAlreadyExistedImage(array $imageRow, string $columnImage, string $importDir): string
-    {
-        if (filter_var($columnImage, FILTER_VALIDATE_URL)) {
-            $hash = $this->getFileHash($columnImage);
-        } else {
-            $path = $importDir . DIRECTORY_SEPARATOR . $columnImage;
-            $hash = $this->isFileExists($path) ? $this->getFileHash($path) : '';
-        }
-
-        return array_reduce(
-            $imageRow,
-            function ($exists, $file) use ($hash) {
-                if (!$exists && isset($file['hash']) && $file['hash'] === $hash) {
-                    return $file['value'];
-                }
-
-                return $exists;
-            },
-            ''
-        );
-    }
-
-    /**
-     * Generate hashes for existing images for comparison with newly uploaded images.
-     *
-     * @param array $images
-     * @return void
-     */
-    private function addImageHashes(array &$images): void
-    {
-        $productMediaPath = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA)
-            ->getAbsolutePath(DIRECTORY_SEPARATOR . 'catalog' . DIRECTORY_SEPARATOR . 'product');
-
-        foreach ($images as $storeId => $skus) {
-            foreach ($skus as $sku => $files) {
-                foreach ($files as $path => $file) {
-                    if ($this->fileDriver->isExists($productMediaPath . $file['value'])) {
-                        $fileName = $productMediaPath . $file['value'];
-                        $images[$storeId][$sku][$path]['hash'] = $this->getFileHash($fileName);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Is file exists
-     *
-     * @param string $path
-     * @return bool
-     */
-    private function isFileExists(string $path): bool
-    {
-        try {
-            $fileExists = $this->fileDriver->isExists($path);
-        } catch (\Exception $exception) {
-            $fileExists = false;
-        }
-
-        return $fileExists;
-    }
-
-    /**
      * Clears entries from Image Set and Row Data marked as no_selection
      *
      * @param array $rowImages
@@ -2033,8 +1949,9 @@ class Product extends AbstractEntity
     {
         foreach ($rowImages as $column => $columnImages) {
             foreach ($columnImages as $key => $image) {
-                if ($image === 'no_selection') {
-                    unset($rowImages[$column][$key], $rowData[$column]);
+                if ($image == 'no_selection') {
+                    unset($rowImages[$column][$key]);
+                    unset($rowData[$column]);
                 }
             }
         }
@@ -2178,21 +2095,6 @@ class Product extends AbstractEntity
     }
 
     /**
-     * Returns the import directory if specified or a default import directory (media/import).
-     *
-     * @return string
-     */
-    private function getImportDir(): string
-    {
-        $dirConfig = DirectoryList::getDefaultConfig();
-        $dirAddon = $dirConfig[DirectoryList::MEDIA][DirectoryList::PATH];
-
-        return empty($this->_parameters[Import::FIELD_NAME_IMG_FILE_DIR])
-            ? $dirAddon . DIRECTORY_SEPARATOR . $this->_mediaDirectory->getRelativePath('import')
-            : $this->_parameters[Import::FIELD_NAME_IMG_FILE_DIR];
-    }
-
-    /**
      * Returns an object for upload a media files
      *
      * @return \Magento\CatalogImportExport\Model\Import\Uploader
@@ -2208,12 +2110,11 @@ class Product extends AbstractEntity
             $dirConfig = DirectoryList::getDefaultConfig();
             $dirAddon = $dirConfig[DirectoryList::MEDIA][DirectoryList::PATH];
 
-            // make media folder a primary folder for media in external storages
-            if (!is_a($this->_mediaDirectory->getDriver(), File::class)) {
-                $dirAddon = DirectoryList::MEDIA;
+            if (!empty($this->_parameters[Import::FIELD_NAME_IMG_FILE_DIR])) {
+                $tmpPath = $this->_parameters[Import::FIELD_NAME_IMG_FILE_DIR];
+            } else {
+                $tmpPath = $dirAddon . '/' . $this->_mediaDirectory->getRelativePath('import');
             }
-
-            $tmpPath = $this->getImportDir();
 
             if (!$fileUploader->setTmpDir($tmpPath)) {
                 throw new LocalizedException(

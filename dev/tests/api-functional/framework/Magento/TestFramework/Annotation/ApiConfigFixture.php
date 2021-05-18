@@ -35,8 +35,7 @@ class ApiConfigFixture extends ConfigFixture
     protected function setStoreConfigValue(array $matches, $configPathAndValue): void
     {
         $storeCode = $matches[0];
-        $parts = preg_split('/\s+/', $configPathAndValue, 3);
-        [$configScope, $configPath, $requiredValue] = $parts + ['', '', ''];
+        [$configScope, $configPath, $requiredValue] = preg_split('/\s+/', $configPathAndValue, 3);
         /** @var ConfigStorage $configStorage */
         $configStorage = Bootstrap::getObjectManager()->get(ConfigStorage::class);
         if (!$configStorage->checkIsRecordExist($configPath, ScopeInterface::SCOPE_STORES, $storeCode)) {
@@ -70,8 +69,7 @@ class ApiConfigFixture extends ConfigFixture
     protected function setWebsiteConfigValue(array $matches, $configPathAndValue): void
     {
         $websiteCode = $matches[0];
-        $parts = preg_split('/\s+/', $configPathAndValue, 3);
-        [$configScope, $configPath, $requiredValue] = $parts + ['', '', ''];
+        [$configScope, $configPath, $requiredValue] = preg_split('/\s+/', $configPathAndValue, 3);
         /** @var ConfigStorage $configStorage */
         $configStorage = Bootstrap::getObjectManager()->get(ConfigStorage::class);
         if (!$configStorage->checkIsRecordExist($configPath, ScopeInterface::SCOPE_WEBSITES, $websiteCode)) {

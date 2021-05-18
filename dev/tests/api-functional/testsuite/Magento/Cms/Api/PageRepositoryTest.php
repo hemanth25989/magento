@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Api;
 
 use Magento\Authorization\Model\Role;
@@ -13,20 +11,15 @@ use Magento\Authorization\Model\Rules;
 use Magento\Authorization\Model\RulesFactory;
 use Magento\Cms\Api\Data\PageInterface;
 use Magento\Cms\Api\Data\PageInterfaceFactory;
-use Magento\Cms\Model\ResourceModel\Page as PageResource;
-use Magento\Cms\Ui\Component\DataProvider as CmsDataProvider;
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SortOrder;
 use Magento\Framework\Api\SortOrderBuilder;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Framework\Webapi\Rest\Request;
 use Magento\Integration\Api\AdminTokenServiceInterface;
-use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\ObjectManager;
 use Magento\TestFramework\TestCase\WebapiAbstract;
 
 /**
@@ -86,59 +79,22 @@ class PageRepositoryTest extends WebapiAbstract
     private $adminTokens;
 
     /**
-     * @var PageInterface[]
+     * @var array
      */
     private $createdPages = [];
-
-    /**
-     * @var ObjectManager
-     */
-    private $objectManager;
-
-    /**
-     * @var StoreManagerInterface
-     */
-    private $storeManager;
-
-    /**
-     * @var FilterBuilder
-     */
-    private $filterBuilder;
-
-    /**
-     * @var CmsDataProvider
-     */
-    private $cmsUiDataProvider;
-
-    /**
-     * @var PageResource
-     */
-    private $pageResource;
 
     /**
      * @inheritdoc
      */
     protected function setUp(): void
     {
-        $this->objectManager = Bootstrap::getObjectManager();
-        $this->pageFactory = $this->objectManager->create(PageInterfaceFactory::class);
-        $this->pageRepository = $this->objectManager->create(PageRepositoryInterface::class);
-        $this->dataObjectHelper = $this->objectManager->create(DataObjectHelper::class);
-        $this->dataObjectProcessor = $this->objectManager->create(DataObjectProcessor::class);
-        $this->roleFactory = $this->objectManager->get(RoleFactory::class);
-        $this->rulesFactory = $this->objectManager->get(RulesFactory::class);
-        $this->adminTokens = $this->objectManager->get(AdminTokenServiceInterface::class);
-        $this->storeManager = $this->objectManager->get(StoreManagerInterface::class);
-        $this->filterBuilder = $this->objectManager->get(FilterBuilder::class);
-        $this->cmsUiDataProvider = $this->objectManager->create(
-            CmsDataProvider::class,
-            [
-                'name' => 'cms_page_listing_data_source',
-                'primaryFieldName' => 'page_id',
-                'requestFieldName' => 'id',
-            ]
-        );
-        $this->pageResource = $this->objectManager->get(PageResource::class);
+        $this->pageFactory = Bootstrap::getObjectManager()->create(PageInterfaceFactory::class);
+        $this->pageRepository = Bootstrap::getObjectManager()->create(PageRepositoryInterface::class);
+        $this->dataObjectHelper = Bootstrap::getObjectManager()->create(DataObjectHelper::class);
+        $this->dataObjectProcessor = Bootstrap::getObjectManager()->create(DataObjectProcessor::class);
+        $this->roleFactory = Bootstrap::getObjectManager()->get(RoleFactory::class);
+        $this->rulesFactory = Bootstrap::getObjectManager()->get(RulesFactory::class);
+        $this->adminTokens = Bootstrap::getObjectManager()->get(AdminTokenServiceInterface::class);
     }
 
     /**
@@ -152,9 +108,7 @@ class PageRepositoryTest extends WebapiAbstract
         }
 
         foreach ($this->createdPages as $page) {
-            if ($page->getId()) {
-                $this->pageRepository->delete($page);
-            }
+            $this->pageRepository->delete($page);
         }
     }
 
@@ -173,11 +127,17 @@ class PageRepositoryTest extends WebapiAbstract
             ->setIdentifier($pageIdentifier);
         $this->currentPage = $this->pageRepository->save($pageDataObject);
 
-        $serviceInfo = $this->getServiceInfo(
-            'GetById',
-            Request::HTTP_METHOD_GET,
-            self::RESOURCE_PATH . '/' . $this->currentPage->getId()
-        );
+        $serviceInfo = [
+            'rest' => [
+                'resourcePath' => self::RESOURCE_PATH . '/' . $this->currentPage->getId(),
+                'httpMethod' => Request::HTTP_METHOD_GET,
+            ],
+            'soap' => [
+                'service' => self::SERVICE_NAME,
+                'serviceVersion' => self::SERVICE_VERSION,
+                'operation' => self::SERVICE_NAME . 'GetById',
+            ],
+        ];
 
         $page = $this->_webApiCall($serviceInfo, [PageInterface::PAGE_ID => $this->currentPage->getId()]);
         $this->assertNotNull($page['id']);
@@ -185,36 +145,6 @@ class PageRepositoryTest extends WebapiAbstract
         $pageData = $this->pageRepository->getById($page['id']);
         $this->assertEquals($pageData->getTitle(), $pageTitle);
         $this->assertEquals($pageData->getIdentifier(), $pageIdentifier);
-    }
-
-    /**
-     * @dataProvider byStoresProvider
-     * @magentoApiDataFixture Magento/Cms/_files/pages.php
-     * @magentoApiDataFixture Magento/Store/_files/second_website_with_store_group_and_store.php
-     * @param string $requestStore
-     * @return void
-     */
-    public function testGetByStores(string $requestStore): void
-    {
-        $newStoreId = $this->getStoreIdByRequestStore($requestStore);
-        $this->updatePage('page100', 0, ['store_id' => $newStoreId]);
-        $page = $this->loadPageByIdentifier('page100', $newStoreId);
-        $expectedData = array_intersect_key(
-            $this->dataObjectProcessor->buildOutputDataArray($page, PageInterface::class),
-            $this->getPageRequestData()['page']
-        );
-        $serviceInfo = $this->getServiceInfo(
-            'GetById',
-            Request::HTTP_METHOD_GET,
-            self::RESOURCE_PATH . '/' . $page->getId()
-        );
-        $requestData = [];
-        if (TESTS_WEB_API_ADAPTER === self::ADAPTER_SOAP) {
-            $requestData[PageInterface::PAGE_ID] = $page->getId();
-        }
-
-        $page = $this->_webApiCall($serviceInfo, $requestData, null, $requestStore);
-        $this->assertResponseData($page, $expectedData);
     }
 
     /**
@@ -231,7 +161,17 @@ class PageRepositoryTest extends WebapiAbstract
         $pageDataObject->setTitle($pageTitle)
             ->setIdentifier($pageIdentifier);
 
-        $serviceInfo = $this->getServiceInfo('Save', Request::HTTP_METHOD_POST);
+        $serviceInfo = [
+            'rest' => [
+                'resourcePath' => self::RESOURCE_PATH,
+                'httpMethod' => Request::HTTP_METHOD_POST,
+            ],
+            'soap' => [
+                'service' => self::SERVICE_NAME,
+                'serviceVersion' => self::SERVICE_VERSION,
+                'operation' => self::SERVICE_NAME . 'Save',
+            ],
+        ];
 
         $requestData = [
             'page' => [
@@ -248,36 +188,9 @@ class PageRepositoryTest extends WebapiAbstract
     }
 
     /**
-     * @dataProvider byStoresProvider
-     * @magentoApiDataFixture Magento/Store/_files/second_website_with_store_group_and_store.php
-     * @param string $requestStore
-     * @return void
-     */
-    public function testCreateByStores(string $requestStore): void
-    {
-        $newStoreId = $this->getStoreIdByRequestStore($requestStore);
-        $serviceInfo = $this->getServiceInfo('Save', Request::HTTP_METHOD_POST);
-        $requestData = $this->getPageRequestData();
-
-        $page = $this->_webApiCall($serviceInfo, $requestData, null, $requestStore);
-        $this->createdPages[] = $this->loadPageByIdentifier(
-            $requestData['page'][PageInterface::IDENTIFIER],
-            $newStoreId
-        );
-        $this->assertResponseData($page, $requestData['page']);
-        $pageGridData = $this->getPageGridDataByStoreCode($requestStore);
-        $this->assertTrue(
-            $this->isPageInArray($pageGridData['items'], $page['id']),
-            sprintf('The "%s" page is missing from the "%s" store', $page['title'], $requestStore)
-        );
-    }
-
-    /**
      * Test update \Magento\Cms\Api\Data\PageInterface
-     *
-     * @return void
      */
-    public function testUpdate(): void
+    public function testUpdate()
     {
         $pageTitle = self::PAGE_TITLE;
         $newPageTitle = self::PAGE_TITLE_NEW;
@@ -297,10 +210,17 @@ class PageRepositoryTest extends WebapiAbstract
             PageInterface::class
         );
 
-        $serviceInfo = $this->getServiceInfo(
-            'Save',
-            Request::HTTP_METHOD_POST
-        );
+        $serviceInfo = [
+            'rest' => [
+                'resourcePath' => self::RESOURCE_PATH,
+                'httpMethod' => Request::HTTP_METHOD_POST,
+            ],
+            'soap' => [
+                'service' => self::SERVICE_NAME,
+                'serviceVersion' => self::SERVICE_VERSION,
+                'operation' => self::SERVICE_NAME . 'Save',
+            ],
+        ];
 
         $page = $this->_webApiCall($serviceInfo, ['page' => $pageData]);
         $this->assertNotNull($page['id']);
@@ -329,11 +249,17 @@ class PageRepositoryTest extends WebapiAbstract
         $this->currentPage = $this->pageRepository->save($pageDataObject);
         $pageId = $this->currentPage->getId();
 
-        $serviceInfo = $this->getServiceInfo(
-            'Save',
-            Request::HTTP_METHOD_PUT,
-            self::RESOURCE_PATH . '/' . $pageId
-        );
+        $serviceInfo = [
+            'rest' => [
+                'resourcePath' => self::RESOURCE_PATH . '/' . $pageId,
+                'httpMethod' => Request::HTTP_METHOD_PUT,
+            ],
+            'soap' => [
+                'service' => self::SERVICE_NAME,
+                'serviceVersion' => self::SERVICE_VERSION,
+                'operation' => self::SERVICE_NAME . 'Save',
+            ],
+        ];
 
         $data = [
             'page' => [
@@ -358,44 +284,11 @@ class PageRepositoryTest extends WebapiAbstract
     }
 
     /**
-     * @dataProvider byStoresProvider
-     * @magentoApiDataFixture Magento/Cms/_files/pages.php
-     * @magentoApiDataFixture Magento/Store/_files/second_website_with_store_group_and_store.php
-     * @param string $requestStore
-     * @return void
-     */
-    public function testUpdateByStores(string $requestStore): void
-    {
-        $newStoreId = $this->getStoreIdByRequestStore($requestStore);
-        $page = $this->updatePage('page100', 0, ['store_id' => $newStoreId]);
-        $serviceInfo = $this->getServiceInfo(
-            'Save',
-            Request::HTTP_METHOD_PUT,
-            self::RESOURCE_PATH . '/' . $page->getId()
-        );
-        $requestData = $this->getPageRequestData();
-
-        $page = $this->_webApiCall($serviceInfo, $requestData, null, $requestStore);
-        $this->createdPages[] = $this->loadPageByIdentifier(
-            $requestData['page'][PageInterface::IDENTIFIER],
-            $newStoreId
-        );
-        $this->assertResponseData($page, $requestData['page']);
-        $pageGridData = $this->getPageGridDataByStoreCode($requestStore);
-        $this->assertTrue(
-            $this->isPageInArray($pageGridData['items'], $page['id']),
-            sprintf('The "%s" page is missing from the "%s" store', $page['title'], $requestStore)
-        );
-    }
-
-    /**
      * Test delete \Magento\Cms\Api\Data\PageInterface
-     *
-     * @return void
      */
-    public function testDelete(): void
+    public function testDelete()
     {
-        $this->expectException(NoSuchEntityException::class);
+        $this->expectException(\Magento\Framework\Exception\NoSuchEntityException::class);
 
         $pageTitle = self::PAGE_TITLE;
         $pageIdentifier = self::PAGE_IDENTIFIER_PREFIX . uniqid();
@@ -405,60 +298,34 @@ class PageRepositoryTest extends WebapiAbstract
             ->setIdentifier($pageIdentifier);
         $this->currentPage = $this->pageRepository->save($pageDataObject);
 
-        $serviceInfo = $this->getServiceInfo(
-            'DeleteById',
-            Request::HTTP_METHOD_DELETE,
-            self::RESOURCE_PATH . '/' . $this->currentPage->getId()
-        );
+        $serviceInfo = [
+            'rest' => [
+                'resourcePath' => self::RESOURCE_PATH . '/' . $this->currentPage->getId(),
+                'httpMethod' => Request::HTTP_METHOD_DELETE,
+            ],
+            'soap' => [
+                'service' => self::SERVICE_NAME,
+                'serviceVersion' => self::SERVICE_VERSION,
+                'operation' => self::SERVICE_NAME . 'DeleteById',
+            ],
+        ];
 
         $this->_webApiCall($serviceInfo, [PageInterface::PAGE_ID => $this->currentPage->getId()]);
         $this->pageRepository->getById($this->currentPage['id']);
     }
 
     /**
-     * @dataProvider byStoresProvider
-     * @magentoApiDataFixture Magento/Cms/_files/pages.php
-     * @magentoApiDataFixture Magento/Store/_files/second_website_with_store_group_and_store.php
-     * @param string $requestStore
-     * @return void
-     */
-    public function testDeleteByStores(string $requestStore): void
-    {
-        $newStoreId = $this->getStoreIdByRequestStore($requestStore);
-        $page = $this->updatePage('page100', 0, ['store_id' => $newStoreId]);
-        $serviceInfo = $this->getServiceInfo(
-            'DeleteById',
-            Request::HTTP_METHOD_DELETE,
-            self::RESOURCE_PATH . '/' . $page->getId()
-        );
-        $requestData = [];
-        if (TESTS_WEB_API_ADAPTER === self::ADAPTER_SOAP) {
-            $requestData[PageInterface::PAGE_ID] = $page->getId();
-        }
-
-        $pageResponse = $this->_webApiCall($serviceInfo, $requestData, null, $requestStore);
-        $this->assertTrue($pageResponse);
-        $pageGridData = $this->getPageGridDataByStoreCode($requestStore);
-        $this->assertFalse(
-            $this->isPageInArray($pageGridData['items'], (int)$page->getId()),
-            sprintf('The "%s" page should not be present on the "%s" store', $page->getTitle(), $requestStore)
-        );
-    }
-
-    /**
      * Test search \Magento\Cms\Api\Data\PageInterface
-     *
-     * @return void
      */
-    public function testSearch(): void
+    public function testSearch()
     {
         $cmsPages = $this->prepareCmsPages();
 
         /** @var FilterBuilder $filterBuilder */
-        $filterBuilder = $this->objectManager->create(FilterBuilder::class);
+        $filterBuilder = Bootstrap::getObjectManager()->create(FilterBuilder::class);
 
         /** @var SearchCriteriaBuilder $searchCriteriaBuilder */
-        $searchCriteriaBuilder = $this->objectManager
+        $searchCriteriaBuilder = Bootstrap::getObjectManager()
             ->create(SearchCriteriaBuilder::class);
 
         $filter1 = $filterBuilder
@@ -484,7 +351,7 @@ class PageRepositoryTest extends WebapiAbstract
         $searchCriteriaBuilder->addFilters([$filter3, $filter4]);
 
         /** @var SortOrderBuilder $sortOrderBuilder */
-        $sortOrderBuilder = $this->objectManager->create(SortOrderBuilder::class);
+        $sortOrderBuilder = Bootstrap::getObjectManager()->create(SortOrderBuilder::class);
 
         /** @var SortOrder $sortOrder */
         $sortOrder = $sortOrderBuilder->setField(PageInterface::IDENTIFIER)
@@ -498,11 +365,17 @@ class PageRepositoryTest extends WebapiAbstract
 
         $searchData = $searchCriteriaBuilder->create()->__toArray();
         $requestData = ['searchCriteria' => $searchData];
-        $serviceInfo = $this->getServiceInfo(
-            'GetList',
-            Request::HTTP_METHOD_GET,
-            self::RESOURCE_PATH . "/search" . '?' . http_build_query($requestData)
-        );
+        $serviceInfo = [
+            'rest' => [
+                'resourcePath' => self::RESOURCE_PATH . "/search" . '?' . http_build_query($requestData),
+                'httpMethod' => Request::HTTP_METHOD_GET,
+            ],
+            'soap' => [
+                'service' => self::SERVICE_NAME,
+                'serviceVersion' => self::SERVICE_VERSION,
+                'operation' => self::SERVICE_NAME . 'GetList',
+            ],
+        ];
 
         $searchResult = $this->_webApiCall($serviceInfo, $requestData);
         $this->assertEquals(2, $searchResult['total_count']);
@@ -515,10 +388,8 @@ class PageRepositoryTest extends WebapiAbstract
 
     /**
      * Create page with the same identifier after one was removed.
-     *
-     * @return void
      */
-    public function testCreateSamePage(): void
+    public function testCreateSamePage()
     {
         $pageIdentifier = self::PAGE_IDENTIFIER_PREFIX . uniqid();
 
@@ -529,29 +400,9 @@ class PageRepositoryTest extends WebapiAbstract
     }
 
     /**
-     * Get stores for CRUD operations
-     *
-     * @return array
-     */
-    public function byStoresProvider(): array
-    {
-        return [
-            'default_store' => [
-                'request_store' => 'default',
-            ],
-            'second_store' => [
-                'request_store' => 'fixture_second_store',
-            ],
-            'all' => [
-                'request_store' => 'all',
-            ],
-        ];
-    }
-
-    /**
      * @return PageInterface[]
      */
-    private function prepareCmsPages(): array
+    private function prepareCmsPages()
     {
         $result = [];
 
@@ -584,11 +435,21 @@ class PageRepositoryTest extends WebapiAbstract
     /**
      * Create page with hard-coded identifier to test with create-delete-create flow.
      * @param string $identifier
-     * @return int
+     * @return string
      */
-    private function createPageWithIdentifier($identifier): int
+    private function createPageWithIdentifier($identifier)
     {
-        $serviceInfo = $this->getServiceInfo('Save', Request::HTTP_METHOD_POST);
+        $serviceInfo = [
+            'rest' => [
+                'resourcePath' => self::RESOURCE_PATH,
+                'httpMethod' => Request::HTTP_METHOD_POST,
+            ],
+            'soap' => [
+                'service' => self::SERVICE_NAME,
+                'serviceVersion' => self::SERVICE_VERSION,
+                'operation' => self::SERVICE_NAME . 'Save',
+            ],
+        ];
         $requestData = [
             'page' => [
                 PageInterface::IDENTIFIER => $identifier,
@@ -605,13 +466,19 @@ class PageRepositoryTest extends WebapiAbstract
      * @param string $pageId
      * @return void
      */
-    private function deletePageByIdentifier($pageId): void
+    private function deletePageByIdentifier($pageId)
     {
-        $serviceInfo = $this->getServiceInfo(
-            'DeleteById',
-            Request::HTTP_METHOD_DELETE,
-            self::RESOURCE_PATH . '/' . $pageId
-        );
+        $serviceInfo = [
+            'rest' => [
+                'resourcePath' => self::RESOURCE_PATH . '/' . $pageId,
+                'httpMethod' => Request::HTTP_METHOD_DELETE,
+            ],
+            'soap' => [
+                'service' => self::SERVICE_NAME,
+                'serviceVersion' => self::SERVICE_VERSION,
+                'operation' => self::SERVICE_NAME . 'DeleteById',
+            ],
+        ];
 
         $this->_webApiCall($serviceInfo, [PageInterface::PAGE_ID => $pageId]);
     }
@@ -680,7 +547,7 @@ class PageRepositoryTest extends WebapiAbstract
 
         //Updating the user role to allow access to design properties.
         /** @var Rules $rules */
-        $rules = $this->objectManager->create(Rules::class);
+        $rules = Bootstrap::getObjectManager()->create(Rules::class);
         $rules->setRoleId($role->getId());
         $rules->setResources(['Magento_Cms::save', 'Magento_Cms::save_design']);
         $rules->saveRel();
@@ -695,7 +562,7 @@ class PageRepositoryTest extends WebapiAbstract
 
         //Updating our role to remove design properties access.
         /** @var Rules $rules */
-        $rules = $this->objectManager->create(Rules::class);
+        $rules = Bootstrap::getObjectManager()->create(Rules::class);
         $rules->setRoleId($role->getId());
         $rules->setResources(['Magento_Cms::save']);
         $rules->saveRel();
@@ -719,147 +586,5 @@ class PageRepositoryTest extends WebapiAbstract
         }
         //We don't have permissions to do that.
         $this->assertEquals('You are not allowed to change CMS pages design settings', $exceptionMessage);
-    }
-
-    /**
-     * Get service info array
-     *
-     * @param string $soapOperation
-     * @param string $httpMethod
-     * @param string $resourcePath
-     * @return array
-     */
-    private function getServiceInfo(
-        string $soapOperation,
-        string $httpMethod,
-        string $resourcePath = self::RESOURCE_PATH
-    ): array {
-        return [
-            'rest' => [
-                'resourcePath' => $resourcePath,
-                'httpMethod' => $httpMethod,
-            ],
-            'soap' => [
-                'service' => self::SERVICE_NAME,
-                'serviceVersion' => self::SERVICE_VERSION,
-                'operation' => self::SERVICE_NAME . $soapOperation,
-            ],
-        ];
-    }
-
-    /**
-     * Check that the page is in the page grid data
-     *
-     * @param array $pageGridData
-     * @param int $pageId
-     * @return bool
-     */
-    private function isPageInArray(array $pageGridData, int $pageId): bool
-    {
-        $isPagePresent = false;
-        foreach ($pageGridData as $pageData) {
-            if ($pageData['page_id'] == $pageId) {
-                $isPagePresent = true;
-                break;
-            }
-        }
-
-        return $isPagePresent;
-    }
-
-    /**
-     * Update page with data
-     *
-     * @param string $pageIdentifier
-     * @param int $storeId
-     * @param array $pageData
-     * @return PageInterface
-     */
-    private function updatePage(string $pageIdentifier, int $storeId, array $pageData): PageInterface
-    {
-        $page = $this->loadPageByIdentifier($pageIdentifier, $storeId);
-        $page->addData($pageData);
-
-        return $this->pageRepository->save($page);
-    }
-
-    /**
-     * Get request data for create or update page
-     *
-     * @return array
-     */
-    private function getPageRequestData(): array
-    {
-        return [
-            'page' => [
-                PageInterface::IDENTIFIER   => self::PAGE_IDENTIFIER_PREFIX . uniqid(),
-                PageInterface::TITLE        => self::PAGE_TITLE . uniqid(),
-                'active'                    => true,
-                PageInterface::PAGE_LAYOUT  => '1column',
-                PageInterface::CONTENT      => self::PAGE_CONTENT,
-            ]
-        ];
-    }
-
-    /**
-     * Get store id by request store code
-     *
-     * @param string $requestStoreCode
-     * @return int
-     */
-    private function getStoreIdByRequestStore(string $requestStoreCode): int
-    {
-        $storeCode = $requestStoreCode === 'all' ? 'admin' : $requestStoreCode;
-        $store = $this->storeManager->getStore($storeCode);
-
-        return (int)$store->getId();
-    }
-
-    /**
-     * Check that the response data is as expected
-     *
-     * @param array $page
-     * @param array $expectedData
-     * @return void
-     */
-    private function assertResponseData(array $page, array $expectedData): void
-    {
-        $this->assertNotNull($page['id']);
-        $actualData = array_intersect_key($page, $expectedData);
-        $this->assertEquals($expectedData, $actualData, 'Response data does not match expected.');
-    }
-
-    /**
-     * Get page grid data of cms ui dataprovider filtering by store code
-     *
-     * @param string $requestStore
-     * @return array
-     */
-    private function getPageGridDataByStoreCode(string $requestStore): array
-    {
-        if ($requestStore !== 'all') {
-            $store = $this->storeManager->getStore($requestStore);
-            $this->cmsUiDataProvider->addFilter(
-                $this->filterBuilder->setField('store_id')->setValue($store->getId())->create()
-            );
-        }
-
-        return $this->cmsUiDataProvider->getData();
-    }
-
-    /**
-     * Load page by identifier and store id
-     *
-     * @param string $identifier
-     * @param int $storeId
-     * @return PageInterface
-     */
-    private function loadPageByIdentifier(string $identifier, int $storeId): PageInterface
-    {
-        $page = $this->pageFactory->create();
-        $page->setStoreId($storeId);
-        $this->pageResource->load($page, $identifier, PageInterface::IDENTIFIER);
-
-        return $page;
     }
 }

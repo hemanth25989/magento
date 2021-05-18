@@ -63,8 +63,7 @@ class FilterScopeTest extends AbstractFiltersTest
             [
                 'is_filterable' => AbstractFilter::ATTRIBUTE_OPTIONS_ONLY_WITH_RESULTS,
                 'is_global' => $scope,
-            ],
-            $this->getAttributeCode()
+            ]
         );
         $this->updateProductsOnStore($products);
         $this->clearInstanceAndReindexSearch();

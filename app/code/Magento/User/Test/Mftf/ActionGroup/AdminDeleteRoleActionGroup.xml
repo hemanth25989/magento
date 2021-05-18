@@ -10,13 +10,12 @@
               xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/actionGroupSchema.xsd">
     <actionGroup name="AdminDeleteRoleActionGroup">
         <annotations>
-            <description>DEPRECATED. Deletes a User Role. ActionGroup duplicates existing 'AdminDeleteUserRoleActionGroup'</description>
+            <description>Deletes a User Role.</description>
         </annotations>
         <arguments>
             <argument name="role" defaultValue=""/>
         </arguments>
-        <amOnPage url="{{AdminRolesPage.url}}" stepKey="navigateToUserRoleGrid" />
-        <waitForPageLoad stepKey="waitForRolesGridLoad" />
+
         <click stepKey="clickResetFilterButtonBefore" selector="{{AdminRoleGridSection.resetButton}}"/>
         <waitForPageLoad stepKey="waitForRolesGridFilterResetBefore" time="10"/>
         <fillField stepKey="TypeRoleFilter" selector="{{AdminRoleGridSection.roleNameFilterTextField}}" userInput="{{role.name}}"/>
@@ -34,7 +33,7 @@
         <click stepKey="clickToConfirm" selector="{{AdminDeleteRoleSection.confirm}}"/>
         <waitForPageLoad stepKey="waitForPageLoad" time="10"/>
         <see stepKey="seeSuccessMessage" userInput="You deleted the role."/>
-        <waitForPageLoad stepKey="waitForRolesGridLoadAfterDelete" />
+        <waitForPageLoad stepKey="waitForRolesGridLoad" />
         <waitForElementVisible stepKey="waitForResetFilterButtonAfter" selector="{{AdminRoleGridSection.resetButton}}" time="10"/>
         <click stepKey="clickResetFilterButtonAfter" selector="{{AdminRoleGridSection.resetButton}}"/>
         <waitForPageLoad stepKey="waitForRolesGridFilterResetAfter" time="10"/>

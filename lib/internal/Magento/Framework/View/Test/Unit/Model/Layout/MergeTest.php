@@ -14,7 +14,6 @@ use Magento\Framework\Phrase;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\Url\ScopeInterface;
-use Magento\Framework\View\Design\ThemeInterface;
 use Magento\Framework\View\Layout\LayoutCacheKeyInterface;
 use Magento\Framework\View\Model\Layout\Merge;
 use Magento\Framework\View\Model\Layout\Update\Validator;
@@ -68,10 +67,6 @@ class MergeTest extends TestCase
      * @var LayoutCacheKeyInterface|MockObject
      */
     protected $layoutCacheKeyMock;
-    /**
-     * @var ThemeInterface|MockObject
-     */
-    private $theme;
 
     protected function setUp(): void
     {
@@ -93,8 +88,6 @@ class MergeTest extends TestCase
             ->method('getCacheKeys')
             ->willReturn([]);
 
-        $this->theme = $this->createMock(ThemeInterface::class);
-
         $this->model = $this->objectManagerHelper->getObject(
             Merge::class,
             [
@@ -105,7 +98,6 @@ class MergeTest extends TestCase
                 'appState' => $this->appState,
                 'layoutCacheKey' => $this->layoutCacheKeyMock,
                 'serializer' => $this->serializer,
-                'theme' => $this->theme,
             ]
         );
     }
@@ -141,12 +133,7 @@ class MergeTest extends TestCase
     public function testSaveToCache()
     {
         $this->scope->expects($this->once())->method('getId')->willReturn(1);
-        $this->theme->method('getArea')->willReturn('frontend');
-        $this->theme->method('getId')->willReturn(1);
-        $cacheKey = 'LAYOUT_frontend_STORE1_1d41d8cd98f00b204e9800998ecf8427e_page_layout_merged';
-        $this->cache->expects($this->once())
-            ->method('save')
-            ->with(null, $cacheKey, [], 31536000);
+        $this->cache->expects($this->once())->method('save');
 
         $this->model->load();
     }

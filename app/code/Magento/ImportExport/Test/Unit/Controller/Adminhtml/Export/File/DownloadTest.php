@@ -131,10 +131,6 @@ class DownloadTest extends TestCase
             ->method('getMessageManager')
             ->willReturn($this->messageManagerMock);
 
-        $this->fileSystemMock->expects($this->any())
-            ->method('getDirectoryRead')
-            ->willReturn($this->directoryMock);
-
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->downloadControllerMock = $this->objectManagerHelper->getObject(
             Download::class,
@@ -154,7 +150,10 @@ class DownloadTest extends TestCase
         $this->requestMock->method('getParam')
             ->with('filename')
             ->willReturn('sampleFile.csv');
-        $this->directoryMock->expects($this->once())->method('isExist')->willReturn(true);
+
+        $this->fileSystemMock->expects($this->once())
+            ->method('getDirectoryRead')
+            ->willReturn($this->directoryMock);
         $this->directoryMock->expects($this->once())->method('isFile')->willReturn(true);
         $this->fileFactoryMock->expects($this->once())->method('create');
 
@@ -170,8 +169,10 @@ class DownloadTest extends TestCase
             ->with('filename')
             ->willReturn('sampleFile');
 
+        $this->fileSystemMock->expects($this->once())
+            ->method('getDirectoryRead')
+            ->willReturn($this->directoryMock);
         $this->directoryMock->expects($this->once())->method('isFile')->willReturn(false);
-        $this->directoryMock->expects($this->once())->method('isExist')->willReturn(true);
         $this->messageManagerMock->expects($this->once())->method('addErrorMessage');
 
         $this->downloadControllerMock->execute();

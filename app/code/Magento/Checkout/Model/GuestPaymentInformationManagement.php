@@ -7,9 +7,7 @@ declare(strict_types=1);
 
 namespace Magento\Checkout\Model;
 
-use Magento\Checkout\Api\Exception\PaymentProcessingRateLimitExceededException;
 use Magento\Checkout\Api\PaymentProcessingRateLimiterInterface;
-use Magento\Checkout\Api\PaymentSavingRateLimiterInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Framework\Exception\CouldNotSaveException;
@@ -64,16 +62,6 @@ class GuestPaymentInformationManagement implements \Magento\Checkout\Api\GuestPa
     private $paymentsRateLimiter;
 
     /**
-     * @var PaymentSavingRateLimiterInterface
-     */
-    private $savingRateLimiter;
-
-    /**
-     * @var bool
-     */
-    private $saveRateLimitDisabled = false;
-
-    /**
      * @param \Magento\Quote\Api\GuestBillingAddressManagementInterface $billingAddressManagement
      * @param \Magento\Quote\Api\GuestPaymentMethodManagementInterface $paymentMethodManagement
      * @param \Magento\Quote\Api\GuestCartManagementInterface $cartManagement
@@ -81,7 +69,6 @@ class GuestPaymentInformationManagement implements \Magento\Checkout\Api\GuestPa
      * @param \Magento\Quote\Model\QuoteIdMaskFactory $quoteIdMaskFactory
      * @param CartRepositoryInterface $cartRepository
      * @param PaymentProcessingRateLimiterInterface|null $paymentsRateLimiter
-     * @param PaymentSavingRateLimiterInterface|null $savingRateLimiter
      * @codeCoverageIgnore
      */
     public function __construct(
@@ -91,8 +78,7 @@ class GuestPaymentInformationManagement implements \Magento\Checkout\Api\GuestPa
         \Magento\Checkout\Api\PaymentInformationManagementInterface $paymentInformationManagement,
         \Magento\Quote\Model\QuoteIdMaskFactory $quoteIdMaskFactory,
         CartRepositoryInterface $cartRepository,
-        ?PaymentProcessingRateLimiterInterface $paymentsRateLimiter = null,
-        ?PaymentSavingRateLimiterInterface $savingRateLimiter = null
+        ?PaymentProcessingRateLimiterInterface $paymentsRateLimiter = null
     ) {
         $this->billingAddressManagement = $billingAddressManagement;
         $this->paymentMethodManagement = $paymentMethodManagement;
@@ -102,8 +88,6 @@ class GuestPaymentInformationManagement implements \Magento\Checkout\Api\GuestPa
         $this->cartRepository = $cartRepository;
         $this->paymentsRateLimiter = $paymentsRateLimiter
             ?? ObjectManager::getInstance()->get(PaymentProcessingRateLimiterInterface::class);
-        $this->savingRateLimiter = $savingRateLimiter
-            ?? ObjectManager::getInstance()->get(PaymentSavingRateLimiterInterface::class);
     }
 
     /**
@@ -115,14 +99,7 @@ class GuestPaymentInformationManagement implements \Magento\Checkout\Api\GuestPa
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
     ) {
-        $this->paymentsRateLimiter->limit();
-        try {
-            //Have to do this hack because of savePaymentInformation() plugins.
-            $this->saveRateLimitDisabled = true;
-            $this->savePaymentInformation($cartId, $email, $paymentMethod, $billingAddress);
-        } finally {
-            $this->saveRateLimitDisabled = false;
-        }
+        $this->savePaymentInformation($cartId, $email, $paymentMethod, $billingAddress);
         try {
             $orderId = $this->cartManagement->placeOrder($cartId);
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
@@ -153,14 +130,7 @@ class GuestPaymentInformationManagement implements \Magento\Checkout\Api\GuestPa
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
     ) {
-        if (!$this->saveRateLimitDisabled) {
-            try {
-                $this->savingRateLimiter->limit();
-            } catch (PaymentProcessingRateLimitExceededException $ex) {
-                //Limit reached
-                return false;
-            }
-        }
+        $this->paymentsRateLimiter->limit();
 
         $quoteIdMask = $this->quoteIdMaskFactory->create()->load($cartId, 'masked_id');
         /** @var Quote $quote */

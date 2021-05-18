@@ -8,7 +8,6 @@ declare(strict_types=1);
 /**
  * Test class for \Magento\Framework\Session\Config
  */
-
 namespace Magento\Framework\Session\Test\Unit;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -122,8 +121,7 @@ class ConfigTest extends TestCase
             ['use_trans_sid', 'getUseTransSid', true],
             ['hash_function', 'getHashFunction', 'md5'],
             ['hash_bits_per_character', 'getHashBitsPerCharacter', 5],
-            ['url_rewriter_tags', 'getUrlRewriterTags', 'a=href'],
-            ['cookie_samesite', 'getCookieSameSite', 'Lax']
+            ['url_rewriter_tags', 'getUrlRewriterTags', 'a=href']
         ];
     }
 
@@ -165,17 +163,12 @@ class ConfigTest extends TestCase
 
     public function testSettingInvalidCookieLifetime()
     {
-        $returnMap =
-            [
-                ['foobar_bogus', false],
-                ['Lax', true]
-            ];
         $validatorMock = $this->getMockBuilder(ValidatorInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $validatorMock->expects($this->any())
             ->method('isValid')
-            ->willReturnMap($returnMap);
+            ->willReturn(false);
         $this->getModel($validatorMock);
         $preVal = $this->config->getCookieLifetime();
         $this->config->setCookieLifetime('foobar_bogus');
@@ -184,17 +177,12 @@ class ConfigTest extends TestCase
 
     public function testSettingInvalidCookieLifetime2()
     {
-        $returnMap =
-            [
-                [-1, false],
-                ['Lax', true]
-            ];
         $validatorMock = $this->getMockBuilder(ValidatorInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $validatorMock->expects($this->any())
             ->method('isValid')
-            ->willReturnMap($returnMap);
+            ->willReturn(false);
         $this->getModel($validatorMock);
         $preVal = $this->config->getCookieLifetime();
         $this->config->setCookieLifetime(-1);
@@ -239,17 +227,12 @@ class ConfigTest extends TestCase
 
     public function testSettingInvalidCookieDomain()
     {
-        $returnMap =
-            [
-                [24, false],
-                ['Lax', true]
-            ];
         $validatorMock = $this->getMockBuilder(ValidatorInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $validatorMock->expects($this->any())
             ->method('isValid')
-            ->willReturnMap($returnMap);
+            ->willReturn(false);
         $this->getModel($validatorMock);
         $preVal = $this->config->getCookieDomain();
         $this->config->setCookieDomain(24);
@@ -258,17 +241,12 @@ class ConfigTest extends TestCase
 
     public function testSettingInvalidCookieDomain2()
     {
-        $returnMap =
-            [
-                ['D:\\WINDOWS\\System32\\drivers\\etc\\hosts', false],
-                ['Lax', true]
-            ];
         $validatorMock = $this->getMockBuilder(ValidatorInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $validatorMock->expects($this->any())
             ->method('isValid')
-            ->willReturnMap($returnMap);
+            ->willReturn(false);
         $this->getModel($validatorMock);
         $preVal = $this->config->getCookieDomain();
         $this->config->setCookieDomain('D:\\WINDOWS\\System32\\drivers\\etc\\hosts');
@@ -355,30 +333,22 @@ class ConfigTest extends TestCase
         $validatorMock = $this->getMockBuilder(ValidatorInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-
         if ($isValidSame) {
-            $returnMap =
-                [
-                    [7200, $isValid],
-                    ['/', $isValid],
-                    ['init.host', $isValid],
-                    ['Lax', true]
-                ];
             $validatorMock->expects($this->any())
                 ->method('isValid')
-                ->willReturnMap($returnMap);
+                ->willReturn($isValid);
         } else {
-            $returnMap =
-                [
-                    [3600, true],
-                    [7200, false],
-                    ['/', true],
-                    ['init.host', true],
-                    ['Lax', true]
-                ];
-            $validatorMock->expects($this->any())
-                ->method('isValid')
-                ->willReturnMap($returnMap);
+            for ($x = 0; $x<6; $x++) {
+                if ($x % 2 == 0) {
+                    $validatorMock->expects($this->at($x))
+                        ->method('isValid')
+                        ->willReturn(false);
+                } else {
+                    $validatorMock->expects($this->at($x))
+                        ->method('isValid')
+                        ->willReturn(true);
+                }
+            }
         }
 
         $this->getModel($validatorMock);
@@ -402,8 +372,7 @@ class ConfigTest extends TestCase
                     'session.cookie_domain' => 'init.host',
                     'session.cookie_httponly' => false,
                     'session.cookie_secure' => false,
-                    'session.save_handler' => 'files',
-                    'session.cookie_samesite' => 'Lax'
+                    'session.save_handler' => 'files'
                 ],
             ],
             'all invalid' => [
@@ -413,8 +382,7 @@ class ConfigTest extends TestCase
                     'session.cache_limiter' => 'private_no_expire',
                     'session.cookie_httponly' => false,
                     'session.cookie_secure' => false,
-                    'session.save_handler' => 'files',
-                    'session.cookie_samesite' => 'Lax'
+                    'session.save_handler' => 'files'
                 ],
             ],
             'invalid_valid' => [
@@ -427,8 +395,7 @@ class ConfigTest extends TestCase
                     'session.cookie_domain' => 'init.host',
                     'session.cookie_httponly' => false,
                     'session.cookie_secure' => false,
-                    'session.save_handler' => 'files',
-                    'session.cookie_samesite' => 'Lax'
+                    'session.save_handler' => 'files'
                 ],
             ],
         ];

@@ -62,18 +62,7 @@ namespace Magento\Setup\Test\Unit\Model {
     class InstallerTest extends TestCase
     {
         /**
-         * @var array
-         */
-        private $request = [
-            ConfigOptionsListConstants::INPUT_KEY_DB_HOST => '127.0.0.1',
-            ConfigOptionsListConstants::INPUT_KEY_DB_NAME => 'magento',
-            ConfigOptionsListConstants::INPUT_KEY_DB_USER => 'magento',
-            ConfigOptionsListConstants::INPUT_KEY_ENCRYPTION_KEY => 'encryption_key',
-            ConfigOptionsList::INPUT_KEY_BACKEND_FRONTNAME => 'backend',
-        ];
-
-        /**
-         * @var Installer
+         * @var \Magento\Setup\Model\Installer
          */
         private $object;
 
@@ -437,7 +426,13 @@ namespace Magento\Setup\Test\Unit\Model {
         {
             return [
                 [
-                    'request' => $this->request,
+                    'request' => [
+                        ConfigOptionsListConstants::INPUT_KEY_DB_HOST => '127.0.0.1',
+                        ConfigOptionsListConstants::INPUT_KEY_DB_NAME => 'magento',
+                        ConfigOptionsListConstants::INPUT_KEY_DB_USER => 'magento',
+                        ConfigOptionsListConstants::INPUT_KEY_ENCRYPTION_KEY => 'encryption_key',
+                        ConfigOptionsList::INPUT_KEY_BACKEND_FRONTNAME => 'backend',
+                    ],
                     'logMessages' => [
                         ['Starting Magento installation:'],
                         ['File permissions check...'],
@@ -527,100 +522,6 @@ namespace Magento\Setup\Test\Unit\Model {
                         ['Write installation date...'],
                         ['Sample Data is installed with errors. See log file for details']
                     ],
-                ],
-            ];
-        }
-
-        /**
-         * Test for InstallDataFixtures
-         *
-         * @dataProvider testInstallDataFixturesDataProvider
-         *
-         * @param bool $keepCache
-         * @param array $expectedToEnableCacheTypes
-         * @return void
-         */
-        public function testInstallDataFixtures(bool $keepCache, array $expectedToEnableCacheTypes): void
-        {
-            $cacheManagerMock = $this->createMock(Manager::class);
-            //simulate disabled layout cache type
-            $cacheManagerMock->expects($this->atLeastOnce())
-                ->method('getStatus')
-                ->willReturn(['layout' => 0]);
-            $cacheManagerMock->expects($this->atLeastOnce())
-                ->method('getAvailableTypes')
-                ->willReturn(['block_html', 'full_page', 'layout' , 'config', 'collections']);
-            $cacheManagerMock->expects($this->exactly(2))
-                ->method('setEnabled')
-                ->withConsecutive([$expectedToEnableCacheTypes, false], [$expectedToEnableCacheTypes, true])
-                ->willReturn([]);
-
-            $this->objectManager->expects($this->atLeastOnce())
-                ->method('create')
-                ->willReturnMap([
-                    [Manager::class, [], $cacheManagerMock],
-                    [
-                        PatchApplierFactory::class,
-                        ['objectManager' => $this->objectManager],
-                        $this->patchApplierFactoryMock
-                    ],
-                ]);
-
-            $registryMock = $this->createMock(Registry::class);
-            $this->objectManager->expects($this->atLeastOnce())
-                ->method('get')
-                ->with(Registry::class)
-                ->willReturn($registryMock);
-
-            $this->config->expects($this->atLeastOnce())
-                ->method('get')
-                ->willReturn(true);
-
-            $this->filePermissions->expects($this->atLeastOnce())
-                ->method('getMissingWritableDirectoriesForDbUpgrade')
-                ->willReturn([]);
-
-            $connection = $this->getMockBuilder(AdapterInterface::class)
-                ->addMethods(['getSchemaListener'])
-                ->getMockForAbstractClass();
-            $connection->expects($this->once())
-                ->method('getSchemaListener')
-                ->willReturn($this->schemaListenerMock);
-
-            $resource = $this->createMock(ResourceConnection::class);
-            $resource->expects($this->atLeastOnce())
-                ->method('getConnection')
-                ->willReturn($connection);
-            $this->contextMock->expects($this->once())
-                ->method('getResources')
-                ->willReturn($resource);
-
-            $dataSetup = $this->createMock(DataSetup::class);
-            $dataSetup->expects($this->once())
-                ->method('getConnection')
-                ->willReturn($connection);
-
-            $this->dataSetupFactory->expects($this->atLeastOnce())
-                ->method('create')
-                ->willReturn($dataSetup);
-
-            $this->object->installDataFixtures($this->request, $keepCache);
-        }
-
-        /**
-         * DataProvider for testInstallDataFixtures
-         *
-         * @return array
-         */
-        public function testInstallDataFixturesDataProvider(): array
-        {
-            return [
-                'keep cache' => [
-                    true, ['block_html', 'full_page']
-                ],
-                'do not keep a cache' => [
-                    false,
-                    ['block_html', 'full_page', 'layout']
                 ],
             ];
         }

@@ -10,6 +10,7 @@ namespace Magento\MediaGallerySynchronization\Model;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Filesystem;
+use Magento\Framework\Filesystem\Directory\ReadInterface;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\MediaGalleryApi\Api\Data\AssetInterface;
 use Magento\MediaGalleryApi\Api\Data\AssetInterfaceFactory;
@@ -73,37 +74,19 @@ class CreateAssetFromFile implements CreateAssetFromFileInterface
     public function execute(string $path): AssetInterface
     {
         $absolutePath = $this->getMediaDirectory()->getAbsolutePath($path);
-        $driver = $this->getMediaDirectory()->getDriver();
-
-        if ($driver instanceof Filesystem\ExtendedDriverInterface) {
-            $meta = $driver->getMetadata($absolutePath);
-        } else {
-            /**
-             * SPL file info is not compatible with remote storages and must not be used.
-             */
-            $file = $this->getFileInfo->execute($absolutePath);
-            [$width, $height] = getimagesize($absolutePath);
-            $meta = [
-                'size' => $file->getSize(),
-                'extension' => $file->getExtension(),
-                'basename' => $file->getBasename(),
-                'extra' => [
-                    'image-width' => $width,
-                    'image-height' => $height
-                ]
-            ];
-        }
+        $file = $this->getFileInfo->execute($absolutePath);
+        [$width, $height] = getimagesize($absolutePath);
 
         return $this->assetFactory->create(
             [
                 'id' => null,
                 'path' => $path,
-                'title' => $meta['basename'],
-                'width' => $meta['extra']['image-width'],
-                'height' => $meta['extra']['image-height'],
+                'title' => $file->getBasename(),
+                'width' => $width,
+                'height' => $height,
                 'hash' => $this->getHash($path),
-                'size' => $meta['size'],
-                'contentType' => 'image/' . $meta['extension'],
+                'size' => $file->getSize(),
+                'contentType' => 'image/' . $file->getExtension(),
                 'source' => 'Local'
             ]
         );
@@ -122,12 +105,12 @@ class CreateAssetFromFile implements CreateAssetFromFileInterface
     }
 
     /**
-     * Retrieve media directory instance with write access
+     * Retrieve media directory instance with read access
      *
-     * @return Filesystem\Directory\WriteInterface
+     * @return ReadInterface
      */
-    private function getMediaDirectory(): Filesystem\Directory\WriteInterface
+    private function getMediaDirectory(): ReadInterface
     {
-        return $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);
+        return $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
     }
 }

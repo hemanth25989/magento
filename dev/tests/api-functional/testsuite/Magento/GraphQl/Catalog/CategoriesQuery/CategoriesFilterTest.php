@@ -32,7 +32,6 @@ class CategoriesFilterTest extends GraphQlAbstract
     categories(filters: { $field : { $condition : "$value" } }){
         items{
             id
-            uid
             name
             url_key
             url_path
@@ -64,7 +63,6 @@ QUERY;
     categories(filters: { $field : { $condition : $value } }){
         items{
             id
-            uid
             name
             url_key
             url_path
@@ -94,7 +92,6 @@ QUERY;
         total_count
         items{
             id
-            uid
             name
             url_key
             url_path
@@ -125,7 +122,6 @@ QUERY;
     categories(filters: {url_key: {in: ["inactive", "category-2"]}}){
         items{
             id
-            uid
             name
             url_key
             url_path
@@ -151,7 +147,6 @@ QUERY;
     categories(filters: {ids: {in: ["3"]}}){
         items{
             id
-            uid
             name
             url_key
             url_path
@@ -238,7 +233,6 @@ QUERY;
     categories(filters: {ids: {in: ["3"]}}){
         items{
             id
-            uid
             name
             image
             url_key
@@ -321,7 +315,6 @@ QUERY;
     categories(filters: {url_key: {in: ["inactive", "does-not-exist"]}}){
         items{
             id
-            uid
             name
             url_key
             url_path
@@ -350,7 +343,6 @@ QUERY;
     categories{
         items{
             id
-            uid
             name
             url_key
             url_path
@@ -386,7 +378,6 @@ QUERY;
     categories(filters: {name: {match: "mo"}}){
         items{
             id
-            uid
             name
             url_key
             url_path
@@ -404,9 +395,8 @@ QUERY;
      * Test category image full name is returned
      *
      * @magentoApiDataFixture Magento/Catalog/_files/catalog_category_with_long_image_name.php
-     * @magentoConfigFixture default_store web/seo/use_rewrites 0
      */
-    public function testCategoryImageNameAndSeoDisabled()
+    public function testCategoryImageName()
     {
         /** @var CategoryCollection $categoryCollection */
         $categoryCollection = Bootstrap::getObjectManager()->get(CategoryCollection::class);
@@ -421,7 +411,6 @@ QUERY;
     categories(filters: {ids: {in: ["$categoryId"]}}) {
         items{
             id
-            uid
             name
             image
         }
@@ -438,13 +427,14 @@ QUERY;
         $categories = $response['categories'];
         $this->assertArrayNotHasKey('errors', $response);
         $this->assertNotEmpty($response['categories']['items']);
+        $expectedImageUrl = str_replace('index.php/', '', $expectedImageUrl);
+        $categories['items'][0]['image'] = str_replace('index.php/', '', $categories['items'][0]['image']);
         $this->assertEquals('Parent Image Category', $categories['items'][0]['name']);
         $this->assertEquals($expectedImageUrl, $categories['items'][0]['image']);
     }
 
     /**
      * @magentoApiDataFixture Magento/Catalog/_files/categories.php
-     * @magentoConfigFixture default_store web/seo/use_rewrites 1
      */
     public function testFilterByUrlPathTopLevelCategory()
     {
@@ -454,7 +444,6 @@ QUERY;
     categories(filters: {url_path: {eq: "$urlPath"}}){
         items{
             id
-            uid
             name
             url_key
             url_path
@@ -484,7 +473,6 @@ QUERY;
     categories(filters: {url_path: {eq: "$urlPath"}}){
         items{
             id
-            uid
             name
             url_key
             url_path
@@ -515,7 +503,6 @@ QUERY;
     categories(filters: {url_path: {in: [$urlPathsString]}}){
         items{
             id
-            uid
             name
             url_key
             url_path
@@ -546,7 +533,6 @@ QUERY;
     categories(filters: {url_path: {in: ["not-a-category url path"]}}){
         items{
             id
-            uid
             name
             url_key
             url_path
@@ -575,55 +561,11 @@ QUERY;
                 '4',
                 [
                     'id' => '4',
-                    'uid' => base64_encode('4'),
                     'name' => 'Category 1.1',
                     'url_key' => 'category-1-1',
                     'url_path' => 'category-1/category-1-1',
                     'children_count' => '0',
                     'path' => '1/2/3/4',
-                    'position' => '1'
-                ]
-            ],
-            [
-                'category_uid',
-                'eq',
-                base64_encode('4'),
-                [
-                    'id' => '4',
-                    'uid' => base64_encode('4'),
-                    'name' => 'Category 1.1',
-                    'url_key' => 'category-1-1',
-                    'url_path' => 'category-1/category-1-1',
-                    'children_count' => '0',
-                    'path' => '1/2/3/4',
-                    'position' => '1'
-                ]
-            ],
-            [
-                'parent_id',
-                'eq',
-                '4',
-                [
-                    'id' => '5',
-                    'name' => 'Category 1.1.1',
-                    'url_key' => 'category-1-1-1',
-                    'url_path' => 'category-1/category-1-1/category-1-1-1',
-                    'children_count' => '0',
-                    'path' => '1/2/3/4/5',
-                    'position' => '1'
-                ]
-            ],
-            [
-                'parent_category_uid',
-                'eq',
-                'NA==',
-                [
-                    'id' => '5',
-                    'name' => 'Category 1.1.1',
-                    'url_key' => 'category-1-1-1',
-                    'url_path' => 'category-1/category-1-1/category-1-1-1',
-                    'children_count' => '0',
-                    'path' => '1/2/3/4/5',
                     'position' => '1'
                 ]
             ],
@@ -633,7 +575,6 @@ QUERY;
                 'Movable Position 2',
                 [
                     'id' => '10',
-                    'uid' => base64_encode('10'),
                     'name' => 'Movable Position 2',
                     'url_key' => 'movable-position-2',
                     'url_path' => 'movable-position-2',
@@ -648,7 +589,6 @@ QUERY;
                 'category-1-1-1',
                 [
                     'id' => '5',
-                    'uid' => base64_encode('5'),
                     'name' => 'Category 1.1.1',
                     'url_key' => 'category-1-1-1',
                     'url_path' => 'category-1/category-1-1/category-1-1-1',
@@ -702,114 +642,6 @@ QUERY;
                     ]
                 ]
             ],
-            //Filter by multiple UIDs
-            [
-                'category_uid',
-                'in',
-                '["' . base64_encode('4') . '", "' . base64_encode('9') . '", "' . base64_encode('10') . '"]',
-                [
-                    [
-                        'id' => '4',
-                        'uid' => base64_encode('4'),
-                        'name' => 'Category 1.1',
-                        'url_key' => 'category-1-1',
-                        'url_path' => 'category-1/category-1-1',
-                        'children_count' => '0',
-                        'path' => '1/2/3/4',
-                        'position' => '1'
-                    ],
-                    [
-                        'id' => '9',
-                        'uid' => base64_encode('9'),
-                        'name' => 'Movable Position 1',
-                        'url_key' => 'movable-position-1',
-                        'url_path' => 'movable-position-1',
-                        'children_count' => '0',
-                        'path' => '1/2/9',
-                        'position' => '5'
-                    ],
-                    [
-                        'id' => '10',
-                        'uid' => base64_encode('10'),
-                        'name' => 'Movable Position 2',
-                        'url_key' => 'movable-position-2',
-                        'url_path' => 'movable-position-2',
-                        'children_count' => '0',
-                        'path' => '1/2/10',
-                        'position' => '6'
-                    ]
-                ]
-            ],
-            // Filter by multiple parent IDs
-            [
-                'parent_id',
-                'in',
-                '["3", "4"]',
-                [
-                    [
-                        'id' => '4',
-                        'name' => 'Category 1.1',
-                        'url_key' => 'category-1-1',
-                        'url_path' => 'category-1/category-1-1',
-                        'children_count' => '0',
-                        'path' => '1/2/3/4',
-                        'position' => '1'
-                    ],
-                    [
-                        'id' => '5',
-                        'name' => 'Category 1.1.1',
-                        'url_key' => 'category-1-1-1',
-                        'url_path' => 'category-1/category-1-1/category-1-1-1',
-                        'children_count' => '0',
-                        'path' => '1/2/3/4/5',
-                        'position' => '1'
-                    ],
-                    [
-                        'id' => '13',
-                        'name' => 'Category 1.2',
-                        'url_key' => 'category-1-2',
-                        'url_path' => 'category-1/category-1-2',
-                        'children_count' => '0',
-                        'path' => '1/2/3/13',
-                        'position' => '2'
-                    ]
-                ]
-            ],
-            // Filter by multiple parent UIDs
-            [
-                'parent_category_uid',
-                'in',
-                '["Mw==", "NA=="]',
-                [
-                    [
-                        'id' => '4',
-                        'name' => 'Category 1.1',
-                        'url_key' => 'category-1-1',
-                        'url_path' => 'category-1/category-1-1',
-                        'children_count' => '0',
-                        'path' => '1/2/3/4',
-                        'position' => '1'
-                    ],
-                    [
-                        'id' => '5',
-                        'name' => 'Category 1.1.1',
-                        'url_key' => 'category-1-1-1',
-                        'url_path' => 'category-1/category-1-1/category-1-1-1',
-                        'children_count' => '0',
-                        'path' => '1/2/3/4/5',
-                        'position' => '1'
-                    ],
-                    [
-                        'id' => '13',
-                        'name' => 'Category 1.2',
-                        'url_key' => 'category-1-2',
-                        'url_path' => 'category-1/category-1-2',
-                        'children_count' => '0',
-                        'path' => '1/2/3/13',
-                        'position' => '2'
-                    ]
-                ]
-            ],
             //Filter by multiple url keys
             [
                 'url_key',
@@ -818,7 +650,6 @@ QUERY;
                 [
                     [
                         'id' => '13',
-                        'uid' => base64_encode('13'),
                         'name' => 'Category 1.2',
                         'url_key' => 'category-1-2',
                         'url_path' => 'category-1/category-1-2',
@@ -828,7 +659,6 @@ QUERY;
                     ],
                     [
                         'id' => '7',
-                        'uid' => base64_encode('7'),
                         'name' => 'Movable',
                         'url_key' => 'movable',
                         'url_path' => 'movable',
@@ -846,7 +676,6 @@ QUERY;
                 [
                     [
                         'id' => '9',
-                        'uid' => base64_encode('9'),
                         'name' => 'Movable Position 1',
                         'url_key' => 'movable-position-1',
                         'url_path' => 'movable-position-1',
@@ -856,7 +685,6 @@ QUERY;
                     ],
                     [
                         'id' => '10',
-                        'uid' => base64_encode('10'),
                         'name' => 'Movable Position 2',
                         'url_key' => 'movable-position-2',
                         'url_path' => 'movable-position-2',
@@ -866,7 +694,6 @@ QUERY;
                     ],
                     [
                         'id' => '11',
-                        'uid' => base64_encode('11'),
                         'name' => 'Movable Position 3',
                         'url_key' => 'movable-position-3',
                         'url_path' => 'movable-position-3',

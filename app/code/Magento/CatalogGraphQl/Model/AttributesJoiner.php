@@ -88,7 +88,7 @@ class AttributesJoiner
                 }
             }
             if ($fragmentFields) {
-                $selectedFields = array_merge([], $selectedFields, ...$fragmentFields);
+                $selectedFields = array_merge($selectedFields, array_merge(...$fragmentFields));
             }
             $this->setSelectionsForFieldNode($fieldNode, array_unique($selectedFields));
         }

@@ -22,7 +22,6 @@ use Magento\Quote\Api\Data\PaymentInterface;
 use Magento\Quote\Model\Quote;
 use Magento\Store\Model\ScopeInterface;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\MockObject\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -97,7 +96,9 @@ class ValidationTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $this->quoteRepositoryMock = $this->getMockForAbstractClass(CartRepositoryInterface::class);
-        $this->extensionAttributesMock = $this->getPaymentExtension();
+        $this->extensionAttributesMock = $this->getMockBuilder(PaymentExtension::class)
+            ->addMethods(['getAgreementIds'])
+            ->getMock();
         $this->scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
         $this->checkoutAgreementsListMock = $this->createMock(
             CheckoutAgreementsListInterface::class
@@ -230,22 +231,5 @@ class ValidationTest extends TestCase
             ->method('getExtensionAttributes')
             ->willReturn($this->extensionAttributesMock);
         $this->model->beforeSavePaymentInformation($this->subjectMock, $cartId, $this->paymentMock, $this->addressMock);
-    }
-
-    /**
-     * Build payment extension mock.
-     *
-     * @return MockObject
-     */
-    private function getPaymentExtension(): MockObject
-    {
-        $mockBuilder = $this->getMockBuilder(PaymentExtension::class);
-        try {
-            $mockBuilder->addMethods(['getAgreementIds']);
-        } catch (RuntimeException $e) {
-            // Payment extension already generated.
-        }
-
-        return $mockBuilder->getMock();
     }
 }

@@ -8,16 +8,16 @@
 
 namespace Magento\Framework\Filesystem\Driver;
 
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Filesystem\DriverInterface;
+use Magento\Framework\Filesystem\Glob;
+use Magento\Framework\Phrase;
 
 /**
  * Filesystem driver that uses the local filesystem.
  *
  * Assumed that stat cache is cleanup by data modification methods
  *
- * @deprecated moved most of the functionality back to File
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class StatefulFile implements DriverInterface
@@ -27,22 +27,6 @@ class StatefulFile implements DriverInterface
      */
     protected $scheme = '';
 
-    /**
-     * @var File
-     */
-    private $driverFile;
-
-    /**
-     * StatefulFile constructor.
-     * @param File $driverFile
-     */
-    public function __construct(File $driverFile = null)
-    {
-        $this->driverFile = $driverFile ?? ObjectManager::getInstance()->create(
-            File::class,
-            ['stateful' => true]
-        );
-    }
     /**
      * Returns last warning message string
      *
@@ -66,7 +50,13 @@ class StatefulFile implements DriverInterface
      */
     public function isExists($path)
     {
-        return $this->driverFile->isExists($path);
+        $result = @file_exists($this->getScheme() . $path);
+        if ($result === null) {
+            throw new FileSystemException(
+                new Phrase('An error occurred during "%1" execution.', [$this->getWarningMessage()])
+            );
+        }
+        return $result;
     }
 
     /**
@@ -78,7 +68,13 @@ class StatefulFile implements DriverInterface
      */
     public function stat($path)
     {
-        return $this->driverFile->stat($path);
+        $result = @stat($this->getScheme() . $path);
+        if (!$result) {
+            throw new FileSystemException(
+                new Phrase('Cannot gather stats! %1', [$this->getWarningMessage()])
+            );
+        }
+        return $result;
     }
 
     /**
@@ -90,7 +86,13 @@ class StatefulFile implements DriverInterface
      */
     public function isReadable($path)
     {
-        return $this->driverFile->isReadable($path);
+        $result = @is_readable($this->getScheme() . $path);
+        if ($result === null) {
+            throw new FileSystemException(
+                new Phrase('An error occurred during "%1" execution.', [$this->getWarningMessage()])
+            );
+        }
+        return $result;
     }
 
     /**
@@ -102,7 +104,13 @@ class StatefulFile implements DriverInterface
      */
     public function isFile($path)
     {
-        return $this->driverFile->isFile($path);
+        $result = @is_file($this->getScheme() . $path);
+        if ($result === null) {
+            throw new FileSystemException(
+                new Phrase('An error occurred during "%1" execution.', [$this->getWarningMessage()])
+            );
+        }
+        return $result;
     }
 
     /**
@@ -114,7 +122,13 @@ class StatefulFile implements DriverInterface
      */
     public function isDirectory($path)
     {
-        return $this->driverFile->isDirectory($path);
+        $result = @is_dir($this->getScheme() . $path);
+        if ($result === null) {
+            throw new FileSystemException(
+                new Phrase('An error occurred during "%1" execution.', [$this->getWarningMessage()])
+            );
+        }
+        return $result;
     }
 
     /**
@@ -128,7 +142,16 @@ class StatefulFile implements DriverInterface
      */
     public function fileGetContents($path, $flag = null, $context = null)
     {
-        return $this->driverFile->fileGetContents($path, $flag, $context);
+        $result = @file_get_contents($this->getScheme() . $path, $flag, $context);
+        if (false === $result) {
+            throw new FileSystemException(
+                new Phrase(
+                    'The contents from the "%1" file can\'t be read. %2',
+                    [$path, $this->getWarningMessage()]
+                )
+            );
+        }
+        return $result;
     }
 
     /**
@@ -140,7 +163,13 @@ class StatefulFile implements DriverInterface
      */
     public function isWritable($path)
     {
-        return $this->driverFile->isWritable($path);
+        $result = @is_writable($this->getScheme() . $path);
+        if ($result === null) {
+            throw new FileSystemException(
+                new Phrase('An error occurred during "%1" execution.', [$this->getWarningMessage()])
+            );
+        }
+        return $result;
     }
 
     /**
@@ -151,7 +180,7 @@ class StatefulFile implements DriverInterface
      */
     public function getParentDirectory($path)
     {
-        return $this->driverFile->getParentDirectory($path);
+        return dirname($this->getScheme() . $path);
     }
 
     /**
@@ -164,7 +193,43 @@ class StatefulFile implements DriverInterface
      */
     public function createDirectory($path, $permissions = 0777)
     {
-        return $this->driverFile->createDirectory($path, $permissions);
+        clearstatcache(true, $path);
+        return $this->mkdirRecursive($path, $permissions);
+    }
+
+    /**
+     * Create a directory recursively taking into account race conditions
+     *
+     * @param string $path
+     * @param int $permissions
+     * @return bool
+     * @throws FileSystemException
+     */
+    private function mkdirRecursive($path, $permissions = 0777)
+    {
+        $path = $this->getScheme() . $path;
+        if (is_dir($path)) {
+            return true;
+        }
+        $parentDir = dirname($path);
+        while (!is_dir($parentDir)) {
+            $this->mkdirRecursive($parentDir, $permissions);
+        }
+        $result = @mkdir($path, $permissions);
+        clearstatcache(true, $path);
+        if (!$result) {
+            if (is_dir($path)) {
+                $result = true;
+            } else {
+                throw new FileSystemException(
+                    new Phrase(
+                        'Directory "%1" cannot be created %2',
+                        [$path, $this->getWarningMessage()]
+                    )
+                );
+            }
+        }
+        return $result;
     }
 
     /**
@@ -176,7 +241,19 @@ class StatefulFile implements DriverInterface
      */
     public function readDirectory($path)
     {
-        return $this->driverFile->readDirectory($path);
+        try {
+            $flags = \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS;
+            $iterator = new \FilesystemIterator($path, $flags);
+            $result = [];
+            /** @var \FilesystemIterator $file */
+            foreach ($iterator as $file) {
+                $result[] = $file->getPathname();
+            }
+            sort($result);
+            return $result;
+        } catch (\Exception $e) {
+            throw new FileSystemException(new Phrase($e->getMessage()), $e);
+        }
     }
 
     /**
@@ -189,7 +266,9 @@ class StatefulFile implements DriverInterface
      */
     public function search($pattern, $path)
     {
-        return $this->driverFile->search($pattern, $path);
+        $globPattern = rtrim($path, '/') . '/' . ltrim($pattern, '/');
+        $result = Glob::glob($globPattern, Glob::GLOB_BRACE);
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -203,7 +282,27 @@ class StatefulFile implements DriverInterface
      */
     public function rename($oldPath, $newPath, DriverInterface $targetDriver = null)
     {
-        return $this->driverFile->rename($oldPath, $newPath, $targetDriver);
+        $result = false;
+        $targetDriver = $targetDriver ?: $this;
+        if (get_class($targetDriver) == get_class($this)) {
+            $result = @rename($this->getScheme() . $oldPath, $newPath);
+            clearstatcache(true, $this->getScheme() . $oldPath);
+            clearstatcache(true, $newPath);
+        } else {
+            $content = $this->fileGetContents($oldPath);
+            if (false !== $targetDriver->filePutContents($newPath, $content)) {
+                $result = $this->deleteFile($newPath);
+            }
+        }
+        if (!$result) {
+            throw new FileSystemException(
+                new Phrase(
+                    'The path "%1" cannot be renamed into "%2" %3',
+                    [$oldPath, $newPath, $this->getWarningMessage()]
+                )
+            );
+        }
+        return $result;
     }
 
     /**
@@ -217,7 +316,27 @@ class StatefulFile implements DriverInterface
      */
     public function copy($source, $destination, DriverInterface $targetDriver = null)
     {
-        return $this->driverFile->copy($source, $destination, $targetDriver);
+        $targetDriver = $targetDriver ?: $this;
+        if (get_class($targetDriver) == get_class($this)) {
+            $result = @copy($this->getScheme() . $source, $destination);
+            clearstatcache(true, $destination);
+        } else {
+            $content = $this->fileGetContents($source);
+            $result = $targetDriver->filePutContents($destination, $content);
+        }
+        if (!$result) {
+            throw new FileSystemException(
+                new Phrase(
+                    'The file or directory "%1" cannot be copied to "%2" %3',
+                    [
+                        $source,
+                        $destination,
+                        $this->getWarningMessage()
+                    ]
+                )
+            );
+        }
+        return $result;
     }
 
     /**
@@ -231,7 +350,24 @@ class StatefulFile implements DriverInterface
      */
     public function symlink($source, $destination, DriverInterface $targetDriver = null)
     {
-        return $this->driverFile->symlink($source, $destination, $targetDriver);
+        $result = false;
+        if ($targetDriver === null || get_class($targetDriver) == get_class($this)) {
+            $result = @symlink($this->getScheme() . $source, $destination);
+            clearstatcache(true, $destination);
+        }
+        if (!$result) {
+            throw new FileSystemException(
+                new Phrase(
+                    'A symlink for "%1" can\'t be created and placed to "%2". %3',
+                    [
+                        $source,
+                        $destination,
+                        $this->getWarningMessage()
+                    ]
+                )
+            );
+        }
+        return $result;
     }
 
     /**
@@ -243,7 +379,17 @@ class StatefulFile implements DriverInterface
      */
     public function deleteFile($path)
     {
-        return $this->driverFile->deleteFile($path);
+        $result = @unlink($this->getScheme() . $path);
+        clearstatcache(true, $this->getScheme() . $path);
+        if (!$result) {
+            throw new FileSystemException(
+                new Phrase(
+                    'The "%1" file can\'t be deleted. %2',
+                    [$path, $this->getWarningMessage()]
+                )
+            );
+        }
+        return $result;
     }
 
     /**
@@ -255,7 +401,46 @@ class StatefulFile implements DriverInterface
      */
     public function deleteDirectory($path)
     {
-        return $this->driverFile->deleteDirectory($path);
+        $exceptionMessages = [];
+        $flags = \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS;
+        $iterator = new \FilesystemIterator($path, $flags);
+        /** @var \FilesystemIterator $entity */
+        foreach ($iterator as $entity) {
+            try {
+                if ($entity->isDir()) {
+                    $this->deleteDirectory($entity->getPathname());
+                } else {
+                    $this->deleteFile($entity->getPathname());
+                }
+            } catch (FileSystemException $exception) {
+                $exceptionMessages[] = $exception->getMessage();
+            }
+        }
+
+        if (!empty($exceptionMessages)) {
+            throw new FileSystemException(
+                new Phrase(
+                    \implode(' ', $exceptionMessages)
+                )
+            );
+        }
+
+        $fullPath = $this->getScheme() . $path;
+        if (is_link($fullPath)) {
+            $result = @unlink($fullPath);
+        } else {
+            $result = @rmdir($fullPath);
+        }
+        clearstatcache(true, $fullPath);
+        if (!$result) {
+            throw new FileSystemException(
+                new Phrase(
+                    'The directory "%1" cannot be deleted %2',
+                    [$path, $this->getWarningMessage()]
+                )
+            );
+        }
+        return $result;
     }
 
     /**
@@ -268,7 +453,17 @@ class StatefulFile implements DriverInterface
      */
     public function changePermissions($path, $permissions)
     {
-        return $this->driverFile->changePermissions($path, $permissions);
+        $result = @chmod($this->getScheme() . $path, $permissions);
+        clearstatcache(false, $this->getScheme() . $path);
+        if (!$result) {
+            throw new FileSystemException(
+                new Phrase(
+                    'The permissions can\'t be changed for the "%1" path. %2.',
+                    [$path, $this->getWarningMessage()]
+                )
+            );
+        }
+        return $result;
     }
 
     /**
@@ -282,7 +477,46 @@ class StatefulFile implements DriverInterface
      */
     public function changePermissionsRecursively($path, $dirPermissions, $filePermissions)
     {
-        return $this->driverFile->changePermissionsRecursively($path, $dirPermissions, $filePermissions);
+        $result = true;
+        if ($this->isFile($path)) {
+            $result = @chmod($path, $filePermissions);
+        } else {
+            $result = @chmod($path, $dirPermissions);
+        }
+        clearstatcache(false, $this->getScheme() . $path);
+
+        if (!$result) {
+            throw new FileSystemException(
+                new Phrase(
+                    'The permissions can\'t be changed for the "%1" path. %2.',
+                    [$path, $this->getWarningMessage()]
+                )
+            );
+        }
+
+        $flags = \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS;
+
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($path, $flags),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+        /** @var \FilesystemIterator $entity */
+        foreach ($iterator as $entity) {
+            if ($entity->isDir()) {
+                $result = @chmod($entity->getPathname(), $dirPermissions);
+            } else {
+                $result = @chmod($entity->getPathname(), $filePermissions);
+            }
+            if (!$result) {
+                throw new FileSystemException(
+                    new Phrase(
+                        'The permissions can\'t be changed for the "%1" path. %2.',
+                        [$path, $this->getWarningMessage()]
+                    )
+                );
+            }
+        }
+        return $result;
     }
 
     /**
@@ -295,7 +529,21 @@ class StatefulFile implements DriverInterface
      */
     public function touch($path, $modificationTime = null)
     {
-        return $this->driverFile->touch($path, $modificationTime);
+        if (!$modificationTime) {
+            $result = @touch($this->getScheme() . $path);
+        } else {
+            $result = @touch($this->getScheme() . $path, $modificationTime);
+        }
+        clearstatcache(true, $this->getScheme() . $path);
+        if (!$result) {
+            throw new FileSystemException(
+                new Phrase(
+                    'The "%1" file or directory can\'t be touched. %2',
+                    [$path, $this->getWarningMessage()]
+                )
+            );
+        }
+        return $result;
     }
 
     /**
@@ -309,7 +557,17 @@ class StatefulFile implements DriverInterface
      */
     public function filePutContents($path, $content, $mode = null)
     {
-        return $this->driverFile->filePutContents($path, $content, $mode);
+        $result = @file_put_contents($this->getScheme() . $path, $content, $mode);
+        clearstatcache(true, $this->getScheme() . $path);
+        if (!$result) {
+            throw new FileSystemException(
+                new Phrase(
+                    'The specified "%1" file couldn\'t be written. %2',
+                    [$path, $this->getWarningMessage()]
+                )
+            );
+        }
+        return $result;
     }
 
     /**
@@ -322,7 +580,14 @@ class StatefulFile implements DriverInterface
      */
     public function fileOpen($path, $mode)
     {
-        return $this->driverFile->fileOpen($path, $mode);
+        $result = @fopen($this->getScheme() . $path, $mode);
+        clearstatcache(true, $this->getScheme() . $path);
+        if (!$result) {
+            throw new FileSystemException(
+                new Phrase('File "%1" cannot be opened %2', [$path, $this->getWarningMessage()])
+            );
+        }
+        return $result;
     }
 
     /**
@@ -336,7 +601,15 @@ class StatefulFile implements DriverInterface
      */
     public function fileReadLine($resource, $length, $ending = null)
     {
-        return $this->driverFile->fileReadLine($resource, $length, $ending);
+        // phpcs:disable
+            $result = @stream_get_line($resource, $length, $ending);
+        // phpcs:enable
+        if (false === $result) {
+            throw new FileSystemException(
+                new Phrase('File cannot be read %1', [$this->getWarningMessage()])
+            );
+        }
+        return $result;
     }
 
     /**
@@ -349,7 +622,13 @@ class StatefulFile implements DriverInterface
      */
     public function fileRead($resource, $length)
     {
-        return $this->driverFile->fileRead($resource, $length);
+        $result = @fread($resource, $length);
+        if ($result === false) {
+            throw new FileSystemException(
+                new Phrase('File cannot be read %1', [$this->getWarningMessage()])
+            );
+        }
+        return $result;
     }
 
     /**
@@ -365,7 +644,16 @@ class StatefulFile implements DriverInterface
      */
     public function fileGetCsv($resource, $length = 0, $delimiter = ',', $enclosure = '"', $escape = '\\')
     {
-        return $this->driverFile->fileGetCsv($resource, $length, $delimiter, $enclosure, $escape);
+        $result = @fgetcsv($resource, $length, $delimiter, $enclosure, $escape);
+        if ($result === null) {
+            throw new FileSystemException(
+                new Phrase(
+                    'The "%1" CSV handle is incorrect. Verify the handle and try again.',
+                    [$this->getWarningMessage()]
+                )
+            );
+        }
+        return $result;
     }
 
     /**
@@ -377,7 +665,13 @@ class StatefulFile implements DriverInterface
      */
     public function fileTell($resource)
     {
-        return $this->driverFile->fileTell($resource);
+        $result = @ftell($resource);
+        if ($result === null) {
+            throw new FileSystemException(
+                new Phrase('An error occurred during "%1" execution.', [$this->getWarningMessage()])
+            );
+        }
+        return $result;
     }
 
     /**
@@ -391,30 +685,48 @@ class StatefulFile implements DriverInterface
      */
     public function fileSeek($resource, $offset, $whence = SEEK_SET)
     {
-        return $this->driverFile->fileSeek($resource, $offset, $whence);
+        $result = @fseek($resource, $offset, $whence);
+        if ($result === -1) {
+            throw new FileSystemException(
+                new Phrase(
+                    'An error occurred during "%1" fileSeek execution.',
+                    [$this->getWarningMessage()]
+                )
+            );
+        }
+        return $result;
     }
 
     /**
      * Returns true if pointer at the end of file or in case of exception
      *
      * @param resource $resource
-     * @return bool
+     * @return boolean
      */
     public function endOfFile($resource)
     {
-        return $this->driverFile->endOfFile($resource);
+        return feof($resource);
     }
 
     /**
      * Close file
      *
      * @param resource $resource
-     * @return bool
+     * @return boolean
      * @throws FileSystemException
      */
     public function fileClose($resource)
     {
-        return $this->driverFile->fileClose($resource);
+        $result = @fclose($resource);
+        if (!$result) {
+            throw new FileSystemException(
+                new Phrase(
+                    'An error occurred during "%1" fileClose execution.',
+                    [$this->getWarningMessage()]
+                )
+            );
+        }
+        return $result;
     }
 
     /**
@@ -427,7 +739,34 @@ class StatefulFile implements DriverInterface
      */
     public function fileWrite($resource, $data)
     {
-        return $this->driverFile->fileWrite($resource, $data);
+        $lenData = strlen($data);
+        for ($result = 0; $result < $lenData; $result += $fwrite) {
+            $fwrite = @fwrite($resource, substr($data, $result));
+            if (0 === $fwrite) {
+                $this->fileSystemException('Unable to write');
+            }
+            if (false === $fwrite) {
+                $this->fileSystemException(
+                    'An error occurred during "%1" fileWrite execution.',
+                    [$this->getWarningMessage()]
+                );
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Throw a FileSystemException with a Phrase of message and optional arguments
+     *
+     * @param string $message
+     * @param array $arguments
+     * @return void
+     * @throws FileSystemException
+     */
+    private function fileSystemException($message, $arguments = [])
+    {
+        throw new FileSystemException(new Phrase($message, $arguments));
     }
 
     /**
@@ -442,7 +781,31 @@ class StatefulFile implements DriverInterface
      */
     public function filePutCsv($resource, array $data, $delimiter = ',', $enclosure = '"')
     {
-        return $this->driverFile->filePutCsv($resource, $data, $delimiter, $enclosure);
+        /**
+         * Security enhancement for CSV data processing by Excel-like applications.
+         * @see https://bugzilla.mozilla.org/show_bug.cgi?id=1054702
+         *
+         * @var $value string|Phrase
+         */
+        foreach ($data as $key => $value) {
+            if (!is_string($value)) {
+                $value = (string)$value;
+            }
+            if (isset($value[0]) && in_array($value[0], ['=', '+', '-'])) {
+                $data[$key] = ' ' . $value;
+            }
+        }
+
+        $result = @fputcsv($resource, $data, $delimiter, $enclosure);
+        if (!$result) {
+            throw new FileSystemException(
+                new Phrase(
+                    'An error occurred during "%1" filePutCsv execution.',
+                    [$this->getWarningMessage()]
+                )
+            );
+        }
+        return $result;
     }
 
     /**
@@ -454,7 +817,16 @@ class StatefulFile implements DriverInterface
      */
     public function fileFlush($resource)
     {
-        return $this->driverFile->fileFlush($resource);
+        $result = @fflush($resource);
+        if (!$result) {
+            throw new FileSystemException(
+                new Phrase(
+                    'An error occurred during "%1" fileFlush execution.',
+                    [$this->getWarningMessage()]
+                )
+            );
+        }
+        return $result;
     }
 
     /**
@@ -467,7 +839,16 @@ class StatefulFile implements DriverInterface
      */
     public function fileLock($resource, $lockMode = LOCK_EX)
     {
-        return $this->driverFile->fileLock($resource, $lockMode);
+        $result = @flock($resource, $lockMode);
+        if (!$result) {
+            throw new FileSystemException(
+                new Phrase(
+                    'An error occurred during "%1" fileLock execution.',
+                    [$this->getWarningMessage()]
+                )
+            );
+        }
+        return $result;
     }
 
     /**
@@ -479,7 +860,16 @@ class StatefulFile implements DriverInterface
      */
     public function fileUnlock($resource)
     {
-        return $this->driverFile->fileUnlock($resource);
+        $result = @flock($resource, LOCK_UN);
+        if (!$result) {
+            throw new FileSystemException(
+                new Phrase(
+                    'An error occurred during "%1" fileUnlock execution.',
+                    [$this->getWarningMessage()]
+                )
+            );
+        }
+        return $result;
     }
 
     /**
@@ -492,7 +882,14 @@ class StatefulFile implements DriverInterface
      */
     public function getAbsolutePath($basePath, $path, $scheme = null)
     {
-        return $this->driverFile->getAbsolutePath($basePath, $path, $scheme);
+        // check if the path given is already an absolute path containing the
+        // basepath. so if the basepath starts at position 0 in the path, we
+        // must not concatinate them again because path is already absolute.
+        if (0 === strpos($path, $basePath)) {
+            return $this->getScheme($scheme) . $path;
+        }
+
+        return $this->getScheme($scheme) . $basePath . ltrim($this->fixSeparator($path), '/');
     }
 
     /**
@@ -504,7 +901,13 @@ class StatefulFile implements DriverInterface
      */
     public function getRelativePath($basePath, $path = null)
     {
-        return $this->driverFile->getRelativePath($basePath, $path);
+        $path = $this->fixSeparator($path);
+        if (strpos($path, $basePath) === 0 || $basePath == $path . '/') {
+            $result = substr($path, strlen($basePath));
+        } else {
+            $result = $path;
+        }
+        return $result;
     }
 
     /**
@@ -540,7 +943,21 @@ class StatefulFile implements DriverInterface
      */
     public function readDirectoryRecursively($path = null)
     {
-        return $this->driverFile->readDirectoryRecursively($path);
+        $result = [];
+        $flags = \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS;
+        try {
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($path, $flags),
+                \RecursiveIteratorIterator::CHILD_FIRST
+            );
+            /** @var \FilesystemIterator $file */
+            foreach ($iterator as $file) {
+                $result[] = $file->getPathname();
+            }
+        } catch (\Exception $e) {
+            throw new FileSystemException(new Phrase($e->getMessage()), $e);
+        }
+        return $result;
     }
 
     /**
@@ -552,7 +969,7 @@ class StatefulFile implements DriverInterface
      */
     public function getRealPath($path)
     {
-        return $this->driverFile->getRealPath($path);
+        return realpath($path);
     }
 
     /**
@@ -563,6 +980,28 @@ class StatefulFile implements DriverInterface
      */
     public function getRealPathSafety($path)
     {
-        return $this->driverFile->getRealPathSafety($path);
+        if (strpos($path, DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR) === false) {
+            return $path;
+        }
+
+        //Removing redundant directory separators.
+        $path = preg_replace(
+            '/\\' . DIRECTORY_SEPARATOR . '\\' . DIRECTORY_SEPARATOR . '+/',
+            DIRECTORY_SEPARATOR,
+            $path
+        );
+        $pathParts = explode(DIRECTORY_SEPARATOR, $path);
+        $realPath = [];
+        foreach ($pathParts as $pathPart) {
+            if ($pathPart == '.') {
+                continue;
+            }
+            if ($pathPart == '..') {
+                array_pop($realPath);
+                continue;
+            }
+            $realPath[] = $pathPart;
+        }
+        return implode(DIRECTORY_SEPARATOR, $realPath);
     }
 }

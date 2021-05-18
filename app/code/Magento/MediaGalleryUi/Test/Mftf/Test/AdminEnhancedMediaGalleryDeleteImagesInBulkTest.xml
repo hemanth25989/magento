@@ -52,9 +52,7 @@
         </actionGroup>
         <actionGroup ref="AdminEnhancedMediaGalleryClickDeleteImagesButtonActionGroup" stepKey="clikDeleteSelectedButton"/>
         <actionGroup ref="AdminEnhancedMediaGalleryConfirmDeleteImagesActionGroup" stepKey="deleteImages"/>
-        <actionGroup ref="AdminEnhancedMediaGalleryAssertImagesDeletedInBulkActionGroup" stepKey="assertImagesDeleted">
-            <argument name="numberOfAssetsDeleted" value="2"/>
-        </actionGroup>
+        <actionGroup ref="AdminEnhancedMediaGalleryAssertImagesDeletedInBulkActionGroup" stepKey="assertImagesDeleted"/>
         <actionGroup ref="AdminEnhancedMediaGalleryAssertMassActionModeNotActiveActionGroup" stepKey="assertMassectionModeDisabled"/>
     </test>
 </tests>

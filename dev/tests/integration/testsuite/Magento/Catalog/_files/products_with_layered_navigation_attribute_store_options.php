@@ -50,11 +50,7 @@ if (!$attribute->getId()) {
             'is_visible_on_front' => 1,
             'used_in_product_listing' => 1,
             'used_for_sort_by' => 1,
-            'frontend_label' => [
-                Store::DEFAULT_STORE_ID => 'Test Configurable Admin Store',
-                Store::DISTRO_STORE_ID => 'Test Configurable Default Store',
-                $store->getId() => 'Test Configurable Test Store'
-            ],
+            'frontend_label' => ['Test Configurable'],
             'backend_type' => 'int',
             'option' => [
                 'value' => ['option_0' => [

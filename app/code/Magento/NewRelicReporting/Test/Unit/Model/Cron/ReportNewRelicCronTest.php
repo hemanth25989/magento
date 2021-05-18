@@ -17,6 +17,7 @@ use Magento\NewRelicReporting\Model\CronEventFactory;
 use Magento\NewRelicReporting\Model\Module\Collect;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class ReportNewRelicCronTest extends TestCase
 {
@@ -59,6 +60,11 @@ class ReportNewRelicCronTest extends TestCase
      * @var Deployments|MockObject
      */
     protected $deploymentsModel;
+
+    /**
+     * @var LoggerInterface|MockObject
+     */
+    private $logger;
 
     /**
      * Setup
@@ -111,13 +117,15 @@ class ReportNewRelicCronTest extends TestCase
         $this->deploymentsFactory->expects($this->any())
             ->method('create')
             ->willReturn($this->deploymentsModel);
+        $this->logger = $this->getMockForAbstractClass(LoggerInterface::class);
 
         $this->model = new ReportNewRelicCron(
             $this->config,
             $this->collect,
             $this->counter,
             $this->cronEventFactory,
-            $this->deploymentsFactory
+            $this->deploymentsFactory,
+            $this->logger
         );
     }
 
@@ -207,6 +215,7 @@ class ReportNewRelicCronTest extends TestCase
             ->method('sendRequest');
 
         $this->cronEventModel->expects($this->once())->method('sendRequest')->willThrowException(new \Exception());
+        $this->logger->expects($this->never())->method('critical');
 
         $this->deploymentsModel->expects($this->any())
             ->method('setDeployment');

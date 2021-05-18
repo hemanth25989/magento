@@ -15,14 +15,13 @@ use Magento\SalesRule\Block\Adminhtml\Promo\Quote\Edit\Tab\Coupons\Grid;
 use Magento\Framework\View\Result\Layout;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\App\Action\HttpGetActionInterface;
-use Magento\Framework\App\Action\HttpPostActionInterface;
 
 /**
  * Export coupons to xml file
  *
  * Class \Magento\SalesRule\Controller\Adminhtml\Promo\Quote\ExportCouponsXml
  */
-class ExportCouponsXml extends Quote implements HttpGetActionInterface, HttpPostActionInterface
+class ExportCouponsXml extends Quote implements HttpGetActionInterface
 {
     /**
      * Export coupon codes as excel xml file

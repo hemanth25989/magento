@@ -8,7 +8,6 @@ namespace Magento\Setup\Model;
 
 use Magento\Backend\Setup\ConfigOptionsList as BackendConfigOptionsList;
 use Magento\Framework\App\Cache\Manager;
-use Magento\Framework\App\Cache\Manager as CacheManager;
 use Magento\Framework\App\Cache\Type\Block as BlockCache;
 use Magento\Framework\App\Cache\Type\Config as ConfigCache;
 use Magento\Framework\App\Cache\Type\Layout as LayoutCache;
@@ -921,24 +920,17 @@ class Installer
      * Installs data fixtures
      *
      * @param array $request
-     * @param boolean $keepCacheStatuses
      * @return void
      * @throws Exception
      * @throws \Magento\Framework\Setup\Exception
      */
-    public function installDataFixtures(array $request = [], $keepCacheStatuses = false)
+    public function installDataFixtures(array $request = [])
     {
         $frontendCaches = [
             PageCache::TYPE_IDENTIFIER,
             BlockCache::TYPE_IDENTIFIER,
             LayoutCache::TYPE_IDENTIFIER,
         ];
-
-        if ($keepCacheStatuses) {
-            $disabledCaches = $this->getDisabledCacheTypes($frontendCaches);
-
-            $frontendCaches = array_diff($frontendCaches, $disabledCaches);
-        }
 
         /** @var \Magento\Framework\Registry $registry */
         $registry = $this->objectManagerProvider->get()->get(\Magento\Framework\Registry::class);
@@ -950,20 +942,11 @@ class Installer
         $setup = $this->dataSetupFactory->create();
         $this->checkFilePermissionsForDbUpgrade();
         $this->log->log('Data install/update:');
-
-        if ($frontendCaches) {
-            $this->log->log('Disabling caches:');
-            $this->updateCaches(false, $frontendCaches);
-        }
-
-        try {
-            $this->handleDBSchemaData($setup, 'data', $request);
-        } finally {
-            if ($frontendCaches) {
-                $this->log->log('Enabling caches:');
-                $this->updateCaches(true, $frontendCaches);
-            }
-        }
+        $this->log->log('Disabling caches:');
+        $this->updateCaches(false, $frontendCaches);
+        $this->handleDBSchemaData($setup, 'data', $request);
+        $this->log->log('Enabling caches:');
+        $this->updateCaches(true, $frontendCaches);
 
         $registry->unregister('setup-mode-enabled');
     }
@@ -1012,7 +995,7 @@ class Installer
      */
     private function handleDBSchemaData($setup, $type, array $request)
     {
-        if ($type !== 'schema' && $type !== 'data') {
+        if (!($type === 'schema' || $type === 'data')) {
             // phpcs:ignore Magento2.Exceptions.DirectThrow
             throw  new Exception("Unsupported operation type $type is requested");
         }
@@ -1031,13 +1014,17 @@ class Installer
                 'objectManager' => $this->objectManagerProvider->get()
             ]
         );
-
-        $patchApplierParams = $type === 'schema' ?
-            ['schemaSetup' => $setup] :
-            ['moduleDataSetup' => $setup, 'objectManager' => $this->objectManagerProvider->get()];
-
         /** @var PatchApplier $patchApplier */
-        $patchApplier = $this->patchApplierFactory->create($patchApplierParams);
+        if ($type === 'schema') {
+            $patchApplier = $this->patchApplierFactory->create(['schemaSetup' => $setup]);
+        } elseif ($type === 'data') {
+            $patchApplier = $this->patchApplierFactory->create(
+                [
+                    'moduleDataSetup' => $setup,
+                    'objectManager' => $this->objectManagerProvider->get()
+                ]
+            );
+        }
 
         foreach ($moduleNames as $moduleName) {
             if ($this->isDryRun($request)) {
@@ -1099,11 +1086,11 @@ class Installer
 
         if ($type === 'schema') {
             $this->log->log('Schema post-updates:');
+            $handlerType = 'schema-recurring';
         } elseif ($type === 'data') {
             $this->log->log('Data post-updates:');
+            $handlerType = 'data-recurring';
         }
-        $handlerType = $type === 'schema' ? 'schema-recurring' : 'data-recurring';
-
         foreach ($moduleNames as $moduleName) {
             if ($this->isDryRun($request)) {
                 $this->log->log("Module '{$moduleName}':");
@@ -1738,28 +1725,5 @@ class Installer
     {
         $this->triggerCleaner->removeTriggers();
         $this->cleanCaches();
-    }
-
-    /**
-     * Returns list of disabled cache types
-     *
-     * @param array $cacheTypesToCheck
-     * @return array
-     */
-    private function getDisabledCacheTypes(array $cacheTypesToCheck): array
-    {
-        $disabledCaches = [];
-
-        /** @var CacheManager $cacheManager */
-        $cacheManager = $this->objectManagerProvider->get()->create(CacheManager::class);
-        $cacheStatus = $cacheManager->getStatus();
-
-        foreach ($cacheTypesToCheck as $cacheType) {
-            if (isset($cacheStatus[$cacheType]) && $cacheStatus[$cacheType] === 0) {
-                $disabledCaches[] = $cacheType;
-            }
-        }
-
-        return $disabledCaches;
     }
 }

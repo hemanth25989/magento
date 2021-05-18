@@ -189,7 +189,7 @@ class SetLinkStatusObserverTest extends TestCase
                 ]
             );
 
-        $this->itemsFactory->expects($this->any())
+        $this->itemsFactory->expects($this->once())
             ->method('create')
             ->willReturn(
                 $this->createLinkItemCollection(
@@ -243,7 +243,7 @@ class SetLinkStatusObserverTest extends TestCase
                 ]
             );
 
-        $this->itemsFactory->expects($this->any())
+        $this->itemsFactory->expects($this->once())
             ->method('create')
             ->willReturn(
                 $this->createLinkItemCollection(
@@ -308,7 +308,7 @@ class SetLinkStatusObserverTest extends TestCase
                 ]
             );
 
-        $this->itemsFactory->expects($this->any())
+        $this->itemsFactory->expects($this->once())
             ->method('create')
             ->willReturn(
                 $this->createLinkItemCollection(
@@ -344,137 +344,6 @@ class SetLinkStatusObserverTest extends TestCase
         $this->assertInstanceOf(SetLinkStatusObserver::class, $result);
     }
 
-    public function testSetLinkStatusExpired()
-    {
-        $this->scopeConfig->expects($this->once())
-            ->method('getValue')
-            ->with(
-                \Magento\Downloadable\Model\Link\Purchased\Item::XML_PATH_ORDER_ITEM_STATUS,
-                ScopeInterface::SCOPE_STORE,
-                1
-            )
-            ->willReturn(Item::STATUS_PENDING);
-
-        $this->observerMock->expects($this->once())
-            ->method('getEvent')
-            ->willReturn($this->eventMock);
-
-        $this->eventMock->expects($this->once())
-            ->method('getOrder')
-            ->willReturn($this->orderMock);
-
-        $this->orderMock->expects($this->once())
-            ->method('getId')
-            ->willReturn(1);
-
-        $this->orderMock->expects($this->once())
-            ->method('getStoreId')
-            ->willReturn(1);
-
-        $this->orderMock->expects($this->atLeastOnce())
-            ->method('getState')
-            ->willReturn(Order::STATE_PROCESSING);
-
-        $this->orderMock->expects($this->any())
-            ->method('getAllItems')
-            ->willReturn(
-                [
-                    $this->createRefundOrderItem(2, 2, 2),
-                    $this->createRefundOrderItem(3, 2, 1),
-                    $this->createRefundOrderItem(4, 3, 3),
-                ]
-            );
-
-        $this->itemsFactory->expects($this->any())
-            ->method('create')
-            ->willReturn(
-                $this->createLinkItemToExpireCollection(
-                    [2, 4],
-                    [
-                        $this->createLinkItem(
-                            'available',
-                            2,
-                            true,
-                            \Magento\Downloadable\Model\Link\Purchased\Item::LINK_STATUS_EXPIRED
-                        ),
-                        $this->createLinkItem(
-                            'pending_payment',
-                            4,
-                            true,
-                            \Magento\Downloadable\Model\Link\Purchased\Item::LINK_STATUS_EXPIRED
-                        ),
-                    ]
-                )
-            );
-
-        $result = $this->setLinkStatusObserver->execute($this->observerMock);
-        $this->assertInstanceOf(SetLinkStatusObserver::class, $result);
-    }
-
-    /**
-     * @param $id
-     * @param int $qtyOrdered
-     * @param int $qtyRefunded
-     * @param string $productType
-     * @param string $realProductType
-     * @return \Magento\Sales\Model\Order\Item|MockObject
-     */
-    private function createRefundOrderItem(
-        $id,
-        $qtyOrdered,
-        $qtyRefunded,
-        $productType = DownloadableProductType::TYPE_DOWNLOADABLE,
-        $realProductType = DownloadableProductType::TYPE_DOWNLOADABLE
-    ) {
-        $item = $this->getMockBuilder(Item::class)
-            ->disableOriginalConstructor()
-            ->setMethods([
-                'getId',
-                'getQtyOrdered',
-                'getQtyRefunded',
-                'getProductType',
-                'getRealProductType'
-            ])->getMock();
-        $item->expects($this->any())
-            ->method('getId')
-            ->willReturn($id);
-        $item->expects($this->any())
-            ->method('getQtyOrdered')
-            ->willReturn($qtyOrdered);
-        $item->expects($this->any())
-            ->method('getQtyRefunded')
-            ->willReturn($qtyRefunded);
-        $item->expects($this->any())
-            ->method('getProductType')
-            ->willReturn($productType);
-        $item->expects($this->any())
-            ->method('getRealProductType')
-            ->willReturn($realProductType);
-
-        return $item;
-    }
-
-    /**
-     * @param array $expectedOrderItemIds
-     * @param array $items
-     * @return LinkItemCollection|MockObject
-     */
-    private function createLinkItemToExpireCollection(array $expectedOrderItemIds, array $items)
-    {
-        $linkItemCollection = $this->getMockBuilder(
-            \Magento\Downloadable\Model\ResourceModel\Link\Purchased\Item\Collection::class
-        )
-            ->disableOriginalConstructor()
-            ->setMethods(['addFieldToFilter'])
-            ->getMock();
-        $linkItemCollection->expects($this->any())
-            ->method('addFieldToFilter')
-            ->with('order_item_id', ['in' => $expectedOrderItemIds])
-            ->willReturn($items);
-
-        return $linkItemCollection;
-    }
-
     /**
      * @param $id
      * @param int $statusId
@@ -490,7 +359,7 @@ class SetLinkStatusObserverTest extends TestCase
     ) {
         $item = $this->getMockBuilder(Item::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getId', 'getProductType', 'getRealProductType', 'getStatusId', 'getQtyOrdered'])
+            ->setMethods(['getId', 'getProductType', 'getRealProductType', 'getStatusId'])
             ->getMock();
         $item->expects($this->any())
             ->method('getId')
@@ -504,9 +373,6 @@ class SetLinkStatusObserverTest extends TestCase
         $item->expects($this->any())
             ->method('getStatusId')
             ->willReturn($statusId);
-        $item->expects($this->any())
-            ->method('getQtyOrdered')
-            ->willReturn(1);
 
         return $item;
     }
@@ -524,7 +390,7 @@ class SetLinkStatusObserverTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods(['addFieldToFilter'])
             ->getMock();
-        $linkItemCollection->expects($this->any())
+        $linkItemCollection->expects($this->once())
             ->method('addFieldToFilter')
             ->with('order_item_id', ['in' => $expectedOrderItemIds])
             ->willReturn($items);
@@ -549,11 +415,11 @@ class SetLinkStatusObserverTest extends TestCase
             ->method('getStatus')
             ->willReturn($status);
         if ($isSaved) {
-            $linkItem->expects($this->any())
+            $linkItem->expects($this->once())
                 ->method('setStatus')
                 ->with($expectedStatus)
                 ->willReturnSelf();
-            $linkItem->expects($this->any())
+            $linkItem->expects($this->once())
                 ->method('save')
                 ->willReturnSelf();
         }

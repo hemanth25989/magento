@@ -117,7 +117,6 @@ class OperationProcessor
         $status = OperationInterface::STATUS_TYPE_COMPLETE;
         $errorCode = null;
         $messages = [];
-        $entityParams = [];
         $topicName = $operation->getTopicName();
         $handlers = $this->configuration->getHandlers($topicName);
         try {
@@ -128,7 +127,7 @@ class OperationProcessor
             $this->logger->error($e->getMessage());
             $status = OperationInterface::STATUS_TYPE_NOT_RETRIABLY_FAILED;
             $errorCode = $e->getCode();
-            $messages[] = [$e->getMessage()];
+            $messages[] = $e->getMessage();
         }
 
         $outputData = null;
@@ -137,7 +136,9 @@ class OperationProcessor
                 $result = $this->executeHandler($callback, $entityParams);
                 $status = $result['status'];
                 $errorCode = $result['error_code'];
-                $messages[] = $result['messages'];
+                // phpcs:disable Magento2.Performance.ForeachArrayMerge
+                $messages = array_merge($messages, $result['messages']);
+                // phpcs:enable Magento2.Performance.ForeachArrayMerge
                 $outputData = $result['output_data'];
             }
         }
@@ -156,7 +157,7 @@ class OperationProcessor
                 );
                 $outputData = $this->jsonHelper->serialize($outputData);
             } catch (\Exception $e) {
-                $messages[] = [$e->getMessage()];
+                $messages[] = $e->getMessage();
             }
         }
 
@@ -166,7 +167,7 @@ class OperationProcessor
             $operation->getId(),
             $status,
             $errorCode,
-            implode('; ', array_merge([], ...$messages)),
+            implode('; ', $messages),
             $serializedData,
             $outputData
         );

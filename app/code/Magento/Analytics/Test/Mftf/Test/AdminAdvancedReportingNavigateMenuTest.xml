@@ -29,6 +29,8 @@
             <argument name="menuUiId" value="{{AdminMenuReports.dataUiId}}"/>
             <argument name="submenuUiId" value="{{AdminMenuReportsBusinessIntelligenceAdvancedReporting.dataUiId}}"/>
         </actionGroup>
-        <actionGroup ref="AssertAdminAdvancedReportingPageUrlActionGroup" stepKey="assertAdvancedReportingPageUrl"/>
+        <switchToNextTab stepKey="switchToNewTab"/>
+        <waitForPageLoad stepKey="waitForAdvancedReportingPageLoad"/>
+        <seeInCurrentUrl url="advancedreporting.rjmetrics.com/report" stepKey="seeAssertAdvancedReportingPageUrl"/>
     </test>
 </tests>

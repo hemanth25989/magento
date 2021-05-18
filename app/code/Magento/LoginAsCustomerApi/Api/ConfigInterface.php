@@ -36,7 +36,6 @@ interface ConfigInterface
      *
      * @return int
      * @since 100.4.0
-     * @deprecated
      */
     public function getAuthenticationDataExpirationTime(): int;
 }

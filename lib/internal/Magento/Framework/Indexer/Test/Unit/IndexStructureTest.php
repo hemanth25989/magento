@@ -167,7 +167,7 @@ class IndexStructureTest extends TestCase
             ->method('resolve')
             ->with($index, $dimensions)
             ->willReturn($index . '_flat');
-        $position = $this->mockFulltextTable($position, $expectedTable);
+        $position = $this->mockFulltextTable($position, $expectedTable, true);
         $this->mockFlatTable($position, $index . '_flat');
 
         $this->target->create($index, $fields, $dimensions);

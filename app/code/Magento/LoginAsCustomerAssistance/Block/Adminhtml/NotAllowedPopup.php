@@ -17,11 +17,15 @@ use Magento\LoginAsCustomerApi\Api\ConfigInterface;
 class NotAllowedPopup extends Template
 {
     /**
+     * Config
+     *
      * @var ConfigInterface
      */
     private $config;
 
     /**
+     * Json Serializer
+     *
      * @var Json
      */
     private $json;

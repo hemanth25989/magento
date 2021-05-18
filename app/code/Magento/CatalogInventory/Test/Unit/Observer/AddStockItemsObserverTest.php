@@ -10,12 +10,15 @@ namespace Magento\CatalogInventory\Test\Unit\Observer;
 use Magento\Catalog\Api\Data\ProductExtensionInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
+use Magento\CatalogInventory\Api\Data\StockItemCollectionInterface;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
 use Magento\CatalogInventory\Api\StockConfigurationInterface;
+use Magento\CatalogInventory\Api\StockItemCriteriaInterface;
 use Magento\CatalogInventory\Api\StockItemCriteriaInterfaceFactory;
-use Magento\CatalogInventory\Model\StockRegistryPreloader;
+use Magento\CatalogInventory\Api\StockItemRepositoryInterface;
 use Magento\CatalogInventory\Observer\AddStockItemsObserver;
 use Magento\Framework\Event\Observer;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -30,29 +33,46 @@ class AddStockItemsObserverTest extends TestCase
      * @var AddStockItemsObserver
      */
     private $subject;
+    /**
+     * @var StockItemCriteriaInterfaceFactory|MockObject
+     */
+    private $criteriaInterfaceFactoryMock;
+
+    /**
+     * @var StockItemRepositoryInterface|MockObject
+     */
+    private $stockItemRepositoryMock;
 
     /**
      * @var StockConfigurationInterface|MockObject
      */
     private $stockConfigurationMock;
-    /**
-     * @var StockRegistryPreloader|MockObject
-     */
-    private $stockRegistryPreloader;
 
     /**
      * @inheritdoc
      */
     protected function setUp(): void
     {
+        $objectManager = new ObjectManager($this);
+        $this->criteriaInterfaceFactoryMock = $this->getMockBuilder(StockItemCriteriaInterfaceFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+        $this->stockItemRepositoryMock = $this->getMockBuilder(StockItemRepositoryInterface::class)
+            ->setMethods(['getList'])
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
         $this->stockConfigurationMock = $this->getMockBuilder(StockConfigurationInterface::class)
             ->setMethods(['getDefaultScopeId'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $this->stockRegistryPreloader = $this->createMock(StockRegistryPreloader::class);
-        $this->subject = new AddStockItemsObserver(
-            $this->stockConfigurationMock,
-            $this->stockRegistryPreloader,
+        $this->subject = $objectManager->getObject(
+            AddStockItemsObserver::class,
+            [
+                'criteriaInterfaceFactory' => $this->criteriaInterfaceFactoryMock,
+                'stockItemRepository' => $this->stockItemRepositoryMock,
+                'stockConfiguration' => $this->stockConfigurationMock
+            ]
         );
     }
 
@@ -64,6 +84,26 @@ class AddStockItemsObserverTest extends TestCase
         $productId = 1;
         $defaultScopeId = 0;
 
+        $criteria = $this->getMockBuilder(StockItemCriteriaInterface::class)
+            ->setMethods(['setProductsFilter', 'setScopeFilter'])
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+        $criteria->expects(self::once())
+            ->method('setProductsFilter')
+            ->with(self::identicalTo([$productId]))
+            ->willReturn(true);
+        $criteria->expects(self::once())
+            ->method('setScopeFilter')
+            ->with(self::identicalTo($defaultScopeId))
+            ->willReturn(true);
+
+        $this->criteriaInterfaceFactoryMock->expects(self::once())
+            ->method('create')
+            ->willReturn($criteria);
+        $stockItemCollection = $this->getMockBuilder(StockItemCollectionInterface::class)
+            ->setMethods(['getItems'])
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
         $stockItem = $this->getMockBuilder(StockItemInterface::class)
             ->setMethods(['getProductId'])
             ->disableOriginalConstructor()
@@ -72,19 +112,14 @@ class AddStockItemsObserverTest extends TestCase
             ->method('getProductId')
             ->willReturn($productId);
 
-        $this->stockRegistryPreloader->expects(self::once())
-            ->method('preloadStockItems')
-            ->with([$productId])
+        $stockItemCollection->expects(self::once())
+            ->method('getItems')
             ->willReturn([$stockItem]);
 
-        $this->stockRegistryPreloader->expects(self::once())
-            ->method('preloadStockStatuses')
-            ->with([$productId])
-            ->willReturn([]);
-
-        $this->stockRegistryPreloader->expects(self::once())
-            ->method('preloadStockItems')
-            ->willReturn([$stockItem]);
+        $this->stockItemRepositoryMock->expects(self::once())
+            ->method('getList')
+            ->with(self::identicalTo($criteria))
+            ->willReturn($stockItemCollection);
 
         $this->stockConfigurationMock->expects(self::once())
             ->method('getDefaultScopeId')

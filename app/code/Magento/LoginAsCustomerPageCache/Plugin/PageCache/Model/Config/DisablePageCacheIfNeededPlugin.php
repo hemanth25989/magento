@@ -54,7 +54,7 @@ class DisablePageCacheIfNeededPlugin
     public function afterIsEnabled(Config $subject, $isEnabled): bool
     {
         if ($isEnabled) {
-            $disable = $this->scopeConfig->isSetFlag(
+            $disable = $this->scopeConfig->getValue(
                 'login_as_customer/general/disable_page_cache',
                 ScopeInterface::SCOPE_STORE
             );

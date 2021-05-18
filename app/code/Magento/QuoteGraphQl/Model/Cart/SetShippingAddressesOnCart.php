@@ -11,7 +11,6 @@ use Magento\Framework\App\ObjectManager;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\GraphQl\Model\Query\ContextInterface;
 use Magento\Quote\Api\Data\CartInterface;
-use Magento\Quote\Model\QuoteIdToMaskedQuoteIdInterface;
 use Magento\Quote\Model\QuoteRepository;
 
 /**
@@ -19,16 +18,6 @@ use Magento\Quote\Model\QuoteRepository;
  */
 class SetShippingAddressesOnCart implements SetShippingAddressesOnCartInterface
 {
-    /**
-     * @var QuoteIdToMaskedQuoteIdInterface
-     */
-    private $quoteIdToMaskedQuoteId;
-
-    /**
-     * @var GetCartForUser
-     */
-    private $getCartForUser;
-
     /**
      * @var AssignShippingAddressToCart
      */
@@ -45,21 +34,15 @@ class SetShippingAddressesOnCart implements SetShippingAddressesOnCartInterface
     private $quoteRepository;
 
     /**
-     * @param QuoteIdToMaskedQuoteIdInterface $quoteIdToMaskedQuoteId
-     * @param GetCartForUser $getCartForUser
      * @param AssignShippingAddressToCart $assignShippingAddressToCart
      * @param GetShippingAddress $getShippingAddress
      * @param QuoteRepository|null $quoteRepository
      */
     public function __construct(
-        QuoteIdToMaskedQuoteIdInterface $quoteIdToMaskedQuoteId,
-        GetCartForUser $getCartForUser,
         AssignShippingAddressToCart $assignShippingAddressToCart,
         GetShippingAddress $getShippingAddress,
         QuoteRepository $quoteRepository = null
     ) {
-        $this->quoteIdToMaskedQuoteId = $quoteIdToMaskedQuoteId;
-        $this->getCartForUser = $getCartForUser;
         $this->assignShippingAddressToCart = $assignShippingAddressToCart;
         $this->getShippingAddress = $getShippingAddress;
         $this->quoteRepository = $quoteRepository
@@ -98,10 +81,7 @@ class SetShippingAddressesOnCart implements SetShippingAddressesOnCartInterface
             throw $e;
         }
         $this->assignShippingAddressToCart->execute($cart, $shippingAddress);
-
-        // reload updated cart & trigger quote re-evaluation after address change
-        $maskedId = $this->quoteIdToMaskedQuoteId->execute((int)$cart->getId());
-        $cart = $this->getCartForUser->execute($maskedId, $context->getUserId(), $cart->getStoreId());
+        // trigger quote re-evaluation after address change
         $this->quoteRepository->save($cart);
     }
 }

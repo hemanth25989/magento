@@ -17,7 +17,6 @@ use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Async\CallbackDeferred;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\HTTP\AsyncClient\HttpException;
 use Magento\Framework\HTTP\AsyncClient\HttpResponseDeferredInterface;
 use Magento\Framework\HTTP\AsyncClient\Request;
 use Magento\Framework\HTTP\AsyncClientInterface;
@@ -34,7 +33,6 @@ use Magento\Shipping\Model\Carrier\CarrierInterface;
 use Magento\Shipping\Model\Rate\Result;
 use Magento\Shipping\Model\Rate\Result\ProxyDeferredFactory;
 use Magento\Shipping\Model\Rate\ResultFactory as RateFactory;
-use Magento\Shipping\Model\Shipment\Request as Shipment;
 use Magento\Shipping\Model\Simplexml\Element;
 use Magento\Shipping\Model\Simplexml\ElementFactory;
 use Magento\Shipping\Model\Tracking\Result\ErrorFactory as TrackErrorFactory;
@@ -42,6 +40,7 @@ use Magento\Shipping\Model\Tracking\Result\StatusFactory as TrackStatusFactory;
 use Magento\Shipping\Model\Tracking\ResultFactory as TrackFactory;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Ups\Helper\Config;
+use Magento\Shipping\Model\Shipment\Request as Shipment;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Throwable;
@@ -812,15 +811,10 @@ XMLRequest;
             [
                 'deferred' => new CallbackDeferred(
                     function () use ($httpResponse) {
-                        $responseResult = null;
-                        $xmlResponse = '';
-                        try {
-                            $responseResult = $httpResponse->get();
-                        } catch (HttpException $exception) {
-                            $this->_logger->critical($exception);
-                        }
-                        if ($responseResult) {
-                            $xmlResponse = $responseResult->getStatusCode() >= 400 ? '' : $responseResult->getBody();
+                        if ($httpResponse->get()->getStatusCode() >= 400) {
+                            $xmlResponse = '';
+                        } else {
+                            $xmlResponse = $httpResponse->get()->getBody();
                         }
 
                         return $this->_parseXmlResponse($xmlResponse);
@@ -1142,7 +1136,7 @@ XMLAuth;
 </TrackRequest>
 XMLAuth;
 
-            $trackingResponses[$tracking] = $this->asyncHttpClient->request(
+            $trackingResponses[] = $this->asyncHttpClient->request(
                 new Request(
                     $url,
                     Request::METHOD_POST,
@@ -1151,9 +1145,13 @@ XMLAuth;
                 )
             );
         }
-        foreach ($trackingResponses as $tracking => $response) {
+        foreach ($trackingResponses as $response) {
             $httpResponse = $response->get();
-            $xmlResponse = $httpResponse->getStatusCode() >= 400 ? '' : $httpResponse->getBody();
+            if ($httpResponse->getStatusCode() >= 400) {
+                $xmlResponse = '';
+            } else {
+                $xmlResponse = $httpResponse->getBody();
+            }
 
             $this->_parseXmlTrackingResponse($tracking, $xmlResponse);
         }
@@ -1369,7 +1367,7 @@ XMLAuth;
         foreach ($packages as $package) {
             $shipmentItems[] = $package['items'];
         }
-        $shipmentItems = array_merge([], ...$shipmentItems);
+        $shipmentItems = array_merge(...$shipmentItems);
 
         $xmlRequest = $this->_xmlElFactory->create(
             ['data' => '<?xml version = "1.0" ?><ShipmentConfirmRequest xml:lang="en-US"/>']
@@ -1532,18 +1530,24 @@ XMLAuth;
             }
 
             if ($deliveryConfirmation && $deliveryConfirmationLevel === self::DELIVERY_CONFIRMATION_PACKAGE) {
-                $serviceOptionsNode = $packagePart[$packageId]->addChild('PackageServiceOptions');
-                $serviceOptionsNode
-                    ->addChild('DeliveryConfirmation')
-                    ->addChild('DCISType', $deliveryConfirmation);
+                    $serviceOptionsNode = $packagePart[$packageId]->addChild('PackageServiceOptions');
+                    $serviceOptionsNode->addChild(
+                        'DeliveryConfirmation'
+                    )->addChild(
+                        'DCISType',
+                        $deliveryConfirmation
+                    );
             }
         }
 
         if (!empty($deliveryConfirmation) && $deliveryConfirmationLevel === self::DELIVERY_CONFIRMATION_SHIPMENT) {
             $serviceOptionsNode = $shipmentPart->addChild('ShipmentServiceOptions');
-            $serviceOptionsNode
-                ->addChild('DeliveryConfirmation')
-                ->addChild('DCISType', $deliveryConfirmation);
+            $serviceOptionsNode->addChild(
+                'DeliveryConfirmation'
+            )->addChild(
+                'DCISType',
+                $deliveryConfirmation
+            );
         }
 
         $shipmentPart->addChild('PaymentInformation')
@@ -1626,7 +1630,6 @@ XMLAuth;
         try {
             $response = $this->_xmlElFactory->create(['data' => $xmlResponse]);
         } catch (Throwable $e) {
-            $response = $this->_xmlElFactory->create(['data' => '']);
             $debugData['result'] = ['error' => $e->getMessage(), 'code' => $e->getCode()];
         }
 

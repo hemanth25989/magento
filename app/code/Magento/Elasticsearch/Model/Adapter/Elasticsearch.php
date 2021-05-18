@@ -6,18 +6,11 @@
 
 namespace Magento\Elasticsearch\Model\Adapter;
 
-use Elasticsearch\Common\Exceptions\Missing404Exception;
-use Magento\AdvancedSearch\Model\Client\ClientInterface;
+use Magento\Catalog\Api\Data\ProductAttributeInterface;
 use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
 use Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\StaticField;
-use Magento\Elasticsearch\Model\Adapter\Index\BuilderInterface;
-use Magento\Elasticsearch\Model\Adapter\Index\IndexNameResolver;
-use Magento\Elasticsearch\Model\Config;
-use Magento\Elasticsearch\SearchAdapter\ConnectionManager;
 use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Stdlib\ArrayManager;
-use Psr\Log\LoggerInterface;
 
 /**
  * Elasticsearch adapter
@@ -43,7 +36,7 @@ class Elasticsearch
     protected $connectionManager;
 
     /**
-     * @var IndexNameResolver
+     * @var \Magento\Elasticsearch\Model\Adapter\Index\IndexNameResolver
      */
     protected $indexNameResolver;
 
@@ -53,22 +46,22 @@ class Elasticsearch
     protected $fieldMapper;
 
     /**
-     * @var Config
+     * @var \Magento\Elasticsearch\Model\Config
      */
     protected $clientConfig;
 
     /**
-     * @var ClientInterface
+     * @var \Magento\AdvancedSearch\Model\Client\ClientInterface
      */
     protected $client;
 
     /**
-     * @var BuilderInterface
+     * @var \Magento\Elasticsearch\Model\Adapter\Index\BuilderInterface
      */
     protected $indexBuilder;
 
     /**
-     * @var LoggerInterface
+     * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
 
@@ -108,27 +101,27 @@ class Elasticsearch
     private $arrayManager;
 
     /**
-     * @param ConnectionManager $connectionManager
+     * @param \Magento\Elasticsearch\SearchAdapter\ConnectionManager $connectionManager
      * @param FieldMapperInterface $fieldMapper
-     * @param Config $clientConfig
+     * @param \Magento\Elasticsearch\Model\Config $clientConfig
      * @param Index\BuilderInterface $indexBuilder
-     * @param LoggerInterface $logger
+     * @param \Psr\Log\LoggerInterface $logger
      * @param Index\IndexNameResolver $indexNameResolver
      * @param BatchDataMapperInterface $batchDocumentDataMapper
      * @param array $options
      * @param ProductAttributeRepositoryInterface|null $productAttributeRepository
      * @param StaticField|null $staticFieldProvider
      * @param ArrayManager|null $arrayManager
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        ConnectionManager $connectionManager,
+        \Magento\Elasticsearch\SearchAdapter\ConnectionManager $connectionManager,
         FieldMapperInterface $fieldMapper,
-        Config $clientConfig,
-        BuilderInterface $indexBuilder,
-        LoggerInterface $logger,
-        IndexNameResolver $indexNameResolver,
+        \Magento\Elasticsearch\Model\Config $clientConfig,
+        \Magento\Elasticsearch\Model\Adapter\Index\BuilderInterface $indexBuilder,
+        \Psr\Log\LoggerInterface $logger,
+        \Magento\Elasticsearch\Model\Adapter\Index\IndexNameResolver $indexNameResolver,
         BatchDataMapperInterface $batchDocumentDataMapper,
         $options = [],
         ProductAttributeRepositoryInterface $productAttributeRepository = null,
@@ -153,7 +146,7 @@ class Elasticsearch
             $this->client = $this->connectionManager->getConnection($options);
         } catch (\Exception $e) {
             $this->logger->critical($e);
-            throw new LocalizedException(
+            throw new \Magento\Framework\Exception\LocalizedException(
                 __('The search failed because of a search engine misconfiguration.')
             );
         }
@@ -163,14 +156,14 @@ class Elasticsearch
      * Retrieve Elasticsearch server status
      *
      * @return bool
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function ping()
     {
         try {
             $response = $this->client->ping();
         } catch (\Exception $e) {
-            throw new LocalizedException(
+            throw new \Magento\Framework\Exception\LocalizedException(
                 __('Could not ping search engine: %1', $e->getMessage())
             );
         }
@@ -394,12 +387,22 @@ class Elasticsearch
             return $this;
         }
 
-        try {
-            $this->updateMapping($attributeCode, $indexName);
-        } catch (Missing404Exception $e) {
-            unset($this->indexByCode[$mappedIndexerId . '_' . $storeId]);
-            $indexName = $this->getIndexFromAlias($storeId, $mappedIndexerId);
-            $this->updateMapping($attributeCode, $indexName);
+        $attribute = $this->productAttributeRepository->get($attributeCode);
+        $newAttributeMapping = $this->staticFieldProvider->getField($attribute);
+        $mappedAttributes = $this->getMappedAttributes($indexName);
+
+        $attrToUpdate = array_diff_key($newAttributeMapping, $mappedAttributes);
+        if (!empty($attrToUpdate)) {
+            $settings['index']['mapping']['total_fields']['limit'] = $this
+                ->getMappingTotalFieldsLimit(array_merge($mappedAttributes, $attrToUpdate));
+            $this->client->putIndexSettings($indexName, ['settings' => $settings]);
+
+            $this->client->addFieldsMapping(
+                $attrToUpdate,
+                $indexName,
+                $this->clientConfig->getEntityType()
+            );
+            $this->setMappedAttributes($indexName, $attrToUpdate);
         }
 
         return $this;
@@ -494,39 +497,6 @@ class Elasticsearch
      */
     private function getMappingTotalFieldsLimit(array $allAttributeTypes): int
     {
-        $count = count($allAttributeTypes);
-        foreach ($allAttributeTypes as $attributeType) {
-            if (isset($attributeType['fields'])) {
-                $count += count($attributeType['fields']);
-            }
-        }
-        return $count + self::MAPPING_TOTAL_FIELDS_BUFFER_LIMIT;
-    }
-
-    /**
-     * Perform index mapping update
-     *
-     * @param string $attributeCode
-     * @param string $indexName
-     * @return void
-     */
-    private function updateMapping(string $attributeCode, string $indexName): void
-    {
-        $attribute = $this->productAttributeRepository->get($attributeCode);
-        $newAttributeMapping = $this->staticFieldProvider->getField($attribute);
-        $mappedAttributes = $this->getMappedAttributes($indexName);
-        $attrToUpdate = array_diff_key($newAttributeMapping, $mappedAttributes);
-        if (!empty($attrToUpdate)) {
-            $settings['index']['mapping']['total_fields']['limit'] = $this
-                ->getMappingTotalFieldsLimit(array_merge($mappedAttributes, $attrToUpdate));
-            $this->client->putIndexSettings($indexName, ['settings' => $settings]);
-
-            $this->client->addFieldsMapping(
-                $attrToUpdate,
-                $indexName,
-                $this->clientConfig->getEntityType()
-            );
-            $this->setMappedAttributes($indexName, $attrToUpdate);
-        }
+        return count($allAttributeTypes) + self::MAPPING_TOTAL_FIELDS_BUFFER_LIMIT;
     }
 }

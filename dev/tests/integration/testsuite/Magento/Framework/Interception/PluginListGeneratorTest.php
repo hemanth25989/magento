@@ -11,14 +11,8 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\DriverInterface;
 use Magento\TestFramework\Application;
 use Magento\TestFramework\Helper\Bootstrap;
-use PHPUnit\Framework\TestCase;
 
-/**
- * Provide tests for PluginListGeneratorTest
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class PluginListGeneratorTest extends TestCase
+class PluginListGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Generated plugin list config for frontend scope
@@ -99,7 +93,8 @@ class PluginListGeneratorTest extends TestCase
         $expected = [
             1 => [
                 0 => 'genericHeaderPlugin',
-                1 => 'response-http-page-cache'
+                1 => 'asyncCssLoad',
+                2 => 'response-http-page-cache'
             ]
         ];
         // Here in test is assumed that this class below has 3 plugins. But the amount of plugins and class itself
@@ -109,7 +104,6 @@ class PluginListGeneratorTest extends TestCase
             $configData[2],
             'Processed plugin does not exist in the processed plugins array.'
         );
-
         $this->assertSame(
             $expected,
             $configData[2]['Magento\\Framework\\App\\Response\\Http_sendResponse___self'],
@@ -122,7 +116,7 @@ class PluginListGeneratorTest extends TestCase
      *
      * @return array
      */
-    private function getCustomDirs(): array
+    private function getCustomDirs()
     {
         $path = DirectoryList::PATH;
         $generated = "{$this->application->getTempDir()}/generated";

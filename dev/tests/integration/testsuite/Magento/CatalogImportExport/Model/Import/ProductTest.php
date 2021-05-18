@@ -34,7 +34,6 @@ use Magento\ImportExport\Model\Import\Source\Csv;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap as BootstrapHelper;
-use Magento\TestFramework\Indexer\TestCase;
 use Magento\UrlRewrite\Model\ResourceModel\UrlRewriteCollection;
 use Psr\Log\LoggerInterface;
 
@@ -51,10 +50,8 @@ use Psr\Log\LoggerInterface;
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * phpcs:disable Generic.PHP.NoSilencedErrors, Generic.Metrics.NestingLevel, Magento2.Functions.StaticFunction
  */
-class ProductTest extends TestCase
+class ProductTest extends \Magento\TestFramework\Indexer\TestCase
 {
-    private const LONG_FILE_NAME_IMAGE = 'magento_long_image_name_magento_long_image_name_magento_long_image_name.jpg';
-
     /**
      * @var \Magento\CatalogImportExport\Model\Import\Product
      */
@@ -732,7 +729,7 @@ class ProductTest extends TestCase
                     )
                 );
                 // phpcs:ignore Magento2.Performance.ForeachArrayMerge
-                $option = array_merge([], ...$option);
+                $option = array_merge(...$option);
 
                 if (!empty($option['type']) && !empty($option['name'])) {
                     $lastOptionKey = $option['type'] . '|' . $option['name'];
@@ -1032,12 +1029,13 @@ class ProductTest extends TestCase
             )
         );
 
-        $this->importDataForMediaTest('import_media_additional_long_name_image.csv');
+        $this->importDataForMediaTest('import_media_additional_images.csv');
         $product->cleanModelCache();
         $product = $this->getProductBySku('simple_new');
         $items = array_values($product->getMediaGalleryImages()->getItems());
-        $images[] = ['file' => '/m/a/' . self::LONG_FILE_NAME_IMAGE, 'label' => ''];
-        $this->assertCount(6, $items);
+        $images[] = ['file' => '/m/a/magento_additional_image_three.jpg', 'label' => ''];
+        $images[] = ['file' => '/m/a/magento_additional_image_four.jpg', 'label' => ''];
+        $this->assertCount(7, $items);
         $this->assertEquals(
             $images,
             array_map(
@@ -1047,23 +1045,6 @@ class ProductTest extends TestCase
                 $items
             )
         );
-    }
-
-    /**
-     * Test import twice and check that image will not be duplicate
-     *
-     * @magentoDataFixture mediaImportImageFixture
-     * @return void
-     */
-    public function testSaveMediaImageDuplicateImages(): void
-    {
-        $this->importDataForMediaTest('import_media.csv');
-        $imagesCount = count($this->getProductBySku('simple_new')->getMediaGalleryImages()->getItems());
-
-        // import the same file again
-        $this->importDataForMediaTest('import_media.csv');
-
-        $this->assertCount($imagesCount, $this->getProductBySku('simple_new')->getMediaGalleryImages()->getItems());
     }
 
     /**
@@ -1107,10 +1088,6 @@ class ProductTest extends TestCase
             [
                 'source' => __DIR__ . '/../../../../Magento/Catalog/_files/magento_thumbnail.jpg',
                 'dest' => $dirPath . '/magento_thumbnail.jpg',
-            ],
-            [
-                'source' => __DIR__ . '/../../../../Magento/Catalog/_files/' . self::LONG_FILE_NAME_IMAGE,
-                'dest' => $dirPath . '/' . self::LONG_FILE_NAME_IMAGE,
             ],
             [
                 'source' => __DIR__ . '/_files/magento_additional_image_one.jpg',
@@ -1670,12 +1647,6 @@ class ProductTest extends TestCase
                  ]
             ],
             [
-                'products_to_check_valid_url_keys_with_different_language.csv',
-                [
-                    RowValidatorInterface::ERROR_DUPLICATE_URL_KEY => 0
-                ]
-            ],
-            [
                 'products_to_check_duplicated_url_keys.csv',
                 [
                     RowValidatorInterface::ERROR_DUPLICATE_URL_KEY => 2
@@ -1844,9 +1815,6 @@ class ProductTest extends TestCase
             'simple2' => 'url-key2',
             'simple3' => 'url-key3'
         ];
-        // added by _files/products_to_import_with_valid_url_keys.csv
-        $this->importedProducts[] = 'simple3';
-
         $filesystem = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->create(\Magento\Framework\Filesystem::class);
         $directory = $filesystem->getDirectoryWrite(DirectoryList::ROOT);
@@ -1887,9 +1855,6 @@ class ProductTest extends TestCase
             'simple2' => 'normal-url',
             'simple3' => 'some!wrong\'url'
         ];
-        // added by _files/products_to_import_with_invalid_url_keys.csv
-        $this->importedProducts[] = 'simple3';
-
         $filesystem = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->create(\Magento\Framework\Filesystem::class);
         $directory = $filesystem->getDirectoryWrite(DirectoryList::ROOT);
@@ -2039,9 +2004,6 @@ class ProductTest extends TestCase
             'simple2' => 'simple-2',
             'simple3' => 'simple-3'
         ];
-        // added by _files/products_to_import_without_url_keys.csv
-        $this->importedProducts[] = 'simple3';
-
         $filesystem = $this->objectManager->create(\Magento\Framework\Filesystem::class);
         $directory = $filesystem->getDirectoryWrite(DirectoryList::ROOT);
         $source = $this->objectManager->create(
@@ -2259,15 +2221,11 @@ class ProductTest extends TestCase
         $registry->register('isSecureArea', true);
 
         $productSkuList = ['simple1', 'simple2', 'simple3'];
-        $categoryIds = [];
         foreach ($productSkuList as $sku) {
             try {
-                /** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
                 $productRepository = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
                     ->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
-                /** @var \Magento\Catalog\Model\Product $product */
                 $product = $productRepository->get($sku, true);
-                $categoryIds[] = $product->getCategoryIds();
                 if ($product->getId()) {
                     $productRepository->delete($product);
                 }
@@ -2276,14 +2234,6 @@ class ProductTest extends TestCase
                 //Product already removed
             }
         }
-
-        /** @var \Magento\Catalog\Model\ResourceModel\Product\Collection $collection */
-        $collection = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->create(\Magento\Catalog\Model\ResourceModel\Category\Collection::class);
-        $collection
-            ->addAttributeToFilter('entity_id', ['in' => \array_unique(\array_merge([], ...$categoryIds))])
-            ->load()
-            ->delete();
 
         $registry->unregister('isSecureArea');
         $registry->register('isSecureArea', false);
@@ -3219,12 +3169,6 @@ class ProductTest extends TestCase
      */
     public function testCheckDoubleImportOfProducts()
     {
-        $this->importedProducts = [
-            'simple1',
-            'simple2',
-            'simple3',
-        ];
-
         /** @var SearchCriteria $searchCriteria */
         $searchCriteria = $this->searchCriteriaBuilder->create();
 

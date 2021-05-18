@@ -11,11 +11,10 @@ use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Backend\Model\Auth\Session;
 use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Customer\Model\Config\Share;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Controller\Result\Json as JsonResult;
+use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
@@ -28,7 +27,6 @@ use Magento\LoginAsCustomerApi\Api\DeleteAuthenticationDataForUserInterface;
 use Magento\LoginAsCustomerApi\Api\IsLoginAsCustomerEnabledForCustomerInterface;
 use Magento\LoginAsCustomerApi\Api\SaveAuthenticationDataInterface;
 use Magento\LoginAsCustomerApi\Api\SetLoggedAsCustomerCustomerIdInterface;
-use Magento\LoginAsCustomerApi\Api\GenerateAuthenticationSecretInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Store\Model\StoreSwitcher\ManageStoreCookie;
 
@@ -38,7 +36,7 @@ use Magento\Store\Model\StoreSwitcher\ManageStoreCookie;
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Login extends Action implements HttpPostActionInterface
+class Login extends Action implements HttpGetActionInterface
 {
     /**
      * Authorization level of a basic admin session
@@ -108,11 +106,6 @@ class Login extends Action implements HttpPostActionInterface
     private $isLoginAsCustomerEnabled;
 
     /**
-     * @var GenerateAuthenticationSecretInterface
-     */
-    private $generateAuthenticationSecret;
-
-    /**
      * @param Context $context
      * @param Session $authSession
      * @param StoreManagerInterface $storeManager
@@ -122,11 +115,11 @@ class Login extends Action implements HttpPostActionInterface
      * @param SaveAuthenticationDataInterface $saveAuthenticationData
      * @param DeleteAuthenticationDataForUserInterface $deleteAuthenticationDataForUser
      * @param Url $url
-     * @param Share|null $share
-     * @param ManageStoreCookie|null $manageStoreCookie
-     * @param SetLoggedAsCustomerCustomerIdInterface|null $setLoggedAsCustomerCustomerId
-     * @param IsLoginAsCustomerEnabledForCustomerInterface|null $isLoginAsCustomerEnabled
-     * @param GenerateAuthenticationSecretInterface|null $generateAuthenticationSecret
+     * @param Share $share
+     * @param ManageStoreCookie $manageStoreCookie
+     * @param SetLoggedAsCustomerCustomerIdInterface $setLoggedAsCustomerCustomerId
+     * @param IsLoginAsCustomerEnabledForCustomerInterface $isLoginAsCustomerEnabled
+     *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -142,8 +135,7 @@ class Login extends Action implements HttpPostActionInterface
         ?Share $share = null,
         ?ManageStoreCookie $manageStoreCookie = null,
         ?SetLoggedAsCustomerCustomerIdInterface $setLoggedAsCustomerCustomerId = null,
-        ?IsLoginAsCustomerEnabledForCustomerInterface $isLoginAsCustomerEnabled = null,
-        ?GenerateAuthenticationSecretInterface $generateAuthenticationSecret = null
+        ?IsLoginAsCustomerEnabledForCustomerInterface $isLoginAsCustomerEnabled = null
     ) {
         parent::__construct($context);
 
@@ -161,8 +153,6 @@ class Login extends Action implements HttpPostActionInterface
             ?? ObjectManager::getInstance()->get(SetLoggedAsCustomerCustomerIdInterface::class);
         $this->isLoginAsCustomerEnabled = $isLoginAsCustomerEnabled
             ?? ObjectManager::getInstance()->get(IsLoginAsCustomerEnabledForCustomerInterface::class);
-        $this->generateAuthenticationSecret = $generateAuthenticationSecret
-            ?? ObjectManager::getInstance()->get(GenerateAuthenticationSecretInterface::class);
     }
 
     /**
@@ -174,7 +164,8 @@ class Login extends Action implements HttpPostActionInterface
      */
     public function execute(): ResultInterface
     {
-        $messages = [];
+        /** @var Redirect $resultRedirect */
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
 
         $customerId = (int)$this->_request->getParam('customer_id');
         if (!$customerId) {
@@ -184,24 +175,24 @@ class Login extends Action implements HttpPostActionInterface
         $isLoginAsCustomerEnabled = $this->isLoginAsCustomerEnabled->execute($customerId);
         if (!$isLoginAsCustomerEnabled->isEnabled()) {
             foreach ($isLoginAsCustomerEnabled->getMessages() as $message) {
-                $messages[] = __($message);
+                $this->messageManager->addErrorMessage(__($message));
             }
 
-            return $this->prepareJsonResult($messages);
+            return $resultRedirect->setPath('customer/index/index');
         }
 
         try {
             $customer = $this->customerRepository->getById($customerId);
         } catch (NoSuchEntityException $e) {
-            $messages[] = __('Customer with this ID no longer exists.');
-            return $this->prepareJsonResult($messages);
+            $this->messageManager->addErrorMessage('Customer with this ID are no longer exist.');
+            return $resultRedirect->setPath('customer/index/index');
         }
 
         if ($this->config->isStoreManualChoiceEnabled()) {
             $storeId = (int)$this->_request->getParam('store_id');
             if (empty($storeId)) {
-                $messages[] = __('Please select a Store View to login in.');
-                return $this->prepareJsonResult($messages);
+                $this->messageManager->addNoticeMessage(__('Please select a Store to login in.'));
+                return $resultRedirect->setPath('customer/index/edit', ['id' => $customerId]);
             }
         } elseif ($this->share->isGlobalScope()) {
             $storeId = (int)$this->storeManager->getDefaultStoreView()->getId();
@@ -222,13 +213,12 @@ class Login extends Action implements HttpPostActionInterface
         );
 
         $this->deleteAuthenticationDataForUser->execute($userId);
-        $this->saveAuthenticationData->execute($authenticationData);
+        $secret = $this->saveAuthenticationData->execute($authenticationData);
         $this->setLoggedAsCustomerCustomerId->execute($customerId);
 
-        $secret = $this->generateAuthenticationSecret->execute($authenticationData);
         $redirectUrl = $this->getLoginProceedRedirectUrl($secret, $storeId);
-
-        return $this->prepareJsonResult($messages, $redirectUrl);
+        $resultRedirect->setUrl($redirectUrl);
+        return $resultRedirect;
     }
 
     /**
@@ -242,10 +232,10 @@ class Login extends Action implements HttpPostActionInterface
     private function getLoginProceedRedirectUrl(string $secret, int $storeId): string
     {
         $targetStore = $this->storeManager->getStore($storeId);
-        $queryParameters = ['secret' => $secret];
+
         $redirectUrl = $this->url
             ->setScope($targetStore)
-            ->getUrl('loginascustomer/login/index', ['_query' => $queryParameters, '_nosid' => true]);
+            ->getUrl('loginascustomer/login/index', ['secret' => $secret, '_nosid' => true]);
 
         if (!$targetStore->isUseStoreInUrl()) {
             $fromStore = $this->storeManager->getStore();
@@ -253,25 +243,5 @@ class Login extends Action implements HttpPostActionInterface
         }
 
         return $redirectUrl;
-    }
-
-    /**
-     * Prepare JSON result
-     *
-     * @param array $messages
-     * @param string|null $redirectUrl
-     * @return JsonResult
-     */
-    private function prepareJsonResult(array $messages, ?string $redirectUrl = null)
-    {
-        /** @var JsonResult $jsonResult */
-        $jsonResult = $this->resultFactory->create(ResultFactory::TYPE_JSON);
-
-        $jsonResult->setData([
-            'redirectUrl' => $redirectUrl,
-            'messages' => $messages,
-        ]);
-
-        return $jsonResult;
     }
 }

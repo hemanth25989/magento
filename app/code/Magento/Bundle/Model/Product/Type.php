@@ -13,7 +13,6 @@ use Magento\Bundle\Model\ResourceModel\Selection\Collection\FilterApplier as Sel
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Framework\File\UploaderFactory;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\Stdlib\ArrayUtils;
@@ -191,11 +190,11 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
      * @param PriceCurrencyInterface $priceCurrency
      * @param \Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry
      * @param \Magento\CatalogInventory\Api\StockStateInterface $stockState
-     * @param Json|null $serializer
+     * @param \Magento\Framework\Serialize\Serializer\Json $serializer
      * @param MetadataPool|null $metadataPool
      * @param SelectionCollectionFilterApplier|null $selectionCollectionFilterApplier
      * @param ArrayUtils|null $arrayUtility
-     * @param UploaderFactory $uploaderFactory
+     *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -223,8 +222,7 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
         Json $serializer = null,
         MetadataPool $metadataPool = null,
         SelectionCollectionFilterApplier $selectionCollectionFilterApplier = null,
-        ArrayUtils $arrayUtility = null,
-        UploaderFactory $uploaderFactory = null
+        ArrayUtils $arrayUtility = null
     ) {
         $this->_catalogProduct = $catalogProduct;
         $this->_catalogData = $catalogData;
@@ -256,8 +254,7 @@ class Type extends \Magento\Catalog\Model\Product\Type\AbstractType
             $coreRegistry,
             $logger,
             $productRepository,
-            $serializer,
-            $uploaderFactory
+            $serializer
         );
     }
 

@@ -42,8 +42,9 @@
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutAsSaleRoleUser"/>
             <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
             <!--Delete created data-->
-            <actionGroup ref="AdminDeleteUserRoleActionGroup" stepKey="deleteUserRole">
-                <argument name="roleName" value="{{adminRole.rolename}}"/>
+            <actionGroup ref="AdminUserOpenAdminRolesPageActionGroup" stepKey="navigateToUserRoleGrid"/>
+            <actionGroup ref="AdminDeleteRoleActionGroup" stepKey="deleteUserRole">
+                <argument name="role" value="adminRole"/>
             </actionGroup>
             <actionGroup ref="AdminOpenAdminUsersPageActionGroup" stepKey="goToAllUsersPage"/>
             <actionGroup ref="AdminDeleteNewUserActionGroup" stepKey="deleteUser">

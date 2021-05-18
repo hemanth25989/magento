@@ -36,12 +36,9 @@ class PricesTest extends TestCase
         );
     }
 
-    public function testGetFormattedPrices(): void
+    public function testGetFormattedPrices()
     {
         $expected = [
-            'baseOldPrice' => [
-                'amount' => 1000
-            ],
             'oldPrice' => [
                 'amount' => 500
             ],
@@ -63,8 +60,8 @@ class PricesTest extends TestCase
 
         $this->localeFormatMock->expects($this->atLeastOnce())
             ->method('getNumber')
-            ->withConsecutive([1000], [500], [1000], [500])
-            ->will($this->onConsecutiveCalls(1000, 500, 1000, 500));
+            ->withConsecutive([500], [1000], [500])
+            ->will($this->onConsecutiveCalls(500, 1000, 500));
 
         $this->assertEquals($expected, $this->model->getFormattedPrices($priceInfoMock));
     }

@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace Magento\QuoteGraphQl\Test\Unit\Model\Cart;
 
 use Magento\Checkout\Api\Exception\PaymentProcessingRateLimitExceededException;
-use Magento\Checkout\Api\PaymentSavingRateLimiterInterface;
+use Magento\Checkout\Api\PaymentProcessingRateLimiterInterface;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Quote\Model\Quote;
@@ -25,7 +25,7 @@ class SetPaymentMethodOnCartTest extends TestCase
     private $model;
 
     /**
-     * @var PaymentSavingRateLimiterInterface|MockObject
+     * @var PaymentProcessingRateLimiterInterface|MockObject
      */
     private $rateLimiterMock;
 
@@ -37,10 +37,10 @@ class SetPaymentMethodOnCartTest extends TestCase
         parent::setUp();
 
         $objectManager = new ObjectManager($this);
-        $this->rateLimiterMock = $this->getMockForAbstractClass(PaymentSavingRateLimiterInterface::class);
+        $this->rateLimiterMock = $this->getMockForAbstractClass(PaymentProcessingRateLimiterInterface::class);
         $this->model = $objectManager->getObject(
             SetPaymentMethodOnCart::class,
-            ['savingRateLimiter' => $this->rateLimiterMock]
+            ['paymentRateLimiter' => $this->rateLimiterMock]
         );
     }
 
@@ -52,9 +52,10 @@ class SetPaymentMethodOnCartTest extends TestCase
     public function testLimited(): void
     {
         $this->rateLimiterMock->method('limit')
-            ->willThrowException(new PaymentProcessingRateLimitExceededException(__('Error')));
+            ->willThrowException(new PaymentProcessingRateLimitExceededException(__($message = 'Error')));
+        $this->expectException(GraphQlInputException::class);
+        $this->expectExceptionMessage($message);
 
-        //There will be en error if the limiter won't stop the execution
         $this->model->execute($this->createMock(Quote::class), []);
     }
 }

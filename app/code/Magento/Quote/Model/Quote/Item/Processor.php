@@ -96,12 +96,11 @@ class Processor
         }
         $item->addQty($candidate->getCartQty());
 
+        $customPrice = $request->getCustomPrice();
         if (!$item->getParentItem() || $item->getParentItem()->isChildrenCalculated()) {
             $item->setPrice($candidate->getFinalPrice());
         }
-
-        $customPrice = $request->getCustomPrice();
-        if (!empty($customPrice) && !$candidate->getParentProductId()) {
+        if (!empty($customPrice)) {
             $item->setCustomPrice($customPrice);
             $item->setOriginalCustomPrice($customPrice);
         }

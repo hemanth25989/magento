@@ -255,7 +255,7 @@ class DataTest extends TestCase
      */
     public function testLoadFirstVariationWithSwatchImage($imageTypes, $expected, $requiredAttributes)
     {
-        $this->getSwatchAttributes();
+        $this->getSwatchAttributes($this->productMock);
         $this->getUsedProducts($imageTypes + $requiredAttributes, $imageTypes);
 
         $result = $this->swatchHelperObject->loadFirstVariationWithSwatchImage($this->productMock, $requiredAttributes);
@@ -295,13 +295,16 @@ class DataTest extends TestCase
         ];
     }
 
-    public function testLoadVariationByFallback()
+    /**
+     * @dataProvider dataForCreateSwatchProductByFallback
+     */
+    public function testLoadVariationByFallback($product)
     {
         $metadataMock = $this->getMockForAbstractClass(EntityMetadataInterface::class);
         $this->metaDataPoolMock->expects($this->once())->method('getMetadata')->willReturn($metadataMock);
         $metadataMock->expects($this->once())->method('getLinkField')->willReturn('id');
 
-        $this->getSwatchAttributes();
+        $this->getSwatchAttributes($product);
 
         $this->prepareVariationCollection();
 
@@ -318,7 +321,7 @@ class DataTest extends TestCase
      */
     public function testLoadFirstVariationWithImage($imageTypes, $expected, $requiredAttributes)
     {
-        $this->getSwatchAttributes();
+        $this->getSwatchAttributes($this->productMock);
         $this->getUsedProducts($imageTypes + $requiredAttributes, $imageTypes);
 
         $result = $this->swatchHelperObject->loadFirstVariationWithImage($this->productMock, $requiredAttributes);
@@ -585,6 +588,23 @@ class DataTest extends TestCase
                     'small_image' => 'img1.png',
                     'thumbnail' => 'img1.png',
                 ]
+            ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function dataForCreateSwatchProductByFallback()
+    {
+        $productMock = $this->createMock(Product::class);
+
+        return [
+            [
+                95,
+            ],
+            [
+                $productMock,
             ],
         ];
     }

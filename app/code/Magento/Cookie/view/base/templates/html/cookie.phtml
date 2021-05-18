@@ -10,11 +10,9 @@
  * @var $block \Magento\Framework\View\Element\Js\Cookie
  * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
  */
-$isCookieSecure = $block->getSessionConfig()->getCookieSecure() ? 'true' : 'false';
-$scriptString = "
-    window.cookiesConfig = window.cookiesConfig || {};
-    window.cookiesConfig.secure = $isCookieSecure;
-";
-?>
 
-<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false) ?>
+$scriptString = '
+    window.cookiesConfig = window.cookiesConfig || {};
+    window.cookiesConfig.secure = ' . /* @noEscape */ $block->getSessionConfig()->getCookieSecure() ? 'true' : 'false';
+
+echo /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false);

@@ -240,8 +240,7 @@ class Cart extends AbstractIndex implements Action\HttpPostActionInterface
                 $publicCookieMetadata = $this->cookieMetadataFactory->createPublicCookieMetadata()
                     ->setDuration(3600)
                     ->setPath('/')
-                    ->setHttpOnly(false)
-                    ->setSameSite('Strict');
+                    ->setHttpOnly(false);
 
                 $this->cookieManager->setPublicCookie(
                     'add_to_cart',

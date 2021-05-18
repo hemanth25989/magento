@@ -62,9 +62,8 @@
             <argument name="attributeType" value="{{colorProductAttribute.input_type}}"/>
             <argument name="scope" value="Global"/>
         </actionGroup>
-        <actionGroup ref="ReloadPageActionGroup" stepKey="reloadPage"/>
-        <comment userInput="Replacing reload action and preserve Backward Compatibility" stepKey="waitForProductPageReload"/>
-
+        <reloadPage stepKey="reloadPage"/>
+        <waitForPageLoad stepKey="waitForProductPageReload"/>
         <click selector="{{AdminProductFormConfigurationsSection.createConfigurations}}" stepKey="clickOnCreateConfigurations"/>
         <waitForPageLoad stepKey="waitForFilters"/>
         <actionGroup ref="CreateOptionsForAttributeActionGroup" stepKey="createOptions">
@@ -143,9 +142,8 @@
             <argument name="attributeType" value="{{productAttributeColor.input_type}}"/>
             <argument name="scope" value="Global"/>
         </actionGroup>
-        <actionGroup ref="ReloadPageActionGroup" stepKey="reloadDuplicatedProductPage"/>
-        <comment userInput="Replacing reload action and preserve Backward Compatibility" stepKey="waitForDuplicatedProductReload"/>
-
+        <reloadPage stepKey="reloadDuplicatedProductPage"/>
+        <waitForPageLoad stepKey="waitForDuplicatedProductReload"/>
         <click selector="{{AdminProductFormConfigurationsSection.createConfigurations}}" stepKey="createConfigurationsDuplicatedProduct"/>
         <waitForElementVisible selector="{{AdminGridSelectRows.multicheckDropdown}}" stepKey="waitForCreateConfigurationsPageLoad"/>
         <click selector="{{AdminGridSelectRows.multicheckDropdown}}" stepKey="openMulticheckDropdown"/>

@@ -10,10 +10,10 @@
               xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/actionGroupSchema.xsd">
     <actionGroup name="AdminEnhancedMediaGalleryCloseViewDetailsActionGroup">
         <annotations>
-            <description>Closes View Details panel of Media Gallery image.</description>
+            <description>Closes View Details panel</description>
         </annotations>
 
         <click selector="{{AdminEnhancedMediaGalleryViewDetailsSection.cancel}}" stepKey="clickCancel"/>
-        <waitForElementNotVisible selector="{{AdminEnhancedMediaGalleryViewDetailsSection.modalTitle}}" stepKey="waitForElementRender"/>
+        <wait time="1" stepKey="waitForElementRender"/>
     </actionGroup>
 </actionGroups>

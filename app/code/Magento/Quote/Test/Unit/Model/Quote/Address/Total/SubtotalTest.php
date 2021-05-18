@@ -32,16 +32,22 @@ use PHPUnit\Framework\TestCase;
  */
 class SubtotalTest extends TestCase
 {
-    /** @var ObjectManager */
+    /**
+     * @var ObjectManager
+     */
     protected $objectManager;
 
-    /**  @var Subtotal */
+    /**
+     * @var Subtotal
+     */
     protected $subtotalModel;
 
     /** @var MockObject */
     protected $stockItemMock;
 
-    /** @var MockObject */
+    /**
+     * @var MockObject
+     */
     protected $stockRegistry;
 
     protected function setUp(): void
@@ -51,15 +57,14 @@ class SubtotalTest extends TestCase
             Subtotal::class
         );
 
-        $this->stockRegistry = $this->getMockBuilder(StockRegistry::class)
-            ->disableOriginalConstructor()
-            ->addMethods(['__wakeup'])
-            ->onlyMethods(['getStockItem'])
-            ->getMock();
-        $this->stockItemMock = $this->getMockBuilder(\Magento\CatalogInventory\Model\Stock\Item::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['getIsInStock', '__wakeup'])
-            ->getMock();
+        $this->stockRegistry = $this->createPartialMock(
+            StockRegistry::class,
+            ['getStockItem']
+        );
+        $this->stockItemMock = $this->createPartialMock(
+            \Magento\CatalogInventory\Model\Stock\Item::class,
+            ['getIsInStock', '__wakeup']
+        );
     }
 
     /**
@@ -183,9 +188,7 @@ class SubtotalTest extends TestCase
         $quoteMock = $this->createMock(Quote::class);
         $totalMock = $this->getMockBuilder(Total::class)
             ->addMethods(['getSubtotal'])
-            ->disableOriginalConstructor()
-            ->getMock();
-
+            ->getMockForAbstractClass();
         $totalMock->expects($this->once())->method('getSubtotal')->willReturn(100);
 
         $this->assertEquals($expectedResult, $this->subtotalModel->fetch($quoteMock, $totalMock));

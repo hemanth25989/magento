@@ -9,7 +9,6 @@ use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Registry;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\UrlRewrite\Model\UrlRewrite;
 
 $objectManager = Bootstrap::getObjectManager();
 /** @var Registry $registry */
@@ -26,10 +25,6 @@ try {
 } catch (NoSuchEntityException $e) {
     //Product already removed
 }
-
-$urlRewrite = $objectManager->create(UrlRewrite::class);
-$urlRewrite->load('simple2.html', 'request_path');
-$urlRewrite->delete();
 
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);

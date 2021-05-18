@@ -1,5 +1,6 @@
 <?php
 /**
+ *
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
@@ -7,12 +8,12 @@ declare(strict_types=1);
 
 namespace Magento\Persistent\Test\Unit\Observer;
 
-use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\Event;
 use Magento\Framework\Event\Observer;
 use Magento\Persistent\Controller\Index;
 use Magento\Persistent\Helper\Data;
 use Magento\Persistent\Helper\Session;
+use Magento\Persistent\Model\QuoteManager;
 use Magento\Persistent\Observer\MakePersistentQuoteGuestObserver;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -47,10 +48,10 @@ class MakePersistentQuoteGuestObserverTest extends TestCase
     /**
      * @var MockObject
      */
-    protected $checkoutSession;
+    protected $quoteManagerMock;
 
     /**
-     * @var CheckoutSession|MockObject
+     * @var MockObject
      */
     protected $eventManagerMock;
 
@@ -59,9 +60,6 @@ class MakePersistentQuoteGuestObserverTest extends TestCase
      */
     protected $actionMock;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp(): void
     {
         $this->actionMock = $this->createMock(Index::class);
@@ -69,7 +67,7 @@ class MakePersistentQuoteGuestObserverTest extends TestCase
         $this->sessionHelperMock = $this->createMock(Session::class);
         $this->helperMock = $this->createMock(Data::class);
         $this->customerSessionMock = $this->createMock(\Magento\Customer\Model\Session::class);
-        $this->checkoutSession = $this->createMock(CheckoutSession::class);
+        $this->quoteManagerMock = $this->createMock(QuoteManager::class);
         $this->eventManagerMock =
             $this->getMockBuilder(Event::class)
                 ->addMethods(['getControllerAction'])
@@ -83,7 +81,7 @@ class MakePersistentQuoteGuestObserverTest extends TestCase
             $this->sessionHelperMock,
             $this->helperMock,
             $this->customerSessionMock,
-            $this->checkoutSession
+            $this->quoteManagerMock
         );
     }
 
@@ -96,8 +94,7 @@ class MakePersistentQuoteGuestObserverTest extends TestCase
         $this->sessionHelperMock->expects($this->once())->method('isPersistent')->willReturn(true);
         $this->customerSessionMock->expects($this->once())->method('isLoggedIn')->willReturn(false);
         $this->helperMock->expects($this->never())->method('isShoppingCartPersist');
-        $this->checkoutSession->expects($this->once())->method('clearQuote')->willReturnSelf();
-        $this->checkoutSession->expects($this->once())->method('clearStorage')->willReturnSelf();
+        $this->quoteManagerMock->expects($this->once())->method('setGuest')->with(true);
         $this->model->execute($this->observerMock);
     }
 
@@ -110,8 +107,7 @@ class MakePersistentQuoteGuestObserverTest extends TestCase
         $this->sessionHelperMock->expects($this->once())->method('isPersistent')->willReturn(true);
         $this->customerSessionMock->expects($this->once())->method('isLoggedIn')->willReturn(true);
         $this->helperMock->expects($this->once())->method('isShoppingCartPersist')->willReturn(true);
-        $this->checkoutSession->expects($this->once())->method('clearQuote')->willReturnSelf();
-        $this->checkoutSession->expects($this->once())->method('clearStorage')->willReturnSelf();
+        $this->quoteManagerMock->expects($this->once())->method('setGuest')->with(true);
         $this->model->execute($this->observerMock);
     }
 
@@ -124,8 +120,7 @@ class MakePersistentQuoteGuestObserverTest extends TestCase
         $this->sessionHelperMock->expects($this->once())->method('isPersistent')->willReturn(true);
         $this->customerSessionMock->expects($this->once())->method('isLoggedIn')->willReturn(true);
         $this->helperMock->expects($this->once())->method('isShoppingCartPersist')->willReturn(false);
-        $this->checkoutSession->expects($this->never())->method('clearQuote')->willReturnSelf();
-        $this->checkoutSession->expects($this->never())->method('clearStorage')->willReturnSelf();
+        $this->quoteManagerMock->expects($this->never())->method('setGuest');
         $this->model->execute($this->observerMock);
     }
 }

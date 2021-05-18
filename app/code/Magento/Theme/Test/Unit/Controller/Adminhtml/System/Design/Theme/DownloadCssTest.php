@@ -14,7 +14,6 @@ use Magento\Framework\App\Response\Http\FileFactory;
 use Magento\Framework\App\Response\RedirectInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Escaper;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\Directory\ReadInterface;
 use Magento\Framework\Message\ManagerInterface;
@@ -89,11 +88,6 @@ class DownloadCssTest extends TestCase
      */
     protected $controller;
 
-    /**
-     * @var Escaper|MockObject
-     */
-    private $escaperMock;
-
     protected function setUp(): void
     {
         $context = $this->getMockBuilder(Context::class)
@@ -145,9 +139,6 @@ class DownloadCssTest extends TestCase
         $this->filesystem = $this->getMockBuilder(Filesystem::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->escaperMock = $this->getMockBuilder(Escaper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
 
         /** @var Context $context */
         $this->controller = new DownloadCss(
@@ -155,8 +146,7 @@ class DownloadCssTest extends TestCase
             $this->registry,
             $this->fileFactory,
             $this->repository,
-            $this->filesystem,
-            $this->escaperMock
+            $this->filesystem
         );
     }
 
@@ -284,7 +274,6 @@ class DownloadCssTest extends TestCase
         $this->response->expects($this->once())
             ->method('setRedirect')
             ->with($refererUrl);
-        $this->escaperMock->expects($this->once())->method('escapeHtml')->with($themeId)->willReturn($themeId);
 
         $this->controller->execute();
     }

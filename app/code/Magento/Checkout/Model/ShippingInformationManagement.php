@@ -209,11 +209,8 @@ class ShippingInformationManagement implements ShippingInformationManagementInte
         if (!$quote->getIsVirtual()
             && !$shippingAddress->getShippingRateByCode($shippingAddress->getShippingMethod())
         ) {
-            $errorMessage = $methodCode ?
-                __('Carrier with such method not found: %1, %2', $carrierCode, $methodCode)
-                : __('The shipping method is missing. Select the shipping method and try again.');
             throw new NoSuchEntityException(
-                $errorMessage
+                __('Carrier with such method not found: %1, %2', $carrierCode, $methodCode)
             );
         }
 

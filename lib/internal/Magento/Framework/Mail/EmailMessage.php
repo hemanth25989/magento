@@ -7,18 +7,13 @@ declare(strict_types=1);
 
 namespace Magento\Framework\Mail;
 
-use Laminas\Mail\Exception\InvalidArgumentException as LaminasInvalidArgumentException;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Mail\Exception\InvalidArgumentException;
 use Laminas\Mail\Address as LaminasAddress;
 use Laminas\Mail\AddressList;
 use Laminas\Mime\Message as LaminasMimeMessage;
-use Psr\Log\LoggerInterface;
 
 /**
  * Magento Framework Email message
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class EmailMessage extends Message implements EmailMessageInterface
 {
@@ -33,11 +28,6 @@ class EmailMessage extends Message implements EmailMessageInterface
     private $addressFactory;
 
     /**
-     * @var LoggerInterface|null
-     */
-    private $logger;
-
-    /**
      * @param MimeMessageInterface $body
      * @param array $to
      * @param MimeMessageInterfaceFactory $mimeMessageFactory
@@ -49,8 +39,8 @@ class EmailMessage extends Message implements EmailMessageInterface
      * @param Address|null $sender
      * @param string|null $subject
      * @param string|null $encoding
-     * @param LoggerInterface|null $logger
      * @throws InvalidArgumentException
+     *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
@@ -66,12 +56,10 @@ class EmailMessage extends Message implements EmailMessageInterface
         ?array $replyTo = null,
         ?Address $sender = null,
         ?string $subject = '',
-        ?string $encoding = 'utf-8',
-        ?LoggerInterface $logger = null
+        ?string $encoding = 'utf-8'
     ) {
         parent::__construct($encoding);
         $mimeMessage = new LaminasMimeMessage();
-        $this->logger = $logger ?: ObjectManager::getInstance()->get(LoggerInterface::class);
         $mimeMessage->setParts($body->getParts());
         $this->zendMessage->setBody($mimeMessage);
         if ($subject) {
@@ -234,15 +222,7 @@ class EmailMessage extends Message implements EmailMessageInterface
     {
         $laminasAddressList = new AddressList();
         foreach ($arrayList as $address) {
-            try {
-                $laminasAddressList->add($address->getEmail(), $address->getName());
-            } catch (LaminasInvalidArgumentException $e) {
-                $this->logger->warning(
-                    'Could not add an invalid email address to the mailing queue',
-                    ['exception' => $e]
-                );
-                continue;
-            }
+            $laminasAddressList->add($address->getEmail(), $address->getName());
         }
 
         return $laminasAddressList;

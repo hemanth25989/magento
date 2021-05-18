@@ -33,15 +33,13 @@ class Publish
     }
 
     /**
-     * Publish media content synchronization message to the message queue
-     *
-     * @param array $paths
+     * Publish media content synchronization message to the message queue.
      */
-    public function execute(array $paths = []) : void
+    public function execute() : void
     {
         $this->publisher->publish(
             self::TOPIC_MEDIA_GALLERY_SYNCHRONIZATION,
-            $paths
+            [self::TOPIC_MEDIA_GALLERY_SYNCHRONIZATION]
         );
     }
 }
