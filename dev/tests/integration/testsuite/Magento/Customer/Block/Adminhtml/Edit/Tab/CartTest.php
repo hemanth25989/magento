@@ -61,15 +61,9 @@ class CartTest extends AbstractCartTest
                      ->save();
         $this->block->toHtml();
         if ($contains) {
-            $this->assertStringContainsString(
-                "We couldn&#039;t find any records",
-                $this->block->getGridParentHtml()
-            );
+            $this->assertStringContainsString("We couldn&#039;t find any records", $this->block->getGridParentHtml());
         } else {
-            $this->assertStringNotContainsString(
-                "We couldn&#039;t find any records",
-                $this->block->getGridParentHtml()
-            );
+            $this->assertStringNotContainsString("We couldn&#039;t find any records", $this->block->getGridParentHtml());
         }
     }
 
@@ -125,10 +119,7 @@ class CartTest extends AbstractCartTest
             ->disableOriginalConstructor()
             ->getMock();
         $this->block->setCollection($mockCollection);
-        $this->assertStringContainsString(
-            "<div class=\"admin__data-grid-header admin__data-grid-toolbar\"",
-            $this->block->getGridParentHtml()
-        );
+        $this->assertStringContainsString("<div class=\"admin__data-grid-header admin__data-grid-toolbar\"", $this->block->getGridParentHtml());
     }
 
     /**
@@ -154,10 +145,7 @@ class CartTest extends AbstractCartTest
         $this->assertStringContainsString("<div id=\"customer_cart_grid\"", $html);
         $this->assertStringContainsString("<div class=\"admin__data-grid-header admin__data-grid-toolbar\"", $html);
         $this->assertStringContainsString("customer_cart_gridJsObject = new varienGrid(\"customer_cart_grid\",", $html);
-        $this->assertStringContainsString(
-            'backend\u002Fcustomer\u002Fcart_product_composite_cart\u002Fconfigure\u002Fcustomer_id\u002F'
-            . self::CUSTOMER_ID_VALUE,
-            $html
-        );
+        $this->assertStringContainsString('backend\u002Fcustomer\u002Fcart_product_composite_cart\u002Fconfigure\u002Fcustomer_id\u002F'
+            . self::CUSTOMER_ID_VALUE, $html);
     }
 }

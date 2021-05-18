@@ -3,23 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Magento\ConfigurableProduct\Api;
 
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Catalog\Model\Entity\Attribute;
-use Magento\Eav\Model\Config;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\Collection;
 use Magento\Framework\Api\ExtensibleDataInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Webapi\Rest\Request;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\TestFramework\TestCase\WebapiAbstract;
 
 /**
  * Class ProductRepositoryTest for testing ConfigurableProduct integration
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class ProductRepositoryTest extends WebapiAbstract
 {
@@ -29,37 +22,31 @@ class ProductRepositoryTest extends WebapiAbstract
     const CONFIGURABLE_PRODUCT_SKU = 'configurable-product-sku';
 
     /**
-     * @var Config
+     * @var \Magento\Eav\Model\Config
      */
-    private $eavConfig;
+    protected $eavConfig;
 
     /**
-     * @var ObjectManagerInterface
+     * @var \Magento\Framework\ObjectManagerInterface
      */
-    private $objectManager;
+    protected $objectManager;
 
     /**
-     * @var Attribute
+     * @var \Magento\Catalog\Model\Entity\Attribute
      */
-    private $configurableAttribute;
+    protected $configurableAttribute;
 
     /**
-     * @var ProductRepositoryInterface
-     */
-    private $productRepository;
-
-    /**
-     * @inheritdoc
+     * Execute per test initialization
      */
     protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
-        $this->eavConfig = $this->objectManager->get(Config::class);
-        $this->productRepository = $this->objectManager->get(ProductRepositoryInterface::class);
+        $this->eavConfig = $this->objectManager->get(\Magento\Eav\Model\Config::class);
     }
 
     /**
-     * @inheritdoc
+     * Execute per test cleanup
      */
     protected function tearDown(): void
     {
@@ -67,26 +54,16 @@ class ProductRepositoryTest extends WebapiAbstract
         parent::tearDown();
     }
 
-    /**
-     * Retrieve configurable attribute options
-     *
-     * @return array
-     */
     protected function getConfigurableAttributeOptions()
     {
-        /** @var Collection $optionCollection */
+        /** @var \Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\Collection $optionCollection */
         $optionCollection = $this->objectManager->create(
-            Collection::class
+            \Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\Collection::class
         );
         $options = $optionCollection->setAttributeFilter($this->configurableAttribute->getId())->getData();
         return $options;
     }
 
-    /**
-     * Create configurable product by web api
-     *
-     * @return array
-     */
     protected function createConfigurableProduct()
     {
         $productId1 = 10;
@@ -171,65 +148,6 @@ class ProductRepositoryTest extends WebapiAbstract
         $this->assertCount(2, $resultConfigurableProductLinks);
 
         $this->assertEquals([$productId1, $productId2], $resultConfigurableProductLinks);
-    }
-
-    /**
-     * Create configurable with simple which has zero attribute value
-     *
-     * @magentoApiDataFixture Magento/ConfigurableProduct/_files/configurable_attribute_with_source_model.php
-     * @magentoApiDataFixture Magento/Catalog/_files/product_simple.php
-     * @return void
-     */
-    public function testCreateConfigurableProductWithZeroOptionValue(): void
-    {
-        $attributeCode = 'test_configurable_with_sm';
-        $attributeValue = 0;
-
-        $product = $this->productRepository->get('simple');
-        $product->setCustomAttribute($attributeCode, $attributeValue);
-        $this->productRepository->save($product);
-
-        $configurableAttribute = $this->eavConfig->getAttribute('catalog_product', $attributeCode);
-
-        $productData = [
-            'sku' => self::CONFIGURABLE_PRODUCT_SKU,
-            'name' => self::CONFIGURABLE_PRODUCT_SKU,
-            'type_id' => Configurable::TYPE_CODE,
-            'attribute_set_id' => 4,
-            'extension_attributes' => [
-                'configurable_product_options' => [
-                    [
-                        'attribute_id' => $configurableAttribute->getId(),
-                        'label' => 'Test configurable with source model',
-                        'values' => [
-                            ['value_index' => '0'],
-                        ],
-                    ],
-                ],
-                'configurable_product_links' => [$product->getId()],
-            ],
-        ];
-
-        $response = $this->createProduct($productData);
-
-        $this->assertArrayHasKey(ProductInterface::SKU, $response);
-        $this->assertEquals(self::CONFIGURABLE_PRODUCT_SKU, $response[ProductInterface::SKU]);
-
-        $this->assertArrayHasKey(ProductInterface::TYPE_ID, $response);
-        $this->assertEquals('configurable', $response[ProductInterface::TYPE_ID]);
-
-        $this->assertArrayHasKey(ProductInterface::EXTENSION_ATTRIBUTES_KEY, $response);
-        $this->assertArrayHasKey(
-            'configurable_product_options',
-            $response[ProductInterface::EXTENSION_ATTRIBUTES_KEY]
-        );
-        $configurableProductOption =
-            current($response[ProductInterface::EXTENSION_ATTRIBUTES_KEY]['configurable_product_options']);
-
-        $this->assertArrayHasKey('attribute_id', $configurableProductOption);
-        $this->assertEquals($configurableAttribute->getId(), $configurableProductOption['attribute_id']);
-        $this->assertArrayHasKey('values', $configurableProductOption);
-        $this->assertEquals($attributeValue, $configurableProductOption['values'][0]['value_index']);
     }
 
     /**
@@ -367,7 +285,7 @@ class ProductRepositoryTest extends WebapiAbstract
             $productId1, $nonExistingId
         ];
 
-        $expectedMessage = 'The product that was requested doesn\'t exist. Verify the product and try again.';
+        $expectedMessage = 'Product with id "%1" does not exist.';
         try {
             $this->saveProduct($response);
             $this->fail("Expected exception");
@@ -443,7 +361,7 @@ class ProductRepositoryTest extends WebapiAbstract
             $productId1, $productId2
         ];
 
-        $expectedMessage = 'The product that was requested doesn\'t exist. Verify the product and try again.';
+        $expectedMessage = 'Product with id "%1" does not exist.';
         try {
             $this->saveProduct($response);
             $this->fail("Expected exception");
@@ -470,7 +388,7 @@ class ProductRepositoryTest extends WebapiAbstract
         $serviceInfo = [
             'rest' => [
                 'resourcePath' => self::RESOURCE_PATH . '/' . $productSku,
-                'httpMethod' => Request::HTTP_METHOD_GET,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_GET,
             ],
             'soap' => [
                 'service' => self::SERVICE_NAME,
@@ -496,7 +414,7 @@ class ProductRepositoryTest extends WebapiAbstract
         $serviceInfo = [
             'rest' => [
                 'resourcePath' => self::RESOURCE_PATH,
-                'httpMethod' => Request::HTTP_METHOD_POST
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_POST
             ],
             'soap' => [
                 'service' => self::SERVICE_NAME,
@@ -521,7 +439,7 @@ class ProductRepositoryTest extends WebapiAbstract
         $serviceInfo = [
             'rest' => [
                 'resourcePath' => $resourcePath,
-                'httpMethod' => Request::HTTP_METHOD_DELETE
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_DELETE
             ],
             'soap' => [
                 'service' => self::SERVICE_NAME,
@@ -556,7 +474,7 @@ class ProductRepositoryTest extends WebapiAbstract
         $serviceInfo = [
             'rest' => [
                 'resourcePath' => $resourcePath,
-                'httpMethod' => Request::HTTP_METHOD_PUT
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_PUT
             ],
             'soap' => [
                 'service' => self::SERVICE_NAME,

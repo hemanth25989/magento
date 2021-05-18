@@ -3,59 +3,52 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Paypal\Test\Unit\Block\Bml;
 
-use Magento\Catalog\Block\ShortcutButtons;
-use Magento\Framework\Math\Random;
+use Magento\Catalog\Block as CatalogBlock;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Payment\Helper\Data;
-use Magento\Paypal\Block\Bml\Shortcut;
-use Magento\Paypal\Helper\Shortcut\ValidatorInterface;
-use Magento\Paypal\Model\Config;
 use Magento\Paypal\Model\ConfigFactory;
+use Magento\Paypal\Model\Config;
 use Magento\Paypal\Model\Express;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ShortcutTest extends TestCase
+class ShortcutTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Shortcut */
+    /** @var \Magento\Paypal\Block\Bml\Shortcut */
     protected $shortcut;
 
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    /** @var Data|MockObject */
+    /** @var \Magento\Payment\Helper\Data|\PHPUnit\Framework\MockObject\MockObject */
     protected $paymentHelperMock;
 
-    /** @var Random|MockObject */
+    /** @var \Magento\Framework\Math\Random|\PHPUnit\Framework\MockObject\MockObject */
     protected $randomMock;
 
-    /** @var ValidatorInterface|MockObject */
+    /** @var \Magento\Paypal\Helper\Shortcut\ValidatorInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $paypalShortcutHelperMock;
 
     protected function setUp(): void
     {
-        $this->paymentHelperMock = $this->createMock(Data::class);
-        $this->randomMock = $this->createMock(Random::class);
-        $this->paypalShortcutHelperMock = $this->getMockForAbstractClass(ValidatorInterface::class);
+        $this->paymentHelperMock = $this->createMock(\Magento\Payment\Helper\Data::class);
+        $this->randomMock = $this->createMock(\Magento\Framework\Math\Random::class);
+        $this->paypalShortcutHelperMock = $this->createMock(\Magento\Paypal\Helper\Shortcut\ValidatorInterface::class);
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $configFactoryMock = $this->getMockBuilder(ConfigFactory::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['create'])
-            ->getMock();
+                ->disableOriginalConstructor()
+                ->setMethods(['create'])
+                ->getMock();
 
         $configMock = $this->getMockBuilder(Config::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['setMethod'])
-            ->getMock();
+                ->disableOriginalConstructor()
+                ->setMethods(['setMethod'])
+                ->getMock();
         $configFactoryMock->expects($this->any())->method('create')->willReturn($configMock);
 
         $this->shortcut = $this->objectManagerHelper->getObject(
-            Shortcut::class,
+            \Magento\Paypal\Block\Bml\Shortcut::class,
             [
                 'paymentData' => $this->paymentHelperMock,
                 'mathRandom' => $this->randomMock,
@@ -68,14 +61,14 @@ class ShortcutTest extends TestCase
     public function testIsOrPositionBefore()
     {
         $this->assertFalse($this->shortcut->isOrPositionBefore());
-        $this->shortcut->setShowOrPosition(ShortcutButtons::POSITION_BEFORE);
+        $this->shortcut->setShowOrPosition(CatalogBlock\ShortcutButtons::POSITION_BEFORE);
         $this->assertTrue($this->shortcut->isOrPositionBefore());
     }
 
     public function testIsOrPositionAfter()
     {
         $this->assertFalse($this->shortcut->isOrPositionAfter());
-        $this->shortcut->setShowOrPosition(ShortcutButtons::POSITION_AFTER);
+        $this->shortcut->setShowOrPosition(CatalogBlock\ShortcutButtons::POSITION_AFTER);
         $this->assertTrue($this->shortcut->isOrPositionAfter());
     }
 
@@ -102,8 +95,7 @@ class ShortcutTest extends TestCase
         $paymentMethodCode = '';
         $bmlMethodCode = '';
         $this->shortcut->setIsInCatalogProduct($isInCatalog);
-        $expressMethod = $this->getMockBuilder(Express::class)
-            ->disableOriginalConstructor()
+        $expressMethod = $this->getMockBuilder(\Magento\Paypal\Model\Express::class)->disableOriginalConstructor()
             ->setMethods([])->getMock();
 
         $this->paypalShortcutHelperMock->expects($this->once())->method('validate')
@@ -133,7 +125,7 @@ class ShortcutTest extends TestCase
             'image_url' => 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/ppcredit-logo-medium.png',
             'additional_link_image' => [
                 'href' => 'https://www.securecheckout.billmelater.com/paycapture-content/'
-                        . 'fetch?hash=AU826TU8&content=/bmlweb/ppwpsiw.html',
+                    . 'fetch?hash=AU826TU8&content=/bmlweb/ppwpsiw.html',
                 'src' => 'https://www.paypalobjects.com/webstatic/en_US/btn/btn_bml_text.png',
             ],
         ];

@@ -3,21 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\Model\Config;
 
 use Magento\Framework\App\CacheInterface;
-use Magento\Framework\Exception\State\InvalidTransitionException;
 use Magento\Store\Model\Config\Importer;
-use Magento\Store\Model\Config\Importer\DataDifferenceCalculator;
-use Magento\Store\Model\Config\Importer\Processor\ProcessorFactory;
-use Magento\Store\Model\Config\Importer\Processor\ProcessorInterface;
 use Magento\Store\Model\ResourceModel\Website;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManager;
 use PHPUnit\Framework\MockObject\MockObject as Mock;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for Importer.
@@ -25,7 +18,7 @@ use PHPUnit\Framework\TestCase;
  * @see Importer
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ImporterTest extends TestCase
+class ImporterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Importer
@@ -67,13 +60,13 @@ class ImporterTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->dataDifferenceCalculatorMock = $this->getMockBuilder(DataDifferenceCalculator::class)
+        $this->dataDifferenceCalculatorMock = $this->getMockBuilder(Importer\DataDifferenceCalculator::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->processorFactoryMock = $this->getMockBuilder(ProcessorFactory::class)
+        $this->processorFactoryMock = $this->getMockBuilder(Importer\Processor\ProcessorFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->processorMock = $this->getMockBuilder(ProcessorInterface::class)
+        $this->processorMock = $this->getMockBuilder(Importer\Processor\ProcessorInterface::class)
             ->getMockForAbstractClass();
         $this->storeManagerMock = $this->getMockBuilder(StoreManager::class)
             ->disableOriginalConstructor()
@@ -108,9 +101,9 @@ class ImporterTest extends TestCase
         $this->processorFactoryMock->expects($this->exactly(3))
             ->method('create')
             ->withConsecutive(
-                [ProcessorFactory::TYPE_CREATE],
-                [ProcessorFactory::TYPE_DELETE],
-                [ProcessorFactory::TYPE_UPDATE]
+                [Importer\Processor\ProcessorFactory::TYPE_CREATE],
+                [Importer\Processor\ProcessorFactory::TYPE_DELETE],
+                [Importer\Processor\ProcessorFactory::TYPE_UPDATE]
             )->willReturnOnConsecutiveCalls(
                 $createProcessorMock,
                 $deleteProcessorMock,
@@ -152,10 +145,13 @@ class ImporterTest extends TestCase
         );
     }
 
+    /**
+     */
     public function testImportWithException()
     {
-        $this->expectException(InvalidTransitionException::class);
+        $this->expectException(\Magento\Framework\Exception\State\InvalidTransitionException::class);
         $this->expectExceptionMessage('Some error');
+
         $this->processorFactoryMock->expects($this->any())
             ->method('create')
             ->willReturn($this->processorMock);

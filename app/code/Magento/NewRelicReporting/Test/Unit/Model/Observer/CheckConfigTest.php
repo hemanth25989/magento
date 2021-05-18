@@ -3,19 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\NewRelicReporting\Test\Unit\Model\Observer;
 
-use Magento\Framework\Event\Observer;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\NewRelicReporting\Model\Config;
-use Magento\NewRelicReporting\Model\NewRelicWrapper;
 use Magento\NewRelicReporting\Model\Observer\CheckConfig;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CheckConfigTest extends TestCase
+/**
+ * Class CheckConfigTest
+ */
+class CheckConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CheckConfig
@@ -23,17 +18,17 @@ class CheckConfigTest extends TestCase
     protected $model;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\NewRelicReporting\Model\Config|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $config;
 
     /**
-     * @var NewRelicWrapper|MockObject
+     * @var \Magento\NewRelicReporting\Model\NewRelicWrapper|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $newRelicWrapper;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Message\ManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $messageManager;
 
@@ -44,17 +39,17 @@ class CheckConfigTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->config = $this->getMockBuilder(Config::class)
+        $this->config = $this->getMockBuilder(\Magento\NewRelicReporting\Model\Config::class)
             ->disableOriginalConstructor()
             ->setMethods(['isNewRelicEnabled', 'disableModule'])
             ->getMock();
-        $this->newRelicWrapper = $this->getMockBuilder(NewRelicWrapper::class)
+        $this->newRelicWrapper = $this->getMockBuilder(\Magento\NewRelicReporting\Model\NewRelicWrapper::class)
             ->disableOriginalConstructor()
             ->setMethods(['isExtensionInstalled'])
             ->getMock();
-        $this->messageManager = $this->getMockBuilder(ManagerInterface::class)
+        $this->messageManager = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->model = new CheckConfig(
             $this->config,
@@ -70,8 +65,8 @@ class CheckConfigTest extends TestCase
      */
     public function testCheckConfigModuleDisabledFromConfig()
     {
-        /** @var Observer|MockObject $eventObserver */
-        $eventObserver = $this->getMockBuilder(Observer::class)
+        /** @var \Magento\Framework\Event\Observer|\PHPUnit\Framework\MockObject\MockObject $eventObserver */
+        $eventObserver = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -89,8 +84,8 @@ class CheckConfigTest extends TestCase
      */
     public function testCheckConfigExtensionNotInstalled()
     {
-        /** @var Observer|MockObject $eventObserver */
-        $eventObserver = $this->getMockBuilder(Observer::class)
+        /** @var \Magento\Framework\Event\Observer|\PHPUnit\Framework\MockObject\MockObject $eventObserver */
+        $eventObserver = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -111,8 +106,8 @@ class CheckConfigTest extends TestCase
      */
     public function testCheckConfig()
     {
-        /** @var Observer|MockObject $eventObserver */
-        $eventObserver = $this->getMockBuilder(Observer::class)
+        /** @var \Magento\Framework\Event\Observer|\PHPUnit\Framework\MockObject\MockObject $eventObserver */
+        $eventObserver = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -125,7 +120,7 @@ class CheckConfigTest extends TestCase
         $this->config->expects($this->once())
             ->method('disableModule');
         $this->messageManager->expects($this->once())
-            ->method('addErrorMessage');
+            ->method('addError');
 
         $this->model->execute($eventObserver);
     }

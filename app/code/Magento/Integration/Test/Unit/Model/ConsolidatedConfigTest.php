@@ -3,22 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Integration\Test\Unit\Model;
 
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Integration\Model\Cache\TypeConsolidated as Type;
-use Magento\Integration\Model\Config\Consolidated\Reader;
 use Magento\Integration\Model\ConsolidatedConfig as Config;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Integration\Model\Cache\TypeConsolidated as Type;
 
 /**
  * Unit test for \Magento\Integration\Model\ConsolidatedConfig
  */
-class ConsolidatedConfigTest extends TestCase
+class ConsolidatedConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Integration config model
@@ -28,17 +22,17 @@ class ConsolidatedConfigTest extends TestCase
     private $configModel;
 
     /**
-     * @var Type|MockObject
+     * @var Type|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configCacheTypeMock;
 
     /**
-     * @var  Reader|MockObject
+     * @var  \Magento\Integration\Model\Config\Consolidated\Reader|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configReaderMock;
 
     /**
-     * @var  SerializerInterface|MockObject
+     * @var  SerializerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $serializer;
 
@@ -47,13 +41,13 @@ class ConsolidatedConfigTest extends TestCase
         $this->configCacheTypeMock = $this->getMockBuilder(\Magento\Integration\Model\Cache\TypeConsolidated::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->configReaderMock = $this->getMockBuilder(Reader::class)
+        $this->configReaderMock = $this->getMockBuilder(\Magento\Integration\Model\Config\Consolidated\Reader::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->serializer = $this->getMockBuilder(SerializerInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->configModel = $objectManagerHelper->getObject(
             \Magento\Integration\Model\ConsolidatedConfig::class,
             [

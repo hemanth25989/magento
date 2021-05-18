@@ -3,102 +3,87 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Newsletter\Test\Unit\Controller\Manage;
 
-use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Model\Session;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\Response\RedirectInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Newsletter\Controller\Manage;
-use Magento\Newsletter\Controller\Manage\Save;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Magento\Newsletter\Controller\Manage\Save
- *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SaveTest extends TestCase
+class SaveTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Manage
+     * @var \Magento\Newsletter\Controller\Manage
      */
     private $action;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $requestMock;
 
     /**
-     * @var ResponseInterface|MockObject
+     * @var \Magento\Framework\App\ResponseInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $responseMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Message\ManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $messageManagerMock;
 
     /**
-     * @var RedirectInterface|MockObject
+     * @var \Magento\Framework\App\Response\RedirectInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $redirectMock;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Customer\Model\Session|\PHPUnit\Framework\MockObject\MockObject
      */
     private $customerSessionMock;
 
     /**
-     * @var Validator|MockObject
+     * @var \Magento\Framework\Data\Form\FormKey\Validator|\PHPUnit\Framework\MockObject\MockObject
      */
     private $formKeyValidatorMock;
 
     /**
-     * @var CustomerRepositoryInterface|MockObject
+     * @var \Magento\Customer\Api\CustomerRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $customerRepositoryMock;
 
     protected function setUp(): void
     {
-        $this->requestMock = $this->getMockBuilder(RequestInterface::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->responseMock = $this->getMockBuilder(ResponseInterface::class)
+            ->getMock();
+        $this->responseMock = $this->getMockBuilder(\Magento\Framework\App\ResponseInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->messageManagerMock = $this->getMockBuilder(ManagerInterface::class)
+            ->getMock();
+        $this->messageManagerMock = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->redirectMock = $this->getMockBuilder(RedirectInterface::class)
+            ->getMock();
+        $this->redirectMock = $this->getMockBuilder(\Magento\Framework\App\Response\RedirectInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->customerSessionMock = $this->getMockBuilder(Session::class)
+            ->getMock();
+        $this->customerSessionMock = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->customerSessionMock->expects($this->any())
             ->method('isLoggedIn')
             ->willReturn(true);
-        $this->formKeyValidatorMock = $this->getMockBuilder(Validator::class)
+        $this->formKeyValidatorMock = $this->getMockBuilder(\Magento\Framework\Data\Form\FormKey\Validator::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->customerRepositoryMock =
-            $this->getMockBuilder(CustomerRepositoryInterface::class)
+            $this->getMockBuilder(\Magento\Customer\Api\CustomerRepositoryInterface::class)
                 ->disableOriginalConstructor()
-                ->getMockForAbstractClass();
-        $objectManager = new ObjectManager($this);
+                ->getMock();
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->action = $objectManager->getObject(
-            Save::class,
+            \Magento\Newsletter\Controller\Manage\Save::class,
             [
                 'request' => $this->requestMock,
                 'response' => $this->responseMock,
@@ -122,7 +107,7 @@ class SaveTest extends TestCase
         $this->messageManagerMock->expects($this->never())
             ->method('addSuccess');
         $this->messageManagerMock->expects($this->never())
-            ->method('addErrorMessage');
+            ->method('addError');
         $this->action->execute();
     }
 
@@ -140,7 +125,7 @@ class SaveTest extends TestCase
         $this->messageManagerMock->expects($this->never())
             ->method('addSuccess');
         $this->messageManagerMock->expects($this->once())
-            ->method('addErrorMessage')
+            ->method('addError')
             ->with('Something went wrong while saving your subscription.');
         $this->action->execute();
     }
@@ -155,11 +140,13 @@ class SaveTest extends TestCase
             ->willReturn(1);
         $this->customerRepositoryMock->expects($this->any())
             ->method('getById')
-            ->willThrowException(
-                new NoSuchEntityException(
-                    __(
-                        'No such entity with %fieldName = %fieldValue',
-                        ['fieldName' => 'customerId', 'value' => 'value']
+            ->will(
+                $this->throwException(
+                    new NoSuchEntityException(
+                        __(
+                            'No such entity with %fieldName = %fieldValue',
+                            ['fieldName' => 'customerId', 'value' => 'value']
+                        )
                     )
                 )
             );
@@ -169,7 +156,7 @@ class SaveTest extends TestCase
         $this->messageManagerMock->expects($this->never())
             ->method('addSuccess');
         $this->messageManagerMock->expects($this->once())
-            ->method('addErrorMessage')
+            ->method('addError')
             ->with('Something went wrong while saving your subscription.');
         $this->action->execute();
     }

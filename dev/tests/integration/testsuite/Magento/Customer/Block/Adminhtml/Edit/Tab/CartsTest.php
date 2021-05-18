@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\Customer\Block\Adminhtml\Edit\Tab;
 
 /**
@@ -32,7 +31,7 @@ class CartsTest extends \PHPUnit\Framework\TestCase
             \Magento\Customer\Api\CustomerRepositoryInterface::class
         );
         $storeManager = $this->_objectManager->get(\Magento\Store\Model\StoreManager::class);
-        $this->_context = $this->_objectManager->create(
+        $this->_context = $this->_objectManager->get(
             \Magento\Backend\Block\Template\Context::class,
             ['storeManager' => $storeManager]
         );
@@ -62,10 +61,7 @@ class CartsTest extends \PHPUnit\Framework\TestCase
             $html
         );
         $this->assertStringContainsString("customer_cart_gridJsObject = new varienGrid(\"customer_cart_grid\",", $html);
-        $this->assertStringContainsString(
-            'backend\u002Fcustomer\u002Fcart_product_composite_cart\u002Fconfigure\u002Fwebsite_id\u002F1',
-            $html
-        );
+        $this->assertStringContainsString('backend\u002Fcustomer\u002Fcart_product_composite_cart\u002Fconfigure\u002Fwebsite_id\u002F1', $html);
     }
 
     public function testGetHtmlNoCustomer()
@@ -88,9 +84,6 @@ class CartsTest extends \PHPUnit\Framework\TestCase
             $html
         );
         $this->assertStringContainsString("customer_cart_gridJsObject = new varienGrid(\"customer_cart_grid\",", $html);
-        $this->assertStringContainsString(
-            'backend\u002Fcustomer\u002Fcart_product_composite_cart\u002Fupdate\u002Fkey',
-            $html
-        );
+        $this->assertStringContainsString('backend\u002Fcustomer\u002Fcart_product_composite_cart\u002Fupdate\u002Fkey', $html);
     }
 }

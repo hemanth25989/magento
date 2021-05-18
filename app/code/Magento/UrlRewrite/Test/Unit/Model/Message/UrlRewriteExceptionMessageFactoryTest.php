@@ -3,41 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\UrlRewrite\Test\Unit\Model\Message;
 
-use Magento\Framework\Message\Factory;
 use Magento\Framework\Message\MessageInterface;
-use Magento\Framework\UrlInterface;
-use Magento\UrlRewrite\Model\Exception\UrlAlreadyExistsException;
 use Magento\UrlRewrite\Model\Message\UrlRewriteExceptionMessageFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\UrlRewrite\Model\Exception\UrlAlreadyExistsException;
 
-class UrlRewriteExceptionMessageFactoryTest extends TestCase
+class UrlRewriteExceptionMessageFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Factory|MockObject
+     * @var \Magento\Framework\Message\Factory | \PHPUnit\Framework\MockObject\MockObject
      */
     private $messageFactoryMock;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var \Magento\Framework\UrlInterface| \PHPUnit\Framework\MockObject\MockObject
      */
     private $urlMock;
 
     /**
-     * @var UrlRewriteExceptionMessageFactory
+     * @var \Magento\UrlRewrite\Model\Message\UrlRewriteExceptionMessageFactory
      */
     private $urlRewriteExceptionMessageFactory;
 
     protected function setUp(): void
     {
-        $this->urlMock = $this->getMockForAbstractClass(UrlInterface::class);
+        $this->urlMock = $this->createMock(\Magento\Framework\UrlInterface::class);
 
         $this->messageFactoryMock = $this->createPartialMock(
-            Factory::class,
+            \Magento\Framework\Message\Factory::class,
             ['create']
         );
 
@@ -89,9 +83,12 @@ class UrlRewriteExceptionMessageFactoryTest extends TestCase
         );
     }
 
+    /**
+     */
     public function testCreateMessageNotFound()
     {
-        $this->expectException('Magento\Framework\Exception\RuntimeException');
+        $this->expectException(\Magento\Framework\Exception\RuntimeException::class);
+
         $exception = new \Exception('message');
         $this->urlRewriteExceptionMessageFactory->createMessage($exception);
     }

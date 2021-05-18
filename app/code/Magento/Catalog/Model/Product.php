@@ -10,8 +10,6 @@ use Magento\Catalog\Api\Data\ProductAttributeMediaGalleryEntryInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\ProductLinkRepositoryInterface;
 use Magento\Catalog\Model\Product\Attribute\Backend\Media\EntryConverterPool;
-use Magento\Catalog\Model\Product\Attribute\Source\Status;
-use Magento\Catalog\Model\Product\Configuration\Item\Option\OptionInterface;
 use Magento\Framework\Api\AttributeValueFactory;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\ObjectManager;
@@ -109,7 +107,7 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
     /**
      * Product object customization (not stored in DB)
      *
-     * @var OptionInterface[]
+     * @var array
      */
     protected $_customOptions = [];
 
@@ -203,7 +201,7 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
     /**
      * Catalog product status
      *
-     * @var Status
+     * @var \Magento\Catalog\Model\Product\Attribute\Source\Status
      */
     protected $_catalogProductStatus;
 
@@ -409,7 +407,7 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
         \Magento\CatalogInventory\Api\Data\StockItemInterfaceFactory $stockItemFactory,
         \Magento\Catalog\Model\Product\OptionFactory $catalogProductOptionFactory,
         \Magento\Catalog\Model\Product\Visibility $catalogProductVisibility,
-        Status $catalogProductStatus,
+        \Magento\Catalog\Model\Product\Attribute\Source\Status $catalogProductStatus,
         \Magento\Catalog\Model\Product\Media\Config $catalogProductMediaConfig,
         Product\Type $catalogProductType,
         \Magento\Framework\Module\Manager $moduleManager,
@@ -462,9 +460,6 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
         $this->mediaGalleryEntryConverterPool = $mediaGalleryEntryConverterPool;
         $this->dataObjectHelper = $dataObjectHelper;
         $this->joinProcessor = $joinProcessor;
-        $this->eavConfig = $config ?? ObjectManager::getInstance()->get(\Magento\Eav\Model\Config::class);
-        $this->filterCustomAttribute = $filterCustomAttribute
-            ?? ObjectManager::getInstance()->get(FilterProductCustomAttribute::class);
         parent::__construct(
             $context,
             $registry,
@@ -475,6 +470,9 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
             $resourceCollection,
             $data
         );
+        $this->eavConfig = $config ?? ObjectManager::getInstance()->get(\Magento\Eav\Model\Config::class);
+        $this->filterCustomAttribute = $filterCustomAttribute
+            ?? ObjectManager::getInstance()->get(FilterProductCustomAttribute::class);
     }
 
     /**
@@ -669,7 +667,7 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
     public function getStatus()
     {
         $status = $this->_getData(self::STATUS);
-        return $status !== null ? $status : Status::STATUS_ENABLED;
+        return $status !== null ? $status : \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED;
     }
 
     /**
@@ -836,7 +834,10 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
                     $storeIds[] = $websiteStores;
                 }
             }
-            $this->setStoreIds(array_merge([], ...$storeIds));
+            if ($storeIds) {
+                $storeIds = array_merge(...$storeIds);
+            }
+            $this->setStoreIds($storeIds);
         }
         return $this->getData('store_ids');
     }
@@ -1031,7 +1032,7 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
      */
     public function eavReindexCallback()
     {
-        if ($this->isObjectNew() || $this->isDataChanged()) {
+        if ($this->isObjectNew() || $this->isDataChanged($this)) {
             $this->_productEavIndexerProcessor->reindexRow($this->getEntityId());
         }
     }
@@ -1101,7 +1102,7 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
     protected function _afterLoad()
     {
         if (!$this->hasData(self::STATUS)) {
-            $this->setData(self::STATUS, Status::STATUS_ENABLED);
+            $this->setData(self::STATUS, \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED);
         }
         parent::_afterLoad();
         return $this;
@@ -1778,7 +1779,7 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
      */
     public function isInStock()
     {
-        return $this->getStatus() == Status::STATUS_ENABLED;
+        return $this->getStatus() == \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED;
     }
 
     /**
@@ -2078,7 +2079,7 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
     /**
      * Sets custom options for the product
      *
-     * @param OptionInterface[] $options Array of options
+     * @param array $options Array of options
      * @return void
      */
     public function setCustomOptions(array $options)
@@ -2089,7 +2090,7 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
     /**
      * Get all custom options of the product
      *
-     * @return OptionInterface[]
+     * @return array
      */
     public function getCustomOptions()
     {
@@ -2100,11 +2101,14 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
      * Get product custom option info
      *
      * @param   string $code
-     * @return  OptionInterface|null
+     * @return  array
      */
     public function getCustomOption($code)
     {
-        return $this->_customOptions[$code] ?? null;
+        if (isset($this->_customOptions[$code])) {
+            return $this->_customOptions[$code];
+        }
+        return null;
     }
 
     /**
@@ -2114,7 +2118,11 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
      */
     public function hasCustomOptions()
     {
-        return (bool)count($this->_customOptions);
+        if (count($this->_customOptions)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -2339,7 +2347,7 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
      */
     public function isDisabled()
     {
-        return $this->getStatus() == Status::STATUS_DISABLED;
+        return $this->getStatus() == \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED;
     }
 
     /**
@@ -2356,22 +2364,6 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
     }
 
     /**
-     * Get identities for related to product categories
-     *
-     * @param array $categoryIds
-     * @return array
-     */
-    private function getProductCategoryIdentities(array $categoryIds): array
-    {
-        $identities = [];
-        foreach ($categoryIds as $categoryId) {
-            $identities[] = self::CACHE_PRODUCT_CATEGORY_TAG . '_' . $categoryId;
-        }
-
-        return $identities;
-    }
-
-    /**
      * Get identities
      *
      * @return array
@@ -2379,24 +2371,17 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
     public function getIdentities()
     {
         $identities = [self::CACHE_TAG . '_' . $this->getId()];
-
-        $isStatusChanged = $this->getOrigData(self::STATUS) != $this->getData(self::STATUS) && !$this->isObjectNew();
-        if ($isStatusChanged || $this->getStatus() == Status::STATUS_ENABLED) {
-            if ($this->getIsChangedCategories()) {
-                $identities = array_merge(
-                    $identities,
-                    $this->getProductCategoryIdentities($this->getAffectedCategoryIds())
-                );
-            }
-
-            if ($isStatusChanged || $this->isStockStatusChanged()) {
-                $identities = array_merge(
-                    $identities,
-                    $this->getProductCategoryIdentities($this->getCategoryIds())
-                );
+        if ($this->getIsChangedCategories()) {
+            foreach ($this->getAffectedCategoryIds() as $categoryId) {
+                $identities[] = self::CACHE_PRODUCT_CATEGORY_TAG . '_' . $categoryId;
             }
         }
 
+        if (($this->getOrigData('status') != $this->getData('status')) || $this->isStockStatusChanged()) {
+            foreach ($this->getCategoryIds() as $categoryId) {
+                $identities[] = self::CACHE_PRODUCT_CATEGORY_TAG . '_' . $categoryId;
+            }
+        }
         if ($this->_appState->getAreaCode() == \Magento\Framework\App\Area::AREA_FRONTEND) {
             $identities[] = self::CACHE_TAG;
         }
@@ -2446,7 +2431,7 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
      * @return array
      * @todo refactor with converter for AbstractExtensibleModel
      */
-    public function __toArray() //phpcs:ignore PHPCompatibility.FunctionNameRestrictions.ReservedFunctionNames
+    public function __toArray()
     {
         $data = $this->_data;
         $hasToArray = function ($model) {

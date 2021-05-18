@@ -3,20 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Elasticsearch\Test\Unit\Model\Adapter\BatchDataMapper;
 
-use Magento\Elasticsearch\Model\Adapter\BatchDataMapper\DataMapperFactory;
 use Magento\Elasticsearch\Model\Adapter\BatchDataMapperInterface;
-use Magento\Framework\Exception\ConfigurationMismatchException;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Elasticsearch\Model\Adapter\BatchDataMapper\DataMapperFactory;
+use Magento\Framework\ObjectManagerInterface;
 
-class DataMapperFactoryTest extends TestCase
+class DataMapperFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DataMapperFactory
@@ -24,7 +18,7 @@ class DataMapperFactoryTest extends TestCase
     private $model;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $objectManagerMock;
 
@@ -40,9 +34,9 @@ class DataMapperFactoryTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->dataMappers = [
             'product' => 'productDataMapper',
         ];
@@ -61,7 +55,7 @@ class DataMapperFactoryTest extends TestCase
      */
     public function testCreateEmpty()
     {
-        $this->expectException(NoSuchEntityException::class);
+        $this->expectException(\Magento\Framework\Exception\NoSuchEntityException::class);
 
         $this->model->create('');
     }
@@ -71,7 +65,7 @@ class DataMapperFactoryTest extends TestCase
      */
     public function testCreateWrongType()
     {
-        $this->expectException(NoSuchEntityException::class);
+        $this->expectException(\Magento\Framework\Exception\NoSuchEntityException::class);
 
         $this->model->create('wrong');
     }
@@ -81,7 +75,7 @@ class DataMapperFactoryTest extends TestCase
      */
     public function testCreateFailure()
     {
-        $this->expectException(ConfigurationMismatchException::class);
+        $this->expectException(\Magento\Framework\Exception\ConfigurationMismatchException::class);
 
         $this->objectManagerMock->expects($this->once())
             ->method('create')

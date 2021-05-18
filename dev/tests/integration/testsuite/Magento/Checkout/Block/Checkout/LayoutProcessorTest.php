@@ -10,9 +10,8 @@ namespace Magento\Checkout\Block\Checkout;
 use Magento\Framework\App\Config\MutableScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use PHPUnit\Framework\TestCase;
 
-class LayoutProcessorTest extends TestCase
+class LayoutProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests default country for shipping address.

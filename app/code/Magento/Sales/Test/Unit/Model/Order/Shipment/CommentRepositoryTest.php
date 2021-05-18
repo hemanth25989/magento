@@ -8,42 +8,40 @@ declare(strict_types=1);
 namespace Magento\Sales\Test\Unit\Model\Order\Shipment;
 
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
-use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Sales\Api\ShipmentRepositoryInterface;
 use Magento\Sales\Api\Data\ShipmentCommentInterfaceFactory;
 use Magento\Sales\Api\Data\ShipmentCommentSearchResultInterfaceFactory;
-use Magento\Sales\Api\ShipmentRepositoryInterface;
-use Magento\Sales\Model\Order\Email\Sender\ShipmentCommentSender;
 use Magento\Sales\Model\Order\Shipment;
 use Magento\Sales\Model\Order\Shipment\Comment;
 use Magento\Sales\Model\Order\Shipment\CommentRepository;
+use Magento\Sales\Model\Order\Email\Sender\ShipmentCommentSender;
 use Magento\Sales\Model\Spi\ShipmentCommentResourceInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
+ * Class CommentRepositoryTest
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CommentRepositoryTest extends TestCase
+class CommentRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|ShipmentCommentResourceInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|ShipmentCommentResourceInterface
      */
     private $commentResource;
 
     /**
-     * @var MockObject|ShipmentCommentInterfaceFactory
+     * @var \PHPUnit\Framework\MockObject\MockObject|ShipmentCommentInterfaceFactory
      */
     private $commentFactory;
 
     /**
-     * @var MockObject|ShipmentCommentSearchResultInterfaceFactory
+     * @var \PHPUnit\Framework\MockObject\MockObject|ShipmentCommentSearchResultInterfaceFactory
      */
     private $searchResultFactory;
 
     /**
-     * @var MockObject|CollectionProcessorInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|CollectionProcessorInterface
      */
     private $collectionProcessor;
 
@@ -53,27 +51,27 @@ class CommentRepositoryTest extends TestCase
     private $commentRepository;
 
     /**
-     * @var MockObject|ShipmentCommentSender
+     * @var \PHPUnit\Framework\MockObject\MockObject|ShipmentCommentSender
      */
     private $shipmentCommentSender;
 
     /**
-     * @var MockObject|ShipmentRepositoryInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|ShipmentRepositoryInterface
      */
     private $shipmentRepositoryMock;
 
     /**
-     * @var MockObject|Shipment
+     * @var \PHPUnit\Framework\MockObject\MockObject|Shipment
      */
     private $shipmentMock;
 
     /**
-     * @var MockObject|Comment
+     * @var \PHPUnit\Framework\MockObject\MockObject|Comment
      */
     private $commentMock;
 
     /**
-     * @var MockObject|LoggerInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|LoggerInterface
      */
     private $loggerMock;
 
@@ -97,16 +95,10 @@ class CommentRepositoryTest extends TestCase
         $this->shipmentCommentSender = $this->getMockBuilder(ShipmentCommentSender::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)->disableOriginalConstructor()->getMockForAbstractClass();
 
-        $this->shipmentMock = $this->getMockBuilder(Shipment::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->commentMock = $this->getMockBuilder(Comment::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->shipmentMock = $this->getMockBuilder(Shipment::class)->disableOriginalConstructor()->getMock();
+        $this->commentMock = $this->getMockBuilder(Comment::class)->disableOriginalConstructor()->getMock();
 
         $this->commentRepository = new CommentRepository(
             $this->commentResource,
@@ -147,15 +139,18 @@ class CommentRepositoryTest extends TestCase
         $this->assertEquals($this->commentMock, $this->commentRepository->save($this->commentMock));
     }
 
+    /**
+     */
     public function testSaveWithException()
     {
-        $this->expectException('Magento\Framework\Exception\CouldNotSaveException');
+        $this->expectException(\Magento\Framework\Exception\CouldNotSaveException::class);
         $this->expectExceptionMessage('Could not save the shipment comment.');
+
         $this->commentResource->expects($this->once())
             ->method('save')
             ->with($this->commentMock)
             ->willThrowException(
-                new CouldNotSaveException(__('Could not save the shipment comment.'))
+                new \Magento\Framework\Exception\CouldNotSaveException(__('Could not save the shipment comment.'))
             );
 
         $this->commentRepository->save($this->commentMock);

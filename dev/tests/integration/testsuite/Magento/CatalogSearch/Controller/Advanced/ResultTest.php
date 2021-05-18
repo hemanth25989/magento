@@ -10,10 +10,10 @@ namespace Magento\CatalogSearch\Controller\Advanced;
 use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
 use Magento\TestFramework\TestCase\AbstractController;
-use Laminas\Stdlib\Parameters;
+use Zend\Stdlib\Parameters;
 
 /**
- * Test cases for catalog advanced search using search engine.
+ * Test cases for catalog advanced search using mysql search engine.
  *
  * @magentoDbIsolation disabled
  * @magentoAppIsolation enabled
@@ -37,6 +37,7 @@ class ResultTest extends AbstractController
     /**
      * Advanced search test by difference product attributes.
      *
+     * @magentoConfigFixture default/catalog/search/engine mysql
      * @magentoAppArea frontend
      * @magentoDataFixture Magento/CatalogSearch/_files/product_for_search.php
      * @magentoDataFixture Magento/CatalogSearch/_files/full_reindex.php
@@ -59,40 +60,6 @@ class ResultTest extends AbstractController
                 Parameters::class,
                 [
                     'values' => $searchParams
-                ]
-            )
-        );
-        $this->dispatch('catalogsearch/advanced/result');
-        $responseBody = $this->getResponse()->getBody();
-        $this->assertStringContainsString('Simple product name', $responseBody);
-    }
-
-    /**
-     * Advanced search test by difference product attributes.
-     *
-     * @magentoAppArea frontend
-     * @magentoDataFixture Magento/CatalogSearch/_files/product_for_search_with_hyphen_in_sku.php
-     * @magentoDataFixture Magento/CatalogSearch/_files/full_reindex.php
-     *
-     * @return void
-     */
-    public function testExecuteSkuWithHyphen(): void
-    {
-        $this->getRequest()->setQuery(
-            $this->_objectManager->create(
-                Parameters::class,
-                [
-                    'values' => [
-                        'name' => '',
-                        'sku' => '24-mb01',
-                        'description' => '',
-                        'short_description' => '',
-                        'price' => [
-                            'from' => '',
-                            'to' => '',
-                        ],
-                        'test_searchable_attribute' => '',
-                    ]
                 ]
             )
         );

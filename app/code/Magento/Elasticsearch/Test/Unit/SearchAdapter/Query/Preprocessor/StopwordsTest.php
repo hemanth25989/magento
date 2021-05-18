@@ -3,28 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Elasticsearch\Test\Unit\SearchAdapter\Query\Preprocessor;
 
-use Magento\Elasticsearch\Model\Adapter\Index\Config\EsConfigInterface;
-use Magento\Elasticsearch\SearchAdapter\Query\Preprocessor\Stopwords;
 use Magento\Elasticsearch\SearchAdapter\Query\Preprocessor\Stopwords as StopwordsPreprocessor;
-use Magento\Framework\App\Cache\Type\Config as ConfigCache;
-use Magento\Framework\Filesystem\Directory\Read;
-use Magento\Framework\Filesystem\Directory\ReadFactory;
-use Magento\Framework\Locale\Resolver as LocaleResolver;
-use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Locale\Resolver as LocaleResolver;
+use Magento\Framework\Filesystem\Directory\ReadFactory;
+use Magento\Framework\App\Cache\Type\Config as ConfigCache;
+use Magento\Elasticsearch\Model\Adapter\Index\Config\EsConfigInterface;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Framework\Serialize\SerializerInterface;
+use Magento\Elasticsearch\SearchAdapter\Query\Preprocessor\Stopwords;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class StopwordsTest extends TestCase
+class StopwordsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var StopwordsPreprocessor
@@ -32,32 +26,32 @@ class StopwordsTest extends TestCase
     protected $model;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeManager;
 
     /**
-     * @var LocaleResolver|MockObject
+     * @var LocaleResolver|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $localeResolver;
 
     /**
-     * @var ReadFactory|MockObject
+     * @var ReadFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $readFactory;
 
     /**
-     * @var ConfigCache|MockObject
+     * @var ConfigCache|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $configCache;
 
     /**
-     * @var EsConfigInterface|MockObject
+     * @var EsConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $esConfig;
 
     /**
-     * @var SerializerInterface|MockObject
+     * @var SerializerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $serializerMock;
 
@@ -68,9 +62,9 @@ class StopwordsTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->storeManager = $this->getMockBuilder(StoreManagerInterface::class)
+        $this->storeManager = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->localeResolver = $this->getMockBuilder(\Magento\Framework\Locale\Resolver::class)
             ->disableOriginalConstructor()
             ->setMethods([
@@ -78,7 +72,7 @@ class StopwordsTest extends TestCase
                 'getLocale',
             ])
             ->getMock();
-        $this->readFactory = $this->getMockBuilder(ReadFactory::class)
+        $this->readFactory = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\ReadFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -86,9 +80,8 @@ class StopwordsTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $this->esConfig = $this->getMockBuilder(
-            EsConfigInterface::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Elasticsearch\Model\Adapter\Index\Config\EsConfigInterface::class
+        )->disableOriginalConstructor()->getMock();
 
         $this->serializerMock = $this->getMockForAbstractClass(SerializerInterface::class);
 
@@ -125,9 +118,9 @@ class StopwordsTest extends TestCase
             ->willReturn([
                 'default' => 'default.csv',
             ]);
-        $storeInterface = $this->getMockBuilder(StoreInterface::class)
+        $storeInterface = $this->getMockBuilder(\Magento\Store\Api\Data\StoreInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->storeManager->expects($this->once())
             ->method('getStore')
             ->willReturn($storeInterface);
@@ -138,7 +131,7 @@ class StopwordsTest extends TestCase
             ->method('getLocale')
             ->willReturn('en_US');
 
-        $read = $this->getMockBuilder(Read::class)
+        $read = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\Read::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->readFactory->expects($this->once())
@@ -184,9 +177,9 @@ class StopwordsTest extends TestCase
             ->willReturn([
                 'default' => 'default.csv',
             ]);
-        $storeInterface = $this->getMockBuilder(StoreInterface::class)
+        $storeInterface = $this->getMockBuilder(\Magento\Store\Api\Data\StoreInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->storeManager->expects($this->once())
             ->method('getStore')
             ->willReturn($storeInterface);
@@ -197,7 +190,7 @@ class StopwordsTest extends TestCase
             ->method('getLocale')
             ->willReturn('en_US');
 
-        $read = $this->getMockBuilder(Read::class)
+        $read = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\Read::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->readFactory->expects($this->once())

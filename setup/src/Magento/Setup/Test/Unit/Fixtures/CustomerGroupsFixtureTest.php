@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Fixtures;
 
@@ -12,18 +11,14 @@ use Magento\Customer\Api\Data\GroupInterfaceFactory;
 use Magento\Customer\Api\GroupRepositoryInterface;
 use Magento\Customer\Model\ResourceModel\Group\CollectionFactory;
 use Magento\Setup\Fixtures\CustomerGroupsFixture;
-use Magento\Setup\Fixtures\FixtureModel;
-use Magento\Setup\Fixtures\IndexersStatesApplyFixture;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test Customer Groups generation
  */
-class CustomerGroupsFixtureTest extends TestCase
+class CustomerGroupsFixtureTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|FixtureModel
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Setup\Fixtures\FixtureModel
      */
     private $fixtureModelMock;
 
@@ -48,13 +43,13 @@ class CustomerGroupsFixtureTest extends TestCase
     private $groupDataObjectMock;
 
     /**
-     * @var IndexersStatesApplyFixture
+     * @var \Magento\Setup\Fixtures\IndexersStatesApplyFixture
      */
     private $model;
 
     public function testExecute()
     {
-        $this->fixtureModelMock = $this->getMockBuilder(FixtureModel::class)
+        $this->fixtureModelMock = $this->getMockBuilder(\Magento\Setup\Fixtures\FixtureModel::class)
             ->disableOriginalConstructor()
             ->getMock();
 

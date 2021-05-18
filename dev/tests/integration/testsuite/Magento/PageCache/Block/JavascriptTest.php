@@ -7,7 +7,7 @@
 namespace Magento\PageCache\Block;
 
 /**
- * Test for \Magento\PageCache\Block\Javascript
+ * Class JavascriptTest
  */
 class JavascriptTest extends \PHPUnit\Framework\TestCase
 {

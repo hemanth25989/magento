@@ -3,43 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Bundle\Test\Unit\Block\Sales\Order\Items;
 
-use Magento\Bundle\Block\Sales\Order\Items\Renderer;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\Order\Creditmemo;
-use Magento\Sales\Model\Order\Invoice;
-use Magento\Sales\Model\Order\Item;
-use Magento\Sales\Model\Order\Shipment;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class RendererTest extends TestCase
+class RendererTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Item|MockObject */
+    /** @var \Magento\Sales\Model\Order\Item|\PHPUnit\Framework\MockObject\MockObject */
     protected $orderItem;
 
-    /** @var Renderer $model */
+    /** @var \Magento\Bundle\Block\Sales\Order\Items\Renderer $model */
     protected $model;
 
-    /** @var Json|MockObject $serializer */
+    /** @var \Magento\Framework\Serialize\Serializer\Json|\PHPUnit\Framework\MockObject\MockObject $serializer */
     protected $serializer;
 
     protected function setUp(): void
     {
-        $this->orderItem = $this->getMockBuilder(Item::class)
-            ->addMethods(['getOrderItem', 'getOrderItemId'])
-            ->onlyMethods(['getProductOptions', '__wakeup', 'getParentItem', 'getId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->orderItem = $this->createPartialMock(
+            \Magento\Sales\Model\Order\Item::class,
+            ['getProductOptions', '__wakeup', 'getParentItem', 'getOrderItem', 'getOrderItemId', 'getId']
+        );
 
-        $this->serializer = $this->createMock(Json::class);
-        $objectManager = new ObjectManager($this);
+        $this->serializer = $this->createMock(\Magento\Framework\Serialize\Serializer\Json::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
-            Renderer::class,
+            \Magento\Bundle\Block\Sales\Order\Items\Renderer::class,
             ['serializer' => $this->serializer]
         );
     }
@@ -49,16 +36,10 @@ class RendererTest extends TestCase
      */
     public function testGetChildrenEmptyItems($class, $method, $returnClass)
     {
-        $salesModel = $this->getMockBuilder($returnClass)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['getAllItems'])
-            ->getMock();
+        $salesModel = $this->createPartialMock($returnClass, ['getAllItems', '__wakeup']);
         $salesModel->expects($this->once())->method('getAllItems')->willReturn([]);
 
-        $item = $this->getMockBuilder($class)
-            ->disableOriginalConstructor()
-            ->onlyMethods([$method, 'getOrderItem'])
-            ->getMock();
+        $item = $this->createPartialMock($class, [$method, 'getOrderItem', '__wakeup']);
         $item->expects($this->once())->method($method)->willReturn($salesModel);
         $item->expects($this->once())->method('getOrderItem')->willReturn($this->orderItem);
         $this->orderItem->expects($this->any())->method('getId')->willReturn(1);
@@ -75,17 +56,17 @@ class RendererTest extends TestCase
             [
                 \Magento\Sales\Model\Order\Invoice\Item::class,
                 'getInvoice',
-                Invoice::class
+                \Magento\Sales\Model\Order\Invoice::class
             ],
             [
                 \Magento\Sales\Model\Order\Shipment\Item::class,
                 'getShipment',
-                Shipment::class
+                \Magento\Sales\Model\Order\Shipment::class
             ],
             [
                 \Magento\Sales\Model\Order\Creditmemo\Item::class,
                 'getCreditmemo',
-                Creditmemo::class
+                \Magento\Sales\Model\Order\Creditmemo::class
             ]
         ];
     }
@@ -96,7 +77,7 @@ class RendererTest extends TestCase
     public function testGetChildren($parentItem)
     {
         if ($parentItem) {
-            $parentItem = $this->createPartialMock(Item::class, ['getId', '__wakeup']);
+            $parentItem = $this->createPartialMock(\Magento\Sales\Model\Order\Item::class, ['getId', '__wakeup']);
             $parentItem->expects($this->any())->method('getId')->willReturn(1);
         }
         $this->orderItem->expects($this->any())->method('getOrderItem')->willReturnSelf();
@@ -104,7 +85,7 @@ class RendererTest extends TestCase
         $this->orderItem->expects($this->any())->method('getOrderItemId')->willReturn(2);
         $this->orderItem->expects($this->any())->method('getId')->willReturn(1);
 
-        $salesModel = $this->createPartialMock(Invoice::class, ['getAllItems',
+        $salesModel = $this->createPartialMock(\Magento\Sales\Model\Order\Invoice::class, ['getAllItems',
             '__wakeup']);
         $salesModel->expects($this->once())->method('getAllItems')->willReturn([$this->orderItem]);
 
@@ -159,7 +140,7 @@ class RendererTest extends TestCase
     {
         if ($parentItem) {
             $parentItem =
-                $this->createPartialMock(Item::class, ['getProductOptions',
+                $this->createPartialMock(\Magento\Sales\Model\Order\Item::class, ['getProductOptions',
                     '__wakeup']);
             $parentItem->expects($this->any())->method('getProductOptions')->willReturn($productOptions);
         } else {
@@ -215,7 +196,7 @@ class RendererTest extends TestCase
     {
         if ($parentItem) {
             $parentItem =
-                $this->createPartialMock(Item::class, ['getProductOptions',
+                $this->createPartialMock(\Magento\Sales\Model\Order\Item::class, ['getProductOptions',
                     '__wakeup']);
             $parentItem->expects($this->any())->method('getProductOptions')->willReturn($productOptions);
         } else {

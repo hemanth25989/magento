@@ -3,27 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Bundle\Test\Unit\Pricing\Price;
 
-use Magento\Bundle\Model\ResourceModel\Option\Collection;
-use Magento\Bundle\Model\Selection;
-use Magento\Bundle\Pricing\Adjustment\BundleCalculatorInterface;
-use Magento\Bundle\Pricing\Adjustment\Calculator;
-use Magento\Bundle\Pricing\Price\BundleOptionPrice;
-use Magento\Bundle\Pricing\Price\BundleOptions;
-use Magento\Catalog\Model\Product;
-use Magento\Framework\Pricing\Amount\AmountInterface;
-use Magento\Framework\Pricing\SaleableInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Pricing\Amount\AmountInterface;
+use Magento\Catalog\Model\Product;
+use Magento\Bundle\Pricing\Price\BundleOptions;
+use Magento\Bundle\Pricing\Adjustment\Calculator;
+use \Magento\Bundle\Model\Selection;
 
-class BundleOptionPriceTest extends TestCase
+class BundleOptionPriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var BundleOptionPrice
+     * @var \Magento\Bundle\Pricing\Price\BundleOptionPrice
      */
     private $bundleOptionPrice;
 
@@ -33,17 +26,17 @@ class BundleOptionPriceTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var SaleableInterface|MockObject
+     * @var \Magento\Framework\Pricing\SaleableInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $saleableItemMock;
 
     /**
-     * @var BundleCalculatorInterface|MockObject
+     * @var \Magento\Bundle\Pricing\Adjustment\BundleCalculatorInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $bundleCalculatorMock;
 
     /**
-     * @var BundleOptions|MockObject
+     * @var BundleOptions|\PHPUnit\Framework\MockObject\MockObject
      */
     private $bundleOptionsMock;
 
@@ -58,7 +51,7 @@ class BundleOptionPriceTest extends TestCase
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->bundleOptionPrice = $this->objectManagerHelper->getObject(
-            BundleOptionPrice::class,
+            \Magento\Bundle\Pricing\Price\BundleOptionPrice::class,
             [
                 'saleableItem' => $this->saleableItemMock,
                 'quantity' => 1.,
@@ -75,7 +68,7 @@ class BundleOptionPriceTest extends TestCase
      */
     public function testGetOptions()
     {
-        $collection = $this->createMock(Collection::class);
+        $collection = $this->createMock(\Magento\Bundle\Model\ResourceModel\Option\Collection::class);
         $this->bundleOptionsMock->expects($this->any())
             ->method('getOptions')
             ->willReturn($collection);
@@ -109,7 +102,7 @@ class BundleOptionPriceTest extends TestCase
         $amountMock = $this->getMockForAbstractClass(AmountInterface::class);
         $this->bundleCalculatorMock->expects($this->once())
             ->method('getOptionsAmount')
-            ->with($this->saleableItemMock)
+            ->with($this->equalTo($this->saleableItemMock))
             ->willReturn($amountMock);
         $this->assertSame($amountMock, $this->bundleOptionPrice->getAmount());
     }
@@ -121,7 +114,7 @@ class BundleOptionPriceTest extends TestCase
      */
     public function testGetValue()
     {
-        $value = 1.0;
+        $value = 1;
         $this->bundleOptionsMock->expects($this->any())->method('calculateOptions')->willReturn($value);
         $this->assertEquals($value, $this->bundleOptionPrice->getValue());
     }

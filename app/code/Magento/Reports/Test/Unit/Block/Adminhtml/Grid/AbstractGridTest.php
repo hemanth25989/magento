@@ -3,29 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Reports\Test\Unit\Block\Adminhtml\Grid;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Reports\Block\Adminhtml\Grid\AbstractGrid;
-use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for class \Magento\Reports\Block\Adminhtml\Grid\AbstractGrid.
  */
-class AbstractGridTest extends TestCase
+class AbstractGridTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AbstractGrid|MockObject
+     * @var \Magento\Reports\Block\Adminhtml\Grid\AbstractGrid|\PHPUnit\Framework\MockObject\MockObject
      */
     private $model;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $storeManagerMock;
 
@@ -34,7 +28,7 @@ class AbstractGridTest extends TestCase
         $objectManager = new ObjectManager($this);
 
         $this->storeManagerMock = $this->getMockForAbstractClass(
-            StoreManagerInterface::class,
+            \Magento\Store\Model\StoreManagerInterface::class,
             [],
             '',
             true,
@@ -44,7 +38,7 @@ class AbstractGridTest extends TestCase
         );
 
         $this->model = $objectManager->getObject(
-            AbstractGrid::class,
+            \Magento\Reports\Block\Adminhtml\Grid\AbstractGrid::class,
             ['_storeManager' => $this->storeManagerMock]
         );
     }
@@ -57,7 +51,7 @@ class AbstractGridTest extends TestCase
     public function testGetCurrentCurrencyCode($storeIds)
     {
         $storeMock = $this->getMockForAbstractClass(
-            StoreInterface::class,
+            \Magento\Store\Api\Data\StoreInterface::class,
             [],
             '',
             true,

@@ -3,23 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Pricing\Test\Unit\Render;
 
-use Magento\Framework\Pricing\Render\Layout;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\BlockInterface;
-use Magento\Framework\View\Layout\ProcessorInterface;
-use Magento\Framework\View\LayoutFactory;
-use Magento\Framework\View\LayoutInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Pricing\Render\Layout;
 
 /**
  * Test class for \Magento\Framework\Pricing\Render\Layout
  */
-class LayoutTest extends TestCase
+class LayoutTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Layout
@@ -27,41 +18,41 @@ class LayoutTest extends TestCase
     protected $model;
 
     /**
-     * @var  LayoutInterface|MockObject
+     * @var  \Magento\Framework\View\LayoutInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $layout;
 
     /**
-     * @var LayoutFactory|MockObject
+     * @var \Magento\Framework\View\LayoutFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $layoutFactory;
 
     /**
-     * @var LayoutInterface|MockObject
+     * @var \Magento\Framework\View\LayoutInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $generalLayout;
 
     protected function setUp(): void
     {
-        $this->layout = $this->getMockForAbstractClass(LayoutInterface::class);
-        $this->generalLayout = $this->getMockForAbstractClass(LayoutInterface::class);
+        $this->layout = $this->createMock(\Magento\Framework\View\LayoutInterface::class);
+        $this->generalLayout = $this->createMock(\Magento\Framework\View\LayoutInterface::class);
 
         $isCacheable = false;
         $this->generalLayout->expects($this->once())
             ->method('isCacheable')
             ->willReturn(false);
-        $layoutFactory = $this->getMockBuilder(LayoutFactory::class)
+        $layoutFactory = $this->getMockBuilder(\Magento\Framework\View\LayoutFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
         $layoutFactory->expects($this->once())
             ->method('create')
-            ->with(['cacheable' => $isCacheable])
+            ->with($this->equalTo(['cacheable' => $isCacheable]))
             ->willReturn($this->layout);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
-            Layout::class,
+            \Magento\Framework\Pricing\Render\Layout::class,
             [
                 'layoutFactory' => $layoutFactory,
                 'generalLayout' => $this->generalLayout
@@ -73,7 +64,7 @@ class LayoutTest extends TestCase
     {
         $handle = 'test_handle';
 
-        $layoutProcessor = $this->getMockForAbstractClass(ProcessorInterface::class);
+        $layoutProcessor = $this->createMock(\Magento\Framework\View\Layout\ProcessorInterface::class);
         $layoutProcessor->expects($this->once())
             ->method('addHandle')
             ->with($handle);
@@ -86,7 +77,7 @@ class LayoutTest extends TestCase
 
     public function testLoadLayout()
     {
-        $layoutProcessor = $this->getMockForAbstractClass(ProcessorInterface::class);
+        $layoutProcessor = $this->createMock(\Magento\Framework\View\Layout\ProcessorInterface::class);
         $layoutProcessor->expects($this->once())
             ->method('load');
         $this->layout->expects($this->once())
@@ -106,7 +97,7 @@ class LayoutTest extends TestCase
     {
         $blockName = 'block.name';
 
-        $block = $this->getMockForAbstractClass(BlockInterface::class);
+        $block = $this->createMock(\Magento\Framework\View\Element\BlockInterface::class);
 
         $this->layout->expects($this->once())
             ->method('getBlock')

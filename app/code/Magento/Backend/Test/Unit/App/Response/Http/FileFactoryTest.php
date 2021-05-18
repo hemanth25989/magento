@@ -3,20 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\App\Response\Http;
 
-use Magento\Backend\App\Response\Http\FileFactory as HttpFileFactory;
-use Magento\Backend\Model\Auth;
-use Magento\Backend\Model\Session;
-use Magento\Backend\Model\Url;
-use Magento\Framework\App\Response\Http;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class FileFactoryTest extends TestCase
+class FileFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Framework\App\Response\Http\FileFactory
@@ -24,30 +13,30 @@ class FileFactoryTest extends TestCase
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_authMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_backendUrl;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_sessionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_responseMock;
 
     protected function setUp(): void
     {
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_responseMock = $this->createPartialMock(
-            Http::class,
+            \Magento\Framework\App\Response\Http::class,
             ['setRedirect', '__wakeup']
         );
         $this->_responseMock->expects(
@@ -57,14 +46,11 @@ class FileFactoryTest extends TestCase
         )->willReturn(
             $this->_responseMock
         );
-        $this->_sessionMock = $this->getMockBuilder(Session::class)
-            ->addMethods(['setIsUrlNotice'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->_backendUrl = $this->createMock(Url::class);
-        $this->_authMock = $this->createMock(Auth::class);
+        $this->_sessionMock = $this->createPartialMock(\Magento\Backend\Model\Session::class, ['setIsUrlNotice']);
+        $this->_backendUrl = $this->createMock(\Magento\Backend\Model\Url::class);
+        $this->_authMock = $this->createMock(\Magento\Backend\Model\Auth::class);
         $this->_model = $helper->getObject(
-            HttpFileFactory::class,
+            \Magento\Backend\App\Response\Http\FileFactory::class,
             [
                 'response' => $this->_responseMock,
                 'auth' => $this->_authMock,

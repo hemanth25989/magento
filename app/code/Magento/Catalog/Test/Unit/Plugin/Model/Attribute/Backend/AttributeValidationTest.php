@@ -8,17 +8,14 @@ declare(strict_types=1);
 namespace Magento\Catalog\Test\Unit\Plugin\Model\Attribute\Backend;
 
 use Magento\Catalog\Plugin\Model\Attribute\Backend\AttributeValidation;
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
-use Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend;
-use Magento\Framework\DataObject;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend;
+use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
+use Magento\Framework\DataObject;
 
-class AttributeValidationTest extends TestCase
+class AttributeValidationTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AttributeValidation
@@ -26,12 +23,12 @@ class AttributeValidationTest extends TestCase
     private $attributeValidation;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $storeManagerMock;
 
     /**
-     * @var StoreInterface|MockObject
+     * @var StoreInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $storeMock;
 
@@ -51,17 +48,17 @@ class AttributeValidationTest extends TestCase
     private $isProceedMockCalled = false;
 
     /**
-     * @var AbstractBackend|MockObject
+     * @var AbstractBackend|\PHPUnit\Framework\MockObject\MockObject
      */
     private $subjectMock;
 
     /**
-     * @var AbstractAttribute|MockObject
+     * @var AbstractAttribute|\PHPUnit\Framework\MockObject\MockObject
      */
     private $attributeMock;
 
     /**
-     * @var DataObject|MockObject
+     * @var DataObject|\PHPUnit\Framework\MockObject\MockObject
      */
     private $entityMock;
 
@@ -113,7 +110,7 @@ class AttributeValidationTest extends TestCase
      * @param bool $defaultStoreUsed
      * @param null|int|string $storeId
      * @dataProvider aroundValidateDataProvider
-     * @throws NoSuchEntityException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      * @return void
      */
     public function testAroundValidate(bool $shouldProceedRun, bool $defaultStoreUsed, $storeId)

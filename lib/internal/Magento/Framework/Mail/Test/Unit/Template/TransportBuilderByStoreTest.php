@@ -3,31 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Mail\Test\Unit\Template;
 
-use Magento\Framework\Mail\Message;
-use Magento\Framework\Mail\Template\SenderResolverInterface;
 use Magento\Framework\Mail\Template\TransportBuilderByStore;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class TransportBuilderByStoreTest extends TestCase
+class TransportBuilderByStoreTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var TransportBuilderByStore
+     * @var \Magento\Framework\Mail\Template\TransportBuilderByStore
      */
     protected $model;
 
     /**
-     * @var Message|MockObject
+     * @var \Magento\Framework\Mail\Message | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $messageMock;
 
     /**
-     * @var SenderResolverInterface|MockObject
+     * @var \Magento\Framework\Mail\Template\SenderResolverInterface | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $senderResolverMock;
 
@@ -36,9 +30,9 @@ class TransportBuilderByStoreTest extends TestCase
      */
     protected function setUp(): void
     {
-        $objectManagerHelper = new ObjectManager($this);
-        $this->messageMock = $this->createMock(Message::class);
-        $this->senderResolverMock = $this->getMockForAbstractClass(SenderResolverInterface::class);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->messageMock = $this->createMock(\Magento\Framework\Mail\Message::class);
+        $this->senderResolverMock = $this->createMock(\Magento\Framework\Mail\Template\SenderResolverInterface::class);
 
         $this->model = $objectManagerHelper->getObject(
             TransportBuilderByStore::class,

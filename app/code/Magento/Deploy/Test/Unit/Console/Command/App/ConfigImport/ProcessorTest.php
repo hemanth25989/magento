@@ -3,72 +3,68 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Deploy\Test\Unit\Console\Command\App\ConfigImport;
 
+use Magento\Framework\App\DeploymentConfig\ImporterInterface;
+use Magento\Framework\App\DeploymentConfig;
+use Psr\Log\LoggerInterface as Logger;
 use Magento\Deploy\Console\Command\App\ConfigImport\Processor;
 use Magento\Deploy\Model\DeploymentConfig\ChangeDetector;
 use Magento\Deploy\Model\DeploymentConfig\Hash;
-use Magento\Deploy\Model\DeploymentConfig\ImporterFactory;
 use Magento\Deploy\Model\DeploymentConfig\ImporterPool;
-use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\App\DeploymentConfig\ImporterInterface;
-use Magento\Framework\App\DeploymentConfig\ValidatorInterface;
-use Magento\Framework\Console\QuestionPerformer\YesNo;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface as Logger;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
+use Magento\Deploy\Model\DeploymentConfig\ImporterFactory;
+use Magento\Framework\Console\QuestionPerformer\YesNo;
+use Magento\Framework\App\DeploymentConfig\ValidatorInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ProcessorTest extends TestCase
+class ProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ChangeDetector|MockObject
+     * @var ChangeDetector|\PHPUnit\Framework\MockObject\MockObject
      */
     private $changeDetectorMock;
 
     /**
-     * @var ImporterPool|MockObject
+     * @var ImporterPool|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configImporterPoolMock;
 
     /**
-     * @var ImporterFactory|MockObject
+     * @var ImporterFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $importerFactoryMock;
 
     /**
-     * @var DeploymentConfig|MockObject
+     * @var DeploymentConfig|\PHPUnit\Framework\MockObject\MockObject
      */
     private $deploymentConfigMock;
 
     /**
-     * @var Hash|MockObject
+     * @var Hash|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configHashMock;
 
     /**
-     * @var Logger|MockObject
+     * @var Logger|\PHPUnit\Framework\MockObject\MockObject
      */
     private $loggerMock;
 
     /**
-     * @var OutputInterface|MockObject
+     * @var OutputInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $outputMock;
 
     /**
-     * @var InputInterface|MockObject
+     * @var InputInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $inputMock;
 
     /**
-     * @var YesNo|MockObject
+     * @var YesNo|\PHPUnit\Framework\MockObject\MockObject
      */
     private $questionPerformerMock;
 
@@ -214,10 +210,13 @@ class ProcessorTest extends TestCase
         ];
     }
 
+    /**
+     */
     public function testImportWithException()
     {
-        $this->expectException('Magento\Framework\Exception\RuntimeException');
+        $this->expectException(\Magento\Framework\Exception\RuntimeException::class);
         $this->expectExceptionMessage('Import failed: Some error');
+
         $exception = new \Exception('Some error');
         $this->outputMock->expects($this->never())
             ->method('writeln');
@@ -237,10 +236,13 @@ class ProcessorTest extends TestCase
         $this->processor->execute($this->inputMock, $this->outputMock);
     }
 
+    /**
+     */
     public function testImportWithValidation()
     {
-        $this->expectException('Magento\Framework\Exception\RuntimeException');
+        $this->expectException(\Magento\Framework\Exception\RuntimeException::class);
         $this->expectExceptionMessage('Import failed: error message');
+
         $configData = ['config data'];
         $importerClassName = 'someImporterClassName';
         $importers = ['someSection' => $importerClassName];

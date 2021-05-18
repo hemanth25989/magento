@@ -3,33 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\AsynchronousOperations\Test\Unit\Ui\Component\Listing\Column;
 
 use Magento\AsynchronousOperations\Model\BulkSummary;
-use Magento\AsynchronousOperations\Ui\Component\Listing\Column\Actions;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
-use Magento\Framework\View\Element\UiComponentFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ActionsTest extends TestCase
+class ActionsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ContextInterface|MockObject
+     * @var \Magento\Framework\View\Element\UiComponent\ContextInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $context;
 
     /**
-     * @var UiComponentFactory|MockObject
+     * @var \Magento\Framework\View\Element\UiComponentFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $uiComponentFactory;
 
     /**
-     * @var Actions
+     * @var \Magento\AsynchronousOperations\Ui\Component\Listing\Column\Actions
      */
     private $actionColumn;
 
@@ -38,16 +30,16 @@ class ActionsTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->context = $this->getMockForAbstractClass(ContextInterface::class);
-        $this->uiComponentFactory = $this->createMock(UiComponentFactory::class);
-        $processor = $this->getMockBuilder(Processor::class)
-            ->addMethods(['getProcessor'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->context = $this->createMock(\Magento\Framework\View\Element\UiComponent\ContextInterface::class);
+        $this->uiComponentFactory = $this->createMock(\Magento\Framework\View\Element\UiComponentFactory::class);
+        $processor = $this->createPartialMock(
+            \Magento\Framework\View\Element\UiComponent\Processor::class,
+            ['getProcessor']
+        );
         $this->context->expects($this->never())->method('getProcessor')->willReturn($processor);
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->actionColumn = $objectManager->getObject(
-            Actions::class,
+            \Magento\AsynchronousOperations\Ui\Component\Listing\Column\Actions::class,
             [
                 'context' => $this->context,
                 'uiComponentFactory' => $this->uiComponentFactory,

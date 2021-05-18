@@ -3,40 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Eav\Test\Unit\Plugin\Model\ResourceModel\Entity;
 
-use Magento\Eav\Model\Cache\Type;
-use Magento\Eav\Model\Entity\Attribute;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Framework\Serialize\SerializerInterface;
+use Magento\Framework\App\CacheInterface;
+use Magento\Framework\App\Cache\StateInterface;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute as AttributeResource;
 use Magento\Eav\Plugin\Model\ResourceModel\Entity\Attribute as AttributeResourcePlugin;
-use Magento\Framework\App\Cache\StateInterface;
-use Magento\Framework\App\CacheInterface;
-use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Eav\Model\Cache\Type;
+use Magento\Eav\Model\Entity\Attribute;
 
-class AttributeTest extends TestCase
+class AttributeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CacheInterface|MockObject
+     * @var CacheInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $cacheMock;
 
     /**
-     * @var StateInterface|MockObject
+     * @var StateInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $cacheStateMock;
 
     /**
-     * @var SerializerInterface|MockObject
+     * @var SerializerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $serializerMock;
 
     /**
-     * @var AttributeResource|MockObject
+     * @var AttributeResource|\PHPUnit\Framework\MockObject\MockObject
      */
     private $attributeResourceMock;
 

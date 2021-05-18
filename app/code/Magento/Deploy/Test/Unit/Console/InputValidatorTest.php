@@ -8,20 +8,22 @@ declare(strict_types=1);
 
 namespace Magento\Deploy\Test\Unit\Console;
 
-use InvalidArgumentException;
-use Magento\Deploy\Console\DeployStaticOptions as Options;
-use Magento\Deploy\Console\InputValidator;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\Validator\Locale;
 use Magento\Framework\Validator\Regex;
 use Magento\Framework\Validator\RegexFactory;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputDefinition;
+use Magento\Deploy\Console\InputValidator;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Deploy\Console\DeployStaticOptions as Options;
+use Magento\Framework\Validator\Locale;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\Console\Input\ArrayInput;
+use InvalidArgumentException;
+use Symfony\Component\Console\Input\InputArgument;
 
 /**
+ * Class InputValidatorTest
+ * Test for InputValidator
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class InputValidatorTest extends TestCase
@@ -58,8 +60,7 @@ class InputValidatorTest extends TestCase
         $regexFactoryMock->expects($this->any())->method('create')
             ->willReturn($regexObject);
 
-        $localeObjectMock = $this->getMockBuilder(Locale::class)
-            ->setMethods(['isValid'])
+        $localeObjectMock = $this->getMockBuilder(Locale::class)->setMethods(['isValid'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -203,8 +204,7 @@ class InputValidatorTest extends TestCase
             );
         } catch (\Exception $e) {
             $this->assertStringContainsString(
-                'Argument "' .
-                Options::CONTENT_VERSION
+                'Argument "' . Options::CONTENT_VERSION
                 . '" has invalid value, content version should contain only characters, digits and dots',
                 $e->getMessage()
             );

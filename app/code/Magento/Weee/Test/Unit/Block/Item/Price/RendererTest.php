@@ -3,38 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Weee\Test\Unit\Block\Item\Price;
 
-use Magento\Directory\Model\PriceCurrency;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Model\Quote\Item;
-use Magento\Weee\Block\Item\Price\Renderer;
-use Magento\Weee\Helper\Data;
 use Magento\Weee\Model\Tax as WeeeDisplayConfig;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class RendererTest extends TestCase
+class RendererTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Renderer
+     * @var \Magento\Weee\Block\Item\Price\Renderer
      */
     protected $renderer;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Weee\Helper\Data|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $weeeHelper;
 
     /**
-     * @var PriceCurrency|MockObject
+     * @var \Magento\Directory\Model\PriceCurrency|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $priceCurrency;
 
     /**
-     * @var Item|MockObject
+     * @var \Magento\Quote\Model\Quote\Item|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $item;
 
@@ -43,9 +34,9 @@ class RendererTest extends TestCase
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->weeeHelper = $this->getMockBuilder(Data::class)
+        $this->weeeHelper = $this->getMockBuilder(\Magento\Weee\Helper\Data::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'isEnabled',
@@ -57,14 +48,15 @@ class RendererTest extends TestCase
             ])
             ->getMock();
 
-        $this->priceCurrency = $this->getMockBuilder(PriceCurrency::class)
+        $this->priceCurrency = $this->getMockBuilder(\Magento\Directory\Model\PriceCurrency::class)
             ->disableOriginalConstructor()
             ->setMethods(['format'])
             ->getMock();
 
-        $this->item = $this->getMockBuilder(Item::class)
+        $this->item = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
             ->disableOriginalConstructor()
             ->setMethods([
+                '__wakeup',
                 'getWeeeTaxAppliedAmount',
                 'getPriceInclTax',
                 'getRowTotalInclTax',
@@ -88,7 +80,7 @@ class RendererTest extends TestCase
             ->willReturn(self::STORE_ID);
 
         $this->renderer = $objectManager->getObject(
-            Renderer::class,
+            \Magento\Weee\Block\Item\Price\Renderer::class,
             [
                 'weeeHelper' => $this->weeeHelper,
                 'priceCurrency' => $this->priceCurrency,
@@ -792,7 +784,8 @@ class RendererTest extends TestCase
                     'getRowTotal',
                     'getTaxAmount',
                     'getDiscountTaxCompensationAmount',
-                    'getDiscountAmount'
+                    'getDiscountAmount',
+                    '__wakeup'
                 ]
             )
             ->getMock();
@@ -839,7 +832,8 @@ class RendererTest extends TestCase
                     'getBaseRowTotal',
                     'getBaseTaxAmount',
                     'getBaseDiscountTaxCompensationAmount',
-                    'getBaseDiscountAmount'
+                    'getBaseDiscountAmount',
+                    '__wakeup'
                 ]
             )
             ->getMock();

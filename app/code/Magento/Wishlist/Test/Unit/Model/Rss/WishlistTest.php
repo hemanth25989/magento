@@ -3,36 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\Wishlist\Test\Unit\Model\Rss;
 
-use Magento\Catalog\Helper\Image;
-use Magento\Catalog\Helper\Output;
-use Magento\Catalog\Model\Product;
-use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Model\Customer;
-use Magento\Customer\Model\CustomerFactory;
 use Magento\Directory\Helper\Data;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Pricing\Render;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\UrlInterface;
-use Magento\Framework\View\LayoutInterface;
-use Magento\Rss\Model\RssFactory;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Wishlist\Block\Customer\Wishlist;
-use Magento\Wishlist\Helper\Rss;
-use Magento\Wishlist\Model\Item;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class WishlistTest extends TestCase
+class WishlistTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Wishlist\Model\Rss\Wishlist
@@ -45,42 +24,42 @@ class WishlistTest extends TestCase
     protected $wishlistBlock;
 
     /**
-     * @var RssFactory
+     * @var \Magento\Rss\Model\RssFactory
      */
     protected $rssFactoryMock;
 
     /**
-     * @var UrlInterface
+     * @var \Magento\Framework\UrlInterface
      */
     protected $urlBuilderMock;
 
     /**
-     * @var Rss
+     * @var \Magento\Wishlist\Helper\Rss
      */
     protected $wishlistHelperMock;
 
     /**
-     * @var ScopeConfigInterface
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $scopeConfig;
 
     /**
-     * @var Image
+     * @var \Magento\Catalog\Helper\Image
      */
     protected $imageHelperMock;
 
     /**
-     * @var Output
+     * @var \Magento\Catalog\Helper\Output
      */
     protected $catalogOutputMock;
 
     /**
-     * @var Output|MockObject
+     * @var \Magento\Catalog\Helper\Output|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $layoutMock;
 
     /**
-     * @var CustomerFactory
+     * @var \Magento\Customer\Model\CustomerFactory
      */
     protected $customerFactory;
 
@@ -91,20 +70,20 @@ class WishlistTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->catalogOutputMock = $this->createMock(Output::class);
-        $this->rssFactoryMock = $this->createPartialMock(RssFactory::class, ['create']);
-        $this->wishlistBlock = $this->createMock(Wishlist::class);
+        $this->catalogOutputMock = $this->createMock(\Magento\Catalog\Helper\Output::class);
+        $this->rssFactoryMock = $this->createPartialMock(\Magento\Rss\Model\RssFactory::class, ['create']);
+        $this->wishlistBlock = $this->createMock(\Magento\Wishlist\Block\Customer\Wishlist::class);
         $this->wishlistHelperMock = $this->createPartialMock(
-            Rss::class,
+            \Magento\Wishlist\Helper\Rss::class,
             ['getWishlist', 'getCustomer', 'getCustomerName']
         );
-        $this->urlBuilderMock = $this->getMockForAbstractClass(UrlInterface::class);
-        $this->scopeConfig = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $this->urlBuilderMock = $this->getMockForAbstractClass(\Magento\Framework\UrlInterface::class);
+        $this->scopeConfig = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
 
-        $this->imageHelperMock = $this->createMock(Image::class);
+        $this->imageHelperMock = $this->createMock(\Magento\Catalog\Helper\Image::class);
 
         $this->layoutMock = $this->getMockForAbstractClass(
-            LayoutInterface::class,
+            \Magento\Framework\View\LayoutInterface::class,
             [],
             '',
             true,
@@ -113,15 +92,14 @@ class WishlistTest extends TestCase
             ['getBlock']
         );
 
-        $this->customerFactory = $this->getMockBuilder(CustomerFactory::class)
-            ->setMethods(['create'])->disableOriginalConstructor()
-            ->getMock();
+        $this->customerFactory = $this->getMockBuilder(\Magento\Customer\Model\CustomerFactory::class)
+            ->setMethods(['create'])->disableOriginalConstructor()->getMock();
 
-        $requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
         $requestMock->expects($this->any())->method('getParam')->with('sharing_code')
             ->willReturn('somesharingcode');
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
             \Magento\Wishlist\Model\Rss\Wishlist::class,
             [
@@ -144,21 +122,19 @@ class WishlistTest extends TestCase
         $wishlistId = 1;
         $customerName = 'Customer Name';
         $title = "$customerName's Wishlist";
-        $wishlistModelMock = $this->getMockBuilder(\Magento\Wishlist\Model\Wishlist::class)
-            ->addMethods(['getSharingCode'])
-            ->onlyMethods(['getId', '__wakeup', 'getCustomerId', 'getItemCollection'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $customerServiceMock = $this->getMockForAbstractClass(CustomerInterface::class);
+        $wishlistModelMock = $this->createPartialMock(
+            \Magento\Wishlist\Model\Wishlist::class,
+            ['getId', '__wakeup', 'getCustomerId', 'getItemCollection', 'getSharingCode']
+        );
+        $customerServiceMock = $this->createMock(\Magento\Customer\Api\Data\CustomerInterface::class);
         $wishlistSharingUrl = 'wishlist/shared/index/1';
         $locale = 'en_US';
         $productUrl = 'http://product.url/';
         $productName = 'Product name';
 
-        $customer = $this->getMockBuilder(Customer::class)
+        $customer = $this->getMockBuilder(\Magento\Customer\Model\Customer::class)
             ->setMethods(['getName', '__wakeup', 'load'])
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->disableOriginalConstructor()->getMock();
         $customer->expects($this->once())->method('load')->willReturnSelf();
         $customer->expects($this->once())->method('getName')->willReturn('Customer Name');
 
@@ -183,13 +159,13 @@ class WishlistTest extends TestCase
                     [
                         [
                             'advanced/modules_disable_output/Magento_Rss',
-                            ScopeInterface::SCOPE_STORE,
+                            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                             null,
                             null,
                         ],
                         [
                             Data::XML_PATH_DEFAULT_LOCALE,
-                            ScopeInterface::SCOPE_STORE,
+                            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                             null,
                             $locale
                         ],
@@ -234,15 +210,18 @@ class WishlistTest extends TestCase
         $productDescription = 'Product description';
         $productShortDescription = 'Product short description';
 
-        $wishlistItem = $this->createMock(Item::class);
+        $wishlistItem = $this->createMock(\Magento\Wishlist\Model\Item::class);
         $wishlistItemsCollection = [
             $wishlistItem,
         ];
-        $productMock = $this->getMockBuilder(Product::class)
-            ->addMethods(['getAllowedInRss', 'getAllowedPriceInRss', 'getDescription', 'getShortDescription'])
-            ->onlyMethods(['getName', '__wakeup'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $productMock = $this->createPartialMock(\Magento\Catalog\Model\Product::class, [
+                'getAllowedInRss',
+                'getAllowedPriceInRss',
+                'getDescription',
+                'getShortDescription',
+                'getName',
+                '__wakeup'
+            ]);
 
         $wishlistModelMock->expects($this->once())
             ->method('getItemCollection')
@@ -266,7 +245,7 @@ class WishlistTest extends TestCase
         $this->imageHelperMock->expects($this->once())
             ->method('getUrl')
             ->willReturn($imgThumbSrc);
-        $priceRendererMock = $this->createPartialMock(Render::class, ['render']);
+        $priceRendererMock = $this->createPartialMock(\Magento\Framework\Pricing\Render::class, ['render']);
 
         $this->layoutMock->expects($this->once())
             ->method('getBlock')
@@ -300,11 +279,10 @@ class WishlistTest extends TestCase
     public function testIsAllowed()
     {
         $customerId = 1;
-        $customerServiceMock = $this->getMockForAbstractClass(CustomerInterface::class);
+        $customerServiceMock = $this->createMock(\Magento\Customer\Api\Data\CustomerInterface::class);
         $wishlist = $this->getMockBuilder(\Magento\Wishlist\Model\Wishlist::class)->setMethods(
             ['getId', '__wakeup', 'getCustomerId', 'getItemCollection', 'getSharingCode']
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
         $wishlist->expects($this->once())->method('getCustomerId')->willReturn($customerId);
         $this->wishlistHelperMock->expects($this->any())->method('getWishlist')
             ->willReturn($wishlist);
@@ -313,7 +291,7 @@ class WishlistTest extends TestCase
             ->willReturn($customerServiceMock);
         $customerServiceMock->expects($this->once())->method('getId')->willReturn($customerId);
         $this->scopeConfig->expects($this->once())->method('isSetFlag')
-            ->with('rss/wishlist/active', ScopeInterface::SCOPE_STORE)
+            ->with('rss/wishlist/active', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
             ->willReturn(true);
 
         $this->assertTrue($this->model->isAllowed());
@@ -324,8 +302,7 @@ class WishlistTest extends TestCase
         $wishlistId = 1;
         $wishlist = $this->getMockBuilder(\Magento\Wishlist\Model\Wishlist::class)->setMethods(
             ['getId', '__wakeup', 'getCustomerId', 'getItemCollection', 'getSharingCode']
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
         $wishlist->expects($this->once())->method('getId')->willReturn($wishlistId);
         $this->wishlistHelperMock->expects($this->any())->method('getWishlist')
             ->willReturn($wishlist);
@@ -341,8 +318,7 @@ class WishlistTest extends TestCase
     {
         $wishlist = $this->getMockBuilder(\Magento\Wishlist\Model\Wishlist::class)->setMethods(
             ['getId', '__wakeup', 'getCustomerId', 'getItemCollection', 'getSharingCode']
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
         $wishlist->expects($this->any())->method('getSharingCode')
             ->willReturn('somesharingcode');
         $this->wishlistHelperMock->expects($this->any())->method('getWishlist')
@@ -354,11 +330,11 @@ class WishlistTest extends TestCase
     {
         $price = 10.;
 
-        $productMock = $this->getMockBuilder(Product::class)
+        $productMock = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $renderBlockMock = $this->getMockBuilder(Render::class)
+        $renderBlockMock = $this->getMockBuilder(\Magento\Framework\Pricing\Render::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderBlockMock->expects($this->once())
@@ -366,7 +342,7 @@ class WishlistTest extends TestCase
             ->with(
                 'wishlist_configured_price',
                 $productMock,
-                ['zone' => Render::ZONE_ITEM_LIST]
+                ['zone' => \Magento\Framework\Pricing\Render::ZONE_ITEM_LIST]
             )
             ->willReturn($price);
 
@@ -377,7 +353,7 @@ class WishlistTest extends TestCase
         $this->layoutMock->expects($this->once())
             ->method('createBlock')
             ->with(
-                Render::class,
+                \Magento\Framework\Pricing\Render::class,
                 'product.price.render.default',
                 ['data' => ['price_render_handle' => 'catalog_product_prices']]
             )
@@ -390,11 +366,11 @@ class WishlistTest extends TestCase
     {
         $price = 10.;
 
-        $productMock = $this->getMockBuilder(Product::class)
+        $productMock = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $renderBlockMock = $this->getMockBuilder(Render::class)
+        $renderBlockMock = $this->getMockBuilder(\Magento\Framework\Pricing\Render::class)
             ->disableOriginalConstructor()
             ->getMock();
         $renderBlockMock->expects($this->once())
@@ -402,7 +378,7 @@ class WishlistTest extends TestCase
             ->with(
                 'wishlist_configured_price',
                 $productMock,
-                ['zone' => Render::ZONE_ITEM_LIST]
+                ['zone' => \Magento\Framework\Pricing\Render::ZONE_ITEM_LIST]
             )
             ->willReturn($price);
 

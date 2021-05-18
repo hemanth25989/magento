@@ -55,13 +55,13 @@ class AsyncMultipleHandlersTest extends QueueTestCaseAbstract
             if (is_array($data)) {
                 foreach ($data as $key => $value) {
                     /** @var AsyncTestData $testObject */
-                    $testObject = $this->objectManager->create(AsyncTestData::class); // @phpstan-ignore-line
+                    $testObject = $this->objectManager->create(AsyncTestData::class);
                     $testObject->setValue($value);
                     $testObject->setTextFilePath($this->logFilePath);
                     $message[$key] = $testObject;
                 }
             } else {
-                $testObject = $this->objectManager->create(AsyncTestData::class); // @phpstan-ignore-line
+                $testObject = $this->objectManager->create(AsyncTestData::class);
                 $testObject->setValue($data);
                 $testObject->setTextFilePath($this->logFilePath);
                 $message = $testObject;

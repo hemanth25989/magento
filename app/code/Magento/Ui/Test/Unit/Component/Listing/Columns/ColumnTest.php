@@ -3,17 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Component\Listing\Columns;
 
+use Magento\Ui\Component\Listing\Columns\Column;
+use Magento\Framework\View\Element\UiComponentFactory;
+use Magento\Framework\View\Element\UiComponentInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponent\DataProvider\DataProviderInterface;
 use Magento\Framework\View\Element\UiComponent\Processor;
-use Magento\Framework\View\Element\UiComponentFactory;
-use Magento\Framework\View\Element\UiComponentInterface;
-use Magento\Ui\Component\Listing\Columns\Column;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -22,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 class ColumnTest extends TestCase
 {
     /**
-     * @var ContextInterface|MockObject
+     * @var ContextInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $contextMock;
 
@@ -56,7 +54,7 @@ class ColumnTest extends TestCase
         $this->objectManager = new ObjectManager($this);
 
         $this->contextMock = $this->getMockForAbstractClass(
-            ContextInterface::class,
+            \Magento\Framework\View\Element\UiComponent\ContextInterface::class,
             [],
             '',
             false,
@@ -136,7 +134,7 @@ class ColumnTest extends TestCase
 
         /** @var UiComponentInterface|PHPUnit\Framework\MockObject\MockObject $wrappedComponentMock */
         $wrappedComponentMock = $this->getMockForAbstractClass(
-            UiComponentInterface::class,
+            \Magento\Framework\View\Element\UiComponentInterface::class,
             [],
             '',
             false

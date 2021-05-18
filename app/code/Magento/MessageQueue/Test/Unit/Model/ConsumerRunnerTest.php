@@ -3,27 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\MessageQueue\Test\Unit\Model;
 
-use Magento\Framework\App\MaintenanceMode;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\MessageQueue\ConsumerFactory;
 use Magento\Framework\MessageQueue\ConsumerInterface;
-use Magento\Framework\Phrase;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\MessageQueue\Model\ConsumerRunner;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Phrase;
 
-class ConsumerRunnerTest extends TestCase
+/**
+ * Unit tests for consumer runner
+ */
+class ConsumerRunnerTest extends \PHPUnit\Framework\TestCase
 {
-    const STUB_SLEEP_INTERVAL = 0;
-
-    /**
-     * @var ObjectManager
-     */
+    /** @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager */
     private $objectManager;
 
     /**
@@ -32,12 +25,12 @@ class ConsumerRunnerTest extends TestCase
     private $consumerRunner;
 
     /**
-     * @var ConsumerFactory|MockObject
+     * @var \Magento\Framework\MessageQueue\ConsumerFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $consumerFactoryMock;
 
     /**
-     * @var MaintenanceMode|MockObject
+     * @var \Magento\Framework\App\MaintenanceMode|\PHPUnit\Framework\MockObject\MockObject
      */
     private $maintenanceModeMock;
 
@@ -46,23 +39,21 @@ class ConsumerRunnerTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->objectManager = new ObjectManager($this);
-
-        $this->consumerFactoryMock = $this->getMockBuilder(ConsumerFactory::class)
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->consumerFactoryMock = $this->getMockBuilder(\Magento\Framework\MessageQueue\ConsumerFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->maintenanceModeMock = $this->getMockBuilder(MaintenanceMode::class)
+        $this->maintenanceModeMock = $this->getMockBuilder(\Magento\Framework\App\MaintenanceMode::class)
             ->disableOriginalConstructor()
             ->getMock();
-
         $this->consumerRunner = $this->objectManager->getObject(
-            ConsumerRunner::class,
+            \Magento\MessageQueue\Model\ConsumerRunner::class,
             [
                 'consumerFactory' => $this->consumerFactoryMock,
-                'maintenanceMode' => $this->maintenanceModeMock,
-                'maintenanceSleepInterval' => self::STUB_SLEEP_INTERVAL
+                'maintenanceMode' => $this->maintenanceModeMock
             ]
         );
+        parent::setUp();
     }
 
     /**
@@ -73,9 +64,8 @@ class ConsumerRunnerTest extends TestCase
     public function testMagicMethod()
     {
         $isMaintenanceModeOn = false;
-        /** @var ConsumerInterface|MockObject $consumerMock */
-        $consumerMock = $this->getMockBuilder(ConsumerInterface::class)
-            ->getMock();
+        /** @var ConsumerInterface|\PHPUnit\Framework\MockObject\MockObject $consumerMock */
+        $consumerMock = $this->getMockBuilder(\Magento\Framework\MessageQueue\ConsumerInterface::class)->getMock();
         $consumerMock->expects($this->once())->method('process');
         $consumerName = 'someConsumerName';
         $this->consumerFactoryMock
@@ -95,7 +85,7 @@ class ConsumerRunnerTest extends TestCase
      */
     public function testMagicMethodNoRelatedConsumer()
     {
-        $this->expectException(LocalizedException::class);
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('"nonDeclaredConsumer" callback method specified in crontab.xml must');
 
         $consumerName = 'nonDeclaredConsumer';
@@ -116,10 +106,8 @@ class ConsumerRunnerTest extends TestCase
     public function testMagicMethodMaintenanceModeIsOn()
     {
         $isMaintenanceModeOn = true;
-
-        /** @var ConsumerInterface|MockObject $consumerMock */
-        $consumerMock = $this->getMockBuilder(ConsumerInterface::class)
-            ->getMock();
+        /** @var ConsumerInterface|\PHPUnit\Framework\MockObject\MockObject $consumerMock */
+        $consumerMock = $this->getMockBuilder(\Magento\Framework\MessageQueue\ConsumerInterface::class)->getMock();
         $consumerMock->expects($this->never())->method('process');
         $consumerName = 'someConsumerName';
         $this->consumerFactoryMock

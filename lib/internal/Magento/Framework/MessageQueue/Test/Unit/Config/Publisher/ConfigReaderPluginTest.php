@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\MessageQueue\Test\Unit\Config\Publisher;
 
 use Magento\Framework\MessageQueue\Config\Publisher\ConfigReaderPlugin as PublisherConfigReaderPlugin;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Framework\MessageQueue\ConfigInterface;
 use Magento\Framework\MessageQueue\Publisher\Config\CompositeReader as PublisherConfigCompositeReader;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConfigReaderPluginTest extends TestCase
+class ConfigReaderPluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PublisherConfigReaderPlugin
@@ -27,12 +23,12 @@ class ConfigReaderPluginTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var ConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configMock;
 
     /**
-     * @var PublisherConfigCompositeReader|MockObject
+     * @var PublisherConfigCompositeReader|\PHPUnit\Framework\MockObject\MockObject
      */
     private $subjectMock;
 

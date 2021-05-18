@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\MessageQueue\Test\Unit\Config\Consumer;
 
 use Magento\Framework\MessageQueue\Config\Consumer\ConfigReaderPlugin as ConsumerConfigReaderPlugin;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Framework\MessageQueue\ConfigInterface;
 use Magento\Framework\MessageQueue\Consumer\Config\CompositeReader as ConsumerConfigCompositeReader;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConfigReaderPluginTest extends TestCase
+class ConfigReaderPluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConsumerConfigReaderPlugin
@@ -27,12 +23,12 @@ class ConfigReaderPluginTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var ConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configMock;
 
     /**
-     * @var ConsumerConfigCompositeReader|MockObject
+     * @var ConsumerConfigCompositeReader|\PHPUnit\Framework\MockObject\MockObject
      */
     private $subjectMock;
 
@@ -82,10 +78,7 @@ class ConfigReaderPluginTest extends TestCase
                 'consumerInstance' => 'type1',
                 'handlers' => ['handlerConfig1_1_1', 'handlerConfig1_1_2', 'handlerConfig1_2_1'],
                 'connection' => 'connection1',
-                'maxMessages' => 100,
-                'maxIdleTime' => null,
-                'sleep' => null,
-                'onlySpawnWhenMessageAvailable' => false
+                'maxMessages' => 100
             ],
             'consumer2' => [
                 'name' => 'consumer2',
@@ -93,10 +86,7 @@ class ConfigReaderPluginTest extends TestCase
                 'consumerInstance' => 'type2',
                 'handlers' => [],
                 'connection' => 'connection2',
-                'maxMessages' => 2,
-                'maxIdleTime' => null,
-                'sleep' => null,
-                'onlySpawnWhenMessageAvailable' => false
+                'maxMessages' => 2
             ],
             'consumer0' => []
         ];

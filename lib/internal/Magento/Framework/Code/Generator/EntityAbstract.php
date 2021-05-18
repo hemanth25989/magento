@@ -8,13 +8,10 @@ namespace Magento\Framework\Code\Generator;
 use Laminas\Code\Generator\ValueGenerator;
 
 /**
- * Abstract entity
+ * Parent class for entities
  */
 abstract class EntityAbstract
 {
-    /**
-     * Entity type abstract
-     */
     const ENTITY_TYPE = 'abstract';
 
     /**
@@ -240,7 +237,7 @@ abstract class EntityAbstract
     }
 
     /**
-     * Validate data
+     * Ensures that data is valid
      *
      * @return bool
      */
@@ -254,9 +251,9 @@ abstract class EntityAbstract
             $this->_addError('Source class ' . $sourceClassName . ' doesn\'t exist.');
             return false;
         } elseif (/**
-             * If makeResultFileDirectory only fails because the file is already created,
-             * a competing process has generated the file, no exception should be thrown.
-             */
+         * If makeResultFileDirectory only fails because the file is already created,
+         * a competing process has generated the file, no exception should be thrown.
+         */
             !$this->_ioObject->makeResultFileDirectory($resultClassName)
             && !$this->_ioObject->fileExists($resultDir)
         ) {
@@ -267,7 +264,7 @@ abstract class EntityAbstract
     }
 
     /**
-     * Get class DocBlock
+     * Retrieves documentation block from class
      *
      * @return array
      */
@@ -278,7 +275,7 @@ abstract class EntityAbstract
     }
 
     /**
-     * Get generated code
+     * Retrieves generated code
      *
      * @return string
      */
@@ -289,7 +286,7 @@ abstract class EntityAbstract
     }
 
     /**
-     * Fix code style
+     * Fixes code style errors
      *
      * @param string $sourceCode
      * @return string
@@ -315,7 +312,7 @@ abstract class EntityAbstract
     }
 
     /**
-     * Extract parameter type
+     * Retrieve type from parameter
      *
      * @param \ReflectionParameter $parameter
      * @return null|string
@@ -339,7 +336,7 @@ abstract class EntityAbstract
             }
 
             if ($parameter->allowsNull()) {
-                $typeName = '?' .$typeName;
+                $typeName = '?' . $typeName;
             }
         }
 
@@ -347,7 +344,7 @@ abstract class EntityAbstract
     }
 
     /**
-     * Extract parameter default value
+     * Retrieve default value from parameter
      *
      * @param \ReflectionParameter $parameter
      * @return null|ValueGenerator

@@ -3,21 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Component;
 
-use Magento\Framework\View\Element\UiComponent\ContentType\ContentTypeInterface;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
+use Magento\Framework\View\Element\UiComponent\ContentType\ContentTypeInterface;
 use Magento\Framework\View\Element\UiComponentInterface;
-use Magento\Ui\Component\AbstractComponent;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AbstractComponentTest extends TestCase
+class AbstractComponentTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AbstractComponent
+     * @var \Magento\Ui\Component\AbstractComponent
      */
     protected $abstractComponent;
 
@@ -31,9 +27,9 @@ class AbstractComponentTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->contextMock = $this->getMockForAbstractClass(ContextInterface::class);
+        $this->contextMock = $this->createMock(\Magento\Framework\View\Element\UiComponent\ContextInterface::class);
         $this->contextMock->expects($this->never())->method('getProcessor');
-        $this->abstractComponent = $this->getMockBuilder(AbstractComponent::class)
+        $this->abstractComponent = $this->getMockBuilder(\Magento\Ui\Component\AbstractComponent::class)
             ->enableOriginalConstructor()
             ->setMethods(['getComponentName'])
             ->setConstructorArgs(['context' => $this->contextMock])
@@ -110,8 +106,8 @@ class AbstractComponentTest extends TestCase
      */
     public function testAddGetChildComponents()
     {
-        /** @var UiComponentInterface|MockObject $uiComponentMock */
-        $uiComponentMock = $this->getMockForAbstractClass(UiComponentInterface::class);
+        /** @var \Magento\Framework\View\Element\UiComponentInterface|MockObject $uiComponentMock */
+        $uiComponentMock = $this->createMock(\Magento\Framework\View\Element\UiComponentInterface::class);
         $name = 'componentName';
 
         $this->abstractComponent->addComponent($name, $uiComponentMock);
@@ -123,8 +119,8 @@ class AbstractComponentTest extends TestCase
      */
     public function testGetChildComponents()
     {
-        /** @var UiComponentInterface|MockObject $uiComponentMock */
-        $uiComponentMock = $this->getMockForAbstractClass(UiComponentInterface::class);
+        /** @var \Magento\Framework\View\Element\UiComponentInterface|MockObject $uiComponentMock */
+        $uiComponentMock = $this->createMock(\Magento\Framework\View\Element\UiComponentInterface::class);
         $name = 'componentName';
         $expectedResult = [$name => $uiComponentMock];
 
@@ -147,8 +143,8 @@ class AbstractComponentTest extends TestCase
     {
         $name = 'componentName';
         $expectedResult = 'some html code';
-        /** @var UiComponentInterface|MockObject $uiComponentMock */
-        $uiComponentMock = $this->getMockForAbstractClass(UiComponentInterface::class);
+        /** @var \Magento\Framework\View\Element\UiComponentInterface|MockObject $uiComponentMock */
+        $uiComponentMock = $this->createMock(\Magento\Framework\View\Element\UiComponentInterface::class);
         $uiComponentMock->expects($this->once())
             ->method('render')
             ->willReturn($expectedResult);
@@ -201,8 +197,8 @@ class AbstractComponentTest extends TestCase
     public function testGetJsConfig(array $jsConfig, array $expectedResult)
     {
         $namespace = 'my_namespace';
-        /** @var UiComponentInterface|MockObject $uiComponentMock */
-        $uiComponentMock = $this->getMockBuilder(UiComponentInterface::class)
+        /** @var \Magento\Framework\View\Element\UiComponentInterface|MockObject $uiComponentMock */
+        $uiComponentMock = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponentInterface::class)
             ->setMethods(['getData'])
             ->getMockForAbstractClass();
         $uiComponentMock->expects($this->once())

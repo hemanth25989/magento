@@ -11,7 +11,6 @@ use Magento\Checkout\Api\Data\ShippingInformationInterface;
 use Magento\Checkout\Api\Data\ShippingInformationInterfaceFactory;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Exception\InputException;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\Data\ShippingAssignmentInterface;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -54,9 +53,6 @@ class GuestShippingInformationManagementTest extends TestCase
      */
     private $maskFactory;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp(): void
     {
         $objectManager = Bootstrap::getObjectManager();
@@ -77,9 +73,12 @@ class GuestShippingInformationManagementTest extends TestCase
      * @magentoDataFixture Magento/Sales/_files/quote.php
      * @magentoDataFixture Magento/Customer/_files/customer_with_addresses.php
      * @dataProvider getAddressesVariation
+     *
      */
-    public function testDifferentAddresses(bool $swapShipping): void
+    public function testDifferentAddresses(bool $swapShipping)
     {
+        $this->expectExceptionMessage("The shipping information was unable to be saved. Verify the input data and try again.");
+        $this->expectException(\Magento\Framework\Exception\InputException::class);
         $carts = $this->cartRepo->getList(
             $this->searchCriteria->addFilter('reserved_order_id', 'test01')->create()
         )->getItems();
@@ -109,14 +108,6 @@ class GuestShippingInformationManagementTest extends TestCase
         /** @var QuoteIdMask $idMask */
         $idMask = $this->maskFactory->create();
         $idMask->load($cart->getId(), 'quote_id');
-
-        $this->expectExceptionMessage(
-            sprintf(
-                'The shipping information was unable to be saved. Error: "Invalid customer address id %s"',
-                $address->getCustomerAddressId()
-            )
-        );
-        $this->expectException(InputException::class);
         $this->management->saveAddressInformation($idMask->getMaskedId(), $shippingInformation);
     }
 

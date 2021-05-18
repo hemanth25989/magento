@@ -7,24 +7,22 @@ declare(strict_types=1);
 
 namespace Magento\Review\Test\Unit\Block\Adminhtml;
 
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Customer\Helper\View as ViewHelper;
+use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Framework\App\RequestInterface;
+use Magento\Review\Block\Adminhtml\Main as MainBlock;
+use Magento\Framework\DataObject;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
-use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Helper\View as ViewHelper;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\DataObject;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Review\Block\Adminhtml\Main as MainBlock;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit Test For Main Block
  *
  * Class \Magento\Review\Test\Unit\Block\Adminhtml\MainTest
  */
-class MainTest extends TestCase
+class MainTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var MainBlock
@@ -32,22 +30,22 @@ class MainTest extends TestCase
     protected $model;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $request;
 
     /**
-     * @var CustomerRepositoryInterface|MockObject
+     * @var CustomerRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $customerRepository;
 
     /**
-     * @var ViewHelper|MockObject
+     * @var ViewHelper|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $customerViewHelper;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $collectionFactory;
 

@@ -3,16 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Shell\Test\Unit;
 
-use Magento\Framework\OsInfo;
-use Magento\Framework\Shell\CommandRendererBackground;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Shell\CommandRendererBackground;
 
-class CommandRendererBackgroundTest extends TestCase
+class CommandRendererBackgroundTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test data for command
@@ -22,14 +17,13 @@ class CommandRendererBackgroundTest extends TestCase
     protected $testCommand = 'php -r test.php';
 
     /**
-     * @var OsInfo|MockObject
+     * @var \Magento\Framework\OsInfo|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $osInfo;
 
     protected function setUp(): void
     {
-        $this->osInfo = $this->getMockBuilder(OsInfo::class)
-            ->getMock();
+        $this->osInfo = $this->getMockBuilder(\Magento\Framework\OsInfo::class)->getMock();
     }
 
     /**

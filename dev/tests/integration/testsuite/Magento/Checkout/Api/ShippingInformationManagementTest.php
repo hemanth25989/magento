@@ -13,7 +13,6 @@ use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\Data\ShippingAssignmentInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\Framework\Exception\InputException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -41,9 +40,6 @@ class ShippingInformationManagementTest extends TestCase
      */
     private $shippingFactory;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp(): void
     {
         $objectManager = Bootstrap::getObjectManager();
@@ -62,9 +58,12 @@ class ShippingInformationManagementTest extends TestCase
      * @magentoDataFixture Magento/Sales/_files/quote_with_customer.php
      * @magentoDataFixture Magento/Customer/_files/customer_with_addresses.php
      * @dataProvider getAddressesVariation
+     *
      */
-    public function testDifferentAddresses(bool $swapShipping): void
+    public function testDifferentAddresses(bool $swapShipping)
     {
+        $this->expectExceptionMessage("The shipping information was unable to be saved. Verify the input data and try again.");
+        $this->expectException(\Magento\Framework\Exception\InputException::class);
         $cart = $this->cartRepo->getForCustomer(1);
         $otherCustomer = $this->customerRepo->get('customer_with_addresses@test.com');
         $otherAddresses = $otherCustomer->getAddresses();
@@ -88,14 +87,6 @@ class ShippingInformationManagementTest extends TestCase
         $shippingInformation->setBillingAddress($billingAddress);
         $shippingInformation->setShippingAddress($shippingAddress);
         $shippingInformation->setShippingMethodCode('flatrate');
-
-        $this->expectExceptionMessage(
-            sprintf(
-                'The shipping information was unable to be saved. Error: "Invalid customer address id %s"',
-                $address->getCustomerAddressId()
-            )
-        );
-        $this->expectException(InputException::class);
         $this->management->saveAddressInformation($cart->getId(), $shippingInformation);
     }
 

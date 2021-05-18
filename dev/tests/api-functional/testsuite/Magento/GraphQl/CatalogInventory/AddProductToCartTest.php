@@ -110,10 +110,10 @@ class AddProductToCartTest extends GraphQlAbstract
     private function getQuery(string $maskedQuoteId, string $sku, float $quantity) : string
     {
         return <<<QUERY
-mutation {
+mutation {  
   addSimpleProductsToCart(
     input: {
-      cart_id: "{$maskedQuoteId}",
+      cart_id: "{$maskedQuoteId}", 
       cart_items: [
         {
           data: {

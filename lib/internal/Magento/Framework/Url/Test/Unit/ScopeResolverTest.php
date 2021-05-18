@@ -3,37 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Url\Test\Unit;
 
-use Magento\Framework\App\ScopeResolverInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\Url\ScopeInterface;
-use Magento\Framework\Url\ScopeResolver;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ScopeResolverTest extends TestCase
+class ScopeResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $scopeResolverMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_object;
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->scopeResolverMock = $this->getMockBuilder(
-            ScopeResolverInterface::class
+            \Magento\Framework\App\ScopeResolverInterface::class
         )->getMock();
         $this->_object = $objectManager->getObject(
-            ScopeResolver::class,
+            \Magento\Framework\Url\ScopeResolver::class,
             ['scopeResolver' => $this->scopeResolverMock]
         );
     }
@@ -44,8 +36,7 @@ class ScopeResolverTest extends TestCase
      */
     public function testGetScope($scopeId)
     {
-        $scopeMock = $this->getMockBuilder(ScopeInterface::class)
-            ->getMock();
+        $scopeMock = $this->getMockBuilder(\Magento\Framework\Url\ScopeInterface::class)->getMock();
         $this->scopeResolverMock->expects(
             $this->at(0)
         )->method(
@@ -58,10 +49,13 @@ class ScopeResolverTest extends TestCase
         $this->_object->getScope($scopeId);
     }
 
+    /**
+     */
     public function testGetScopeException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('The scope object is invalid. Verify the scope object and try again.');
+
         $this->_object->getScope();
     }
 

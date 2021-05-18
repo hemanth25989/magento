@@ -14,8 +14,6 @@ use Magento\TestFramework\CodingStandard\Tool\CodeSniffer\Wrapper;
 use Magento\TestFramework\CodingStandard\Tool\CopyPasteDetector;
 use Magento\TestFramework\CodingStandard\Tool\PhpCompatibility;
 use Magento\TestFramework\CodingStandard\Tool\PhpStan;
-use Magento\TestFramework\Utility\AddedFiles;
-use Magento\TestFramework\Utility\FilesSearch;
 use PHPMD\TextUI\Command;
 
 /**
@@ -115,8 +113,8 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
      */
     private static function getChangedFilesList($changedFilesBaseDir)
     {
-        return FilesSearch::getFilesFromListFile(
-            $changedFilesBaseDir ?: self::getChangedFilesBaseDir(),
+        return self::getFilesFromListFile(
+            $changedFilesBaseDir,
             'changed_files*',
             function () {
                 // if no list files, probably, this is the dev environment
@@ -128,6 +126,65 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
                 return $changedFiles;
             }
         );
+    }
+
+    /**
+     * This method loads list of added files.
+     *
+     * @param string $changedFilesBaseDir
+     * @return string[]
+     */
+    private static function getAddedFilesList($changedFilesBaseDir)
+    {
+        return self::getFilesFromListFile(
+            $changedFilesBaseDir,
+            'changed_files*.added.*',
+            function () {
+                // if no list files, probably, this is the dev environment
+                // phpcs:ignore Generic.PHP.NoSilencedErrors,Magento2.Security.InsecureFunction
+                @exec('git diff --cached --name-only --diff-filter=A', $addedFiles);
+                return $addedFiles;
+            }
+        );
+    }
+
+    /**
+     * Read files from generated lists.
+     *
+     * @param string $listsBaseDir
+     * @param string $listFilePattern
+     * @param callable $noListCallback
+     * @return string[]
+     */
+    private static function getFilesFromListFile($listsBaseDir, $listFilePattern, $noListCallback)
+    {
+        $filesDefinedInList = [];
+
+        $globFilesListPattern = ($listsBaseDir ?: self::getChangedFilesBaseDir())
+            . '/_files/' . $listFilePattern;
+        $listFiles = glob($globFilesListPattern);
+        if (!empty($listFiles)) {
+            foreach ($listFiles as $listFile) {
+                // phpcs:ignore Magento2.Performance.ForeachArrayMerge.ForeachArrayMerge
+                $filesDefinedInList = array_merge(
+                    $filesDefinedInList,
+                    file($listFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)
+                );
+            }
+        } else {
+            $filesDefinedInList = call_user_func($noListCallback);
+        }
+
+        array_walk(
+            $filesDefinedInList,
+            function (&$file) {
+                $file = BP . '/' . $file;
+            }
+        );
+
+        $filesDefinedInList = array_values(array_unique($filesDefinedInList));
+
+        return $filesDefinedInList;
     }
 
     /**
@@ -209,14 +266,14 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Retrieves the lowest PHP version specified in <kbd>composer.json</var> of project.
+     * Retrieves the lowest and highest PHP version specified in <kbd>composer.json</var> of project.
      *
-     * @return string
+     * @return array
      */
-    private function getLowestPhpVersion(): string
+    private function getTargetPhpVersions(): array
     {
         $composerJson = json_decode(file_get_contents(BP . '/composer.json'), true);
-        $phpVersion   = '7.0';
+        $versionsRange = [];
 
         if (isset($composerJson['require']['php'])) {
             $versions = explode('||', $composerJson['require']['php']);
@@ -232,12 +289,17 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
             //sort versions
             usort($versions, 'version_compare');
 
-            $lowestVersion = array_shift($versions);
-            $versionParts  = explode('.', $lowestVersion);
-            $phpVersion    = sprintf('%s.%s', $versionParts[0], $versionParts[1] ?? '0');
+            $versionsRange[] = array_shift($versions);
+            if (!empty($versions)) {
+                $versionsRange[] = array_pop($versions);
+            }
+            foreach ($versionsRange as $key => $version) {
+                $versionParts  = explode('.', $versionsRange[$key]);
+                $versionsRange[$key] = sprintf('%s.%s', $versionParts[0], $versionParts[1] ?? '0');
+            }
         }
 
-        return $phpVersion;
+        return $versionsRange;
     }
 
     /**
@@ -301,19 +363,8 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
         if (!$codeMessDetector->canRun()) {
             $this->markTestSkipped('PHP Mess Detector is not available.');
         }
-        $fileList = self::getWhitelist(['php']);
-        $ignoreList = Files::init()->readLists(__DIR__ . '/_files/phpmd/ignorelist/*.txt');
-        if ($ignoreList) {
-            $ignoreListPattern = sprintf('#(%s)#i', implode('|', $ignoreList));
-            $fileList = array_filter(
-                $fileList,
-                function ($path) use ($ignoreListPattern) {
-                    return !preg_match($ignoreListPattern, $path);
-                }
-            );
-        }
 
-        $result = $codeMessDetector->run($fileList);
+        $result = $codeMessDetector->run(self::getWhitelist(['php']));
 
         $output = "";
         if (file_exists($reportFile)) {
@@ -346,9 +397,9 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
 
         $blackList = [];
         foreach (glob(__DIR__ . '/_files/phpcpd/blacklist/*.txt') as $list) {
-            $blackList[] = file($list, FILE_IGNORE_NEW_LINES);
+            // phpcs:ignore Magento2.Performance.ForeachArrayMerge.ForeachArrayMerge
+            $blackList = array_merge($blackList, file($list, FILE_IGNORE_NEW_LINES));
         }
-        $blackList = array_merge([], ...$blackList);
 
         $copyPasteDetector->setBlackList($blackList);
 
@@ -370,7 +421,7 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
      */
     public function testStrictTypes()
     {
-        $changedFiles = AddedFiles::getAddedFilesList(self::getChangedFilesBaseDir());
+        $changedFiles = self::getAddedFilesList('');
 
         try {
             $blackList = Files::init()->readLists(
@@ -408,7 +459,8 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
      */
     public function testPhpCompatibility()
     {
-        $targetVersion = $this->getLowestPhpVersion();
+        $targetVersions = $this->getTargetPhpVersions();
+        $this->assertNotEmpty($targetVersions, 'No supported versions information in composer.json');
         $reportFile    = self::$reportDir . '/phpcompatibility_report.txt';
         $rulesetDir    = __DIR__ . '/_files/PHPCompatibilityMagento';
 
@@ -417,7 +469,11 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
         }
 
         $codeSniffer = new PhpCompatibility($rulesetDir, $reportFile, new Wrapper());
-        $codeSniffer->setTestVersion($targetVersion);
+        if (count($targetVersions) > 1) {
+            $codeSniffer->setTestVersion($targetVersions[0] . '-' . $targetVersions[1]);
+        } else {
+            $codeSniffer->setTestVersion($targetVersions[0]);
+        }
 
         $result = $codeSniffer->run(
             $this->isFullScan() ? $this->getFullWhitelist() : self::getWhitelist(['php', 'phtml'])
@@ -464,36 +520,5 @@ class LiveCodeTest extends \PHPUnit\Framework\TestCase
         $errorMessage = empty($report) ?
             'PHPStan command run failed.' : 'PHPStan detected violation(s):' . PHP_EOL . $report;
         $this->assertEquals(0, $exitCode, $errorMessage);
-    }
-
-    /**
-     * Tests whitelisted fixtures for reuse other fixtures.
-     */
-    public function testFixtureReuse()
-    {
-        $changedFiles =  self::getWhitelist(['php']);
-        $toBeTestedFiles = self::filterFiles($changedFiles, ['php'], []);
-
-        $filesWithIncorrectReuse = [];
-        foreach ($toBeTestedFiles as $fileName) {
-            //check only _files and Fixtures directory
-            if (!preg_match('/integration.+\/(_files|Fixtures)/', $fileName)) {
-                continue;
-            }
-            $file = str_replace(["\n", "\r"], '', file_get_contents($fileName));
-            if (preg_match('/(?<![\=\s*])\b(require|require_once|include)\b/', $file)) {
-                $filesWithIncorrectReuse[] = $fileName;
-            }
-        }
-
-        $this->assertEquals(
-            0,
-            count($filesWithIncorrectReuse),
-            "The following files incorrectly reuse fixtures:"
-            . PHP_EOL
-            . implode(PHP_EOL, $filesWithIncorrectReuse)
-            . PHP_EOL
-            . 'Please use Magento\TestFramework\Workaround\Override\Fixture\Resolver::requireDataFixture'
-        );
     }
 }

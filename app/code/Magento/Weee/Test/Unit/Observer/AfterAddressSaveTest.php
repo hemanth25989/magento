@@ -3,22 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Weee\Test\Unit\Observer;
 
-use Magento\Customer\Model\Address;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\Module\Manager;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\PageCache\Model\Config;
 use Magento\Tax\Api\TaxAddressManagerInterface;
-use Magento\Weee\Helper\Data;
-use Magento\Weee\Observer\AfterAddressSave;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 
-class AfterAddressSaveTest extends TestCase
+/**
+ * After address save test.
+ */
+class AfterAddressSaveTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -26,26 +20,26 @@ class AfterAddressSaveTest extends TestCase
     private $objectManager;
 
     /**
-     * @var Observer|MockObject
+     * @var \Magento\Framework\Event\Observer|\PHPUnit\Framework\MockObject\MockObject
      */
     private $observerMock;
 
     /**
      * Module manager
      *
-     * @var Manager|MockObject
+     * @var \Magento\Framework\Module\Manager|\PHPUnit\Framework\MockObject\MockObject
      */
     private $moduleManagerMock;
 
     /**
      * Cache config
      *
-     * @var Config|MockObject
+     * @var \Magento\PageCache\Model\Config|\PHPUnit\Framework\MockObject\MockObject
      */
     private $cacheConfigMock;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Weee\Helper\Data|\PHPUnit\Framework\MockObject\MockObject
      */
     private $weeeHelperMock;
 
@@ -55,27 +49,27 @@ class AfterAddressSaveTest extends TestCase
     private $addressManagerMock;
 
     /**
-     * @var AfterAddressSave
+     * @var \Magento\Weee\Observer\AfterAddressSave
      */
     protected $session;
 
     protected function setUp(): void
     {
         $this->objectManager = new ObjectManager($this);
-        $this->observerMock = $this->getMockBuilder(Observer::class)
+        $this->observerMock = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->setMethods(['getCustomerAddress'])
             ->getMock();
 
-        $this->moduleManagerMock = $this->getMockBuilder(Manager::class)
+        $this->moduleManagerMock = $this->getMockBuilder(\Magento\Framework\Module\Manager::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->cacheConfigMock = $this->getMockBuilder(Config::class)
+        $this->cacheConfigMock = $this->getMockBuilder(\Magento\PageCache\Model\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->weeeHelperMock = $this->getMockBuilder(Data::class)
+        $this->weeeHelperMock = $this->getMockBuilder(\Magento\Weee\Helper\Data::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -85,7 +79,7 @@ class AfterAddressSaveTest extends TestCase
             ->getMockForAbstractClass();
 
         $this->session = $this->objectManager->getObject(
-            AfterAddressSave::class,
+            \Magento\Weee\Observer\AfterAddressSave::class,
             [
                 'weeeHelper' => $this->weeeHelperMock,
                 'moduleManager' => $this->moduleManagerMock,
@@ -123,8 +117,8 @@ class AfterAddressSaveTest extends TestCase
             ->method('isEnabled')
             ->willReturn($isEnabledWeee);
 
-        /* @var \Magento\Customer\Model\Address|MockObject $address */
-        $address = $this->getMockBuilder(Address::class)
+        /* @var \Magento\Customer\Model\Address|\PHPUnit\Framework\MockObject\MockObject $address */
+        $address = $this->getMockBuilder(\Magento\Customer\Model\Address::class)
             ->disableOriginalConstructor()
             ->getMock();
 

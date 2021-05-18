@@ -3,11 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Gateway\Command;
 
-use Magento\Payment\Gateway\Command\CommandException;
 use Magento\Payment\Gateway\Command\GatewayCommand;
 use Magento\Payment\Gateway\ErrorMapper\ErrorMessageMapperInterface;
 use Magento\Payment\Gateway\Http\ClientInterface;
@@ -17,14 +14,13 @@ use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Validator\ValidatorInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 use Psr\Log\LoggerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class GatewayCommandTest extends TestCase
+class GatewayCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var GatewayCommand
@@ -100,11 +96,13 @@ class GatewayCommandTest extends TestCase
 
     /**
      * Checks a case when request fails.
+     *
      */
     public function testExecuteValidationFail()
     {
-        $this->expectException(CommandException::class);
+        $this->expectException(\Magento\Payment\Gateway\Command\CommandException::class);
         $this->expectExceptionMessage('Transaction has been declined. Please try again later.');
+
         $commandSubject = ['authorize'];
         $validationFailures = [
             __('Failure #1'),
@@ -125,11 +123,13 @@ class GatewayCommandTest extends TestCase
 
     /**
      * Checks a case when request fails and response errors are mapped.
+     *
      */
     public function testExecuteValidationFailWithMappedErrors()
     {
-        $this->expectException(CommandException::class);
+        $this->expectException(\Magento\Payment\Gateway\Command\CommandException::class);
         $this->expectExceptionMessage('Failure Mapped');
+
         $commandSubject = ['authorize'];
         $validationFailures = [
             __('Failure #1'),

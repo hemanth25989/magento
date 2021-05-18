@@ -3,65 +3,54 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Layout\File\Collector;
 
-use Magento\Framework\View\Design\ThemeInterface;
-use Magento\Framework\View\File;
-use Magento\Framework\View\File\CollectorInterface;
-use Magento\Framework\View\File\FileList;
-use Magento\Framework\View\File\FileList\Factory;
-use Magento\Framework\View\Layout\File\Collector\Aggregated;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AggregateTest extends TestCase
+class AggregateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Aggregated
+     * @var \Magento\Framework\View\Layout\File\Collector\Aggregated
      */
     private $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $_fileList;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $_baseFiles;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $_themeFiles;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $_overridingBaseFiles;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $_overridingThemeFiles;
 
     protected function setUp(): void
     {
-        $this->_fileList = $this->createMock(FileList::class);
-        $this->_baseFiles = $this->getMockForAbstractClass(CollectorInterface::class);
-        $this->_themeFiles = $this->getMockForAbstractClass(CollectorInterface::class);
+        $this->_fileList = $this->createMock(\Magento\Framework\View\File\FileList::class);
+        $this->_baseFiles = $this->getMockForAbstractClass(\Magento\Framework\View\File\CollectorInterface::class);
+        $this->_themeFiles = $this->getMockForAbstractClass(\Magento\Framework\View\File\CollectorInterface::class);
         $this->_overridingBaseFiles = $this->getMockForAbstractClass(
-            CollectorInterface::class
+            \Magento\Framework\View\File\CollectorInterface::class
         );
         $this->_overridingThemeFiles = $this->getMockForAbstractClass(
-            CollectorInterface::class
+            \Magento\Framework\View\File\CollectorInterface::class
         );
-        $fileListFactory = $this->createMock(Factory::class);
+        $fileListFactory = $this->createMock(\Magento\Framework\View\File\FileList\Factory::class);
         $fileListFactory->expects($this->once())->method('create')->willReturn($this->_fileList);
-        $this->_model = new Aggregated(
+        $this->_model = new \Magento\Framework\View\Layout\File\Collector\Aggregated(
             $fileListFactory,
             $this->_baseFiles,
             $this->_themeFiles,
@@ -76,8 +65,8 @@ class AggregateTest extends TestCase
      */
     public function testGetFiles()
     {
-        $parentTheme = $this->getMockForAbstractClass(ThemeInterface::class);
-        $theme = $this->getMockForAbstractClass(ThemeInterface::class);
+        $parentTheme = $this->getMockForAbstractClass(\Magento\Framework\View\Design\ThemeInterface::class);
+        $theme = $this->getMockForAbstractClass(\Magento\Framework\View\Design\ThemeInterface::class);
         $theme->expects(
             $this->once()
         )->method(
@@ -87,13 +76,13 @@ class AggregateTest extends TestCase
         );
 
         $files = [
-            new File('0.xml', 'Module_One'),
-            new File('1.xml', 'Module_One', $parentTheme),
-            new File('2.xml', 'Module_One', $parentTheme),
-            new File('3.xml', 'Module_One', $parentTheme),
-            new File('4.xml', 'Module_One', $theme),
-            new File('5.xml', 'Module_One', $theme),
-            new File('6.xml', 'Module_One', $theme),
+            new \Magento\Framework\View\File('0.xml', 'Module_One'),
+            new \Magento\Framework\View\File('1.xml', 'Module_One', $parentTheme),
+            new \Magento\Framework\View\File('2.xml', 'Module_One', $parentTheme),
+            new \Magento\Framework\View\File('3.xml', 'Module_One', $parentTheme),
+            new \Magento\Framework\View\File('4.xml', 'Module_One', $theme),
+            new \Magento\Framework\View\File('5.xml', 'Module_One', $theme),
+            new \Magento\Framework\View\File('6.xml', 'Module_One', $theme),
         ];
 
         $this->_baseFiles->expects(

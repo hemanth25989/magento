@@ -3,20 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Review\Test\Unit\Ui\Component\Listing\Columns;
 
+use Magento\Review\Ui\Component\Listing\Columns\Status;
 use Magento\Catalog\Test\Unit\Ui\Component\Listing\Columns\AbstractColumnTest;
 use Magento\Review\Helper\Data as StatusSource;
-use Magento\Review\Model\Review;
-use Magento\Review\Ui\Component\Listing\Columns\Status;
-use PHPUnit\Framework\MockObject\MockObject;
 
+/**
+ * Class StatusTest
+ */
 class StatusTest extends AbstractColumnTest
 {
     /**
-     * @var StatusSource|MockObject
+     * @var StatusSource|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $sourceMock;
 
@@ -80,7 +79,7 @@ class StatusTest extends AbstractColumnTest
         $this->sourceMock->expects($this->once())
             ->method('getReviewStatuses')
             ->willReturn([
-                Review::STATUS_APPROVED => __('Approved'),
+                \Magento\Review\Model\Review::STATUS_APPROVED => __('Approved'),
             ]);
 
         $this->assertEquals($expectedDataSource, $this->getModel()->prepareDataSource($dataSource));

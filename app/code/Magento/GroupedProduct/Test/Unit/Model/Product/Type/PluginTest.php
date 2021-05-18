@@ -4,38 +4,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GroupedProduct\Test\Unit\Model\Product\Type;
 
-use Magento\Catalog\Model\Product\Type;
-use Magento\Framework\Module\Manager;
-use Magento\GroupedProduct\Model\Product\Type\Plugin;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class PluginTest extends TestCase
+class PluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $moduleManagerMock;
 
     /**
-     * @var Plugin
+     * @var \Magento\GroupedProduct\Model\Product\Type\Plugin
      */
     protected $object;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $subjectMock;
 
     protected function setUp(): void
     {
-        $this->moduleManagerMock = $this->createMock(Manager::class);
-        $this->subjectMock = $this->createMock(Type::class);
-        $this->object = new Plugin($this->moduleManagerMock);
+        $this->moduleManagerMock = $this->createMock(\Magento\Framework\Module\Manager::class);
+        $this->subjectMock = $this->createMock(\Magento\Catalog\Model\Product\Type::class);
+        $this->object = new \Magento\GroupedProduct\Model\Product\Type\Plugin($this->moduleManagerMock);
     }
 
     public function testAfterGetOptionArray()

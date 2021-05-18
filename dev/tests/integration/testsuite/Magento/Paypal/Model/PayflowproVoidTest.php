@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Model;
 
 use Magento\Framework\Api\AttributeValueFactory;
@@ -14,7 +12,6 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\DataObject;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Module\ModuleListInterface;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Payment\Gateway\Command\CommandException;
@@ -31,20 +28,18 @@ use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Item;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PayflowproVoidTest extends TestCase
+class PayflowproVoidTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManagerInterface
+     * @var \Magento\Framework\ObjectManagerInterface
      */
     private $objectManager;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
     }
@@ -55,7 +50,7 @@ class PayflowproVoidTest extends TestCase
      * @magentoDataFixture Magento/Paypal/_files/order_payflowpro.php
      * @magentoConfigFixture current_store payment/payflowpro/active 1
      */
-    public function testPaymentVoid(): void
+    public function testPaymentVoid()
     {
         $response = new DataObject(
             [
@@ -93,7 +88,7 @@ class PayflowproVoidTest extends TestCase
      * @magentoConfigFixture current_store payment/payflowpro/active 1
      * @dataProvider orderCancelSuccessDataProvider
      */
-    public function testOrderCancelSuccess(DataObject $response): void
+    public function testOrderCancelSuccess(DataObject $response)
     {
         $order = $this->getOrder();
         $payment = $order->getPayment();
@@ -136,7 +131,7 @@ class PayflowproVoidTest extends TestCase
      * @magentoDataFixture Magento/Paypal/_files/order_payflowpro.php
      * @magentoConfigFixture current_store payment/payflowpro/active 1
      */
-    public function testOrderCancelWithVoidError(): void
+    public function testOrderCancelWithVoidError()
     {
         $response = new DataObject(
             [
@@ -210,7 +205,7 @@ class PayflowproVoidTest extends TestCase
                 ]
             );
 
-        /** @var Payflowpro|MockObject $instance */
+        /** @var Payflowpro|\PHPUnit\Framework\MockObject\MockObject $instance */
         $instance = $this->getMockBuilder(Payflowpro::class)
             ->setMethods(['setStore', 'getInfoInstance'])
             ->setConstructorArgs(
@@ -238,7 +233,7 @@ class PayflowproVoidTest extends TestCase
         $instance->expects($this->once())
             ->method('setStore')
             ->willReturnSelf();
-        $paymentInfoInstance = $this->createMock(InfoInterface::class);
+        $paymentInfoInstance = $this->getMockForAbstractClass(InfoInterface::class);
         $instance->method('getInfoInstance')
             ->willReturn($paymentInfoInstance);
 
@@ -251,7 +246,7 @@ class PayflowproVoidTest extends TestCase
      * @param string $incrementId
      * @return OrderInterface
      */
-    private function getOrderByIncrementId(string $incrementId): OrderInterface
+    private function getOrderByIncrementId(string $incrementId)
     {
         /** @var SearchCriteriaBuilder $searchCriteriaBuilder */
         $searchCriteriaBuilder = $this->objectManager->get(SearchCriteriaBuilder::class);

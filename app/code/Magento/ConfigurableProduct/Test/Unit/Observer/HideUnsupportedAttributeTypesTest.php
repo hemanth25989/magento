@@ -3,23 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\ConfigurableProduct\Test\Unit\Observer;
 
+use Magento\Catalog\Block\Adminhtml\Product\Attribute\Edit\Tab\Main as MainBlock;
 use Magento\ConfigurableProduct\Observer\HideUnsupportedAttributeTypes;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Data\Form;
-use Magento\Framework\Data\Form\Element\Select;
 use Magento\Framework\Event\Observer as EventObserver;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\View\Element\BlockInterface;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 
 /**
  * Unit test for Magento\ConfigurableProduct\Observer\HideUnsupportedAttributeTypes
  */
-class HideUnsupportedAttributeTypesTest extends TestCase
+class HideUnsupportedAttributeTypesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -49,7 +48,7 @@ class HideUnsupportedAttributeTypesTest extends TestCase
      * @param array $supportedTypes
      * @return HideUnsupportedAttributeTypes
      */
-    private function createTarget(MockObject $request, array $supportedTypes = [])
+    private function createTarget(\PHPUnit\Framework\MockObject\MockObject $request, array $supportedTypes = [])
     {
         return $this->objectManager->getObject(
             HideUnsupportedAttributeTypes::class,
@@ -91,7 +90,7 @@ class HideUnsupportedAttributeTypesTest extends TestCase
      * @return EventObserver|\PHPUnit\Framework\MockObject\MockObject
      * @internal param null|MockObject $block
      */
-    private function createEventMock(MockObject $form = null)
+    private function createEventMock(\PHPUnit\Framework\MockObject\MockObject $form = null)
     {
         $event = $this->getMockBuilder(EventObserver::class)
             ->setMethods(['getForm', 'getBlock'])
@@ -169,11 +168,11 @@ class HideUnsupportedAttributeTypesTest extends TestCase
      */
     private function createForm(array $originalValues = [], array $expectedValues = [])
     {
-        $form = $this->getMockBuilder(Form::class)
+        $form = $this->getMockBuilder(\Magento\Framework\Data\Form::class)
             ->setMethods(['getElement'])
             ->disableOriginalConstructor()
             ->getMock();
-        $frontendInput = $this->getMockBuilder(Select::class)
+        $frontendInput = $this->getMockBuilder(\Magento\Framework\Data\Form\Element\Select::class)
             ->setMethods(['getValues', 'setValues'])
             ->disableOriginalConstructor()
             ->getMock();

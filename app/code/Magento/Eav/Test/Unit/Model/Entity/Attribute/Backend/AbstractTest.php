@@ -3,27 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Eav\Test\Unit\Model\Entity\Attribute\Backend;
 
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
-use Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend;
-use Magento\Framework\DataObject;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AbstractTest extends TestCase
+class AbstractTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AbstractBackend|MockObject
+     * @var \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_model;
 
     protected function setUp(): void
     {
         $this->_model = $this->getMockForAbstractClass(
-            AbstractBackend::class,
+            \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend::class,
             [],
             '',
             false
@@ -36,7 +28,7 @@ class AbstractTest extends TestCase
         $attributeId = 42;
 
         $attribute = $this->createPartialMock(
-            AbstractAttribute::class,
+            \Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class,
             ['getBackendTable', 'isStatic', 'getAttributeId', '__wakeup']
         );
         $attribute->expects($this->any())->method('getAttributeId')->willReturn($attributeId);
@@ -47,7 +39,7 @@ class AbstractTest extends TestCase
 
         $this->_model->setAttribute($attribute);
 
-        $object = new DataObject();
+        $object = new \Magento\Framework\DataObject();
         $this->_model->setValueId($valueId);
 
         $this->assertEquals(

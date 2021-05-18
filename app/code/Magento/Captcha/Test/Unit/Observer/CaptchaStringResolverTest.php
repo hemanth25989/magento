@@ -11,10 +11,8 @@ use Magento\Captcha\Helper\Data as CaptchaDataHelper;
 use Magento\Captcha\Observer\CaptchaStringResolver;
 use Magento\Framework\App\Request\Http as HttpRequest;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CaptchaStringResolverTest extends TestCase
+class CaptchaStringResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -27,7 +25,7 @@ class CaptchaStringResolverTest extends TestCase
     private $captchaStringResolver;
 
     /**
-     * @var HttpRequest|MockObject
+     * @var HttpRequest|\PHPUnit\Framework\MockObject\MockObject
      */
     private $requestMock;
 

@@ -3,34 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Email\Test\Unit\Model\Mail;
 
 use Magento\Email\Model\Mail\TransportInterfacePlugin;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Mail\TransportInterface;
 use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Covers \Magento\Email\Model\Transport
  */
-class TransportInterfacePluginTest extends TestCase
+class TransportInterfacePluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var TransportInterface|MockObject
+     * @var TransportInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $transportMock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $scopeConfigMock;
 
     /**
-     * @var \Callable|MockObject
+     * @var \Callable|\PHPUnit\Framework\MockObject\MockObject
      */
     private $proceedMock;
 

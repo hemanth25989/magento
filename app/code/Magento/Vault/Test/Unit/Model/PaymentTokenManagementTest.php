@@ -1,11 +1,8 @@
 <?php
-
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Vault\Test\Unit\Model;
 
 use Magento\Framework\Api\Filter;
@@ -23,14 +20,14 @@ use Magento\Vault\Api\PaymentTokenRepositoryInterface;
 use Magento\Vault\Model\PaymentTokenFactory;
 use Magento\Vault\Model\PaymentTokenManagement;
 use Magento\Vault\Model\ResourceModel\PaymentToken as PaymentTokenResourceModel;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class PaymentTokenManagementTest
+ * Test for PaymentTokenManagement
  * @see \Magento\Vault\Model\PaymentTokenManagement
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PaymentTokenManagementTest extends TestCase
+class PaymentTokenManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PaymentTokenManagement
@@ -38,47 +35,47 @@ class PaymentTokenManagementTest extends TestCase
     private $paymentTokenManagement;
 
     /**
-     * @var PaymentTokenRepositoryInterface|MockObject
+     * @var PaymentTokenRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $paymentTokenRepository;
 
     /**
-     * @var PaymentTokenResourceModel|MockObject
+     * @var PaymentTokenResourceModel|\PHPUnit\Framework\MockObject\MockObject
      */
     private $paymentTokenResourceModel;
 
     /**
-     * @var PaymentTokenResourceModel|MockObject
+     * @var PaymentTokenResourceModel|\PHPUnit\Framework\MockObject\MockObject
      */
     private $resourceModel;
 
     /**
-     * @var PaymentTokenFactory|MockObject
+     * @var PaymentTokenFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $paymentTokenFactory;
 
     /**
-     * @var PaymentTokenSearchResultsInterfaceFactory|MockObject
+     * @var PaymentTokenSearchResultsInterfaceFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $searchResultsFactory;
 
     /**
-     * @var FilterBuilder|MockObject
+     * @var FilterBuilder|\PHPUnit\Framework\MockObject\MockObject
      */
     private $filterBuilder;
 
     /**
-     * @var SearchCriteriaBuilder|MockObject
+     * @var SearchCriteriaBuilder|\PHPUnit\Framework\MockObject\MockObject
      */
     private $searchCriteriaBuilder;
 
     /**
-     * @var EncryptorInterface|MockObject
+     * @var EncryptorInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $encryptor;
 
     /**
-     * @var DateTimeFactory|MockObject
+     * @var DateTimeFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $dateTimeFactory;
 
@@ -131,7 +128,7 @@ class PaymentTokenManagementTest extends TestCase
      */
     public function testGetListByCustomerId()
     {
-        /** @var PaymentTokenInterface|MockObject $tokenMock */
+        /** @var PaymentTokenInterface|\PHPUnit\Framework\MockObject\MockObject $tokenMock */
         $tokenMock = $this->getMockBuilder(PaymentTokenInterface::class)
             ->getMockForAbstractClass();
         /** @var Filter| $filterMock */
@@ -181,7 +178,7 @@ class PaymentTokenManagementTest extends TestCase
      */
     public function testGetByPaymentId()
     {
-        /** @var PaymentTokenInterface|MockObject $tokenMock */
+        /** @var PaymentTokenInterface|\PHPUnit\Framework\MockObject\MockObject $tokenMock */
         $tokenMock = $this->getMockBuilder(PaymentTokenInterface::class)
             ->getMockForAbstractClass();
 
@@ -219,7 +216,7 @@ class PaymentTokenManagementTest extends TestCase
      */
     public function testGetByGatewayToken()
     {
-        /** @var PaymentTokenInterface|MockObject $tokenMock */
+        /** @var PaymentTokenInterface|\PHPUnit\Framework\MockObject\MockObject $tokenMock */
         $tokenMock = $this->getMockBuilder(PaymentTokenInterface::class)
             ->getMockForAbstractClass();
 
@@ -273,9 +270,9 @@ class PaymentTokenManagementTest extends TestCase
      */
     public function testSaveTokenWithPaymentLinkNoDuplicate()
     {
-        /** @var OrderPaymentInterface|MockObject $paymentMock */
+        /** @var OrderPaymentInterface|\PHPUnit\Framework\MockObject\MockObject $paymentMock */
         $paymentMock = $this->getMockForAbstractClass(OrderPaymentInterface::class);
-        /** @var PaymentTokenInterface|MockObject $tokenMock */
+        /** @var PaymentTokenInterface|\PHPUnit\Framework\MockObject\MockObject $tokenMock */
         $tokenMock = $this->getMockForAbstractClass(PaymentTokenInterface::class);
 
         $customerId = 1;
@@ -321,11 +318,11 @@ class PaymentTokenManagementTest extends TestCase
      */
     public function testSaveTokenWithPaymentLinkWithDuplicateTokenVisible()
     {
-        /** @var OrderPaymentInterface|MockObject $paymentMock */
+        /** @var OrderPaymentInterface|\PHPUnit\Framework\MockObject\MockObject $paymentMock */
         $paymentMock = $this->getMockForAbstractClass(OrderPaymentInterface::class);
-        /** @var PaymentTokenInterface|MockObject $tokenMock */
+        /** @var PaymentTokenInterface|\PHPUnit\Framework\MockObject\MockObject $tokenMock */
         $tokenMock = $this->getMockForAbstractClass(PaymentTokenInterface::class);
-        /** @var PaymentTokenInterface|MockObject $duplicateToken */
+        /** @var PaymentTokenInterface|\PHPUnit\Framework\MockObject\MockObject $duplicateToken */
         $duplicateToken = $this->getMockForAbstractClass(PaymentTokenInterface::class);
 
         $entityId = 1;
@@ -381,11 +378,11 @@ class PaymentTokenManagementTest extends TestCase
      */
     public function testSaveTokenWithPaymentLinkWithDuplicateTokenNotVisible()
     {
-        /** @var OrderPaymentInterface|MockObject $paymentMock */
+        /** @var OrderPaymentInterface|\PHPUnit\Framework\MockObject\MockObject $paymentMock */
         $paymentMock = $this->getMockForAbstractClass(OrderPaymentInterface::class);
-        /** @var PaymentTokenInterface|MockObject $tokenMock */
+        /** @var PaymentTokenInterface|\PHPUnit\Framework\MockObject\MockObject $tokenMock */
         $tokenMock = $this->getMockForAbstractClass(PaymentTokenInterface::class);
-        /** @var PaymentTokenInterface|MockObject $duplicateToken */
+        /** @var PaymentTokenInterface|\PHPUnit\Framework\MockObject\MockObject $duplicateToken */
         $duplicateToken = $this->getMockForAbstractClass(PaymentTokenInterface::class);
 
         $entityId = 1;
@@ -460,11 +457,16 @@ class PaymentTokenManagementTest extends TestCase
         $searchResult = $this->getMockForAbstractClass(PaymentTokenSearchResultsInterface::class);
         $token = $this->getMockForAbstractClass(PaymentTokenInterface::class);
 
-        $customerFilter = $this->createExpectedFilter(PaymentTokenInterface::CUSTOMER_ID, $customerId, 0);
-        $visibilityFilter = $this->createExpectedFilter(PaymentTokenInterface::IS_VISIBLE, true, 1);
-        $isActiveFilter = $this->createExpectedFilter(PaymentTokenInterface::IS_ACTIVE, true, 2);
-        $expiresAtFilter = $this->createExpectedFilter(PaymentTokenInterface::EXPIRES_AT, '2015-01-01 00:00:00', 3);
+        $this->createExpectedFilter(PaymentTokenInterface::CUSTOMER_ID, $customerId, 0);
+        $this->createExpectedFilter(PaymentTokenInterface::IS_VISIBLE, true, 1);
+        $this->createExpectedFilter(PaymentTokenInterface::IS_ACTIVE, true, 2);
 
+        // express at expectations
+        $this->createExpectedFilter(
+            PaymentTokenInterface::EXPIRES_AT,
+            '2015-01-01 00:00:00',
+            3
+        );
         $this->filterBuilder->expects(static::once())
             ->method('setConditionType')
             ->with('gt')
@@ -510,9 +512,9 @@ class PaymentTokenManagementTest extends TestCase
      * @param mixed $value
      * @param int $atIndex
      *
-     * @return MockObject
+     * @return void
      */
-    private function createExpectedFilter($field, $value, $atIndex)
+    private function createExpectedFilter($field, $value, $atIndex): void
     {
         $filterObject = $this->getMockBuilder(Filter::class)
             ->disableOriginalConstructor()
@@ -528,7 +530,5 @@ class PaymentTokenManagementTest extends TestCase
         $this->filterBuilder->expects(new MethodInvokedAtIndex($atIndex))
             ->method('create')
             ->willReturn($filterObject);
-
-        return $filterObject;
     }
 }

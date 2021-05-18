@@ -3,20 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Vault\Test\Unit\Model;
 
 use Magento\Payment\Api\Data\PaymentMethodInterface;
 use Magento\Payment\Api\PaymentMethodListInterface;
 use Magento\Payment\Model\Method\InstanceFactory;
 use Magento\Payment\Model\MethodInterface;
-use Magento\Vault\Model\PaymentMethodList;
 use Magento\Vault\Model\VaultPaymentInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Vault\Model\PaymentMethodList;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 
-class PaymentMethodListTest extends TestCase
+class PaymentMethodListTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PaymentMethodListInterface|MockObject

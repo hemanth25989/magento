@@ -3,48 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Model;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Element\UiComponent\ContextFactory;
-use Magento\Framework\View\Element\UiComponentFactory;
+use Magento\Framework\View\Element\UiComponent\LayoutInterface;
 use Magento\Framework\View\Element\UiComponentInterface;
-use Magento\Framework\View\LayoutInterface as LayoutInterfaceView;
-use Magento\Ui\Model\UiComponentGenerator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class UiComponentGeneratorTest extends TestCase
+class UiComponentGeneratorTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var UiComponentGenerator */
+    /** @var \Magento\Ui\Model\UiComponentGenerator */
     protected $model;
 
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    /** @var ContextFactory|MockObject */
+    /** @var \Magento\Framework\View\Element\UiComponent\ContextFactory|\PHPUnit\Framework\MockObject\MockObject */
     protected $contextFactoryMock;
 
-    /** @var UiComponentFactory|MockObject */
+    /** @var \Magento\Framework\View\Element\UiComponentFactory|\PHPUnit\Framework\MockObject\MockObject */
     protected $uiComponentFactoryMock;
 
     protected function setUp(): void
     {
         $this->contextFactoryMock = $this
-            ->getMockBuilder(ContextFactory::class)
+            ->getMockBuilder(\Magento\Framework\View\Element\UiComponent\ContextFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->uiComponentFactoryMock = $this->getMockBuilder(UiComponentFactory::class)
+        $this->uiComponentFactoryMock = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponentFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $this->objectManagerHelper->getObject(
-            UiComponentGenerator::class,
+            \Magento\Ui\Model\UiComponentGenerator::class,
             [
                 'contextFactory' => $this->contextFactoryMock,
                 'uiComponentFactory' => $this->uiComponentFactoryMock
@@ -69,7 +62,7 @@ class UiComponentGeneratorTest extends TestCase
         $this->uiComponentFactoryMock->expects($this->once())
             ->method('create')
             ->willReturn($uiComponentMock);
-        $layoutMock = $this->createMock(LayoutInterfaceView::class);
+        $layoutMock = $this->createMock(\Magento\Framework\View\LayoutInterface::class);
         $this->model->generateUiComponent('widget_recently_viewed', $layoutMock);
     }
 }

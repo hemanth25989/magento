@@ -16,7 +16,7 @@ use Magento\TestFramework\Wishlist\Model\GetWishlistByCustomerId;
 /**
  * Test for remove product from wish list.
  *
- * @magentoDbIsolation disabled
+ * @magentoDbIsolation enabled
  * @magentoAppArea frontend
  * @magentoDataFixture Magento/Wishlist/_files/wishlist.php
  */

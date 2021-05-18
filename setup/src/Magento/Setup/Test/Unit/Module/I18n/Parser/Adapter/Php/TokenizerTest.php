@@ -3,19 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\I18n\Parser\Adapter\Php;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer;
+use \Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer;
 
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
 /**
  * @covers \Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer
  */
-class TokenizerTest extends TestCase
+class TokenizerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Tokenizer
@@ -23,7 +20,7 @@ class TokenizerTest extends TestCase
     protected $tokenizer;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
@@ -31,7 +28,7 @@ class TokenizerTest extends TestCase
     {
         $this->objectManager = new ObjectManager($this);
         $this->tokenizer = $this->objectManager->getObject(
-            Tokenizer::class
+            \Magento\Setup\Module\I18n\Parser\Adapter\Php\Tokenizer::class
         );
     }
 
@@ -85,7 +82,7 @@ class TokenizerTest extends TestCase
         $this->parseFile();
         //We have 27 total tokens in objectsCode.php file (excluding whitespaces)
         //So the isEndOfLoop function should return true after we pick 28th non-existent token
-        for ($i = 0; $i < 28; $i++) {
+        for ($i = 0; $i < 28; $i += 1) {
             $this->assertFalse($this->tokenizer->isEndOfLoop());
             $this->tokenizer->getNextRealToken();
         }
@@ -94,7 +91,7 @@ class TokenizerTest extends TestCase
 
     protected function parseFile()
     {
-        $file = __DIR__ . '/_files/objectsCode.php.txt';
+        $file = __DIR__.'/_files/objectsCode.php.txt';
         $this->tokenizer->parse($file);
     }
 }

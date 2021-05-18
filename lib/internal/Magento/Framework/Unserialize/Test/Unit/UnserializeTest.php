@@ -9,17 +9,14 @@ namespace Magento\Framework\Unserialize\Test\Unit;
 
 use Magento\Framework\Serialize\Serializer\Serialize;
 use Magento\Framework\Unserialize\Unserialize;
-use PHPUnit\Framework\Exception;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test unserializer that does not unserialize objects.
  */
-class UnserializeTest extends TestCase
+class UnserializeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Serialize|MockObject
+     * @var Serialize|\PHPUnit\Framework\MockObject\MockObject
      */
     private $serializerMock;
 
@@ -58,9 +55,10 @@ class UnserializeTest extends TestCase
      */
     public function testUnserializeObject($serialized)
     {
-        $this->expectException('Exception');
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage('String contains serialized object');
-        $this->expectException(Exception::class);
+
+        $this->expectException(\PHPUnit\Framework\Exception::class);
         $this->expectExceptionMessage(
             'String contains serialized object'
         );

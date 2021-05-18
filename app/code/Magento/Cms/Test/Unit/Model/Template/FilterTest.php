@@ -3,50 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Model\Template;
-
-use Magento\Cms\Model\Template\Filter;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Work with catalog(store, website) urls
  *
  * @covers \Magento\Cms\Model\Template\Filter
  */
-class FilterTest extends TestCase
+class FilterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var Store|MockObject
+     * @var \Magento\Store\Model\Store|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeMock;
 
     /**
-     * @var Filter
+     * @var \Magento\Cms\Model\Template\Filter
      */
     protected $filter;
 
     protected function setUp(): void
     {
-        $this->storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->storeMock = $this->getMockBuilder(Store::class)
+        $this->storeManagerMock = $this->getMockBuilder(\Magento\Store\Model\StoreManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $objectManager = new ObjectManager($this);
+        $this->storeMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->filter = $objectManager->getObject(
-            Filter::class,
+            \Magento\Cms\Model\Template\Filter::class,
             ['storeManager' => $this->storeManagerMock]
         );
         $this->storeManagerMock->expects($this->any())
@@ -102,7 +93,8 @@ class FilterTest extends TestCase
      */
     public function testMediaDirectiveRelativePath()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
+
         $baseMediaDir = 'pub/media';
         $construction = [
             '{{media url="wysiwyg/images/../image.jpg"}}',

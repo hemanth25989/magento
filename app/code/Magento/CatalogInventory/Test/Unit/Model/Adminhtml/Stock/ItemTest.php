@@ -3,22 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogInventory\Test\Unit\Model\Adminhtml\Stock;
 
-use Magento\CatalogInventory\Model\Adminhtml\Stock\Item;
-use Magento\Customer\Api\Data\GroupInterface;
-use Magento\Customer\Api\GroupManagementInterface;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ItemTest extends TestCase
+class ItemTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Item|MockObject
+     * @var \Magento\CatalogInventory\Model\Adminhtml\Stock\Item|PHPUnit\Framework\MockObject\MockObject
      */
     protected $_model;
 
@@ -27,18 +17,17 @@ class ItemTest extends TestCase
      */
     protected function setUp(): void
     {
-        $resourceMock = $this->getMockBuilder(AbstractResource::class)
-            ->addMethods(['getIdFieldName'])
-            ->onlyMethods(['getConnection'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $objectHelper = new ObjectManager($this);
+        $resourceMock = $this->createPartialMock(
+            \Magento\Framework\Model\ResourceModel\AbstractResource::class,
+            ['_construct', 'getConnection', 'getIdFieldName']
+        );
+        $objectHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $groupManagement = $this->getMockBuilder(GroupManagementInterface::class)
+        $groupManagement = $this->getMockBuilder(\Magento\Customer\Api\GroupManagementInterface::class)
             ->setMethods(['getAllCustomersGroup'])
             ->getMockForAbstractClass();
 
-        $allGroup = $this->getMockBuilder(GroupInterface::class)
+        $allGroup = $this->getMockBuilder(\Magento\Customer\Api\Data\GroupInterface::class)
             ->setMethods(['getId'])
             ->getMockForAbstractClass();
 
@@ -51,7 +40,7 @@ class ItemTest extends TestCase
             ->willReturn($allGroup);
 
         $this->_model = $objectHelper->getObject(
-            Item::class,
+            \Magento\CatalogInventory\Model\Adminhtml\Stock\Item::class,
             [
                 'resource' => $resourceMock,
                 'groupManagement' => $groupManagement

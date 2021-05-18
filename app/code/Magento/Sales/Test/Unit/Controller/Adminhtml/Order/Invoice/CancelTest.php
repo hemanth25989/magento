@@ -3,89 +3,72 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Controller\Adminhtml\Order\Invoice;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Helper\Data;
-use Magento\Backend\Model\Session;
-use Magento\Backend\Model\View\Result\Forward;
-use Magento\Backend\Model\View\Result\ForwardFactory;
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Backend\Model\View\Result\RedirectFactory;
-use Magento\Framework\App\ActionFlag;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\DB\Transaction;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Message\Manager;
-use Magento\Framework\ObjectManagerInterface;
+use Magento\Backend\App\Action;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Sales\Api\InvoiceRepositoryInterface;
-use Magento\Sales\Controller\Adminhtml\Order\Invoice\Cancel;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Invoice;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class CancelTest
+ * @package Magento\Sales\Controller\Adminhtml\Order\Invoice
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CancelTest extends TestCase
+class CancelTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $requestMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $responseMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $messageManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $sessionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $actionFlagMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $helperMock;
 
     /**
-     * @var RedirectFactory|MockObject
+     * @var \Magento\Backend\Model\View\Result\RedirectFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resultRedirectFactoryMock;
 
     /**
-     * @var ForwardFactory|MockObject
+     * @var \Magento\Backend\Model\View\Result\ForwardFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resultForwardFactoryMock;
 
     /**
-     * @var Cancel
+     * @var \Magento\Sales\Controller\Adminhtml\Order\Invoice\Cancel
      */
     protected $controller;
 
     /**
-     * @var InvoiceRepositoryInterface|MockObject
+     * @var InvoiceRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $invoiceRepository;
 
@@ -96,7 +79,7 @@ class CancelTest extends TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->requestMock = $this->getMockBuilder(Http::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -105,41 +88,41 @@ class CancelTest extends TestCase
             ->setMethods([])
             ->getMock();
 
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
 
-        $this->messageManagerMock = $this->getMockBuilder(Manager::class)
+        $this->messageManagerMock = $this->getMockBuilder(\Magento\Framework\Message\Manager::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->sessionMock = $this->getMockBuilder(Session::class)
+        $this->sessionMock = $this->getMockBuilder(\Magento\Backend\Model\Session::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->actionFlagMock = $this->getMockBuilder(ActionFlag::class)
+        $this->actionFlagMock = $this->getMockBuilder(\Magento\Framework\App\ActionFlag::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->helperMock = $this->getMockBuilder(Data::class)
+        $this->helperMock = $this->getMockBuilder(\Magento\Backend\Helper\Data::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
         $this->resultRedirectFactoryMock = $this->getMockBuilder(
-            RedirectFactory::class
+            \Magento\Backend\Model\View\Result\RedirectFactory::class
         )->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
         $this->resultForwardFactoryMock = $this->getMockBuilder(
-            ForwardFactory::class
+            \Magento\Backend\Model\View\Result\ForwardFactory::class
         )->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $contextMock = $this->getMockBuilder(Context::class)
+        $contextMock = $this->getMockBuilder(\Magento\Backend\App\Action\Context::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -173,7 +156,7 @@ class CancelTest extends TestCase
             ->getMockForAbstractClass();
 
         $this->controller = $objectManager->getObject(
-            Cancel::class,
+            \Magento\Sales\Controller\Adminhtml\Order\Invoice\Cancel::class,
             [
                 'context' => $contextMock,
                 'resultForwardFactory' => $this->resultForwardFactoryMock
@@ -199,12 +182,12 @@ class CancelTest extends TestCase
             ->with('invoice_id')
             ->willReturn($invoiceId);
 
-        $orderMock = $this->getMockBuilder(Order::class)
+        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
-            ->setMethods(['setIsInProcess'])
+            ->setMethods(['setIsInProcess', '__wakeup'])
             ->getMock();
 
-        $invoiceMock = $this->getMockBuilder(Invoice::class)
+        $invoiceMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Invoice::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -214,16 +197,18 @@ class CancelTest extends TestCase
             ->method('getOrder')
             ->willReturn($orderMock);
 
-        $transactionMock = $this->getMockBuilder(Transaction::class)
+        $transactionMock = $this->getMockBuilder(\Magento\Framework\DB\Transaction::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
         $transactionMock->expects($this->at(0))
             ->method('addObject')
-            ->with($invoiceMock)->willReturnSelf();
+            ->with($invoiceMock)
+            ->willReturnSelf();
         $transactionMock->expects($this->at(1))
             ->method('addObject')
-            ->with($orderMock)->willReturnSelf();
+            ->with($orderMock)
+            ->willReturnSelf();
         $transactionMock->expects($this->at(2))
             ->method('save');
 
@@ -237,14 +222,14 @@ class CancelTest extends TestCase
 
         $this->objectManagerMock->expects($this->once())
             ->method('create')
-            ->with(Transaction::class)
+            ->with(\Magento\Framework\DB\Transaction::class)
             ->willReturn($transactionMock);
 
         $invoiceMock->expects($this->once())
             ->method('getId')
             ->willReturn($invoiceId);
 
-        $resultRedirect = $this->getMockBuilder(Redirect::class)
+        $resultRedirect = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Redirect::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -273,7 +258,7 @@ class CancelTest extends TestCase
             ->method('get')
             ->willReturn(null);
 
-        $resultForward = $this->getMockBuilder(Forward::class)
+        $resultForward = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Forward::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -294,20 +279,20 @@ class CancelTest extends TestCase
         $invoiceId = 2;
 
         $message = 'model exception';
-        $e = new LocalizedException(__($message));
+        $e = new \Magento\Framework\Exception\LocalizedException(__($message));
 
         $this->requestMock->expects($this->once())
             ->method('getParam')
             ->with('invoice_id')
             ->willReturn($invoiceId);
 
-        $invoiceMock = $this->getMockBuilder(Invoice::class)
+        $invoiceMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Invoice::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
         $invoiceMock->expects($this->once())
             ->method('cancel')
-            ->willThrowException($e);
+            ->will($this->throwException($e));
 
         $this->messageManagerMock->expects($this->once())
             ->method('addErrorMessage')
@@ -321,7 +306,7 @@ class CancelTest extends TestCase
             ->method('get')
             ->willReturn($invoiceMock);
 
-        $resultRedirect = $this->getMockBuilder(Redirect::class)
+        $resultRedirect = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Redirect::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -349,13 +334,13 @@ class CancelTest extends TestCase
             ->with('invoice_id')
             ->willReturn($invoiceId);
 
-        $invoiceMock = $this->getMockBuilder(Invoice::class)
+        $invoiceMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Invoice::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
         $invoiceMock->expects($this->once())
             ->method('cancel')
-            ->willThrowException($e);
+            ->will($this->throwException($e));
 
         $this->messageManagerMock->expects($this->once())
             ->method('addErrorMessage')
@@ -369,7 +354,7 @@ class CancelTest extends TestCase
             ->method('get')
             ->willReturn($invoiceMock);
 
-        $resultRedirect = $this->getMockBuilder(Redirect::class)
+        $resultRedirect = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Redirect::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();

@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\EntityManager\Test\Unit\Operation;
 
 use Magento\Framework\App\ResourceConnection;
@@ -16,23 +14,21 @@ use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\EntityManager\Operation\Update;
 use Magento\Framework\EntityManager\Operation\Update\UpdateMain;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class UpdateTest extends TestCase
+class UpdateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MetadataPool|MockObject
+     * @var MetadataPool|\PHPUnit\Framework\MockObject\MockObject
      */
     private $metadataPool;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit\Framework\MockObject\MockObject
      */
     private $resourceConnection;
 
     /**
-     * @var UpdateMain|MockObject
+     * @var UpdateMain|\PHPUnit\Framework\MockObject\MockObject
      */
     private $updateMain;
 
@@ -60,9 +56,12 @@ class UpdateTest extends TestCase
         ]);
     }
 
+    /**
+     */
     public function testDuplicateExceptionProcessingOnExecute()
     {
-        $this->expectException('Magento\Framework\Exception\AlreadyExistsException');
+        $this->expectException(\Magento\Framework\Exception\AlreadyExistsException::class);
+
         $metadata = $this->getMockForAbstractClass(EntityMetadataInterface::class);
         $this->metadataPool->expects($this->any())->method('getMetadata')->willReturn($metadata);
 

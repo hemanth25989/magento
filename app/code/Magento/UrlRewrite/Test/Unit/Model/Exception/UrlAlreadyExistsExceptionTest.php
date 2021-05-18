@@ -3,19 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\UrlRewrite\Test\Unit\Model\Exception;
 
-use Magento\Framework\Phrase;
-use Magento\Framework\Phrase\Renderer\Placeholder;
-use Magento\Framework\Phrase\RendererInterface;
 use Magento\UrlRewrite\Model\Exception\UrlAlreadyExistsException;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Phrase;
 
-class UrlAlreadyExistsExceptionTest extends TestCase
+/**
+ * Class UrlAlreadyExistsExceptionTest
+ */
+class UrlAlreadyExistsExceptionTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var RendererInterface */
+    /** @var \Magento\Framework\Phrase\RendererInterface */
     private $defaultRenderer;
 
     /** @var string */
@@ -26,15 +24,15 @@ class UrlAlreadyExistsExceptionTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->defaultRenderer = Phrase::getRenderer();
-        $rendererMock = $this->getMockBuilder(Placeholder::class)
+        $this->defaultRenderer = \Magento\Framework\Phrase::getRenderer();
+        $rendererMock = $this->getMockBuilder(\Magento\Framework\Phrase\Renderer\Placeholder::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->renderedMessage = 'rendered message';
         $rendererMock->expects($this->once())
             ->method('render')
             ->willReturn($this->renderedMessage);
-        Phrase::setRenderer($rendererMock);
+        \Magento\Framework\Phrase::setRenderer($rendererMock);
     }
 
     /**
@@ -42,7 +40,7 @@ class UrlAlreadyExistsExceptionTest extends TestCase
      */
     protected function tearDown(): void
     {
-        Phrase::setRenderer($this->defaultRenderer);
+        \Magento\Framework\Phrase::setRenderer($this->defaultRenderer);
     }
 
     public function testUrls()

@@ -3,55 +3,44 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\App\Request;
 
-use Magento\Framework\App\Config\ReinitableConfigInterface;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\Request\PathInfo;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Store\Api\StoreRepositoryInterface;
-use Magento\Store\App\Request\PathInfoProcessor;
-use Magento\Store\App\Request\StorePathInfoValidator;
-use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PathInfoProcessorTest extends TestCase
+class PathInfoProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var PathInfoProcessor
+     * @var \Magento\Store\App\Request\PathInfoProcessor
      */
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $requestMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $validatorConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $processorConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $pathInfoMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $storeRepositoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $storePathInfoValidator;
 
@@ -62,27 +51,25 @@ class PathInfoProcessorTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->requestMock = $this->getMockBuilder(Http::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
+            ->disableOriginalConstructor()->getMock();
 
-        $this->validatorConfigMock = $this->getMockForAbstractClass(ReinitableConfigInterface::class);
+        $this->validatorConfigMock = $this->createMock(\Magento\Framework\App\Config\ReinitableConfigInterface::class);
 
-        $this->processorConfigMock = $this->getMockForAbstractClass(ReinitableConfigInterface::class);
+        $this->processorConfigMock = $this->createMock(\Magento\Framework\App\Config\ReinitableConfigInterface::class);
 
-        $this->storeRepositoryMock = $this->getMockForAbstractClass(StoreRepositoryInterface::class);
+        $this->storeRepositoryMock = $this->createMock(\Magento\Store\Api\StoreRepositoryInterface::class);
 
-        $this->pathInfoMock = $this->getMockBuilder(PathInfo ::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->pathInfoMock = $this->getMockBuilder(\Magento\Framework\App\Request\PathInfo ::class)
+            ->disableOriginalConstructor()->getMock();
 
-        $this->storePathInfoValidator = new StorePathInfoValidator(
+        $this->storePathInfoValidator = new \Magento\Store\App\Request\StorePathInfoValidator(
             $this->validatorConfigMock,
             $this->storeRepositoryMock,
             $this->pathInfoMock
         );
 
-        $this->model = new PathInfoProcessor(
+        $this->model = new \Magento\Store\App\Request\PathInfoProcessor(
             $this->storePathInfoValidator,
             $this->validatorConfigMock
         );
@@ -92,7 +79,7 @@ class PathInfoProcessorTest extends TestCase
     {
         $this->validatorConfigMock->expects($this->any())->method('getValue')->willReturn(true);
 
-        $store = $this->createMock(Store::class);
+        $store = $this->createMock(\Magento\Store\Model\Store::class);
         $this->storeRepositoryMock->expects(
             $this->atLeastOnce()
         )->method(

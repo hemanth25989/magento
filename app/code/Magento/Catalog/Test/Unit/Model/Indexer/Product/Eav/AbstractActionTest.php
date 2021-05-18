@@ -3,40 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Indexer\Product\Eav;
 
-use Magento\Catalog\Model\Indexer\Product\Eav\AbstractAction;
-use Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\Decimal;
-use Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\DecimalFactory;
-use Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\Source;
-use Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\SourceFactory;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\Exception\LocalizedException;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AbstractActionTest extends TestCase
+class AbstractActionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AbstractAction|MockObject
+     * @var \Magento\Catalog\Model\Indexer\Product\Eav\AbstractAction|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_eavDecimalFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_eavSourceFactoryMock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $scopeConfig;
 
@@ -46,18 +33,18 @@ class AbstractActionTest extends TestCase
     protected function setUp(): void
     {
         $this->_eavDecimalFactoryMock = $this->createPartialMock(
-            DecimalFactory::class,
+            \Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\DecimalFactory::class,
             ['create']
         );
         $this->_eavSourceFactoryMock = $this->createPartialMock(
-            SourceFactory::class,
+            \Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\SourceFactory::class,
             ['create']
         );
-        $this->scopeConfig = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfig = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->_model = $this->getMockForAbstractClass(
-            AbstractAction::class,
+            \Magento\Catalog\Model\Indexer\Product\Eav\AbstractAction::class,
             [
                 $this->_eavDecimalFactoryMock,
                 $this->_eavSourceFactoryMock,
@@ -87,10 +74,13 @@ class AbstractActionTest extends TestCase
         $this->assertEquals($expectedIndexers, $this->_model->getIndexers());
     }
 
+    /**
+     */
     public function testGetIndexerWithUnknownTypeThrowsException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Unknown EAV indexer type "unknown_type".');
+
         $this->_eavSourceFactoryMock->expects($this->once())
             ->method('create')
             ->willReturn('return_value');
@@ -104,7 +94,7 @@ class AbstractActionTest extends TestCase
 
     /**
      * @return void
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function testGetIndexer()
     {
@@ -125,11 +115,11 @@ class AbstractActionTest extends TestCase
      */
     public function testReindexWithoutArgumentsExecutesReindexAll()
     {
-        $eavSource = $this->getMockBuilder(Source::class)
+        $eavSource = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\Source::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $eavDecimal = $this->getMockBuilder(Decimal::class)
+        $eavDecimal = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\Decimal::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -168,14 +158,14 @@ class AbstractActionTest extends TestCase
     ) : void {
         $reindexIds = array_unique(array_merge($ids, $parentIds, $childIds));
 
-        $connectionMock = $this->getMockBuilder(AdapterInterface::class)
+        $connectionMock = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->getMockForAbstractClass();
 
-        $eavSource = $this->getMockBuilder(Source::class)
+        $eavSource = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\Source::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $eavDecimal = $this->getMockBuilder(Decimal::class)
+        $eavDecimal = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\Decimal::class)
             ->disableOriginalConstructor()
             ->getMock();
 

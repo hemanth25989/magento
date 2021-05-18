@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * \Magento\Framework\DataObject\Copy\Config
  *
@@ -7,28 +7,23 @@
  */
 namespace Magento\Framework\DataObject\Test\Unit\Copy;
 
-use Magento\Framework\DataObject\Copy\Config;
-use Magento\Framework\DataObject\Copy\Config\Data;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Data|MockObject
+     * @var \Magento\Framework\DataObject\Copy\Config\Data|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_storageMock;
 
     /**
-     * @var MockObject|Config
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\DataObject\Copy\Config
      */
     protected $_model;
 
     protected function setUp(): void
     {
-        $this->_storageMock = $this->createPartialMock(Data::class, ['get']);
+        $this->_storageMock = $this->createPartialMock(\Magento\Framework\DataObject\Copy\Config\Data::class, ['get']);
 
-        $this->_model = new Config($this->_storageMock);
+        $this->_model = new \Magento\Framework\DataObject\Copy\Config($this->_storageMock);
     }
 
     public function testGetFieldsets()

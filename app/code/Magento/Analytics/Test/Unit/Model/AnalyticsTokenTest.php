@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Analytics\Test\Unit\Model;
 
 use Magento\Analytics\Model\AnalyticsToken;
@@ -12,23 +10,21 @@ use Magento\Framework\App\Config\ReinitableConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AnalyticsTokenTest extends TestCase
+class AnalyticsTokenTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ReinitableConfigInterface|MockObject
+     * @var ReinitableConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $reinitableConfigMock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configMock;
 
     /**
-     * @var WriterInterface|MockObject
+     * @var WriterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configWriterMock;
 
@@ -52,11 +48,17 @@ class AnalyticsTokenTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->reinitableConfigMock = $this->getMockForAbstractClass(ReinitableConfigInterface::class);
+        $this->reinitableConfigMock = $this->getMockBuilder(ReinitableConfigInterface::class)
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
 
-        $this->configMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $this->configMock = $this->getMockBuilder(ScopeConfigInterface::class)
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
 
-        $this->configWriterMock = $this->getMockForAbstractClass(WriterInterface::class);
+        $this->configWriterMock = $this->getMockBuilder(WriterInterface::class)
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 

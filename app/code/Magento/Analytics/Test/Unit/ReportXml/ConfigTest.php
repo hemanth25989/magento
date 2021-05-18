@@ -3,20 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Analytics\Test\Unit\ReportXml;
 
 use Magento\Analytics\ReportXml\Config;
 use Magento\Framework\Config\DataInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DataInterface|MockObject
+     * @var DataInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $dataMock;
 
@@ -35,7 +31,9 @@ class ConfigTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->dataMock = $this->getMockForAbstractClass(DataInterface::class);
+        $this->dataMock = $this->getMockBuilder(DataInterface::class)
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 

@@ -3,15 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Event\Test\Unit\Observer;
 
-use Magento\Framework\Event;
-use Magento\Framework\Event\Observer\Regex;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Event\Observer\Regex;
 
-class RegexTest extends TestCase
+/**
+ * Class RegexTest
+ */
+class RegexTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Regex
@@ -37,7 +36,7 @@ class RegexTest extends TestCase
     public function testIsValidFor($pattern, $name, $expectedResult)
     {
         $this->regex->setEventRegex($pattern);
-        $eventMock = $this->createMock(Event::class);
+        $eventMock = $this->createMock(\Magento\Framework\Event::class);
         $eventMock->expects($this->any())
             ->method('getName')
             ->willReturn($name);

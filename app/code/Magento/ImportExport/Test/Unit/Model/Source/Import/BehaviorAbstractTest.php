@@ -3,16 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\ImportExport\Model\Source\Import\AbstractBehavior
  */
 namespace Magento\ImportExport\Test\Unit\Model\Source\Import;
 
-use Magento\ImportExport\Model\Source\Import\AbstractBehavior;
-
-class BehaviorAbstractTest extends AbstractBehaviorTestCase
+class BehaviorAbstractTest extends \Magento\ImportExport\Test\Unit\Model\Source\Import\AbstractBehaviorTestCase
 {
     /**
      * Source array data
@@ -36,7 +33,7 @@ class BehaviorAbstractTest extends AbstractBehaviorTestCase
         parent::setUp();
 
         $model = $this->getMockForAbstractClass(
-            AbstractBehavior::class,
+            \Magento\ImportExport\Model\Source\Import\AbstractBehavior::class,
             [[]],
             '',
             false,

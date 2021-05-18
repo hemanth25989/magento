@@ -3,22 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
 use Magento\Catalog\Model\Product\Type;
 use Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\System;
 use Magento\Framework\UrlInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 
 /**
+ * Class SystemTest
+ *
  * @method System getModel
  */
 class SystemTest extends AbstractModifierTest
 {
     /**
-     * @var UrlInterface|MockObject
+     * @var UrlInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlBuilderMock;
 

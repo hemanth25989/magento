@@ -7,8 +7,7 @@
 namespace Magento\Setup\Model;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Phrase;
+use Zend\View\Model\JsonModel;
 
 /**
  * Class PackagesAuth contains auth details.

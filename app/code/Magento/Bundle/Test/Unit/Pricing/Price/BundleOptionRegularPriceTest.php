@@ -7,21 +7,19 @@ declare(strict_types=1);
 
 namespace Magento\Bundle\Test\Unit\Pricing\Price;
 
-use Magento\Bundle\Model\ResourceModel\Option\Collection;
-use Magento\Bundle\Model\Selection;
-use Magento\Bundle\Pricing\Adjustment\Calculator;
-use Magento\Bundle\Pricing\Price\BundleOptionRegularPrice;
-use Magento\Bundle\Pricing\Price\BundleOptions;
-use Magento\Catalog\Model\Product;
-use Magento\Framework\Pricing\Amount\AmountInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Bundle\Pricing\Price\BundleOptionRegularPrice;
+use Magento\Catalog\Model\Product;
+use Magento\Bundle\Pricing\Adjustment\Calculator;
+use Magento\Bundle\Pricing\Price\BundleOptions;
+use Magento\Bundle\Model\ResourceModel\Option\Collection;
+use Magento\Framework\Pricing\Amount\AmountInterface;
+use Magento\Bundle\Model\Selection;
 
 /**
  * Test for Magento\Bundle\Pricing\Price\BundleRegularPrice
  */
-class BundleOptionRegularPriceTest extends TestCase
+class BundleOptionRegularPriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var BundleOptionRegularPrice
@@ -34,17 +32,17 @@ class BundleOptionRegularPriceTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var Product|MockObject
+     * @var Product|\PHPUnit\Framework\MockObject\MockObject
      */
     private $saleableItemMock;
 
     /**
-     * @var Calculator|MockObject
+     * @var Calculator|\PHPUnit\Framework\MockObject\MockObject
      */
     private $bundleCalculatorMock;
 
     /**
-     * @var BundleOptions|MockObject
+     * @var BundleOptions|\PHPUnit\Framework\MockObject\MockObject
      */
     private $bundleOptionsMock;
 
@@ -110,7 +108,7 @@ class BundleOptionRegularPriceTest extends TestCase
         $amountMock = $this->getMockForAbstractClass(AmountInterface::class);
         $this->bundleCalculatorMock->expects($this->once())
             ->method('getOptionsAmount')
-            ->with($this->saleableItemMock)
+            ->with($this->equalTo($this->saleableItemMock))
             ->willReturn($amountMock);
         $this->assertSame($amountMock, $this->bundleOptionRegularPrice->getAmount());
     }
@@ -122,7 +120,7 @@ class BundleOptionRegularPriceTest extends TestCase
      */
     public function testGetValue()
     {
-        $value = 1.0;
+        $value = 1;
         $this->bundleOptionsMock->expects($this->any())->method('calculateOptions')->willReturn($value);
         $this->assertEquals($value, $this->bundleOptionRegularPrice->getValue());
     }

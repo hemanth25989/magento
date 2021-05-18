@@ -3,33 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Block\Adminhtml\Product\Helper\Form;
 
-use Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Category;
-use Magento\Framework\AuthorizationInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-
-class CategoryTest extends TestCase
+class CategoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AuthorizationInterface
+     * @var \Magento\Framework\AuthorizationInterface
      */
     protected $authorization;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     protected function setUp(): void
     {
-        $this->authorization = $this->getMockBuilder(AuthorizationInterface::class)
+        $this->authorization = $this->getMockBuilder(\Magento\Framework\AuthorizationInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->objectManager = new ObjectManager($this);
+            ->getMock();
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
     }
 
     /**
@@ -42,7 +35,7 @@ class CategoryTest extends TestCase
             ->method('isAllowed')
             ->willReturn($isAllowed);
         $model = $this->objectManager->getObject(
-            Category::class,
+            \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Category::class,
             ['authorization' => $this->authorization]
         );
         switch ($isAllowed) {
@@ -71,7 +64,7 @@ class CategoryTest extends TestCase
     public function testGetAfterElementHtml()
     {
         $model = $this->objectManager->getObject(
-            Category::class,
+            \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Category::class,
             ['authorization' => $this->authorization]
         );
         $this->authorization->expects($this->any())

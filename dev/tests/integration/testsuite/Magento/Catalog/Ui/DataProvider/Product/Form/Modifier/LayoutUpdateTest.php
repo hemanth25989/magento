@@ -58,12 +58,6 @@ class LayoutUpdateTest extends TestCase
      */
     protected function setUp(): void
     {
-        Bootstrap::getObjectManager()->configure([
-            'preferences' => [
-                \Magento\Catalog\Model\Product\Attribute\LayoutUpdateManager::class =>
-                    \Magento\TestFramework\Catalog\Model\ProductLayoutUpdateManager::class
-            ]
-        ]);
         $this->locator = $this->getMockForAbstractClass(LocatorInterface::class);
         $store = Bootstrap::getObjectManager()->create(StoreInterface::class);
         $this->locator->method('getStore')->willReturn($store);

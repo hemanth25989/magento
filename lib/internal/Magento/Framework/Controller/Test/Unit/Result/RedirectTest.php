@@ -3,32 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Controller\Test\Unit\Result;
 
-use Magento\Framework\App\Response\HttpInterface as HttpResponseInterface;
-use Magento\Framework\App\Response\RedirectInterface;
-use Magento\Framework\Controller\Result\Redirect;
-use Magento\Framework\UrlInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \PHPUnit\Framework\TestCase;
+use \Magento\Framework\App\Response\HttpInterface as HttpResponseInterface;
+use \Magento\Framework\App\Response\RedirectInterface;
+use \Magento\Framework\Controller\Result\Redirect;
+use \Magento\Framework\UrlInterface;
 
 class RedirectTest extends TestCase
 {
-    /** @var Redirect */
+    /** @var \Magento\Framework\Controller\Result\Redirect */
     protected $redirect;
 
-    /** @var RedirectInterface|MockObject */
+    /** @var \Magento\Framework\App\Response\RedirectInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $redirectInterface;
 
-    /** @var UrlInterface|MockObject */
+    /** @var \Magento\Framework\UrlInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $urlBuilder;
 
-    /** @var UrlInterface|MockObject */
+    /** @var \Magento\Framework\UrlInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $urlInterface;
 
-    /** @var HttpResponseInterface|MockObject */
+    /** @var HttpResponseInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $response;
 
     protected function setUp(): void

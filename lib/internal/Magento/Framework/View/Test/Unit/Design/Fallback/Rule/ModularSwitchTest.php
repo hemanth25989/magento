@@ -3,16 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Design\Fallback\Rule;
 
-use Magento\Framework\View\Design\Fallback\Rule\ModularSwitch;
-use Magento\Framework\View\Design\Fallback\Rule\RuleInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\View\Design\Fallback\Rule\ModularSwitch;
 
-class ModularSwitchTest extends TestCase
+class ModularSwitchTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ModularSwitch
@@ -20,22 +15,22 @@ class ModularSwitchTest extends TestCase
     protected $object;
 
     /**
-     * @var MockObject|RuleInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|RuleInterface
      */
     protected $ruleNonModular;
 
     /**
-     * @var MockObject|RuleInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|RuleInterface
      */
     protected $ruleModular;
 
     protected function setUp(): void
     {
         $this->ruleNonModular = $this->getMockForAbstractClass(
-            RuleInterface::class
+            \Magento\Framework\View\Design\Fallback\Rule\RuleInterface::class
         );
         $this->ruleModular = $this->getMockForAbstractClass(
-            RuleInterface::class
+            \Magento\Framework\View\Design\Fallback\Rule\RuleInterface::class
         );
         $this->object = new ModularSwitch($this->ruleNonModular, $this->ruleModular);
     }

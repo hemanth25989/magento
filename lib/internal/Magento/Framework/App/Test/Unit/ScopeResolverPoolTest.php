@@ -3,33 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit;
 
-use Magento\Framework\App\ScopeResolverInterface;
-use Magento\Framework\App\ScopeResolverPool;
-use Magento\Framework\DataObject;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-
-class ScopeResolverPoolTest extends TestCase
+class ScopeResolverPoolTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $_helper;
 
     protected function setUp(): void
     {
-        $this->_helper = new ObjectManager($this);
+        $this->_helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
     }
 
     public function testGet()
     {
-        $scope = $this->getMockForAbstractClass(ScopeResolverInterface::class);
+        $scope = $this->createMock(\Magento\Framework\App\ScopeResolverInterface::class);
         $scopeResolver = $this->_helper->getObject(
-            ScopeResolverPool::class,
+            \Magento\Framework\App\ScopeResolverPool::class,
             [
                 'scopeResolvers' => ['test' => $scope]
             ]
@@ -45,12 +38,13 @@ class ScopeResolverPoolTest extends TestCase
      */
     public function testGetException($scope)
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid scope type');
+
         $scopeResolver = $this->_helper->getObject(
-            ScopeResolverPool::class,
+            \Magento\Framework\App\ScopeResolverPool::class,
             [
-                'scopeResolvers' => ['test' => new DataObject()]
+                'scopeResolvers' => ['test' => new \Magento\Framework\DataObject()]
             ]
         );
         $scopeResolver->get($scope);

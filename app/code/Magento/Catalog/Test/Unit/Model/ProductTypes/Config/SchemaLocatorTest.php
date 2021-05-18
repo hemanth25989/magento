@@ -3,30 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\ProductTypes\Config;
 
-use Magento\Catalog\Model\ProductTypes\Config\SchemaLocator;
-use Magento\Framework\Module\Dir\Reader;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class SchemaLocatorTest extends TestCase
+class SchemaLocatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SchemaLocator
+     * @var \Magento\Catalog\Model\ProductTypes\Config\SchemaLocator
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_moduleReaderMock;
 
     protected function setUp(): void
     {
-        $this->_moduleReaderMock = $this->createMock(Reader::class);
+        $this->_moduleReaderMock = $this->createMock(\Magento\Framework\Module\Dir\Reader::class);
         $this->_moduleReaderMock->expects(
             $this->once()
         )->method(
@@ -37,7 +30,7 @@ class SchemaLocatorTest extends TestCase
         )->willReturn(
             'schema_dir'
         );
-        $this->_model = new SchemaLocator($this->_moduleReaderMock);
+        $this->_model = new \Magento\Catalog\Model\ProductTypes\Config\SchemaLocator($this->_moduleReaderMock);
     }
 
     public function testGetSchema()

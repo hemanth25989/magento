@@ -3,20 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogImportExport\Test\Unit\Model\Import\Product;
 
-use Magento\Catalog\Model\Category;
-use Magento\Catalog\Model\ResourceModel\Category\Collection;
 use Magento\CatalogImportExport\Model\Import\Product\CategoryProcessor;
-use Magento\CatalogImportExport\Model\Import\Product\Type\AbstractType;
-use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CategoryProcessorTest extends TestCase
+class CategoryProcessorTest extends \PHPUnit\Framework\TestCase
 {
     const PARENT_CATEGORY_ID = 1;
 
@@ -33,12 +25,12 @@ class CategoryProcessorTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var CategoryProcessor|MockObject
+     * @var \Magento\CatalogImportExport\Model\Import\Product\CategoryProcessor|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $categoryProcessor;
 
     /**
-     * @var AbstractType
+     * @var \Magento\CatalogImportExport\Model\Import\Product\Type\AbstractType
      */
     protected $product;
 
@@ -57,7 +49,7 @@ class CategoryProcessorTest extends TestCase
         $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
-        $this->childCategory = $this->getMockBuilder(Category::class)
+        $this->childCategory = $this->getMockBuilder(\Magento\Catalog\Model\Category::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->childCategory->method('getId')->willReturn(self::CHILD_CATEGORY_ID);
@@ -67,7 +59,7 @@ class CategoryProcessorTest extends TestCase
             . self::CHILD_CATEGORY_ID
         );
 
-        $this->parentCategory = $this->getMockBuilder(Category::class)
+        $this->parentCategory = $this->getMockBuilder(\Magento\Catalog\Model\Category::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->parentCategory->method('getId')->willReturn(self::PARENT_CATEGORY_ID);
@@ -76,7 +68,7 @@ class CategoryProcessorTest extends TestCase
 
         $categoryCollection =
             $this->objectManagerHelper->getCollectionMock(
-                Collection::class,
+                \Magento\Catalog\Model\ResourceModel\Category\Collection::class,
                 [
                     self::PARENT_CATEGORY_ID => $this->parentCategory,
                     self::CHILD_CATEGORY_ID => $this->childCategory,
@@ -110,7 +102,7 @@ class CategoryProcessorTest extends TestCase
         $categoryFactory->method('create')->willReturn($this->childCategory);
 
         $this->categoryProcessor =
-            new CategoryProcessor(
+            new \Magento\CatalogImportExport\Model\Import\Product\CategoryProcessor(
                 $categoryColFactory,
                 $categoryFactory
             );
@@ -128,7 +120,7 @@ class CategoryProcessorTest extends TestCase
      */
     public function testUpsertCategoriesWithAlreadyExistsException()
     {
-        $exception = new AlreadyExistsException();
+        $exception = new \Magento\Framework\Exception\AlreadyExistsException();
         $categoriesSeparator = '/';
         $categoryName = 'Exception Category';
         $this->childCategory->method('save')->willThrowException($exception);

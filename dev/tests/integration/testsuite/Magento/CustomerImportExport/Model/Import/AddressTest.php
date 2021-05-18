@@ -9,41 +9,32 @@
  */
 namespace Magento\CustomerImportExport\Model\Import;
 
-use Magento\Catalog\Model\ResourceModel\Product;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Model\AddressRegistry;
-use Magento\Customer\Model\Indexer\Processor;
-use Magento\Customer\Model\ResourceModel\Address\Collection;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem;
-use Magento\Framework\Registry;
-use Magento\Framework\Stdlib\DateTime;
 use Magento\ImportExport\Model\Import as ImportModel;
 use Magento\ImportExport\Model\Import\Adapter as ImportAdapter;
 use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregatorInterface;
 use Magento\ImportExport\Model\Import\Source\Csv;
-use Magento\ImportExport\Model\ResourceModel\Helper;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\Framework\Indexer\StateInterface;
-use Magento\TestFramework\ObjectManager;
-use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AddressTest extends TestCase
+class AddressTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tested class name
      *
      * @var string
      */
-    protected $_testClassName = Address::class;
+    protected $_testClassName = \Magento\CustomerImportExport\Model\Import\Address::class;
 
     /**
      * Fixture key from fixture
@@ -103,7 +94,7 @@ class AddressTest extends TestCase
     protected $customerResource;
 
     /**
-     * @var Processor
+     * @var \Magento\Customer\Model\Indexer\Processor
      */
     private $indexerProcessor;
 
@@ -112,7 +103,7 @@ class AddressTest extends TestCase
      */
     protected function setUp(): void
     {
-        /** @var Product $productResource */
+        /** @var \Magento\Catalog\Model\ResourceModel\Product $productResource */
         $this->customerResource = Bootstrap::getObjectManager()->get(
             \Magento\Customer\Model\ResourceModel\Customer::class
         );
@@ -120,7 +111,7 @@ class AddressTest extends TestCase
             $this->_testClassName
         );
         $this->indexerProcessor = Bootstrap::getObjectManager()->create(
-            Processor::class
+            \Magento\Customer\Model\Indexer\Processor::class
         );
     }
 
@@ -151,10 +142,10 @@ class AddressTest extends TestCase
      */
     protected function _addTestAddress(Address $entityAdapter)
     {
-        /** @var $objectManager ObjectManager */
+        /** @var $objectManager \Magento\TestFramework\ObjectManager */
         $objectManager = Bootstrap::getObjectManager();
 
-        $customers = $objectManager->get(Registry::class)->registry($this->_fixtureKey);
+        $customers = $objectManager->get(\Magento\Framework\Registry::class)->registry($this->_fixtureKey);
         /** @var $customer \Magento\Customer\Model\Customer */
         $customer = reset($customers);
         $customerId = $customer->getId();
@@ -164,14 +155,14 @@ class AddressTest extends TestCase
             \Magento\Customer\Model\Address::class
         );
         $tableName = $addressModel->getResource()->getEntityTable();
-        $addressId = $objectManager->get(Helper::class)
+        $addressId = $objectManager->get(\Magento\ImportExport\Model\ResourceModel\Helper::class)
             ->getNextAutoincrement($tableName);
 
         $newEntityData = [
             'entity_id' => $addressId,
             'parent_id' => $customerId,
-            'created_at' => (new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT),
-            'updated_at' => (new \DateTime())->format(DateTime::DATETIME_PHP_FORMAT),
+            'created_at' => (new \DateTime())->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT),
+            'updated_at' => (new \DateTime())->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT),
         ];
 
         // invoke _saveAddressEntities
@@ -234,11 +225,11 @@ class AddressTest extends TestCase
      */
     public function testSaveCustomerDefaults()
     {
-        /** @var $objectManager ObjectManager */
+        /** @var $objectManager \Magento\TestFramework\ObjectManager */
         $objectManager = Bootstrap::getObjectManager();
 
         // get not default address
-        $customers = $objectManager->get(Registry::class)->registry($this->_fixtureKey);
+        $customers = $objectManager->get(\Magento\Framework\Registry::class)->registry($this->_fixtureKey);
         /** @var $notDefaultAddress \Magento\Customer\Model\Address */
         $notDefaultAddress = null;
         /** @var $addressCustomer \Magento\Customer\Model\Customer */
@@ -311,7 +302,7 @@ class AddressTest extends TestCase
         // set fixture CSV file
         $sourceFile = __DIR__ . '/_files/address_import_update.csv';
 
-        /** @var $objectManager ObjectManager */
+        /** @var $objectManager \Magento\TestFramework\ObjectManager */
         $objectManager = Bootstrap::getObjectManager();
         $filesystem = $objectManager->create(Filesystem::class);
 
@@ -329,17 +320,17 @@ class AddressTest extends TestCase
 
         // form attribute list
         $keyAttribute = 'postcode';
-        $requiredAttributes[] = [$keyAttribute];
+        $requiredAttributes[] = $keyAttribute;
         foreach (['update', 'remove'] as $action) {
             foreach ($this->_updateData[$action] as $attributes) {
-                $requiredAttributes[] = array_keys($attributes);
+                // phpcs:ignore Magento2.Performance.ForeachArrayMerge
+                $requiredAttributes = array_merge($requiredAttributes, array_keys($attributes));
             }
         }
-        $requiredAttributes = array_merge([], ...$requiredAttributes);
 
         // get addresses
         $addressCollection = Bootstrap::getObjectManager()->create(
-            Collection::class
+            \Magento\Customer\Model\ResourceModel\Address\Collection::class
         );
         $addressCollection->addAttributeToSelect($requiredAttributes);
         $addresses = [];
@@ -410,7 +401,7 @@ class AddressTest extends TestCase
         // set fixture CSV file
         $sourceFile = __DIR__ . '/_files/address_import_delete.csv';
 
-        /** @var $objectManager ObjectManager */
+        /** @var $objectManager \Magento\TestFramework\ObjectManager */
         $objectManager = Bootstrap::getObjectManager();
         $filesystem = $objectManager->create(Filesystem::class);
         $directoryWrite = $filesystem->getDirectoryWrite(DirectoryList::ROOT);
@@ -426,9 +417,9 @@ class AddressTest extends TestCase
         $keyAttribute = 'postcode';
 
         // get addresses
-        /** @var $addressCollection Collection */
+        /** @var $addressCollection \Magento\Customer\Model\ResourceModel\Address\Collection */
         $addressCollection = Bootstrap::getObjectManager()->create(
-            Collection::class
+            \Magento\Customer\Model\ResourceModel\Address\Collection::class
         );
         $addressCollection->addAttributeToSelect($keyAttribute);
         $addresses = [];
@@ -453,7 +444,7 @@ class AddressTest extends TestCase
      */
     public function testDifferentOptions(): void
     {
-        /** @var $objectManager ObjectManager */
+        /** @var $objectManager \Magento\TestFramework\ObjectManager */
         $objectManager = Bootstrap::getObjectManager();
         /** @var Filesystem $filesystem */
         $filesystem = $objectManager->create(Filesystem::class);
@@ -483,10 +474,9 @@ class AddressTest extends TestCase
     public function testCustomerIndexer(): void
     {
         $file = __DIR__ . '/_files/address_import_update.csv';
-        $filesystem = Bootstrap::getObjectManager()
-            ->create(Filesystem::class);
+        $filesystem = Bootstrap::getObjectManager()->create(Filesystem::class);
         $directoryWrite = $filesystem->getDirectoryWrite(DirectoryList::ROOT);
-        $source = new Csv($file, $directoryWrite);
+        $source = new \Magento\ImportExport\Model\Import\Source\Csv($file, $directoryWrite);
         $this->_entityAdapter
             ->setParameters(['behavior' => ImportModel::BEHAVIOR_ADD_UPDATE])
             ->setSource($source)

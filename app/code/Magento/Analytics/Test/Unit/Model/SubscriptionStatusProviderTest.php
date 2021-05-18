@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Analytics\Test\Unit\Model;
 
 use Magento\Analytics\Model\AnalyticsToken;
@@ -14,23 +12,21 @@ use Magento\Analytics\Model\SubscriptionStatusProvider;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\FlagManager;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SubscriptionStatusProviderTest extends TestCase
+class SubscriptionStatusProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $scopeConfigMock;
 
     /**
-     * @var AnalyticsToken|MockObject
+     * @var AnalyticsToken|\PHPUnit\Framework\MockObject\MockObject
      */
     private $analyticsTokenMock;
 
     /**
-     * @var FlagManager|MockObject
+     * @var FlagManager|\PHPUnit\Framework\MockObject\MockObject
      */
     private $flagManagerMock;
 
@@ -52,9 +48,13 @@ class SubscriptionStatusProviderTest extends TestCase
         $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
             ->getMockForAbstractClass();
 
-        $this->analyticsTokenMock = $this->createMock(AnalyticsToken::class);
+        $this->analyticsTokenMock = $this->getMockBuilder(AnalyticsToken::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->flagManagerMock = $this->createMock(FlagManager::class);
+        $this->flagManagerMock = $this->getMockBuilder(FlagManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 

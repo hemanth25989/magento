@@ -220,13 +220,11 @@ abstract class AbstractEavTest extends TestCase
     /**
      * Returns product for testing.
      *
-     * @param bool $forceReload
      * @return ProductInterface
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    protected function getProduct($forceReload = false): ProductInterface
+    protected function getProduct(): ProductInterface
     {
-        return $this->productRepository->get('simple', false, Store::DEFAULT_STORE_ID, $forceReload);
+        return $this->productRepository->get('simple', false, Store::DEFAULT_STORE_ID);
     }
 
     /**

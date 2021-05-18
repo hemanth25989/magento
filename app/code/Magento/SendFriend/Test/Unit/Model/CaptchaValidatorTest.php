@@ -18,8 +18,8 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\SendFriend\Model\CaptchaValidator;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Test CaptchaValidatorTest
@@ -34,32 +34,32 @@ class CaptchaValidatorTest extends TestCase
     private $model;
 
     /**
-     * @var CaptchaStringResolver|MockObject
+     * @var CaptchaStringResolver|PHPUnit\Framework\MockObject\MockObject
      */
     private $captchaStringResolverMock;
 
     /**
-     * @var UserContextInterface|MockObject
+     * @var UserContextInterface|PHPUnit\Framework\MockObject\MockObject
      */
     private $currentUserMock;
 
     /**
-     * @var CustomerRepositoryInterface|MockObject
+     * @var CustomerRepositoryInterface|PHPUnit\Framework\MockObject\MockObject
      */
     private $customerRepositoryMock;
 
     /**
-     * @var Data|MockObject
+     * @var Data|PHPUnit\Framework\MockObject\MockObject
      */
     private $captchaHelperMock;
 
     /**
-     * @var DefaultModel|MockObject
+     * @var DefaultModel|PHPUnit\Framework\MockObject\MockObject
      */
     private $captchaMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface|PHPUnit\Framework\MockObject\MockObject
      */
     private $requestMock;
 
@@ -76,8 +76,7 @@ class CaptchaValidatorTest extends TestCase
             ->getMockForAbstractClass();
         $this->customerRepositoryMock = $this->getMockForAbstractClass(CustomerRepositoryInterface::class);
         $this->captchaMock = $this->createMock(DefaultModel::class);
-        $this->requestMock = $this->getMockBuilder(RequestInterface::class)
-            ->getMock();
+        $this->requestMock = $this->getMockBuilder(RequestInterface::class)->getMock();
 
         $this->model = $objectManager->getObject(
             CaptchaValidator::class,
@@ -121,11 +120,13 @@ class CaptchaValidatorTest extends TestCase
 
     /**
      * Testing the wrong used word for captcha
+     *
      */
     public function testWrongCaptcha()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Incorrect CAPTCHA');
+
         $word = 'test-word';
         $captchaIsRequired = true;
         $captchaWordIsCorrect = false;

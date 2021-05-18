@@ -621,9 +621,7 @@ class SessionManager implements SessionManagerInterface
         }
 
         foreach ($this->sessionConfig->getOptions() as $option => $value) {
-            // Since PHP 7.2 it is explicitly forbidden to set the module name to "user".
-            // https://bugs.php.net/bug.php?id=77384
-            if ($option === 'session.save_handler' && $value !== 'memcached') {
+            if ($option=='session.save_handler') {
                 continue;
             } else {
                 $result = ini_set($option, $value);

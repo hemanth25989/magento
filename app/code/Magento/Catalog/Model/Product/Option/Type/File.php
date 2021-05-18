@@ -181,8 +181,9 @@ class File extends \Magento\Catalog\Model\Product\Option\Type\DefaultType
     }
 
     /**
-     * Returns file info array if we need to get file from already existing file.
+     * Retrieve current config file into
      *
+     * Returns file info array if we need to get file from already existing file.
      * Or returns null, if we need to get file from uploaded array.
      *
      * @return null|array
@@ -529,7 +530,7 @@ class File extends \Magento\Catalog\Model\Product\Option\Type\DefaultType
     }
 
     /**
-     * Prepare size
+     * Prepare size text format
      *
      * @param array $value
      * @return string

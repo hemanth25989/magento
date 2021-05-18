@@ -8,29 +8,26 @@ declare(strict_types=1);
 
 namespace Magento\Ui\Test\Unit\Component\Form\Element\DataType\Media;
 
+use Magento\Ui\Component\Form\Element\DataType\Media\Image;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\Api\Data\StoreInterface;
 use Magento\Framework\File\Size;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\UiComponent\Processor;
-use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Ui\Component\Form\Element\DataType\Media\Image;
-use Magento\Ui\Test\Unit\Component\Form\Element\DataType\MediaTest;
-use PHPUnit\Framework\MockObject\MockObject;
 
-class ImageTest extends MediaTest
+class ImageTest extends \Magento\Ui\Test\Unit\Component\Form\Element\DataType\MediaTest
 {
     /**
-     * @var StoreInterface|MockObject
+     * @var StoreInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $store;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $storeManager;
 
     /**
-     * @var Size|MockObject
+     * @var Size|\PHPUnit\Framework\MockObject\MockObject
      */
     private $fileSize;
 
@@ -48,7 +45,7 @@ class ImageTest extends MediaTest
     {
         parent::setUp();
 
-        $this->processor = $this->getMockBuilder(Processor::class)
+        $this->processor = $this->getMockBuilder(\Magento\Framework\View\Element\UiComponent\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -64,8 +61,7 @@ class ImageTest extends MediaTest
 
         $this->storeManager->expects($this->any())->method('getStore')->willReturn($this->store);
 
-        $this->fileSize = $this->getMockBuilder(Size::class)
-            ->getMock();
+        $this->fileSize = $this->getMockBuilder(Size::class)->getMock();
 
         $this->objectManager = new ObjectManager($this);
 

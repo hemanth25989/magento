@@ -3,16 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Payment\Test\Unit\Model\Checks;
 
-use Magento\Payment\Model\Checks\CanUseCheckout;
-use Magento\Payment\Model\MethodInterface;
-use Magento\Quote\Model\Quote;
-use PHPUnit\Framework\TestCase;
+use \Magento\Payment\Model\Checks\CanUseCheckout;
 
-class CanUseCheckoutTest extends TestCase
+class CanUseCheckoutTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CanUseCheckout
@@ -30,15 +26,12 @@ class CanUseCheckoutTest extends TestCase
      */
     public function testIsApplicable($expectation)
     {
-        $quote = $this->getMockBuilder(Quote::class)
-            ->disableOriginalConstructor()
-            ->setMethods(
-                []
-            )->getMock();
+        $quote = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)->disableOriginalConstructor()->setMethods(
+            []
+        )->getMock();
         $paymentMethod = $this->getMockBuilder(
-            MethodInterface::class
-        )->disableOriginalConstructor()
-            ->setMethods([])->getMock();
+            \Magento\Payment\Model\MethodInterface::class
+        )->disableOriginalConstructor()->setMethods([])->getMock();
         $paymentMethod->expects($this->once())->method('canUseCheckout')->willReturn(
             $expectation
         );

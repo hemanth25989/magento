@@ -68,14 +68,13 @@ class ReorderTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento/Customer/_files/customer.php
-     * @magentoDataFixture Magento/Sales/_files/order.php
+     * @magentoDataFixture Magento/Sales/_files/customer_order_with_two_items.php
      *
      * @return void
      */
     public function testCanReorderForLoggedCustomer(): void
     {
-        $order = $this->orderFactory->create()->loadByIncrementId('100000001');
+        $order = $this->orderFactory->create()->loadByIncrementId('100000555');
         $this->customerSession->setCustomerId($order->getCustomerId());
         $this->assertTrue($this->helper->canReorder($order->getId()));
     }

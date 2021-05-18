@@ -3,20 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\Order\Email;
 
-use Magento\Framework\Mail\Template\TransportBuilder;
-use Magento\Sales\Model\Order\Email\Container\ShipmentIdentity;
-use Magento\Sales\Model\Order\Email\Container\Template;
 use Magento\Sales\Model\Order\Email\SenderBuilder;
-use Magento\Sales\Test\Unit\Model\Order\Email\Stub\TransportInterfaceMock;
-use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SenderBuilderTest extends TestCase
+class SenderBuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SenderBuilder
@@ -24,55 +16,57 @@ class SenderBuilderTest extends TestCase
     protected $senderBuilder;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $templateContainerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $identityContainerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $transportBuilder;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $storeMock;
 
     protected function setUp(): void
     {
+
         $this->templateContainerMock = $this->createPartialMock(
-            Template::class,
+            \Magento\Sales\Model\Order\Email\Container\Template::class,
             ['getTemplateVars', 'getTemplateOptions', 'getTemplateId']
         );
 
-        $this->storeMock = $this->getMockBuilder(Store::class)
-            ->addMethods(['getStoreId'])
-            ->onlyMethods(['getId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->storeMock = $this->createPartialMock(
+            \Magento\Store\Model\Store::class,
+            [
+                'getStoreId',
+                '__wakeup',
+                'getId',
+            ]
+        );
 
-        $this->identityContainerMock = $this->getMockBuilder(ShipmentIdentity::class)
-            ->addMethods(['getTemplateOptions'])
-            ->onlyMethods(
-                [
-                    'getEmailIdentity',
-                    'getCustomerEmail',
-                    'getCustomerName',
-                    'getEmailCopyTo',
-                    'getCopyMethod',
-                    'getStore'
-                ]
-            )
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->identityContainerMock = $this->createPartialMock(
+            \Magento\Sales\Model\Order\Email\Container\ShipmentIdentity::class,
+            [
+                'getEmailIdentity',
+                'getCustomerEmail',
+                'getCustomerName',
+                'getTemplateOptions',
+                'getEmailCopyTo',
+                'getCopyMethod',
+                'getStore',
+            ]
+        );
 
         $this->transportBuilder = $this->createPartialMock(
-            TransportBuilder::class,
+            \Magento\Framework\Mail\Template\TransportBuilder::class,
             [
                 'addTo',
                 'addBcc',
@@ -99,7 +93,7 @@ class SenderBuilderTest extends TestCase
         $identity = 'email_identity_test';
 
         $transportMock = $this->createMock(
-            TransportInterfaceMock::class
+            \Magento\Sales\Test\Unit\Model\Order\Email\Stub\TransportInterfaceMock::class
         );
 
         $this->identityContainerMock->expects($this->once())
@@ -125,7 +119,7 @@ class SenderBuilderTest extends TestCase
             ->with($identity, 1);
         $this->transportBuilder->expects($this->exactly(1))
             ->method('addTo')
-            ->with($customerEmail, $customerName);
+            ->with($this->equalTo($customerEmail), $this->equalTo($customerName));
 
         $this->transportBuilder->expects($this->exactly(1))
             ->method('getTransport')
@@ -139,7 +133,7 @@ class SenderBuilderTest extends TestCase
         $this->setExpectedCount(2);
         $identity = 'email_identity_test';
         $transportMock = $this->createMock(
-            TransportInterfaceMock::class
+            \Magento\Sales\Test\Unit\Model\Order\Email\Stub\TransportInterfaceMock::class
         );
         $this->identityContainerMock->expects($this->never())
             ->method('getCustomerEmail');
@@ -170,6 +164,7 @@ class SenderBuilderTest extends TestCase
      */
     private function setExpectedCount(int $count = 1)
     {
+
         $templateId = 'test_template_id';
         $templateOptions = ['option1', 'option2'];
         $templateVars = ['var1', 'var2'];
@@ -181,26 +176,26 @@ class SenderBuilderTest extends TestCase
             ->willReturn($templateId);
         $this->transportBuilder->expects($this->exactly($count))
             ->method('setTemplateIdentifier')
-            ->with($templateId);
+            ->with($this->equalTo($templateId));
         $this->templateContainerMock->expects($this->exactly($count))
             ->method('getTemplateOptions')
             ->willReturn($templateOptions);
         $this->transportBuilder->expects($this->exactly($count))
             ->method('setTemplateOptions')
-            ->with($templateOptions);
+            ->with($this->equalTo($templateOptions));
         $this->templateContainerMock->expects($this->exactly($count))
             ->method('getTemplateVars')
             ->willReturn($templateVars);
         $this->transportBuilder->expects($this->exactly($count))
             ->method('setTemplateVars')
-            ->with($templateVars);
+            ->with($this->equalTo($templateVars));
 
         $this->identityContainerMock->expects($this->exactly($count))
             ->method('getEmailIdentity')
             ->willReturn($emailIdentity);
         $this->transportBuilder->expects($this->exactly($count))
             ->method('setFromByScope')
-            ->with($emailIdentity, 1);
+            ->with($this->equalTo($emailIdentity), 1);
 
         $this->identityContainerMock->expects($this->once())
             ->method('getEmailCopyTo')

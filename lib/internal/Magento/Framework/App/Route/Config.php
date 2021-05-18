@@ -9,6 +9,9 @@ namespace Magento\Framework\App\Route;
 
 use Magento\Framework\Serialize\SerializerInterface;
 
+/**
+ * Config holds the configuration of a route
+ */
 class Config implements ConfigInterface
 {
     /**
@@ -101,7 +104,7 @@ class Config implements ConfigInterface
      * Retrieve route front name
      *
      * @param string $routeId
-     * @param null|string $scope
+     * @param string $scope
      * @return string
      */
     public function getRouteFrontName($routeId, $scope = null)
@@ -111,7 +114,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @inheritdoc
+     * Retrieve route ID by front name
      *
      * @param string $frontName
      * @param string $scope
@@ -129,7 +132,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @inheritdoc
+     * Retrieve modules by front name
      *
      * @param string $frontName
      * @param string $scope

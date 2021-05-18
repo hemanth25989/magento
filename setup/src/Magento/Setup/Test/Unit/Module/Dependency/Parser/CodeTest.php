@@ -3,25 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\Dependency\Parser;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Setup\Module\Dependency\Parser\Code;
-use PHPUnit\Framework\TestCase;
 
-class CodeTest extends TestCase
+class CodeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Code
+     * @var \Magento\Setup\Module\Dependency\Parser\Code
      */
     protected $parser;
 
     protected function setUp(): void
     {
         $objectManagerHelper = new ObjectManager($this);
-        $this->parser = $objectManagerHelper->getObject(Code::class);
+        $this->parser = $objectManagerHelper->getObject(\Magento\Setup\Module\Dependency\Parser\Code::class);
     }
 
     /**
@@ -30,8 +26,9 @@ class CodeTest extends TestCase
      */
     public function testParseWithWrongOptionFilesForParse($options)
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Parse error: Option "files_for_parse" is wrong.');
+
         $this->parser->parse($options);
     }
 
@@ -53,8 +50,9 @@ class CodeTest extends TestCase
      */
     public function testParseWithWrongOptionDeclaredNamespace($options)
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Parse error: Option "declared_namespaces" is wrong.');
+
         $this->parser->parse($options);
     }
 

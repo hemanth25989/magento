@@ -3,22 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit;
 
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\View\TemplateEngineFactory;
-use Magento\Framework\View\TemplateEngineInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\View\TemplateEngineFactory;
 
-class TemplateEngineFactoryTest extends TestCase
+class TemplateEngineFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var MockObject */
+    /** @var \PHPUnit\Framework\MockObject\MockObject */
     protected $_objectManagerMock;
 
-    /** @var  TemplateEngineFactory */
+    /** @var  \Magento\Framework\View\TemplateEngineFactory */
     protected $_factory;
 
     /**
@@ -26,7 +20,7 @@ class TemplateEngineFactoryTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->_objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->_objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
         $this->_factory = new TemplateEngineFactory(
             $this->_objectManagerMock,
             ['test' => \Fixture\Module\Model\TemplateEngine::class]
@@ -35,7 +29,7 @@ class TemplateEngineFactoryTest extends TestCase
 
     public function testCreateKnownEngine()
     {
-        $engine = $this->getMockForAbstractClass(TemplateEngineInterface::class);
+        $engine = $this->createMock(\Magento\Framework\View\TemplateEngineInterface::class);
         $this->_objectManagerMock->expects(
             $this->once()
         )->method(
@@ -48,20 +42,24 @@ class TemplateEngineFactoryTest extends TestCase
         $this->assertSame($engine, $this->_factory->create('test'));
     }
 
+    /**
+     */
     public function testCreateUnknownEngine()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown template engine type: \'non_existing\'');
+
         $this->_objectManagerMock->expects($this->never())->method('create');
         $this->_factory->create('non_existing');
     }
 
+    /**
+     */
     public function testCreateInvalidEngine()
     {
-        $this->expectException('UnexpectedValueException');
-        $this->expectExceptionMessage(
-            'Fixture\Module\Model\TemplateEngine has to implement the template engine interface'
-        );
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('Fixture\\Module\\Model\\TemplateEngine has to implement the template engine interface');
+
         $this->_objectManagerMock->expects(
             $this->once()
         )->method(

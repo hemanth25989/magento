@@ -3,43 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogUrlRewrite\Test\Unit\Model\Map;
 
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\CatalogUrlRewrite\Model\Map\UrlRewriteFinder;
 use Magento\CatalogUrlRewrite\Model\Map\DatabaseMapPool;
+use Magento\UrlRewrite\Model\UrlFinderInterface;
+use Magento\UrlRewrite\Service\V1\Data\UrlRewriteFactory;
+use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
 use Magento\CatalogUrlRewrite\Model\Map\DataCategoryUrlRewriteDatabaseMap;
 use Magento\CatalogUrlRewrite\Model\Map\DataProductUrlRewriteDatabaseMap;
-use Magento\CatalogUrlRewrite\Model\Map\UrlRewriteFinder;
 use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\UrlRewrite\Model\UrlFinderInterface;
-use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
-use Magento\UrlRewrite\Service\V1\Data\UrlRewriteFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class UrlRewriteFinderTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class UrlRewriteFinderTest extends TestCase
+class UrlRewriteFinderTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var DatabaseMapPool|MockObject */
+    /** @var DatabaseMapPool|\PHPUnit\Framework\MockObject\MockObject */
     private $databaseMapPoolMock;
 
-    /** @var UrlRewriteFactory|MockObject */
+    /** @var UrlRewriteFactory|\PHPUnit\Framework\MockObject\MockObject */
     private $urlRewriteFactoryMock;
 
-    /** @var UrlRewrite|MockObject */
+    /** @var UrlRewrite|\PHPUnit\Framework\MockObject\MockObject */
     private $urlRewritePrototypeMock;
 
-    /** @var UrlFinderInterface|MockObject */
+    /** @var UrlFinderInterface|\PHPUnit\Framework\MockObject\MockObject */
     private $urlFinderMock;
 
-    /** @var UrlRewriteFinder|MockObject */
+    /** @var UrlRewriteFinder|\PHPUnit\Framework\MockObject\MockObject */
     private $model;
 
-    /** @var MockObject */
+    /** @var \PHPUnit\Framework\MockObject\MockObject */
     private $serializerMock;
 
     protected function setUp(): void
@@ -85,9 +83,9 @@ class UrlRewriteFinderTest extends TestCase
 
         $this->assertEquals($expected, $this->model->findAllByData(1, 1, UrlRewriteFinder::ENTITY_TYPE_CATEGORY));
         $this->assertEquals($expected, $this->model->findAllByData(1, 1, UrlRewriteFinder::ENTITY_TYPE_PRODUCT));
-        $this->assertEquals($expected, $this->model->findAllByData('a', 1, UrlRewriteFinder::ENTITY_TYPE_PRODUCT, 1));
-        $this->assertEquals($expected, $this->model->findAllByData('a', 'a', UrlRewriteFinder::ENTITY_TYPE_PRODUCT, 1));
-        $this->assertEquals($expected, $this->model->findAllByData(1, 'a', UrlRewriteFinder::ENTITY_TYPE_PRODUCT, 1));
+        $this->assertEquals($expected, $this->model->findAllByData('a', 1, UrlRewriteFinder::ENTITY_TYPE_PRODUCT), 1);
+        $this->assertEquals($expected, $this->model->findAllByData('a', 'a', UrlRewriteFinder::ENTITY_TYPE_PRODUCT), 1);
+        $this->assertEquals($expected, $this->model->findAllByData(1, 'a', UrlRewriteFinder::ENTITY_TYPE_PRODUCT), 1);
         $this->assertEquals($expected, $this->model->findAllByData(1, 1, 'cms', 1));
         $this->assertEquals($expected, $this->model->findAllByData(1, 1, 'cms'));
     }

@@ -4,40 +4,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Quote\Test\Unit\Model\GuestCart;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Api\CartTotalRepositoryInterface;
-use Magento\Quote\Model\GuestCart\GuestCartTotalRepository;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class GuestCartTotalRepositoryTest extends TestCase
+class GuestCartTotalRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var GuestCartTotalRepository
+     * @var \Magento\Quote\Model\GuestCart\GuestCartTotalRepository
      */
     protected $model;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $cartTotalRepository;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $quoteIdMaskFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $quoteIdMaskMock;
 
@@ -53,11 +45,11 @@ class GuestCartTotalRepositoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->cartTotalRepository = $this->getMockBuilder(CartTotalRepositoryInterface::class)
+        $this->cartTotalRepository = $this->getMockBuilder(\Magento\Quote\Api\CartTotalRepositoryInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->maskedCartId = 'f216207248d65c789b17be8545e0aa73';
         $this->cartId = 123;
@@ -69,7 +61,7 @@ class GuestCartTotalRepositoryTest extends TestCase
         );
 
         $this->model = $this->objectManager->getObject(
-            GuestCartTotalRepository::class,
+            \Magento\Quote\Model\GuestCart\GuestCartTotalRepository::class,
             [
                 'cartTotalRepository' => $this->cartTotalRepository,
                 'quoteIdMaskFactory' => $this->quoteIdMaskFactoryMock,

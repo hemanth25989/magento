@@ -3,16 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product;
 
-use Magento\Catalog\Model\Entity\Attribute;
-use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\ReservedAttributeList;
-use PHPUnit\Framework\TestCase;
 
-class ReservedAttributeListTest extends TestCase
+class ReservedAttributeListTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ReservedAttributeList
@@ -22,7 +17,7 @@ class ReservedAttributeListTest extends TestCase
     protected function setUp(): void
     {
         $this->model = new ReservedAttributeList(
-            Product::class,
+            \Magento\Catalog\Model\Product::class,
             ['some_value'],
             ['some_attribute']
         );
@@ -35,8 +30,8 @@ class ReservedAttributeListTest extends TestCase
     public function testIsReservedAttribute($isUserDefined, $attributeCode, $expected)
     {
         $attribute = $this->createPartialMock(
-            Attribute::class,
-            ['getIsUserDefined', 'getAttributeCode', '__sleep']
+            \Magento\Catalog\Model\Entity\Attribute::class,
+            ['getIsUserDefined', 'getAttributeCode', '__sleep', '__wakeup']
         );
 
         $attribute->expects($this->once())->method('getIsUserDefined')->willReturn($isUserDefined);

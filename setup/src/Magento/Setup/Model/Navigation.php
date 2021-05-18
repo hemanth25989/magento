@@ -7,10 +7,9 @@
 namespace Magento\Setup\Model;
 
 use Laminas\ServiceManager\ServiceLocatorInterface;
-use Magento\Framework\App\DeploymentConfig;
 
 /**
- * Navigation model
+ * Class Navigation implements the data model for the navigation menu
  */
 class Navigation
 {
@@ -35,7 +34,7 @@ class Navigation
     private $titles;
 
     /**
-     * @param \Laminas\ServiceManager\ServiceLocatorInterface $serviceLocator
+     * @param ServiceLocatorInterface $serviceLocator
      */
     public function __construct(ServiceLocatorInterface $serviceLocator)
     {
@@ -45,7 +44,7 @@ class Navigation
     }
 
     /**
-     * Get type
+     * Type getter method
      *
      * @return string
      */
@@ -55,7 +54,7 @@ class Navigation
     }
 
     /**
-     * Get data
+     * Data getter method
      *
      * @return array
      */

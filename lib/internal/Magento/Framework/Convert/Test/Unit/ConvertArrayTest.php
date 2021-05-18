@@ -3,14 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Convert\Test\Unit;
 
-use Magento\Framework\Convert\ConvertArray;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Convert\ConvertArray;
 
-class ConvertArrayTest extends TestCase
+class ConvertArrayTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConvertArray
@@ -35,12 +33,13 @@ XML;
         $this->assertEquals($expectedResult, $result->asXML());
     }
 
+    /**
+     */
     public function testAssocToXmlExceptionByKey()
     {
-        $this->expectException('Exception');
-        $this->expectExceptionMessage(
-            'Associative and numeric keys can\'t be mixed at one level. Verify and try again.'
-        );
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Associative and numeric keys can\'t be mixed at one level. Verify and try again.');
+
         $data = [
             'one' => [
                 100,
@@ -57,7 +56,8 @@ XML;
      */
     public function testAssocToXmlException($array, $rootName = '_')
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
+
         $this->_model->assocToXml($array, $rootName);
     }
 

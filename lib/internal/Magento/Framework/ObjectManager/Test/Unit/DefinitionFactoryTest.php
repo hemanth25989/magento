@@ -3,22 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\ObjectManager\Test\Unit;
 
 use Magento\Framework\Filesystem\Driver\File;
-use Magento\Framework\Interception\DefinitionInterface as InterceptionDefinitionInterface;
 use Magento\Framework\ObjectManager\DefinitionFactory;
 use Magento\Framework\ObjectManager\DefinitionInterface;
+use Magento\Framework\Interception\DefinitionInterface as InterceptionDefinitionInterface;
 use Magento\Framework\ObjectManager\RelationsInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DefinitionFactoryTest extends TestCase
+class DefinitionFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var File|MockObject
+     * @var File|\PHPUnit\Framework\MockObject\MockObject
      */
     private $filesystemDriverMock;
 

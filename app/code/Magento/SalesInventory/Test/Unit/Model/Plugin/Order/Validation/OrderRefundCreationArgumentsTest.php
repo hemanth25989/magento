@@ -3,22 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\SalesInventory\Test\Unit\Model\Plugin\Order\Validation;
 
-use Magento\Sales\Api\Data\CreditmemoCreationArgumentsExtensionInterface;
-use Magento\Sales\Api\Data\CreditmemoCreationArgumentsInterface;
-use Magento\Sales\Api\Data\CreditmemoInterface;
-use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Model\Order\Validation\RefundOrderInterface;
-use Magento\Sales\Model\ValidatorResultInterface;
 use Magento\SalesInventory\Model\Order\ReturnValidator;
 use Magento\SalesInventory\Model\Plugin\Order\Validation\OrderRefundCreationArguments;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Sales\Model\Order\Validation\RefundOrderInterface;
+use Magento\Sales\Model\ValidatorResultInterface;
+use Magento\Sales\Api\Data\CreditmemoCreationArgumentsInterface;
+use Magento\Sales\Api\Data\CreditmemoCreationArgumentsExtensionInterface;
+use Magento\Sales\Api\Data\CreditmemoInterface;
+use Magento\Sales\Api\Data\OrderInterface;
 
-class OrderRefundCreationArgumentsTest extends TestCase
+/**
+ * Class OrderRefundCreationArgumentsTest
+ */
+class OrderRefundCreationArgumentsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var OrderRefundCreationArguments
@@ -26,37 +25,37 @@ class OrderRefundCreationArgumentsTest extends TestCase
     private $plugin;
 
     /**
-     * @var ReturnValidator|MockObject
+     * @var ReturnValidator|\PHPUnit\Framework\MockObject\MockObject
      */
     private $returnValidatorMock;
 
     /**
-     * @var CreditmemoCreationArgumentsExtensionInterface|MockObject
+     * @var CreditmemoCreationArgumentsExtensionInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $extensionAttributesMock;
 
     /**
-     * @var CreditmemoCreationArgumentsInterface|MockObject
+     * @var CreditmemoCreationArgumentsInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $creditmemoCreationArgumentsMock;
 
     /**
-     * @var RefundOrderInterface|MockObject
+     * @var RefundOrderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $refundOrderValidatorMock;
 
     /**
-     * @var ValidatorResultInterface|MockObject
+     * @var ValidatorResultInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $validateResultMock;
 
     /**
-     * @var OrderInterface|MockObject
+     * @var OrderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $orderMock;
 
     /**
-     * @var CreditmemoInterface|MockObject
+     * @var CreditmemoInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $creditmemoMock;
 

@@ -5,7 +5,7 @@
  */
 namespace Magento\Framework\HTTP;
 
-use Laminas\Stdlib\Parameters;
+use Zend\Stdlib\Parameters;
 
 class HeaderTest extends \PHPUnit\Framework\TestCase
 {

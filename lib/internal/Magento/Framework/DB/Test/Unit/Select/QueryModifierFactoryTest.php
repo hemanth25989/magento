@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\DB\Test\Unit\Select;
 
-use Magento\Framework\DB\Select\InQueryModifier;
-use Magento\Framework\DB\Select\QueryModifierFactory;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\DB\Select\QueryModifierFactory;
+use Magento\Framework\DB\Select\InQueryModifier;
+use Magento\Framework\ObjectManagerInterface;
 
-class QueryModifierFactoryTest extends TestCase
+class QueryModifierFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -27,12 +23,12 @@ class QueryModifierFactoryTest extends TestCase
     private $queryModifierFactory;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $objectManagerMock;
 
     /**
-     * @var InQueryModifier|MockObject
+     * @var InQueryModifier|\PHPUnit\Framework\MockObject\MockObject
      */
     private $inQueryModifierMock;
 
@@ -65,9 +61,12 @@ class QueryModifierFactoryTest extends TestCase
         $this->queryModifierFactory->create('in', $params);
     }
 
+    /**
+     */
     public function testCreateUnknownQueryModifierType()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
+
         $params = ['foo' => 'bar'];
         $this->queryModifierFactory = $this->objectManager->getObject(
             QueryModifierFactory::class,
@@ -81,9 +80,12 @@ class QueryModifierFactoryTest extends TestCase
         $this->queryModifierFactory->create('in', $params);
     }
 
+    /**
+     */
     public function testCreateDoesNotImplementInterface()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
+
         $params = ['foo' => 'bar'];
         $this->queryModifierFactory = $this->objectManager->getObject(
             QueryModifierFactory::class,

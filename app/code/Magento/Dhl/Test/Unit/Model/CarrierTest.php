@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Dhl\Test\Unit\Model;
 
@@ -11,7 +10,6 @@ use Magento\Dhl\Model\Carrier;
 use Magento\Dhl\Model\Validator\XmlValidator;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ProductMetadataInterface;
-use Magento\Framework\DataObject;
 use Magento\Framework\Filesystem\Directory\Read;
 use Magento\Framework\Filesystem\Directory\ReadFactory;
 use Magento\Framework\HTTP\ZendClient;
@@ -26,21 +24,22 @@ use Magento\Quote\Model\Quote\Address\RateResult\Error;
 use Magento\Quote\Model\Quote\Address\RateResult\ErrorFactory;
 use Magento\Quote\Model\Quote\Address\RateResult\Method;
 use Magento\Quote\Model\Quote\Address\RateResult\MethodFactory;
+use Magento\Sales\Model\Order;
 use Magento\Shipping\Helper\Carrier as CarrierHelper;
 use Magento\Shipping\Model\Rate\Result;
 use Magento\Shipping\Model\Rate\ResultFactory;
+use Magento\Shipping\Model\Shipment\Request;
 use Magento\Shipping\Model\Simplexml\Element;
 use Magento\Shipping\Model\Simplexml\ElementFactory;
 use Magento\Store\Model\StoreManager;
 use Magento\Store\Model\Website;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 use Psr\Log\LoggerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CarrierTest extends TestCase
+class CarrierTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -188,7 +187,7 @@ class CarrierTest extends TestCase
             'carriers/dhl/debug' => 1,
             'shipping/origin/country_id' => 'GB'
         ];
-        return $pathMap[$path] ?? null;
+        return isset($pathMap[$path]) ? $pathMap[$path] : null;
     }
 
     /**
@@ -213,8 +212,9 @@ class CarrierTest extends TestCase
      */
     public function testPrepareShippingLabelContentException(\SimpleXMLElement $xml)
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Unable to retrieve shipping label');
+
         $this->_invokePrepareShippingLabelContent($xml);
     }
 
@@ -243,7 +243,7 @@ class CarrierTest extends TestCase
      * Invoke prepare shipping label content
      *
      * @param \SimpleXMLElement $xml
-     * @return DataObject
+     * @return \Magento\Framework\DataObject
      * @throws \ReflectionException
      */
     protected function _invokePrepareShippingLabelContent(\SimpleXMLElement $xml)
@@ -333,7 +333,6 @@ class CarrierTest extends TestCase
                     'H' => 'Economy select',
                     'J' => 'Jumbo box',
                     'M' => 'Express 10:30',
-                    'N' => 'Domestic express',
                     'V' => 'Europack',
                     'Y' => 'Express 12:00',
                 ],
@@ -374,11 +373,13 @@ class CarrierTest extends TestCase
 
     /**
      * Tests that an exception is thrown when an invalid service prefix is provided.
+     *
      */
     public function testBuildMessageReferenceInvalidPrefix()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Invalid service prefix');
+
         $method = new \ReflectionMethod($this->model, 'buildMessageReference');
         $method->setAccessible(true);
 

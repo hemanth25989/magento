@@ -7,26 +7,21 @@ declare(strict_types=1);
 
 namespace Magento\Quote\Test\Unit\Model\Quote\Item;
 
-use Magento\Backend\App\Area\FrontNameResolver;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\App\State;
-use Magento\Framework\DataObject;
 use Magento\Quote\Api\Data\CartItemInterface;
 use Magento\Quote\Model\Quote\Item;
 use Magento\Quote\Model\Quote\Item\Processor;
 use Magento\Quote\Model\Quote\ItemFactory;
 use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManager;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests for Magento\Quote\Model\Service\Quote\Processor
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ProcessorTest extends TestCase
+class ProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Processor
@@ -34,72 +29,73 @@ class ProcessorTest extends TestCase
     protected $processor;
 
     /**
-     * @var ItemFactory|MockObject
+     * @var ItemFactory |\PHPUnit\Framework\MockObject\MockObject
      */
     protected $quoteItemFactoryMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface |\PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var State|MockObject
+     * @var State |\PHPUnit\Framework\MockObject\MockObject
      */
     protected $stateMock;
 
     /**
-     * @var Product|MockObject
+     * @var Product |\PHPUnit\Framework\MockObject\MockObject
      */
     protected $productMock;
 
     /**
-     * @var Object|MockObject
+     * @var Object |\PHPUnit\Framework\MockObject\MockObject
      */
     protected $objectMock;
 
     /**
-     * @var Item|MockObject
+     * @var Item |\PHPUnit\Framework\MockObject\MockObject
      */
     protected $itemMock;
 
     /**
-     * @var Store|MockObject
+     * @var Store |\PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeMock;
 
     protected function setUp(): void
     {
         $this->quoteItemFactoryMock = $this->createPartialMock(
-            ItemFactory::class,
+            \Magento\Quote\Model\Quote\ItemFactory::class,
             ['create']
         );
 
-        $this->itemMock = $this->getMockBuilder(Item::class)
-            ->addMethods(['setOriginalCustomPrice'])
-            ->onlyMethods([
+        $this->itemMock = $this->createPartialMock(
+            \Magento\Quote\Model\Quote\Item::class,
+            [
                 'getId',
                 'setOptions',
+                '__wakeup',
                 'setProduct',
                 'addQty',
                 'setCustomPrice',
+                'setOriginalCustomPrice',
                 'setData',
-                'setPrice',
+                'setprice',
                 'getParentItem'
-            ])
-            ->disableOriginalConstructor()
-            ->getMock();
+            ]
+        );
         $this->quoteItemFactoryMock->expects($this->any())
             ->method('create')
             ->willReturn($this->itemMock);
 
-        $this->storeManagerMock = $this->createPartialMock(StoreManager::class, ['getStore']);
-        $this->storeMock = $this->createPartialMock(Store::class, ['getId', '__wakeup']);
+        $this->storeManagerMock = $this->createPartialMock(\Magento\Store\Model\StoreManager::class, ['getStore']);
+        $this->storeMock = $this->createPartialMock(\Magento\Store\Model\Store::class, ['getId', '__wakeup']);
         $this->storeManagerMock->expects($this->any())
             ->method('getStore')
             ->willReturn($this->storeMock);
 
-        $this->stateMock = $this->createMock(State::class);
+        $this->stateMock = $this->createMock(\Magento\Framework\App\State::class);
 
         $this->processor = new Processor(
             $this->quoteItemFactoryMock,
@@ -107,15 +103,20 @@ class ProcessorTest extends TestCase
             $this->stateMock
         );
 
-        $this->productMock = $this->getMockBuilder(Product::class)
-            ->addMethods(['getParentProductId', 'getCartQty', 'getStickWithinParent'])
-            ->onlyMethods(['getCustomOptions', '__wakeup', 'getFinalPrice'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->objectMock = $this->getMockBuilder(DataObject::class)
-            ->addMethods(['getResetCount', 'getId', 'getCustomPrice'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->productMock = $this->createPartialMock(
+            \Magento\Catalog\Model\Product::class,
+            [
+                'getCustomOptions',
+                '__wakeup',
+                'getParentProductId',
+                'getCartQty',
+                'getStickWithinParent',
+                'getFinalPrice']
+        );
+        $this->objectMock = $this->createPartialMock(
+            \Magento\Framework\DataObject::class,
+            ['getResetCount', 'getId', 'getCustomPrice']
+        );
     }
 
     public function testInitWithQtyModification()
@@ -204,7 +205,7 @@ class ProcessorTest extends TestCase
 
     public function testInitWithoutModificationAdminhtmlAreaCode()
     {
-        $areaCode = FrontNameResolver::AREA_CODE;
+        $areaCode = \Magento\Backend\App\Area\FrontNameResolver::AREA_CODE;
         $storeId = 1000000000;
         $requestId = 20000000;
         $itemId = $requestId;

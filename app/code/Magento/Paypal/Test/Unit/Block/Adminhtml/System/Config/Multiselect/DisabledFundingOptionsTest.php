@@ -3,20 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Paypal\Test\Unit\Block\Adminhtml\System\Config\Multiselect;
 
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Helper\Js;
-use Magento\Paypal\Block\Adminhtml\System\Config\MultiSelect\DisabledFundingOptions;
-use Magento\Paypal\Model\Config;
-use Magento\Paypal\Model\Config\StructurePlugin;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use \Magento\Framework\Data\Form\Element\AbstractElement;
+use \Magento\Framework\App\RequestInterface;
+use \Magento\Framework\View\Helper\Js;
+use \Magento\Paypal\Model\Config;
+use \Magento\Paypal\Block\Adminhtml\System\Config\MultiSelect\DisabledFundingOptions;
+use \Magento\Paypal\Model\Config\StructurePlugin;
+use \PHPUnit\Framework\TestCase;
 
+/**
+ * Class DisabledFundingOptionsTest
+ * Test for DisabledFUndingOptions
+ */
 class DisabledFundingOptionsTest extends TestCase
 {
     /**
@@ -25,22 +27,22 @@ class DisabledFundingOptionsTest extends TestCase
     private $model;
 
     /**
-     * @var AbstractElement
+     * @var \Magento\Framework\Data\Form\Element\AbstractElement
      */
     private $element;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $request;
 
     /**
-     * @var Js|MockObject
+     * @var \Magento\Framework\View\Helper\Js|\PHPUnit\Framework\MockObject\MockObject
      */
     private $jsHelper;
 
     /**
-     * @var Config
+     * @var \Magento\Paypal\Model\Config
      */
     private $config;
 
@@ -90,11 +92,9 @@ class DisabledFundingOptionsTest extends TestCase
         $this->config->expects($this->any())
             ->method('getMerchantCountry')
             ->willReturnCallback(
-                
-                    function () use ($merchantCountry) {
-                        return $merchantCountry;
-                    }
-                
+                function () use ($merchantCountry) {
+                    return $merchantCountry;
+                }
             );
         $this->model->render($this->element);
         $payPalCreditOption = [

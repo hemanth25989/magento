@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Catalog\Model\ResourceModel\Attribute\AttributeConditionsBuilder
@@ -11,24 +10,25 @@ declare(strict_types=1);
 namespace Magento\Catalog\Test\Unit\Model\ResourceModel\Attribute;
 
 use Magento\Catalog\Model\Entity\Attribute;
-use Magento\Catalog\Model\ResourceModel\Attribute\ConditionBuilder;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute as CatalogEavAttribute;
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
 use Magento\Framework\DB\Adapter\Pdo\Mysql;
+use Magento\Store\Model\Website;
+use Magento\Catalog\Model\ResourceModel\Attribute\ConditionBuilder;
+use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
 use Magento\Framework\EntityManager\EntityMetadata;
 use Magento\Framework\EntityManager\EntityMetadataInterface;
-use Magento\Framework\Model\Entity\ScopeInterface;
 use Magento\Store\Api\Data\StoreInterface;
+use Magento\Framework\Model\Entity\ScopeInterface;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManager;
-use Magento\Store\Model\Website;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Catalog\Model\ResourceModel\Eav\Attribute as CatalogEavAttribute;
 
 /**
+ * Class AttributeConditionsBuilderTest
+ * @package Magento\Catalog\Test\Unit\Model\ResourceModel\Attribute
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ConditionBuilderTest extends TestCase
+class ConditionBuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param AbstractAttribute $attribute
@@ -546,7 +546,7 @@ class ConditionBuilderTest extends TestCase
     }
 
     /**
-     * @return MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function getValidAttributeMock()
     {
@@ -572,7 +572,7 @@ class ConditionBuilderTest extends TestCase
     }
 
     /**
-     * @return MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function getValidStoreMock()
     {
@@ -608,7 +608,7 @@ class ConditionBuilderTest extends TestCase
     }
 
     /**
-     * @return MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function getValidScopeMock()
     {

@@ -9,8 +9,6 @@ use Magento\Framework\App\ResourceConnection;
 
 /**
  * Test Class for \Magento\Framework\Mview\View\Changelog
- *
- * @magentoDbIsolation disabled
  */
 class ChangelogTest extends \PHPUnit\Framework\TestCase
 {
@@ -20,7 +18,7 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
     protected $objectManager;
 
     /**
-     * @var ResourceConnection
+     * @var \Magento\Framework\App\ResourceConnection
      */
     protected $resource;
 
@@ -32,7 +30,7 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
     protected $connection;
 
     /**
-     * @var Changelog
+     * @var \Magento\Framework\Mview\View\Changelog
      */
     protected $model;
 
@@ -42,11 +40,11 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
     protected function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-        $this->resource = $this->objectManager->get(ResourceConnection::class);
+        $this->resource = $this->objectManager->get(\Magento\Framework\App\ResourceConnection::class);
         $this->connection = $this->resource->getConnection();
 
         $this->model = $this->objectManager->create(
-            Changelog::class,
+            \Magento\Framework\Mview\View\Changelog::class,
             ['resource' => $this->resource]
         );
         $this->model->setViewId('test_view_id_1');
@@ -55,7 +53,6 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @return void
-     * @throws ChangelogTableNotExistsException
      */
     protected function tearDown(): void
     {
@@ -66,13 +63,12 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
      * Test for create() and drop() methods
      *
      * @return void
-     * @throws ChangelogTableNotExistsException
      */
     public function testCreateAndDrop()
     {
-        /** @var Changelog $model */
+        /** @var \Magento\Framework\Mview\View\Changelog $model */
         $model = $this->objectManager->create(
-            Changelog::class,
+            \Magento\Framework\Mview\View\Changelog::class,
             ['resource' => $this->resource]
         );
         $model->setViewId('test_view_id_2');
@@ -88,12 +84,11 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
      * Test for getVersion() method
      *
      * @return void
-     * @throws \Exception
      */
     public function testGetVersion()
     {
         $model = $this->objectManager->create(
-            Changelog::class,
+            \Magento\Framework\Mview\View\Changelog::class,
             ['resource' => $this->resource]
         );
         $model->setViewId('test_view_id_2');
@@ -109,8 +104,6 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
      * Test for clear() method
      *
      * @return void
-     * @throws ChangelogTableNotExistsException
-     * @throws \Magento\Framework\Exception\RuntimeException
      */
     public function testClear()
     {
@@ -127,8 +120,6 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
      * Test for getList() method
      *
      * @return void
-     * @throws ChangelogTableNotExistsException
-     * @throws \Magento\Framework\Exception\RuntimeException
      */
     public function testGetList()
     {

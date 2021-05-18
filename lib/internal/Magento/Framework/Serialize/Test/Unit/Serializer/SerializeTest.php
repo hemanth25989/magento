@@ -3,15 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Serialize\Test\Unit\Serializer;
 
 use Magento\Framework\Serialize\Serializer\Serialize;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Serialize\Signer;
+use Magento\Framework\Serialize\InvalidSignatureException;
 
-class SerializeTest extends TestCase
+class SerializeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Serialize
@@ -20,7 +18,7 @@ class SerializeTest extends TestCase
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->serialize = $objectManager->getObject(Serialize::class);
     }
 
@@ -76,10 +74,13 @@ class SerializeTest extends TestCase
         ];
     }
 
+    /**
+     */
     public function testSerializeException()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unable to serialize value.');
+
         $this->serialize->serialize(STDOUT);
     }
 
@@ -88,8 +89,9 @@ class SerializeTest extends TestCase
      */
     public function testUnserializeException($value)
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unable to unserialize value.');
+
         $this->serialize->unserialize($value);
     }
 
@@ -105,10 +107,13 @@ class SerializeTest extends TestCase
         ];
     }
 
+    /**
+     */
     public function testUnserializeExceptionCorruptedString()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unable to unserialize value, string is corrupted.');
+
         $this->serialize->unserialize('a:');
     }
 }

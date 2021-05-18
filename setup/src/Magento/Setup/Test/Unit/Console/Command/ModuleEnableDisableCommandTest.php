@@ -3,86 +3,73 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Console\Command;
 
-use Magento\Framework\App\Cache;
-use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\App\State\CleanupFiles;
-use Magento\Framework\Code\GeneratedFiles;
-use Magento\Framework\Module\FullModuleList;
-use Magento\Framework\Module\Status;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Setup\Console\Command\ModuleDisableCommand;
 use Magento\Setup\Console\Command\ModuleEnableCommand;
-use Magento\Setup\Model\ObjectManagerProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ModuleEnableDisableCommandTest extends TestCase
+class ModuleEnableDisableCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManagerProvider|MockObject
+     * @var \Magento\Setup\Model\ObjectManagerProvider|\PHPUnit\Framework\MockObject\MockObject
      */
     private $objectManagerProviderMock;
 
     /**
-     * @var Status|MockObject
+     * @var \Magento\Framework\Module\Status|\PHPUnit\Framework\MockObject\MockObject
      */
     private $statusMock;
 
     /**
-     * @var Cache|MockObject
+     * @var \Magento\Framework\App\Cache|\PHPUnit\Framework\MockObject\MockObject
      */
     private $cacheMock;
 
     /**
-     * @var CleanupFiles|MockObject
+     * @var \Magento\Framework\App\State\CleanupFiles|\PHPUnit\Framework\MockObject\MockObject
      */
     private $cleanupFilesMock;
 
     /**
-     * @var FullModuleList|MockObject
+     * @var \Magento\Framework\Module\FullModuleList|\PHPUnit\Framework\MockObject\MockObject
      */
     private $fullModuleListMock;
 
     /**
-     * @var DeploymentConfig|MockObject
+     * @var \Magento\Framework\App\DeploymentConfig|\PHPUnit\Framework\MockObject\MockObject
      */
     private $deploymentConfigMock;
 
     /**
-     * @var GeneratedFiles|MockObject
+     * @var \Magento\Framework\Code\GeneratedFiles|\PHPUnit\Framework\MockObject\MockObject
      */
     private $generatedFiles;
 
     protected function setUp(): void
     {
-        $this->objectManagerProviderMock = $this->createMock(ObjectManagerProvider::class);
-        $objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->objectManagerProviderMock
+        $this->objectManagerProviderMock = $this->createMock(\Magento\Setup\Model\ObjectManagerProvider::class);
+        $objectManager = $this->getMockForAbstractClass(\Magento\Framework\ObjectManagerInterface::class);
+        $this->objectManagerProviderMock->expects($this->any())
             ->method('get')
             ->willReturn($objectManager);
-        $this->statusMock = $this->createMock(Status::class);
-        $this->cacheMock = $this->createMock(Cache::class);
-        $this->cleanupFilesMock = $this->createMock(CleanupFiles::class);
-        $this->fullModuleListMock = $this->createMock(FullModuleList::class);
-        $this->deploymentConfigMock = $this->createMock(DeploymentConfig::class);
-        $this->generatedFiles = $this->createMock(GeneratedFiles::class);
-        $objectManager->method('get')
-            ->willReturnMap(
-                [
-                    [Status::class, $this->statusMock],
-                    [Cache::class, $this->cacheMock],
-                    [CleanupFiles::class, $this->cleanupFilesMock],
-                    [FullModuleList::class, $this->fullModuleListMock],
-                ]
-            );
+        $this->statusMock = $this->createMock(\Magento\Framework\Module\Status::class);
+        $this->cacheMock = $this->createMock(\Magento\Framework\App\Cache::class);
+        $this->cleanupFilesMock = $this->createMock(\Magento\Framework\App\State\CleanupFiles::class);
+        $this->fullModuleListMock = $this->createMock(\Magento\Framework\Module\FullModuleList::class);
+        $this->deploymentConfigMock = $this->createMock(\Magento\Framework\App\DeploymentConfig::class);
+        $this->generatedFiles = $this->createMock(\Magento\Framework\Code\GeneratedFiles::class);
+        $objectManager->expects($this->any())
+            ->method('get')
+            ->willReturnMap([
+                [\Magento\Framework\Module\Status::class, $this->statusMock],
+                [\Magento\Framework\App\Cache::class, $this->cacheMock],
+                [\Magento\Framework\App\State\CleanupFiles::class, $this->cleanupFilesMock],
+                [\Magento\Framework\Module\FullModuleList::class, $this->fullModuleListMock],
+            ]);
     }
 
     /**
@@ -202,7 +189,7 @@ class ModuleEnableDisableCommandTest extends TestCase
         if ($isEnable) {
             $this->deploymentConfigMock->expects($this->once())
                 ->method('isAvailable')
-                ->willReturn(true);
+                ->willReturn(['Magento_Module1']);
         } else {
             $this->deploymentConfigMock->expects($this->never())
                 ->method('isAvailable');

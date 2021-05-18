@@ -3,16 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Checkout\Test\Unit\Block\Item\Price;
 
-use Magento\Checkout\Block\Item\Price\Renderer;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Model\Quote\Item\AbstractItem;
-use PHPUnit\Framework\TestCase;
+use \Magento\Checkout\Block\Item\Price\Renderer;
 
-class RendererTest extends TestCase
+class RendererTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Renderer
@@ -21,16 +16,16 @@ class RendererTest extends TestCase
 
     protected function setUp(): void
     {
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->renderer = $objectManagerHelper->getObject(
-            Renderer::class
+            \Magento\Checkout\Block\Item\Price\Renderer::class
         );
     }
 
     public function testSetItem()
     {
-        $item = $this->getMockBuilder(AbstractItem::class)
+        $item = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item\AbstractItem::class)
             ->disableOriginalConstructor()
             ->getMock();
 

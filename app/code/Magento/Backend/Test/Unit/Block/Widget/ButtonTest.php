@@ -3,53 +3,45 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Backend\Block\Widget\Button
  */
 namespace Magento\Backend\Test\Unit\Block\Widget;
 
-use Magento\Backend\Block\Widget\Button;
-use Magento\Backend\Model\Url;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Layout;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ButtonTest extends TestCase
+class ButtonTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_layoutMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_factoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_blockMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_buttonMock;
 
     protected function setUp(): void
     {
-        $this->_layoutMock = $this->createMock(Layout::class);
+        $this->_layoutMock = $this->createMock(\Magento\Framework\View\Layout::class);
 
         $arguments = [
-            'urlBuilder' => $this->createMock(Url::class),
+            'urlBuilder' => $this->createMock(\Magento\Backend\Model\Url::class),
             'layout' => $this->_layoutMock,
         ];
 
-        $objectManagerHelper = new ObjectManager($this);
-        $this->_blockMock = $objectManagerHelper->getObject(Button::class, $arguments);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->_blockMock = $objectManagerHelper->getObject(\Magento\Backend\Block\Widget\Button::class, $arguments);
     }
 
     protected function tearDown(): void

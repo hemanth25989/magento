@@ -1,24 +1,26 @@
 <?php
 /**
  * @category   Magento
+ * @package    Magento_Event
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Event\Test\Unit;
 
+use \Magento\Framework\Event\Collection;
+
 use Magento\Framework\Event;
-use Magento\Framework\Event\Collection;
-use Magento\Framework\Event\Observer;
-use PHPUnit\Framework\MockObject\MockObject;
 
-use PHPUnit\Framework\TestCase;
-
-class CollectionTest extends TestCase
+/**
+ * Class CollectionTest
+ *
+ * @package Magento\Framework\Event
+ */
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Collection
+     * @var \Magento\Framework\Event\Collection
      */
     protected $collection;
 
@@ -30,7 +32,7 @@ class CollectionTest extends TestCase
     protected $events;
 
     /**
-     * @var \Magento\Framework\Event\Observer\Collection|MockObject
+     * @var \Magento\Framework\Event\Observer\Collection|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $observers;
 
@@ -64,7 +66,7 @@ class CollectionTest extends TestCase
     public function testGetEventByNameNotSet()
     {
         $eventName = 'eventName';
-        $eventMock = $this->createPartialMock(Event::class, ['getName']);
+        $eventMock = $this->createPartialMock(\Magento\Framework\Event::class, ['getName']);
         $eventMock->setData('name', $eventName);
         $eventObj = $this->collection->getEventByName($eventName);
         $this->assertEquals($eventMock->getData('name'), $eventObj->getName());
@@ -73,7 +75,7 @@ class CollectionTest extends TestCase
     public function testAddEvent()
     {
         $eventName = 'eventName';
-        $eventMock = $this->createPartialMock(Event::class, ['getName']);
+        $eventMock = $this->createPartialMock(\Magento\Framework\Event::class, ['getName']);
         $eventMock->expects($this->once())
             ->method('getName')
             ->willReturn($eventName);
@@ -83,11 +85,11 @@ class CollectionTest extends TestCase
     public function testAddObserver()
     {
         $testEvent = 'testEvent';
-        $observer = new Observer();
+        $observer = new \Magento\Framework\Event\Observer();
         $observer->setData('event_name', $testEvent);
 
         $eventName = 'eventName';
-        $eventMock = $this->createPartialMock(Event::class, ['getName']);
+        $eventMock = $this->createPartialMock(\Magento\Framework\Event::class, ['getName']);
         $eventMock->setData('name', $eventName);
 
         $this->collection->addObserver($observer);
@@ -96,7 +98,7 @@ class CollectionTest extends TestCase
 
     public function testAddObserverNoEventName()
     {
-        $observer = new Observer();
+        $observer = new \Magento\Framework\Event\Observer();
         $this->collection->addObserver($observer);
         $this->assertNotEmpty($this->collection->getGlobalObservers());
     }
@@ -105,7 +107,7 @@ class CollectionTest extends TestCase
     {
         $data = ['someData'];
         $eventName = 'eventName';
-        $event = new Event($data);
+        $event = new \Magento\Framework\Event($data);
         $event->setData('name', $eventName);
         $this->collection->dispatch($eventName, $data);
     }

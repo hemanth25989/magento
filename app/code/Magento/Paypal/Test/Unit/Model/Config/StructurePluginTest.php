@@ -3,20 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model\Config;
 
+use Magento\Paypal\Model\Config\StructurePlugin as ConfigStructurePlugin;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Config\Model\Config\ScopeDefiner as ConfigScopeDefiner;
+use Magento\Paypal\Helper\Backend as BackendHelper;
 use Magento\Config\Model\Config\Structure as ConfigStructure;
 use Magento\Config\Model\Config\Structure\ElementInterface as ElementConfigStructure;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Paypal\Helper\Backend as BackendHelper;
-use Magento\Paypal\Model\Config\StructurePlugin as ConfigStructurePlugin;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class StructurePluginTest extends TestCase
+class StructurePluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConfigStructurePlugin
@@ -29,22 +25,22 @@ class StructurePluginTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var ConfigScopeDefiner|MockObject
+     * @var ConfigScopeDefiner|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configScopeDefinerMock;
 
     /**
-     * @var BackendHelper|MockObject
+     * @var BackendHelper|\PHPUnit\Framework\MockObject\MockObject
      */
     private $backendHelperMock;
 
     /**
-     * @var ConfigStructure|MockObject
+     * @var ConfigStructure|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configStructureMock;
 
     /**
-     * @var ElementConfigStructure|MockObject
+     * @var ElementConfigStructure|\PHPUnit\Framework\MockObject\MockObject
      */
     private $elementConfigStructureMock;
 

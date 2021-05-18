@@ -9,7 +9,6 @@ use Magento\Framework\Registry;
 use Magento\Sales\Api\Data\OrderInterfaceFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
 $objectManager = Bootstrap::getObjectManager();
 /** @var Registry $registry */
@@ -30,4 +29,4 @@ if ($order->getId()) {
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);
 
-Resolver::getInstance()->requireDataFixture('Magento/Checkout/_files/quote_with_address_saved_rollback.php');
+require __DIR__ . '/../../Checkout/_files/quote_with_address_saved_rollback.php';

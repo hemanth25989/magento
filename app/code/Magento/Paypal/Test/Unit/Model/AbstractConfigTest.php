@@ -3,31 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface as ModelScopeInterface;
+use Magento\Payment\Model\MethodInterface;
 use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Payment\Model\MethodInterface;
-use Magento\Store\Model\ScopeInterface as ModelScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
- * Test for \Magento\Paypal\Model\AbstractConfig
+ * Test for \Magento\Framework\App\Config\ScopeConfigInterface
  */
-class AbstractConfigTest extends TestCase
+class AbstractConfigTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $scopeConfigMock;
 
     /**
-     * @var AbstractConfigTesting|MockObject
+     * @var AbstractConfigTesting|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $config;
 
@@ -53,7 +49,7 @@ class AbstractConfigTest extends TestCase
 
     public function testSetMethodInstance()
     {
-        /** @var MethodInterface $methodInterfaceMock */
+        /** @var $methodInterfaceMock MethodInterface */
         $methodInterfaceMock = $this->getMockBuilder(MethodInterface::class)
             ->getMockForAbstractClass();
         $this->assertSame($this->config, $this->config->setMethodInstance($methodInterfaceMock));
@@ -68,7 +64,7 @@ class AbstractConfigTest extends TestCase
      */
     public function setMethodDataProvider()
     {
-        /** @var MethodInterface $methodInterfaceMock */
+        /** @var $methodInterfaceMock MethodInterface */
         $methodInterfaceMock = $this->getMockBuilder(MethodInterface::class)
             ->getMockForAbstractClass();
         $methodInterfaceMock->expects($this->once())

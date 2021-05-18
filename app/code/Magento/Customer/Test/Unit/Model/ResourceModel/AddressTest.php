@@ -3,57 +3,42 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Model\ResourceModel;
 
 use Magento\Customer\Model\Address;
-use Magento\Customer\Model\CustomerFactory;
-use Magento\Eav\Model\Config;
-use Magento\Eav\Model\Entity\AbstractEntity;
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
-use Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend;
-use Magento\Eav\Model\Entity\AttributeLoaderInterface;
-use Magento\Eav\Model\Entity\Type;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\DB\Select;
 use Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationComposite;
 use Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\Validator;
-use Magento\Framework\Validator\Factory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AddressTest extends TestCase
+class AddressTest extends \PHPUnit\Framework\TestCase
 {
     /** @var \Magento\Customer\Test\Unit\Model\ResourceModel\SubResourceModelAddress */
     protected $addressResource;
 
-    /** @var CustomerFactory|MockObject */
+    /** @var \Magento\Customer\Model\CustomerFactory|\PHPUnit\Framework\MockObject\MockObject */
     protected $customerFactory;
 
-    /** @var Type */
+    /** @var \Magento\Eav\Model\Entity\Type */
     protected $eavConfigType;
 
-    /** @var  Snapshot|MockObject */
+    /** @var  Snapshot|\PHPUnit\Framework\MockObject\MockObject */
     protected $entitySnapshotMock;
 
-    /** @var  RelationComposite|MockObject */
+    /** @var  RelationComposite|\PHPUnit\Framework\MockObject\MockObject */
     protected $entityRelationCompositeMock;
 
     protected function setUp(): void
     {
         $this->entitySnapshotMock = $this->createMock(
-            Snapshot::class
+            \Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot::class
         );
 
         $this->entityRelationCompositeMock = $this->createMock(
-            RelationComposite::class
+            \Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationComposite::class
         );
 
         $this->addressResource = (new ObjectManagerHelper($this))->getObject(
@@ -107,9 +92,9 @@ class AddressTest extends TestCase
         $address->expects($this->any())->method('getIsDefaultBilling')->willReturn($isDefaultBilling);
         $this->addressResource->setType('customer_address');
 
-        $attributeLoaderMock = $this->getMockBuilder(AttributeLoaderInterface::class)
+        $attributeLoaderMock = $this->getMockBuilder(\Magento\Eav\Model\Entity\AttributeLoaderInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->addressResource->setAttributeLoader($attributeLoaderMock);
         $this->addressResource->save($address);
@@ -134,15 +119,15 @@ class AddressTest extends TestCase
     /**
      * Prepare resource mock object
      *
-     * @return ResourceConnection|MockObject
+     * @return \Magento\Framework\App\ResourceConnection|\PHPUnit\Framework\MockObject\MockObject
      */
     protected function prepareResource()
     {
-        $dbSelect = $this->createMock(Select::class);
+        $dbSelect = $this->createMock(\Magento\Framework\DB\Select::class);
         $dbSelect->expects($this->any())->method('from')->willReturnSelf();
         $dbSelect->expects($this->any())->method('where')->willReturnSelf();
 
-        $dbAdapter = $this->getMockBuilder(Mysql::class)
+        $dbAdapter = $this->getMockBuilder(\Magento\Framework\DB\Adapter\Pdo\Mysql::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -163,7 +148,7 @@ class AddressTest extends TestCase
         $dbAdapter->expects($this->any())->method('lastInsertId');
         $dbAdapter->expects($this->any())->method('select')->willReturn($dbSelect);
 
-        $resource = $this->getMockBuilder(ResourceConnection::class)
+        $resource = $this->getMockBuilder(\Magento\Framework\App\ResourceConnection::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -176,12 +161,12 @@ class AddressTest extends TestCase
     /**
      * Prepare Eav config mock object
      *
-     * @return Config|MockObject
+     * @return \Magento\Eav\Model\Config|\PHPUnit\Framework\MockObject\MockObject
      */
     protected function prepareEavConfig()
     {
         $attributeMock = $this->createPartialMock(
-            AbstractAttribute::class,
+            \Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class,
             ['getAttributeCode', 'getBackend', '__wakeup']
         );
         $attributeMock->expects($this->any())
@@ -190,11 +175,11 @@ class AddressTest extends TestCase
         $attributeMock->expects($this->any())
             ->method('getBackend')
             ->willReturn(
-                $this->createMock(AbstractBackend::class)
+                $this->createMock(\Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend::class)
             );
 
         $this->eavConfigType = $this->createPartialMock(
-            Type::class,
+            \Magento\Eav\Model\Entity\Type::class,
             ['getEntityIdField', 'getId', 'getEntityTable', '__wakeup']
         );
         $this->eavConfigType->expects($this->any())->method('getEntityIdField')->willReturn(false);
@@ -202,7 +187,7 @@ class AddressTest extends TestCase
         $this->eavConfigType->expects($this->any())->method('getEntityTable')->willReturn('customer_address_entity');
 
         $eavConfig = $this->createPartialMock(
-            Config::class,
+            \Magento\Eav\Model\Config::class,
             ['getEntityType', 'getEntityAttributeCodes', 'getAttribute']
         );
         $eavConfig->expects($this->any())
@@ -225,17 +210,15 @@ class AddressTest extends TestCase
             );
         $eavConfig->expects($this->any())
             ->method('getAttribute')
-            ->willReturnMap(
-                [
-                    [$this->eavConfigType, 'entity_type_id', $attributeMock],
-                    [$this->eavConfigType, 'attribute_set_id', $attributeMock],
-                    [$this->eavConfigType, 'created_at', $attributeMock],
-                    [$this->eavConfigType, 'updated_at', $attributeMock],
-                    [$this->eavConfigType, 'parent_id', $attributeMock],
-                    [$this->eavConfigType, 'increment_id', $attributeMock],
-                    [$this->eavConfigType, 'entity_id', $attributeMock],
-                ]
-            );
+            ->willReturnMap([
+                [$this->eavConfigType, 'entity_type_id', $attributeMock],
+                [$this->eavConfigType, 'attribute_set_id', $attributeMock],
+                [$this->eavConfigType, 'created_at', $attributeMock],
+                [$this->eavConfigType, 'updated_at', $attributeMock],
+                [$this->eavConfigType, 'parent_id', $attributeMock],
+                [$this->eavConfigType, 'increment_id', $attributeMock],
+                [$this->eavConfigType, 'entity_id', $attributeMock],
+            ]);
 
         return $eavConfig;
     }
@@ -243,16 +226,16 @@ class AddressTest extends TestCase
     /**
      * Prepare validator mock object
      *
-     * @return Factory|MockObject
+     * @return \Magento\Framework\Validator\Factory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected function prepareValidatorFactory()
     {
-        $validatorMock = $this->createPartialMock(Validator::class, ['isValid']);
+        $validatorMock = $this->createPartialMock(\Magento\Framework\Validator::class, ['isValid']);
         $validatorMock->expects($this->any())
             ->method('isValid')
             ->willReturn(true);
 
-        $validatorFactory = $this->createPartialMock(Factory::class, ['createValidator']);
+        $validatorFactory = $this->createPartialMock(\Magento\Framework\Validator\Factory::class, ['createValidator']);
         $validatorFactory->expects($this->any())
             ->method('createValidator')
             ->with('customer_address', 'save')
@@ -262,11 +245,11 @@ class AddressTest extends TestCase
     }
 
     /**
-     * @return CustomerFactory|MockObject
+     * @return \Magento\Customer\Model\CustomerFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected function prepareCustomerFactory()
     {
-        $this->customerFactory = $this->createPartialMock(CustomerFactory::class, ['create']);
+        $this->customerFactory = $this->createPartialMock(\Magento\Customer\Model\CustomerFactory::class, ['create']);
         return $this->customerFactory;
     }
 
@@ -277,6 +260,7 @@ class AddressTest extends TestCase
 }
 
 /**
+ * Class SubResourceModelAddress
  * Mock method getAttributeLoader
  * @codingStandardsIgnoreStart
  */
@@ -286,7 +270,7 @@ class SubResourceModelAddress extends \Magento\Customer\Model\ResourceModel\Addr
 
     /**
      * @param null $object
-     * @return \Magento\Customer\Model\ResourceModel\Address|AbstractEntity
+     * @return \Magento\Customer\Model\ResourceModel\Address|\Magento\Eav\Model\Entity\AbstractEntity
      */
     public function loadAllAttributes($object = null)
     {
@@ -302,7 +286,7 @@ class SubResourceModelAddress extends \Magento\Customer\Model\ResourceModel\Addr
     }
 
     /**
-     * @return AttributeLoaderInterface
+     * @return \Magento\Eav\Model\Entity\AttributeLoaderInterface
      */
     protected function getAttributeLoader()
     {

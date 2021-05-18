@@ -3,73 +3,65 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Msrp\Test\Unit\Pricing\Price;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Pricing\Price\BasePrice;
-use Magento\Framework\Pricing\Adjustment\Calculator;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Framework\Pricing\PriceInfo\Base;
 use Magento\Framework\Pricing\PriceInfoInterface;
-use Magento\Msrp\Helper\Data;
-use Magento\Msrp\Model\Config;
-use Magento\Msrp\Pricing\Price\MsrpPrice;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class MsrpPriceTest extends TestCase
+/**
+ * Class MsrpPriceTest
+ */
+class MsrpPriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MsrpPrice
+     * @var \Magento\Msrp\Pricing\Price\MsrpPrice
      */
     protected $object;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $helper;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $saleableItem;
 
     /**
-     * @var BasePrice|MockObject
+     * @var \Magento\Catalog\Pricing\Price\BasePrice|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $price;
 
     /**
-     * @var Base|MockObject
+     * @var \Magento\Framework\Pricing\PriceInfo\Base|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $priceInfo;
 
     /**
-     * @var Calculator|MockObject
+     * @var \Magento\Framework\Pricing\Adjustment\Calculator|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $calculator;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Msrp\Model\Config|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $config;
 
     /**
-     * @var PriceCurrencyInterface|MockObject
+     * @var \Magento\Framework\Pricing\PriceCurrencyInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $priceCurrencyMock;
 
     protected function setUp(): void
     {
         $this->saleableItem = $this->createPartialMock(
-            Product::class,
+            \Magento\Catalog\Model\Product::class,
             ['getPriceInfo', '__wakeup']
         );
 
-        $this->priceInfo = $this->createMock(Base::class);
-        $this->price = $this->createMock(BasePrice::class);
+        $this->priceInfo = $this->createMock(\Magento\Framework\Pricing\PriceInfo\Base::class);
+        $this->price = $this->createMock(\Magento\Catalog\Pricing\Price\BasePrice::class);
 
         $this->priceInfo->expects($this->any())
             ->method('getAdjustments')
@@ -81,22 +73,22 @@ class MsrpPriceTest extends TestCase
 
         $this->priceInfo->expects($this->any())
             ->method('getPrice')
-            ->with('base_price')
+            ->with($this->equalTo('base_price'))
             ->willReturn($this->price);
 
-        $this->calculator = $this->getMockBuilder(Calculator::class)
+        $this->calculator = $this->getMockBuilder(\Magento\Framework\Pricing\Adjustment\Calculator::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->helper = $this->createPartialMock(
-            Data::class,
+            \Magento\Msrp\Helper\Data::class,
             ['isShowPriceOnGesture', 'getMsrpPriceMessage', 'canApplyMsrp']
         );
-        $this->config = $this->createPartialMock(Config::class, ['isEnabled']);
+        $this->config = $this->createPartialMock(\Magento\Msrp\Model\Config::class, ['isEnabled']);
 
-        $this->priceCurrencyMock = $this->getMockForAbstractClass(PriceCurrencyInterface::class);
+        $this->priceCurrencyMock = $this->createMock(\Magento\Framework\Pricing\PriceCurrencyInterface::class);
 
-        $this->object = new MsrpPrice(
+        $this->object = new \Magento\Msrp\Pricing\Price\MsrpPrice(
             $this->saleableItem,
             PriceInfoInterface::PRODUCT_QUANTITY_DEFAULT,
             $this->calculator,
@@ -110,7 +102,7 @@ class MsrpPriceTest extends TestCase
     {
         $this->helper->expects($this->once())
             ->method('isShowPriceOnGesture')
-            ->with($this->saleableItem)
+            ->with($this->equalTo($this->saleableItem))
             ->willReturn(true);
 
         $this->assertTrue($this->object->isShowPriceOnGesture());
@@ -120,7 +112,7 @@ class MsrpPriceTest extends TestCase
     {
         $this->helper->expects($this->once())
             ->method('isShowPriceOnGesture')
-            ->with($this->saleableItem)
+            ->with($this->equalTo($this->saleableItem))
             ->willReturn(false);
 
         $this->assertFalse($this->object->isShowPriceOnGesture());
@@ -131,7 +123,7 @@ class MsrpPriceTest extends TestCase
         $expectedMessage = 'test';
         $this->helper->expects($this->once())
             ->method('getMsrpPriceMessage')
-            ->with($this->saleableItem)
+            ->with($this->equalTo($this->saleableItem))
             ->willReturn($expectedMessage);
 
         $this->assertEquals($expectedMessage, $this->object->getMsrpPriceMessage());
@@ -150,7 +142,7 @@ class MsrpPriceTest extends TestCase
     {
         $this->helper->expects($this->once())
             ->method('canApplyMsrp')
-            ->with($this->saleableItem)
+            ->with($this->equalTo($this->saleableItem))
             ->willReturn(true);
 
         $this->assertTrue($this->object->canApplyMsrp($this->saleableItem));

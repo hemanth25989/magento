@@ -9,8 +9,8 @@ namespace Magento\Framework\Setup\Test\Unit;
 
 use Magento\Framework\Locale\ConfigInterface;
 use Magento\Framework\Setup\Lists;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class ListsTest extends TestCase
 {

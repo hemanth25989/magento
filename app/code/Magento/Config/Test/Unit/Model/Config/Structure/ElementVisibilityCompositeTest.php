@@ -3,17 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Structure;
 
 use Magento\Config\Model\Config\Structure\ElementVisibilityComposite;
 use Magento\Config\Model\Config\Structure\ElementVisibilityInterface;
-use PHPUnit\Framework\MockObject\Matcher\InvokedCount;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ElementVisibilityCompositeTest extends TestCase
+class ElementVisibilityCompositeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ElementVisibilityComposite
@@ -21,12 +16,12 @@ class ElementVisibilityCompositeTest extends TestCase
     private $model;
 
     /**
-     * @var ElementVisibilityInterface|MockObject
+     * @var ElementVisibilityInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $firstVisibilityMock;
 
     /**
-     * @var ElementVisibilityInterface|MockObject
+     * @var ElementVisibilityInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $secondVisibilityMock;
 
@@ -46,11 +41,9 @@ class ElementVisibilityCompositeTest extends TestCase
      */
     public function testException()
     {
-        $this->expectException('Magento\Framework\Exception\ConfigurationMismatchException');
-        $this->expectExceptionMessage(sprintf(
-            'stdClass: Instance of %s, got stdClass instead',
-            'Magento\Config\Model\Config\Structure\ElementVisibilityInterface is expected'
-        ));
+        $this->expectException(\Magento\Framework\Exception\ConfigurationMismatchException::class);
+        $this->expectExceptionMessage('stdClass: Instance of Magento\\Config\\Model\\Config\\Structure\\ElementVisibilityInterface is expected, got stdClass instead');
+
         $visibility = [
             'stdClass' => new \stdClass()
         ];
@@ -59,9 +52,9 @@ class ElementVisibilityCompositeTest extends TestCase
     }
 
     /**
-     * @param InvokedCount $firstExpects
+     * @param \PHPUnit\Framework\MockObject\Matcher\InvokedCount $firstExpects
      * @param bool $firstResult
-     * @param InvokedCount $secondExpects
+     * @param \PHPUnit\Framework\MockObject\Matcher\InvokedCount $secondExpects
      * @param bool $secondResult
      * @param bool $expectedResult
      * @dataProvider visibilityDataProvider
@@ -82,9 +75,9 @@ class ElementVisibilityCompositeTest extends TestCase
     }
 
     /**
-     * @param InvokedCount $firstExpects
+     * @param \PHPUnit\Framework\MockObject\Matcher\InvokedCount $firstExpects
      * @param bool $firstResult
-     * @param InvokedCount $secondExpects
+     * @param \PHPUnit\Framework\MockObject\Matcher\InvokedCount $secondExpects
      * @param bool $secondResult
      * @param bool $expectedResult
      * @dataProvider visibilityDataProvider

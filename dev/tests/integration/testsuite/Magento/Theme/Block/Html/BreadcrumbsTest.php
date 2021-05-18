@@ -39,7 +39,7 @@ class BreadcrumbsTest extends \PHPUnit\Framework\TestCase
         $this->block->addCrumb('test', $info);
         $html = $this->block->toHtml();
         $this->assertStringContainsString('test label', $html);
-        $this->assertStringContainsString('test title', $html);
+        $this->assertStringContainsString('test&#x20;title', $html);
         $this->assertStringContainsString('test link', $html);
     }
 

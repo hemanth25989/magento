@@ -16,7 +16,6 @@ use Magento\User\Model\User as UserModel;
 
 /**
  * @magentoAppArea adminhtml
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class UserTest extends \PHPUnit\Framework\TestCase
 {

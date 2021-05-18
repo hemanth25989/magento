@@ -3,60 +3,47 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Element\Js;
 
-use Magento\Framework\Session\Config;
-use Magento\Framework\Session\Config\ConfigInterface;
-use Magento\Framework\Validator\Ip;
-use Magento\Framework\View\Element\Js\Cookie;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Framework\View\Element\Template\File\Validator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CookieTest extends TestCase
+class CookieTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Cookie
+     * @var \Magento\Framework\View\Element\Js\Cookie
      */
     protected $model;
 
     /**
-     * @var MockObject|Context
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\View\Element\Template\Context
      */
     protected $contextMock;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var \Magento\Framework\Session\Config\ConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $sessionConfigMock;
 
     /**
-     * @var Ip|MockObject
+     * @var \Magento\Framework\Validator\Ip|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $ipValidatorMock;
 
     protected function setUp(): void
     {
-        $this->contextMock = $this->getMockBuilder(Context::class)
+        $this->contextMock = $this->getMockBuilder(\Magento\Framework\View\Element\Template\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->sessionConfigMock = $this->getMockBuilder(Config::class)
+        $this->sessionConfigMock = $this->getMockBuilder(\Magento\Framework\Session\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->ipValidatorMock = $this->getMockBuilder(Ip::class)
+        $this->ipValidatorMock = $this->getMockBuilder(\Magento\Framework\Validator\Ip::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $validtorMock = $this->getMockBuilder(Validator::class)
-            ->setMethods(['isValid'])->disableOriginalConstructor()
-            ->getMock();
+        $validtorMock = $this->getMockBuilder(\Magento\Framework\View\Element\Template\File\Validator::class)
+            ->setMethods(['isValid'])->disableOriginalConstructor()->getMock();
 
         $scopeConfigMock = $this->getMockBuilder(\Magento\Framework\App\Config::class)
-            ->setMethods(['isSetFlag'])->disableOriginalConstructor()
-            ->getMock();
+            ->setMethods(['isSetFlag'])->disableOriginalConstructor()->getMock();
 
         $this->contextMock->expects($this->any())
             ->method('getScopeConfig')
@@ -66,7 +53,7 @@ class CookieTest extends TestCase
             ->method('getValidator')
             ->willReturn($validtorMock);
 
-        $this->model = new Cookie(
+        $this->model = new \Magento\Framework\View\Element\Js\Cookie(
             $this->contextMock,
             $this->sessionConfigMock,
             $this->ipValidatorMock,
@@ -76,7 +63,7 @@ class CookieTest extends TestCase
 
     public function testInstanceOf()
     {
-        $this->assertInstanceOf(Cookie::class, $this->model);
+        $this->assertInstanceOf(\Magento\Framework\View\Element\Js\Cookie::class, $this->model);
     }
 
     /**
@@ -89,7 +76,7 @@ class CookieTest extends TestCase
             ->willReturn($domain);
         $this->ipValidatorMock->expects($this->once())
             ->method('isValid')
-            ->with($domain)
+            ->with($this->equalTo($domain))
             ->willReturn($isIp);
 
         $result = $this->model->getDomain($domain);

@@ -5,10 +5,11 @@
  */
 use Magento\Quote\Model\Quote;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/SalesRule/_files/coupons_limited.php');
-Resolver::getInstance()->requireDataFixture('Magento/Sales/_files/quote_with_customer.php');
+// phpcs:disable Magento2.Security.IncludeFile
+require 'coupons_limited.php';
+require __DIR__ . '/../../../Magento/Sales/_files/quote_with_customer.php';
+// phpcs:enable
 
 $collection = Bootstrap::getObjectManager()->create(
     \Magento\SalesRule\Model\ResourceModel\Rule\Collection::class

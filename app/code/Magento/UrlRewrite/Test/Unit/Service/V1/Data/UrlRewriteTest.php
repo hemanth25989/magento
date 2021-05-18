@@ -3,16 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\UrlRewrite\Test\Unit\Service\V1\Data;
 
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\UrlRewrite\Service\V1\Data\UrlRewrite as UrlRewriteService;
-use PHPUnit\Framework\TestCase;
-
-class UrlRewriteTest extends TestCase
+class UrlRewriteTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\UrlRewrite\Model\UrlRewrite
@@ -21,9 +14,9 @@ class UrlRewriteTest extends TestCase
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $serializer = $this->createMock(Json::class);
+        $serializer = $this->createMock(\Magento\Framework\Serialize\Serializer\Json::class);
         $serializer->expects($this->any())
             ->method('serialize')
             ->willReturnCallback(
@@ -40,7 +33,7 @@ class UrlRewriteTest extends TestCase
             );
 
         $this->model = $objectManager->getObject(
-            UrlRewriteService::class,
+            \Magento\UrlRewrite\Service\V1\Data\UrlRewrite::class,
             [
                 'data' => [],
                 'serializer' => $serializer,

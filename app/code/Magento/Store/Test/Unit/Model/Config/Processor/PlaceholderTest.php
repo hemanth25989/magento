@@ -3,23 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\Model\Config\Processor;
 
-use Magento\Store\Model\Config\Processor\Placeholder;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class PlaceholderTest extends TestCase
+/**
+ * Class PlaceholderTest
+ */
+class PlaceholderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Placeholder
+     * @var \Magento\Store\Model\Config\Processor\Placeholder
      */
     private $model;
 
     /**
-     * @var \Magento\Store\Model\Config\Placeholder|MockObject
+     * @var \Magento\Store\Model\Config\Placeholder|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configPlaceholderMock;
 
@@ -39,7 +36,7 @@ class PlaceholderTest extends TestCase
             ['key2' => 'value2-processed']
         );
 
-        $this->model = new Placeholder($this->configPlaceholderMock);
+        $this->model = new \Magento\Store\Model\Config\Processor\Placeholder($this->configPlaceholderMock);
     }
 
     public function testProcess()

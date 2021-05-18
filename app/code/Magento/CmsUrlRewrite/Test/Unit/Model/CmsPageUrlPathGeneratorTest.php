@@ -8,14 +8,15 @@ declare(strict_types=1);
 
 namespace Magento\CmsUrlRewrite\Test\Unit\Model;
 
-use Magento\Cms\Api\Data\PageInterface;
 use Magento\CmsUrlRewrite\Model\CmsPageUrlPathGenerator;
-use Magento\Framework\Filter\FilterManager;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Filter\FilterManager;
+use Magento\Cms\Api\Data\PageInterface;
 
-class CmsPageUrlPathGeneratorTest extends TestCase
+/**
+ * Class \Magento\CmsUrlRewrite\Test\Unit\Model\CmsPageUrlPathGeneratorTest
+ */
+class CmsPageUrlPathGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -23,7 +24,7 @@ class CmsPageUrlPathGeneratorTest extends TestCase
     private $objectManager;
 
     /**
-     * @var MockObject|FilterManager
+     * @var \PHPUnit\Framework\MockObject\MockObject|FilterManager
      */
     private $filterManagerMock;
 

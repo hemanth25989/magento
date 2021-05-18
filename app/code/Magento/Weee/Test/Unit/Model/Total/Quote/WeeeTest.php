@@ -3,35 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Weee\Test\Unit\Model\Total\Quote;
 
-use Magento\Catalog\Model\Product;
-use Magento\Framework\DataObject;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Api\Data\ShippingAssignmentInterface;
-use Magento\Quote\Api\Data\ShippingInterface;
-use Magento\Quote\Model\Quote;
-use Magento\Quote\Model\Quote\Address;
-use Magento\Quote\Model\Quote\Address\Total;
-use Magento\Quote\Model\Quote\Item;
-use Magento\Store\Model\Store;
-use Magento\Tax\Helper\Data;
 use Magento\Tax\Model\Calculation;
-use Magento\Weee\Model\Total\Quote\Weee;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class WeeeTest extends TestCase
+class WeeeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|PriceCurrencyInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\Pricing\PriceCurrencyInterface
      */
     protected $priceCurrency;
 
@@ -46,11 +28,11 @@ class WeeeTest extends TestCase
      * Setup tax helper with an array of methodName, returnValue
      *
      * @param array $taxConfig
-     * @return MockObject|\Magento\Tax\Helper\Data
+     * @return \PHPUnit\Framework\MockObject\MockObject|\Magento\Tax\Helper\Data
      */
     protected function setupTaxHelper($taxConfig)
     {
-        $taxHelper = $this->createMock(Data::class);
+        $taxHelper = $this->createMock(\Magento\Tax\Helper\Data::class);
 
         foreach ($taxConfig as $method => $value) {
             $taxHelper->expects($this->any())->method($method)->willReturn($value);
@@ -63,7 +45,7 @@ class WeeeTest extends TestCase
      * Setup calculator to return tax rates
      *
      * @param array $taxRates
-     * @return MockObject|Calculation
+     * @return \PHPUnit\Framework\MockObject\MockObject|\Magento\Tax\Model\Calculation
      */
     protected function setupTaxCalculation($taxRates)
     {
@@ -71,12 +53,12 @@ class WeeeTest extends TestCase
         $customerTaxRate = $taxRates['customer_tax_rate'];
 
         $taxCalculation = $this->createPartialMock(
-            Calculation::class,
+            \Magento\Tax\Model\Calculation::class,
             ['getRateOriginRequest', 'getRateRequest', 'getRate']
         );
 
-        $rateRequest = new DataObject();
-        $defaultRateRequest = new DataObject();
+        $rateRequest = new \Magento\Framework\DataObject();
+        $defaultRateRequest = new \Magento\Framework\DataObject();
 
         $taxCalculation->expects($this->any())->method('getRateRequest')->willReturn($rateRequest);
         $taxCalculation
@@ -96,15 +78,14 @@ class WeeeTest extends TestCase
      * Setup weee helper with an array of methodName, returnValue
      *
      * @param array $weeeConfig
-     * @return MockObject|\Magento\Weee\Helper\Data
+     * @return \PHPUnit\Framework\MockObject\MockObject|\Magento\Weee\Helper\Data
      */
     protected function setupWeeeHelper($weeeConfig)
     {
-        $this->serializerMock = $this->getMockBuilder(Json::class)
-            ->getMock();
+        $this->serializerMock = $this->getMockBuilder(\Magento\Framework\Serialize\Serializer\Json::class)->getMock();
 
         $weeeHelper = $this->getMockBuilder(\Magento\Weee\Helper\Data::class)
-            ->setConstructorArgs(['serializer' => $this->serializerMock])
+            ->setConstructorArgs(['serializer'  => $this->serializerMock])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -119,27 +100,23 @@ class WeeeTest extends TestCase
      * Setup the basics of an item mock
      *
      * @param float $itemTotalQty
-     * @return MockObject|Item
+     * @return \PHPUnit\Framework\MockObject\MockObject|\Magento\Quote\Model\Quote\Item
      */
     protected function setupItemMockBasics($itemTotalQty)
     {
-        $itemMock = $this->getMockBuilder(Item::class)
-            ->addMethods(['getHasChildren'])
-            ->onlyMethods(
-                [
-                    'getProduct',
-                    'getQuote',
-                    'getAddress',
-                    'getTotalQty',
-                    'getParentItem',
-                    'getChildren',
-                    'isChildrenCalculated'
-                ]
-            )
-            ->disableOriginalConstructor()
-            ->getMock();
+        $itemMock = $this->createPartialMock(\Magento\Quote\Model\Quote\Item::class, [
+                'getProduct',
+                'getQuote',
+                'getAddress',
+                'getTotalQty',
+                'getParentItem',
+                'getHasChildren',
+                'getChildren',
+                'isChildrenCalculated',
+                '__wakeup',
+            ]);
 
-        $productMock = $this->createMock(Product::class);
+        $productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
         $itemMock->expects($this->any())->method('getProduct')->willReturn($productMock);
         $itemMock->expects($this->any())->method('getTotalQty')->willReturn($itemTotalQty);
 
@@ -150,7 +127,7 @@ class WeeeTest extends TestCase
      * Setup an item mock
      *
      * @param float $itemQty
-     * @return MockObject|Item
+     * @return \PHPUnit\Framework\MockObject\MockObject|\Magento\Quote\Model\Quote\Item
      */
     protected function setupItemMock($itemQty)
     {
@@ -169,7 +146,7 @@ class WeeeTest extends TestCase
      *
      * @param float $parentQty
      * @param float $itemQty
-     * @return MockObject[]|Item[]
+     * @return \PHPUnit\Framework\MockObject\MockObject[]|\Magento\Quote\Model\Quote\Item[]
      */
     protected function setupParentItemWithChildrenMock($parentQty, $itemQty)
     {
@@ -196,21 +173,22 @@ class WeeeTest extends TestCase
     /**
      * Setup address mock
      *
-     * @param MockObject[]|Item[] $items
-     * @return MockObject
+     * @param \PHPUnit\Framework\MockObject\MockObject[]|\Magento\Quote\Model\Quote\Item[] $items
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     protected function setupAddressMock($items)
     {
-        $addressMock = $this->createPartialMock(Address::class, [
-            'getAllItems',
-            'getQuote',
-            'getCustomAttributesCodes'
-        ]);
+        $addressMock = $this->createPartialMock(\Magento\Quote\Model\Quote\Address::class, [
+                '__wakeup',
+                'getAllItems',
+                'getQuote',
+                'getCustomAttributesCodes'
+            ]);
 
-        $quoteMock = $this->createMock(Quote::class);
-        $storeMock = $this->createMock(Store::class);
+        $quoteMock = $this->createMock(\Magento\Quote\Model\Quote::class);
+        $storeMock = $this->createMock(\Magento\Store\Model\Store::class);
         $this->priceCurrency = $this->getMockBuilder(
-            PriceCurrencyInterface::class
+            \Magento\Framework\Pricing\PriceCurrencyInterface::class
         )->getMock();
         $this->priceCurrency->expects($this->any())->method('round')->willReturnArgument(0);
         $this->priceCurrency->expects($this->any())->method('convert')->willReturnArgument(0);
@@ -225,15 +203,15 @@ class WeeeTest extends TestCase
 
     /**
      * Setup shipping assignment mock.
-     * @param MockObject $addressMock
-     * @param MockObject $itemMock
-     * @return MockObject
+     * @param \PHPUnit\Framework\MockObject\MockObject $addressMock
+     * @param \PHPUnit\Framework\MockObject\MockObject $itemMock
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     protected function setupShippingAssignmentMock($addressMock, $itemMock)
     {
-        $shippingMock = $this->getMockForAbstractClass(ShippingInterface::class);
+        $shippingMock = $this->createMock(\Magento\Quote\Api\Data\ShippingInterface::class);
         $shippingMock->expects($this->any())->method('getAddress')->willReturn($addressMock);
-        $shippingAssignmentMock = $this->getMockForAbstractClass(ShippingAssignmentInterface::class);
+        $shippingAssignmentMock = $this->createMock(\Magento\Quote\Api\Data\ShippingAssignmentInterface::class);
         $shippingAssignmentMock->expects($this->any())->method('getItems')->willReturn($itemMock);
         $shippingAssignmentMock->expects($this->any())->method('getShipping')->willReturn($shippingMock);
 
@@ -243,10 +221,10 @@ class WeeeTest extends TestCase
     /**
      * Verify that correct fields of item has been set
      *
-     * @param MockObject|Item $item
+     * @param \PHPUnit\Framework\MockObject\MockObject|\Magento\Quote\Model\Quote\Item $item
      * @param $itemData
      */
-    public function verifyItem(Item $item, $itemData)
+    public function verifyItem(\Magento\Quote\Model\Quote\Item $item, $itemData)
     {
         foreach ($itemData as $key => $value) {
             $this->assertEquals($value, $item->getData($key), 'item ' . $key . ' is incorrect');
@@ -256,7 +234,7 @@ class WeeeTest extends TestCase
     /**
      * Verify that correct fields of address has been set
      *
-     * @param MockObject|Address $address
+     * @param \PHPUnit\Framework\MockObject\MockObject|\Magento\Quote\Model\Quote\Address $address
      * @param $addressData
      */
     public function verifyAddress($address, $addressData)
@@ -296,14 +274,13 @@ class WeeeTest extends TestCase
             $itemMock = $this->setupItemMock($itemQty);
             $items[] = $itemMock;
         }
-        $quoteMock = $this->createMock(Quote::class);
-        $storeMock = $this->createMock(Store::class);
+        $quoteMock = $this->createMock(\Magento\Quote\Model\Quote::class);
+        $storeMock = $this->createMock(\Magento\Store\Model\Store::class);
         $quoteMock->expects($this->any())->method('getStore')->willReturn($storeMock);
         $addressMock = $this->setupAddressMock($items);
-        $totalMock = new Total(
+        $totalMock = new \Magento\Quote\Model\Quote\Address\Total(
             [],
-            $this->getMockBuilder(Json::class)
-                ->getMock()
+            $this->getMockBuilder(\Magento\Framework\Serialize\Serializer\Json::class)->getMock()
         );
         $shippingAssignmentMock = $this->setupShippingAssignmentMock($addressMock, $items);
 
@@ -327,26 +304,26 @@ class WeeeTest extends TestCase
                 ->method('setApplied')
                 ->with(end($items), [
                     [
-                        'title' => 'Recycling Fee',
-                        'base_amount' => '10',
-                        'amount' => '10',
-                        'row_amount' => '20',
-                        'base_row_amount' => '20',
-                        'base_amount_incl_tax' => '10',
-                        'amount_incl_tax' => '10',
-                        'row_amount_incl_tax' => '20',
-                        'base_row_amount_incl_tax' => '20',
+                    'title' => 'Recycling Fee',
+                    'base_amount' => '10',
+                    'amount' => '10',
+                    'row_amount' => '20',
+                    'base_row_amount' => '20',
+                    'base_amount_incl_tax' => '10',
+                    'amount_incl_tax' => '10',
+                    'row_amount_incl_tax' => '20',
+                    'base_row_amount_incl_tax' => '20',
                     ],
                     [
-                        'title' => 'FPT Fee',
-                        'base_amount' => '5',
-                        'amount' => '5',
-                        'row_amount' => '10',
-                        'base_row_amount' => '10',
-                        'base_amount_incl_tax' => '5',
-                        'amount_incl_tax' => '5',
-                        'row_amount_incl_tax' => '10',
-                        'base_row_amount_incl_tax' => '10',
+                    'title' => 'FPT Fee',
+                    'base_amount' => '5',
+                    'amount' => '5',
+                    'row_amount' => '10',
+                    'base_row_amount' => '10',
+                    'base_amount_incl_tax' => '5',
+                    'amount_incl_tax' => '5',
+                    'row_amount_incl_tax' => '10',
+                    'base_row_amount_incl_tax' => '10',
                     ]
                 ]);
         }
@@ -358,8 +335,8 @@ class WeeeTest extends TestCase
             'priceCurrency' => $this->priceCurrency
         ];
 
-        $helper = new ObjectManager($this);
-        $this->weeeCollector = $helper->getObject(Weee::class, $arguments);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->weeeCollector = $helper->getObject(\Magento\Weee\Model\Total\Quote\Weee::class, $arguments);
 
         $this->weeeCollector->collect($quoteMock, $shippingAssignmentMock, $totalMock);
 
@@ -394,7 +371,7 @@ class WeeeTest extends TestCase
                 'isTaxable' => true,
                 'getApplied' => [],
                 'getProductWeeeAttributes' => [
-                    new DataObject(
+                    new \Magento\Framework\DataObject(
                         [
                             'name' => 'Recycling Fee',
                             'amount' => 10,
@@ -435,7 +412,7 @@ class WeeeTest extends TestCase
                 'isTaxable' => true,
                 'getApplied' => [],
                 'getProductWeeeAttributes' => [
-                    new DataObject(
+                    new \Magento\Framework\DataObject(
                         [
                             'name' => 'Recycling Fee',
                             'amount' => 10,
@@ -476,7 +453,7 @@ class WeeeTest extends TestCase
                 'isTaxable' => true,
                 'getApplied' => [],
                 'getProductWeeeAttributes' => [
-                    new DataObject(
+                    new \Magento\Framework\DataObject(
                         [
                             'name' => 'Recycling Fee',
                             'amount' => 10,
@@ -517,7 +494,7 @@ class WeeeTest extends TestCase
                 'isTaxable' => false,
                 'getApplied' => [],
                 'getProductWeeeAttributes' => [
-                    new DataObject(
+                    new \Magento\Framework\DataObject(
                         [
                             'name' => 'Recycling Fee',
                             'amount' => 10,
@@ -560,7 +537,7 @@ class WeeeTest extends TestCase
                 'isTaxable' => false,
                 'getApplied' => [],
                 'getProductWeeeAttributes' => [
-                    new DataObject(
+                    new \Magento\Framework\DataObject(
                         [
                             'name' => 'Recycling Fee',
                             'amount' => 10,
@@ -603,7 +580,7 @@ class WeeeTest extends TestCase
                 'isTaxable' => true,
                 'getApplied' => [],
                 'getProductWeeeAttributes' => [
-                    new DataObject(
+                    new \Magento\Framework\DataObject(
                         [
                             'name' => 'Recycling Fee',
                             'amount' => 10,
@@ -644,7 +621,7 @@ class WeeeTest extends TestCase
                 'isTaxable' => true,
                 'getApplied' => [],
                 'getProductWeeeAttributes' => [
-                    new DataObject(
+                    new \Magento\Framework\DataObject(
                         [
                             'name' => 'Recycling Fee',
                             'amount' => 10,
@@ -685,7 +662,7 @@ class WeeeTest extends TestCase
                 'isTaxable' => false,
                 'getApplied' => [],
                 'getProductWeeeAttributes' => [
-                    new DataObject(
+                    new \Magento\Framework\DataObject(
                         [
                             'name' => 'Recycling Fee',
                             'amount' => 10,
@@ -728,7 +705,7 @@ class WeeeTest extends TestCase
                 'isTaxable' => false,
                 'getApplied' => [],
                 'getProductWeeeAttributes' => [
-                    new DataObject(
+                    new \Magento\Framework\DataObject(
                         [
                             'name' => 'Recycling Fee',
                             'amount' => 10,
@@ -771,7 +748,7 @@ class WeeeTest extends TestCase
                 'isTaxable' => false,
                 'getApplied' => [],
                 'getProductWeeeAttributes' => [
-                    new DataObject(
+                    new \Magento\Framework\DataObject(
                         [
                             'name' => 'Recycling Fee',
                             'amount' => 10,
@@ -814,7 +791,7 @@ class WeeeTest extends TestCase
                 'isTaxable' => true,
                 'getApplied' => [],
                 'getProductWeeeAttributes' => [
-                    new DataObject(
+                    new \Magento\Framework\DataObject(
                         [
                             'name' => 'Recycling Fee',
                             'amount' => 10,
@@ -857,13 +834,13 @@ class WeeeTest extends TestCase
                 'isTaxable' => false,
                 'getApplied' => [],
                 'getProductWeeeAttributes' => [
-                    new DataObject(
+                    new \Magento\Framework\DataObject(
                         [
                             'name' => 'Recycling Fee',
                             'amount' => 10,
                         ]
                     ),
-                    new DataObject(
+                    new \Magento\Framework\DataObject(
                         [
                             'name' => 'FPT Fee',
                             'amount' => 5,

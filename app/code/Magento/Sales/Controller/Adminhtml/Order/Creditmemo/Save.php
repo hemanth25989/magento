@@ -10,6 +10,9 @@ use Magento\Backend\App\Action;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Email\Sender\CreditmemoSender;
 
+/**
+ * Controller for save creditmemo
+ */
 class Save extends \Magento\Backend\App\Action implements HttpPostActionInterface
 {
     /**

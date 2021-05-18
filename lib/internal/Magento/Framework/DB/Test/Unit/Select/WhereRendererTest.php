@@ -3,25 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\DB\Test\Unit\Select;
 
 use Magento\Framework\DB\Select;
-use Magento\Framework\DB\Select\WhereRenderer;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class WhereRendererTest extends TestCase
+/**
+ * Class WhereRendererTest
+ */
+class WhereRendererTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var WhereRenderer
+     * @var \Magento\Framework\DB\Select\WhereRenderer
      */
     protected $model;
 
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $selectMock;
 
@@ -32,9 +30,9 @@ class WhereRendererTest extends TestCase
      */
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
-        $this->selectMock = $this->createPartialMock(Select::class, ['getPart']);
-        $this->model = $objectManager->getObject(WhereRenderer::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->selectMock = $this->createPartialMock(\Magento\Framework\DB\Select::class, ['getPart']);
+        $this->model = $objectManager->getObject(\Magento\Framework\DB\Select\WhereRenderer::class);
     }
 
     /**

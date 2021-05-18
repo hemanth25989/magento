@@ -3,24 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\Order\Invoice\Comment;
 
-use Magento\Sales\Model\Order\Invoice\Comment;
-use Magento\Sales\Model\Order\Invoice\Comment\Validator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ValidatorTest extends TestCase
+/**
+ * Class ValidatorTest
+ */
+class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Validator
+     * @var \Magento\Sales\Model\Order\Invoice\Comment\Validator
      */
     protected $validator;
 
     /**
-     * @var Comment|MockObject
+     * @var \Magento\Sales\Model\Order\Invoice\Comment|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $commentModelMock;
 
@@ -30,10 +27,10 @@ class ValidatorTest extends TestCase
     protected function setUp(): void
     {
         $this->commentModelMock = $this->createPartialMock(
-            Comment::class,
-            ['hasData', 'getData']
+            \Magento\Sales\Model\Order\Invoice\Comment::class,
+            ['hasData', 'getData', '__wakeup']
         );
-        $this->validator = new Validator();
+        $this->validator = new \Magento\Sales\Model\Order\Invoice\Comment\Validator();
     }
 
     /**

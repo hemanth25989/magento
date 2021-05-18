@@ -3,11 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Reflection\Test\Unit;
 
-use Magento\Framework\Api\ExtensionAttribute\Config;
 use Magento\Framework\Api\ExtensionAttribute\Config\Converter;
 use Magento\Framework\AuthorizationInterface;
 use Magento\Framework\Reflection\DataObjectProcessor;
@@ -15,10 +13,11 @@ use Magento\Framework\Reflection\ExtensionAttributesProcessor;
 use Magento\Framework\Reflection\FieldNamer;
 use Magento\Framework\Reflection\MethodsMap;
 use Magento\Framework\Reflection\TypeCaster;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
-class ExtensionAttributesProcessorTest extends TestCase
+/**
+ * ExtensionAttributesProcessor test
+ */
+class ExtensionAttributesProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ExtensionAttributesProcessor
@@ -46,7 +45,7 @@ class ExtensionAttributesProcessorTest extends TestCase
     private $typeCasterMock;
 
     /**
-     * @var Config
+     * @var \Magento\Framework\Api\ExtensionAttribute\Config
      */
     private $configMock;
 
@@ -60,29 +59,29 @@ class ExtensionAttributesProcessorTest extends TestCase
      */
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->dataObjectProcessorMock = $this->getMockBuilder(DataObjectProcessor::class)
+        $this->dataObjectProcessorMock = $this->getMockBuilder(\Magento\Framework\Reflection\DataObjectProcessor::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->methodsMapProcessorMock = $this->getMockBuilder(MethodsMap::class)
+        $this->methodsMapProcessorMock = $this->getMockBuilder(\Magento\Framework\Reflection\MethodsMap::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->typeCasterMock = $this->getMockBuilder(TypeCaster::class)
+        $this->typeCasterMock = $this->getMockBuilder(\Magento\Framework\Reflection\TypeCaster::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->fieldNamerMock = $this->getMockBuilder(FieldNamer::class)
+        $this->fieldNamerMock = $this->getMockBuilder(\Magento\Framework\Reflection\FieldNamer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->configMock = $this->getMockBuilder(Config::class)
+        $this->configMock = $this->getMockBuilder(\Magento\Framework\Api\ExtensionAttribute\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->authorizationMock = $this->getMockBuilder(AuthorizationInterface::class)
+        $this->authorizationMock = $this->getMockBuilder(\Magento\Framework\AuthorizationInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->model = $objectManager->getObject(
-            ExtensionAttributesProcessor::class,
+            \Magento\Framework\Reflection\ExtensionAttributesProcessor::class,
             [
                 'dataObjectProcessor' => $this->dataObjectProcessorMock,
                 'methodsMapProcessor' => $this->methodsMapProcessorMock,
@@ -102,8 +101,8 @@ class ExtensionAttributesProcessorTest extends TestCase
      */
     public function testBuildOutputDataArrayWithPermission($isPermissionAllowed, $expectedValue)
     {
-        $dataObject = new ExtensionAttributesObject();
-        $dataObjectType = ExtensionAttributesObject::class;
+        $dataObject = new \Magento\Framework\Reflection\Test\Unit\ExtensionAttributesObject();
+        $dataObjectType = \Magento\Framework\Reflection\Test\Unit\ExtensionAttributesObject::class;
         $methodName = 'getAttrName';
         $attributeName = 'attr_name';
         $attributeValue = 'attrName';
@@ -127,7 +126,7 @@ class ExtensionAttributesProcessorTest extends TestCase
                 $dataObjectType => [
                     $attributeName => [ Converter::RESOURCE_PERMISSIONS => [ $permissionName ] ]
                 ]
-            ]);
+              ]);
         $this->authorizationMock->expects($this->once())
             ->method('isAllowed')
             ->with($permissionName)

@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Block\Order\Email\Items;
 
 use Magento\Framework\Exception\LocalizedException;
@@ -33,7 +31,7 @@ class DefaultItems extends Template
     }
 
     /**
-     * Returns Items options as array
+     * Get available item options
      *
      * @return array
      */
@@ -42,21 +40,21 @@ class DefaultItems extends Template
         $result = [];
         if ($options = $this->getItem()->getOrderItem()->getProductOptions()) {
             if (isset($options['options'])) {
-                $result[] = $options['options'];
+                $result = array_merge($result, $options['options']);
             }
             if (isset($options['additional_options'])) {
-                $result[] = $options['additional_options'];
+                $result = array_merge($result, $options['additional_options']);
             }
             if (isset($options['attributes_info'])) {
-                $result[] = $options['attributes_info'];
+                $result = array_merge($result, $options['attributes_info']);
             }
         }
 
-        return array_merge([], ...$result);
+        return $result;
     }
 
     /**
-     * Formats the value in HTML
+     * Get item html from the $value
      *
      * @param string|array $value
      * @return string
@@ -78,9 +76,9 @@ class DefaultItems extends Template
     }
 
     /**
-     * Returns Product SKU for Item provided
+     * Get product Sku for the $item
      *
-     * @param OrderItem $item
+     * @param mixed $item
      * @return mixed
      */
     public function getSku($item)

@@ -77,22 +77,16 @@ class CategoryTreeTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(6, $this->_model->getParentId());
     }
 
-    /**
-     */
     public function testMoveWrongParent()
     {
         $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
-
         $this->_model->load(7);
         $this->_model->move(100, 0);
     }
 
-    /**
-     */
     public function testMoveWrongId()
     {
         $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
-
         $this->_model->move(100, 0);
     }
 

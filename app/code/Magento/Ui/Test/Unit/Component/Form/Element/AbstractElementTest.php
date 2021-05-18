@@ -3,18 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Ui\Test\Unit\Component\Form\Element;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponent\Processor;
 use Magento\Ui\Component\Form\Element\AbstractElement;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\View\Element\UiComponent\Processor;
 
-abstract class AbstractElementTest extends TestCase
+/**
+ * Class AbstractElementTest
+ */
+abstract class AbstractElementTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -27,20 +26,19 @@ abstract class AbstractElementTest extends TestCase
     protected $model;
 
     /**
-     * @var ContextInterface|MockObject
+     * @var ContextInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $contextMock;
 
     /**
-     * @var Processor|MockObject
+     * @var Processor|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $processorMock;
 
     protected function setUp(): void
     {
         $this->objectManager = new ObjectManager($this);
-        $this->contextMock = $this->getMockBuilder(ContextInterface::class)
-            ->getMockForAbstractClass();
+        $this->contextMock = $this->getMockBuilder(ContextInterface::class)->getMockForAbstractClass();
     }
 
     /**

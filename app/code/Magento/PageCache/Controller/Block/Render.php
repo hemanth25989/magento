@@ -8,6 +8,11 @@ namespace Magento\PageCache\Controller\Block;
 
 use Magento\Framework\App\Action\HttpGetActionInterface;
 
+/**
+ * Page cache render controller
+ *
+ * @deprecated 100.3.4
+ */
 class Render extends \Magento\PageCache\Controller\Block implements HttpGetActionInterface
 {
     /**

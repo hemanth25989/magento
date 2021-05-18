@@ -3,25 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Rss\Product;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Visibility;
-use Magento\Catalog\Model\ProductFactory;
-use Magento\Catalog\Model\ResourceModel\Product\Collection;
-use Magento\Catalog\Model\Rss\Product\NewProducts;
-use Magento\Framework\Stdlib\DateTime\Timezone;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class NewProductsTest extends TestCase
+/**
+ * Class NewProductsTest
+ * @package Magento\Catalog\Model\Rss\Product
+ */
+class NewProductsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var NewProducts
+     * @var \Magento\Catalog\Model\Rss\Product\NewProducts
      */
     protected $newProducts;
 
@@ -31,36 +24,36 @@ class NewProductsTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var MockObject|ProductFactory
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Catalog\Model\ProductFactory
      */
     protected $productFactory;
 
     /**
-     * @var MockObject|Product
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Catalog\Model\Product
      */
     protected $product;
 
     /**
-     * @var Visibility|MockObject
+     * @var \Magento\Catalog\Model\Product\Visibility|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $visibility;
 
     /**
-     * @var TimezoneInterface|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $timezone;
 
     protected function setUp(): void
     {
-        $this->product = $this->createMock(Product::class);
-        $this->productFactory = $this->createPartialMock(ProductFactory::class, ['create']);
+        $this->product = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $this->productFactory = $this->createPartialMock(\Magento\Catalog\Model\ProductFactory::class, ['create']);
         $this->productFactory->expects($this->any())->method('create')->willReturn($this->product);
-        $this->visibility = $this->createMock(Visibility::class);
-        $this->timezone = $this->createMock(Timezone::class);
+        $this->visibility = $this->createMock(\Magento\Catalog\Model\Product\Visibility::class);
+        $this->timezone = $this->createMock(\Magento\Framework\Stdlib\DateTime\Timezone::class);
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->newProducts = $this->objectManagerHelper->getObject(
-            NewProducts::class,
+            \Magento\Catalog\Model\Rss\Product\NewProducts::class,
             [
                 'productFactory' => $this->productFactory,
                 'visibility' => $this->visibility,
@@ -71,10 +64,11 @@ class NewProductsTest extends TestCase
 
     public function testGetProductsCollection()
     {
-        /** @var \DateTime|MockObject $dateObject */
+        /** @var \DateTime|\PHPUnit\Framework\MockObject\MockObject $dateObject */
         $dateObject = $this->createMock(\DateTime::class);
         $dateObject->expects($this->any())
-            ->method('setTime')->willReturnSelf();
+            ->method('setTime')
+            ->willReturnSelf();
         $dateObject->expects($this->any())
             ->method('format')
             ->willReturn(date(\Magento\Framework\Stdlib\DateTime::DATETIME_INTERNAL_FORMAT));
@@ -83,9 +77,9 @@ class NewProductsTest extends TestCase
             ->method('date')
             ->willReturn($dateObject);
 
-        /** @var Collection $productCollection */
+        /** @var \Magento\Catalog\Model\ResourceModel\Product\Collection $productCollection */
         $productCollection =
-            $this->createMock(Collection::class);
+            $this->createMock(\Magento\Catalog\Model\ResourceModel\Product\Collection::class);
         $this->product->expects($this->once())->method('getResourceCollection')->willReturn(
             $productCollection
         );

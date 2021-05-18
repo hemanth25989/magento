@@ -10,8 +10,6 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 
 /**
  * Test for \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\NewFolder class.
- *
- * @magentoAppArea adminhtml
  */
 class NewFolderTest extends \PHPUnit\Framework\TestCase
 {
@@ -113,7 +111,7 @@ class NewFolderTest extends \PHPUnit\Framework\TestCase
         $this->model->getStorage()->getSession()->setCurrentPath($this->fullDirectoryPath . $dirPath);
         $this->model->execute();
 
-        $this->assertFileNotExists(
+        $this->assertFileDoesNotExist(
             $this->fullDirectoryPath . $dirPath . $this->dirName
         );
     }

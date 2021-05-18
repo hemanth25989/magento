@@ -3,75 +3,69 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Integration\Test\Unit\Model;
 
-use Magento\Authorization\Model\Acl\AclRetriever;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Integration\Api\IntegrationServiceInterface;
-use Magento\Integration\Model\Config;
-use Magento\Integration\Model\ConfigBasedIntegrationManager;
-use Magento\Integration\Model\Integration;
-use PHPUnit\Framework\TestCase;
+use \Magento\Integration\Model\Integration;
 
-class ManagerTest extends TestCase
+/**
+ * Class to test Integration Manager
+ */
+class ManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Integration service
      *
-     * @var IntegrationServiceInterface
+     * @var \Magento\Integration\Api\IntegrationServiceInterface
      */
     protected $integrationServiceMock;
 
     /**
-     * @var AclRetriever
+     * @var \Magento\Authorization\Model\Acl\AclRetriever
      */
     protected $aclRetriever;
 
     /**
-     * @var Config
+     * @var \Magento\Integration\Model\Config
      */
     protected $configMock;
 
     /**
      * Integration config
      *
-     * @var ConfigBasedIntegrationManager
+     * @var \Magento\Integration\Model\ConfigBasedIntegrationManager
      */
     protected $integrationManager;
 
     protected function setUp(): void
     {
         $this->integrationServiceMock = $this->getMockBuilder(
-            IntegrationServiceInterface::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                [
-                    'findByName',
-                    'update',
-                    'create',
-                    'get',
-                    'findByConsumerId',
-                    'findActiveIntegrationByConsumerId',
-                    'delete',
-                    'getSelectedResources'
-                ]
-            )->getMock();
+            \Magento\Integration\Api\IntegrationServiceInterface::class
+        )->disableOriginalConstructor()->setMethods(
+            [
+                'findByName',
+                'update',
+                'create',
+                'get',
+                'findByConsumerId',
+                'findActiveIntegrationByConsumerId',
+                'delete',
+                'getSelectedResources'
+            ]
+        )->getMock();
 
-        $this->aclRetriever = $this->getMockBuilder(AclRetriever::class)
+        $this->aclRetriever = $this->getMockBuilder(\Magento\Authorization\Model\Acl\AclRetriever::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->configMock = $this->getMockBuilder(Config::class)
+        $this->configMock = $this->getMockBuilder(\Magento\Integration\Model\Config::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->integrationManager = $objectManagerHelper->getObject(
-            ConfigBasedIntegrationManager::class,
+            \Magento\Integration\Model\ConfigBasedIntegrationManager::class,
             [
                 'integrationService' => $this->integrationServiceMock,
                 'aclRetriever' => $this->aclRetriever,
@@ -110,12 +104,12 @@ class ManagerTest extends TestCase
                 ]
             
         );
-        $intLookupData1 = $this->getMockBuilder(Integration::class)
+        $intLookupData1 = $this->getMockBuilder(\Magento\Integration\Model\Integration::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
         $intLookupData1->expects($this->any())->method('getId')->willReturn(1);
-        $intLookupData2 = $this->getMockBuilder(Integration::class)
+        $intLookupData2 = $this->getMockBuilder(\Magento\Integration\Model\Integration::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -186,7 +180,7 @@ class ManagerTest extends TestCase
             'Magento_Customer::customer'
         ];
 
-        $integrationObject = $this->getMockBuilder(Integration::class)
+        $integrationObject = $this->getMockBuilder(\Magento\Integration\Model\Integration::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -227,7 +221,7 @@ class ManagerTest extends TestCase
             ]
         ];
 
-        $integrationObject = $this->getMockBuilder(Integration::class)
+        $integrationObject = $this->getMockBuilder(\Magento\Integration\Model\Integration::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();

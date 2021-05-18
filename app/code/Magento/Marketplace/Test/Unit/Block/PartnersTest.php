@@ -3,18 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Marketplace\Test\Unit\Block;
 
-use Magento\Marketplace\Block\Partners;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class PartnersTest extends TestCase
+class PartnersTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Partners
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Marketplace\Block\Partners
      */
     private $partnersBlockMock;
 
@@ -47,17 +42,17 @@ class PartnersTest extends TestCase
     /**
      * Gets partners block mock
      *
-     * @return MockObject|Partners
+     * @return \PHPUnit\Framework\MockObject\MockObject|\Magento\Marketplace\Block\Partners
      */
     public function getPartnersBlockMock($methods = null)
     {
-        return $this->createPartialMock(Partners::class, $methods);
+        return $this->createPartialMock(\Magento\Marketplace\Block\Partners::class, $methods);
     }
 
     /**
      * Gets partners model mock
      *
-     * @return MockObject|\Magento\Marketplace\Model\Partners
+     * @return \PHPUnit\Framework\MockObject\MockObject|\Magento\Marketplace\Model\Partners
      */
     public function getPartnersModelMock($methods)
     {

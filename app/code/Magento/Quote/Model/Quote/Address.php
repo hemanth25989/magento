@@ -139,8 +139,6 @@ class Address extends AbstractAddress implements
     const ADDRESS_TYPE_BILLING = 'billing';
 
     const ADDRESS_TYPE_SHIPPING = 'shipping';
-    
-    private const CACHED_ITEMS_ALL = 'cached_items_all';
 
     /**
      * Prefix of model events
@@ -638,7 +636,8 @@ class Address extends AbstractAddress implements
     public function getAllItems()
     {
         // We calculate item list once and cache it in three arrays - all items
-        if (!$this->hasData(self::CACHED_ITEMS_ALL)) {
+        $key = 'cached_items_all';
+        if (!$this->hasData($key)) {
             $quoteItems = $this->getQuote()->getItemsCollection();
             $addressItems = $this->getItemsCollection();
 
@@ -677,10 +676,10 @@ class Address extends AbstractAddress implements
             }
 
             // Cache calculated lists
-            $this->setData(self::CACHED_ITEMS_ALL, $items);
+            $this->setData('cached_items_all', $items);
         }
 
-        $items = $this->getData(self::CACHED_ITEMS_ALL);
+        $items = $this->getData($key);
 
         return $items;
     }
@@ -1071,7 +1070,6 @@ class Address extends AbstractAddress implements
         $request->setLimitCarrier($this->getLimitCarrier());
         $baseSubtotalInclTax = $this->getBaseSubtotalTotalInclTax();
         $request->setBaseSubtotalInclTax($baseSubtotalInclTax);
-        $request->setBaseSubtotalWithDiscountInclTax($this->getBaseSubtotalWithDiscount() + $this->getBaseTaxAmount());
 
         $result = $this->_rateCollector->create()->collectRates($request)->getResult();
 

@@ -3,38 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ReleaseNotification\Test\Unit\Model\Condition;
 
-use Magento\Backend\Model\Auth\Session;
-use Magento\Framework\App\CacheInterface;
-use Magento\Framework\App\ProductMetadataInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\ReleaseNotification\Model\Condition\CanViewNotification;
 use Magento\ReleaseNotification\Model\ResourceModel\Viewer\Logger;
 use Magento\ReleaseNotification\Model\Viewer\Log;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\App\ProductMetadataInterface;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Backend\Model\Auth\Session;
+use Magento\Framework\App\CacheInterface;
 
-class CanViewNotificationTest extends TestCase
+/**
+ * Class CanViewNotificationTest
+ */
+class CanViewNotificationTest extends \PHPUnit\Framework\TestCase
 {
     /** @var CanViewNotification */
     private $canViewNotification;
 
-    /** @var Logger|MockObject */
+    /** @var  Logger|\PHPUnit\Framework\MockObject\MockObject */
     private $viewerLoggerMock;
 
-    /** @var ProductMetadataInterface|MockObject */
+    /** @var ProductMetadataInterface|\PHPUnit\Framework\MockObject\MockObject */
     private $productMetadataMock;
 
-    /** @var Session|MockObject */
+    /** @var Session|\PHPUnit\Framework\MockObject\MockObject */
     private $sessionMock;
 
-    /** @var Log|MockObject */
+    /** @var  Log|\PHPUnit\Framework\MockObject\MockObject */
     private $logMock;
 
-    /** @var MockObject|CacheInterface */
+    /** @var  $cacheStorageMock \PHPUnit\Framework\MockObject\MockObject|CacheInterface */
     private $cacheStorageMock;
 
     protected function setUp(): void

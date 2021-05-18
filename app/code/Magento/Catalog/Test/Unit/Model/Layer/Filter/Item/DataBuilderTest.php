@@ -3,18 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Layer\Filter\Item;
 
-use Magento\Catalog\Model\Layer\Filter\Item\DataBuilder;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\TestCase;
 
-class DataBuilderTest extends TestCase
+class DataBuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DataBuilder
+     * @var \Magento\Catalog\Model\Layer\Filter\Item\DataBuilder
      */
     protected $dataBuilder;
 
@@ -22,7 +19,7 @@ class DataBuilderTest extends TestCase
     {
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->dataBuilder = $objectManagerHelper->getObject(
-            DataBuilder::class,
+            \Magento\Catalog\Model\Layer\Filter\Item\DataBuilder::class,
             []
         );
     }

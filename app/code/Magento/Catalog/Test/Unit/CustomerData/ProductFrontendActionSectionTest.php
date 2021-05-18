@@ -3,36 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\CustomerData;
 
 use Magento\Catalog\Api\Data\ProductFrontendActionInterface;
-use Magento\Catalog\CustomerData\ProductFrontendActionSection;
 use Magento\Catalog\Model\Product\ProductFrontendAction\Synchronizer;
 use Magento\Framework\App\Config;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Magento\Catalog\CustomerData\ProductFrontendActionSection;
 
-class ProductFrontendActionSectionTest extends TestCase
+class ProductFrontendActionSectionTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ProductFrontendActionSection */
+    /** @var \Magento\Catalog\CustomerData\ProductFrontendActionSection */
     protected $model;
 
-    /** @var MockObject */
+    /** @var \PHPUnit\Framework\MockObject\MockObject */
     protected $synchronizerMock;
 
-    /** @var Config|MockObject */
+    /** @var \SafeReflectionClass|\PHPUnit\Framework\MockObject\MockObject */
+    protected $safeReflectionClassMock;
+
+    /** @var Config|\PHPUnit\Framework\MockObject\MockObject */
     private $appConfigMock;
 
-    /** @var  LoggerInterface|MockObject */
+    /** @var  LoggerInterface|\PHPUnit\Framework\MockObject\MockObject */
     private $loggerMock;
 
     protected function setUp(): void
     {
         $this->synchronizerMock = $this
             ->getMockBuilder(Synchronizer::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->safeReflectionClassMock = $this->getMockBuilder(\SafeReflectionClass::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->appConfigMock = $this->getMockBuilder(Config::class)

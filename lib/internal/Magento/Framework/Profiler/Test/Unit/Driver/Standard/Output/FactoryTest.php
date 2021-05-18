@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Test class for \Magento\Framework\Profiler\Driver\Standard\Output\Factory
  *
@@ -7,14 +7,10 @@
  */
 namespace Magento\Framework\Profiler\Test\Unit\Driver\Standard\Output;
 
-use Magento\Framework\Profiler\Driver\Standard\Output\Factory;
-use Magento\Framework\Profiler\Driver\Standard\OutputInterface;
-use PHPUnit\Framework\TestCase;
-
-class FactoryTest extends TestCase
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Factory
+     * @var \Magento\Framework\Profiler\Driver\Standard\Output\Factory
      */
     protected $_factory;
 
@@ -30,7 +26,7 @@ class FactoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->_factory = new Factory(
+        $this->_factory = new \Magento\Framework\Profiler\Driver\Standard\Output\Factory(
             $this->_defaultOutputPrefix,
             $this->_defaultOutputType
         );
@@ -40,17 +36,20 @@ class FactoryTest extends TestCase
     {
         $this->markTestSkipped('Skipped in #27500 due to testing protected/private methods and properties');
 
-        $this->assertAttributeEquals($this->_defaultOutputPrefix, '_defaultOutputPrefix', $this->_factory);
-        $this->assertAttributeEquals($this->_defaultOutputType, '_defaultOutputType', $this->_factory);
+        //$this->assertAttributeEquals($this->_defaultOutputPrefix, '_defaultOutputPrefix', $this->_factory);
+        //$this->assertAttributeEquals($this->_defaultOutputType, '_defaultOutputType', $this->_factory);
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+     */
     public function testDefaultConstructor()
     {
         $this->markTestSkipped('Skipped in #27500 due to testing protected/private methods and properties');
 
-        $factory = new Factory();
-        $this->assertAttributeNotEmpty('_defaultOutputPrefix', $factory);
-        $this->assertAttributeNotEmpty('_defaultOutputType', $factory);
+        $factory = new \Magento\Framework\Profiler\Driver\Standard\Output\Factory();
+        //$this->assertAttributeNotEmpty('_defaultOutputPrefix', $factory);
+        //$this->assertAttributeNotEmpty('_defaultOutputType', $factory);
     }
 
     /**
@@ -62,7 +61,7 @@ class FactoryTest extends TestCase
     {
         $driver = $this->_factory->create($configData);
         $this->assertInstanceOf($expectedClass, $driver);
-        $this->assertInstanceOf(OutputInterface::class, $driver);
+        $this->assertInstanceOf(\Magento\Framework\Profiler\Driver\Standard\OutputInterface::class, $driver);
     }
 
     /**
@@ -71,13 +70,13 @@ class FactoryTest extends TestCase
     public function createDataProvider()
     {
         $defaultOutputClass = $this->getMockClass(
-            OutputInterface::class,
+            \Magento\Framework\Profiler\Driver\Standard\OutputInterface::class,
             [],
             [],
             'Magento_Framework_Profiler_Driver_Standard_Output_Test_Default'
         );
         $testOutputClass = $this->getMockClass(
-            OutputInterface::class,
+            \Magento\Framework\Profiler\Driver\Standard\OutputInterface::class,
             [],
             [],
             'Magento_Framework_Profiler_Driver_Standard_Output_Test_Test'

@@ -3,19 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model;
 
-use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ProductLink\CollectionProvider;
 use Magento\Catalog\Model\ProductLink\CollectionProviderInterface;
 use Magento\Catalog\Model\ProductLink\Converter\ConverterInterface;
 use Magento\Catalog\Model\ProductLink\Converter\ConverterPool;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Catalog\Model\Product;
 
-class CollectionProviderTest extends TestCase
+class CollectionProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CollectionProvider
@@ -23,22 +20,22 @@ class CollectionProviderTest extends TestCase
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $converterPoolMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $providerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $productMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $converterMock;
 
@@ -112,11 +109,13 @@ class CollectionProviderTest extends TestCase
 
     /**
      * Test exception when collection provider is not configured for product link type.
+     *
      */
     public function testGetCollectionWithMissingProviders()
     {
-        $this->expectException('Magento\Framework\Exception\NoSuchEntityException');
+        $this->expectException(\Magento\Framework\Exception\NoSuchEntityException::class);
         $this->expectExceptionMessage('The collection provider isn\'t registered.');
+
         $this->model->getCollection($this->productMock, 'upsell');
     }
 }

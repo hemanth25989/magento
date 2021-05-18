@@ -3,37 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Ui\Component;
 
-use Magento\Customer\Api\Data\AttributeMetadataInterface;
-use Magento\Customer\Api\Data\OptionInterface;
 use Magento\Customer\Ui\Component\FilterFactory;
-use Magento\Framework\View\Element\UiComponent\ContextInterface;
-use Magento\Framework\View\Element\UiComponentFactory;
-use Magento\Ui\Component\Listing\Columns\ColumnInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test FilterFactory Class
  */
-class FilterFactoryTest extends TestCase
+class FilterFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var OptionInterface|MockObject */
+    /** @var \Magento\Customer\Api\Data\OptionInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $attributeOption;
 
-    /** @var ContextInterface|MockObject */
+    /** @var \Magento\Framework\View\Element\UiComponent\ContextInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $context;
 
-    /** @var UiComponentFactory|MockObject */
+    /** @var \Magento\Framework\View\Element\UiComponentFactory|\PHPUnit\Framework\MockObject\MockObject */
     protected $componentFactory;
 
-    /** @var AttributeMetadataInterface|MockObject */
+    /** @var \Magento\Customer\Api\Data\AttributeMetadataInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $attributeMetadata;
 
-    /** @var ColumnInterface|MockObject */
+    /** @var \Magento\Ui\Component\Listing\Columns\ColumnInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $filter;
 
     /** @var FilterFactory */
@@ -42,29 +33,29 @@ class FilterFactoryTest extends TestCase
     protected function setUp(): void
     {
         $this->context = $this->getMockForAbstractClass(
-            ContextInterface::class,
+            \Magento\Framework\View\Element\UiComponent\ContextInterface::class,
             [],
             '',
             false
         );
         $this->componentFactory = $this->createPartialMock(
-            UiComponentFactory::class,
+            \Magento\Framework\View\Element\UiComponentFactory::class,
             ['create']
         );
         $this->attributeMetadata = $this->getMockForAbstractClass(
-            AttributeMetadataInterface::class,
+            \Magento\Customer\Api\Data\AttributeMetadataInterface::class,
             [],
             '',
             false
         );
         $this->filter = $this->getMockForAbstractClass(
-            ColumnInterface::class,
+            \Magento\Ui\Component\Listing\Columns\ColumnInterface::class,
             [],
             '',
             false
         );
         $this->attributeOption = $this->getMockForAbstractClass(
-            OptionInterface::class,
+            \Magento\Customer\Api\Data\OptionInterface::class,
             [],
             '',
             false
@@ -81,6 +72,7 @@ class FilterFactoryTest extends TestCase
                 'config' => [
                     'dataScope' => $filterName,
                     'label' => __('Label'),
+                    '__disableTmpl' => 'true',
                     'options' => [['value' => 'Value', 'label' => 'Label']],
                     'caption' => __('Select...'),
                 ],

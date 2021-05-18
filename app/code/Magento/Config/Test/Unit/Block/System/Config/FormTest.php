@@ -3,44 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Config\Test\Unit\Block\System\Config;
 
-use Magento\Backend\Block\Template\Context;
-use Magento\Backend\Model\Url;
-use Magento\Config\Block\System\Config\Form;
-use Magento\Config\Block\System\Config\Form\Field;
-use Magento\Config\Block\System\Config\Form\Fieldset;
-use Magento\Config\Model\Config;
-use Magento\Config\Model\Config\Factory;
 use Magento\Config\Model\Config\Reader\Source\Deployed\SettingChecker;
-use Magento\Config\Model\Config\Structure;
-use Magento\Config\Model\Config\Structure\Element\Group;
-use Magento\Config\Model\Config\Structure\Element\Section;
 use Magento\Config\Model\Config\Structure\ElementVisibilityInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Data\Form as FormData;
-use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Framework\Data\FormFactory;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Layout;
-use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test System config form block
+ *
+ * @package Magento\Config\Test\Unit\Block\System\Config
  */
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class FormTest extends TestCase
+class FormTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \PHPUnit\Framework\MockObject_MockBuilder
@@ -48,52 +28,52 @@ class FormTest extends TestCase
     protected $_objectBuilder;
 
     /**
-     * @var Form
+     * @var \Magento\Config\Block\System\Config\Form
      */
     protected $object;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_systemConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_formMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_fieldFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_urlModelMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_formFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_backendConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_coreConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_fieldsetFactoryMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $storeManagerMock;
 
@@ -103,9 +83,9 @@ class FormTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->_systemConfigMock = $this->createMock(Structure::class);
+        $this->_systemConfigMock = $this->createMock(\Magento\Config\Model\Config\Structure::class);
 
-        $requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
         $requestParams = [
             ['website', '', 'website_code'],
             ['section', '', 'section_code'],
@@ -113,11 +93,11 @@ class FormTest extends TestCase
         ];
         $requestMock->expects($this->any())->method('getParam')->willReturnMap($requestParams);
 
-        $layoutMock = $this->createMock(Layout::class);
+        $layoutMock = $this->createMock(\Magento\Framework\View\Layout::class);
 
-        $this->_urlModelMock = $this->createMock(Url::class);
-        $configFactoryMock = $this->createMock(Factory::class);
-        $this->_formFactoryMock = $this->createPartialMock(FormFactory::class, ['create']);
+        $this->_urlModelMock = $this->createMock(\Magento\Backend\Model\Url::class);
+        $configFactoryMock = $this->createMock(\Magento\Config\Model\Config\Factory::class);
+        $this->_formFactoryMock = $this->createPartialMock(\Magento\Framework\Data\FormFactory::class, ['create']);
         $this->_fieldsetFactoryMock = $this->createMock(
             \Magento\Config\Block\System\Config\Form\Fieldset\Factory::class
         );
@@ -125,9 +105,9 @@ class FormTest extends TestCase
         $settingCheckerMock = $this->getMockBuilder(SettingChecker::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->_coreConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $this->_coreConfigMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
 
-        $this->_backendConfigMock = $this->createMock(Config::class);
+        $this->_backendConfigMock = $this->createMock(\Magento\Config\Model\Config::class);
 
         $configFactoryMock->expects(
             $this->once()
@@ -147,19 +127,18 @@ class FormTest extends TestCase
             ['section1/group1/field1' => 'some_value']
         );
 
-        $this->_formMock = $this->getMockBuilder(FormData::class)
-            ->addMethods(['setParent', 'setBaseUrl'])
-            ->onlyMethods(['addFieldset'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->_formMock = $this->createPartialMock(
+            \Magento\Framework\Data\Form::class,
+            ['setParent', 'setBaseUrl', 'addFieldset']
+        );
 
         $this->storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
             ->getMockForAbstractClass();
 
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $context = $helper->getObject(
-            Context::class,
+            \Magento\Backend\Block\Template\Context::class,
             [
                 'scopeConfig' => $this->_coreConfigMock,
                 'request' => $requestMock,
@@ -180,8 +159,8 @@ class FormTest extends TestCase
             'settingChecker' => $settingCheckerMock,
         ];
 
-        $objectArguments = $helper->getConstructArguments(Form::class, $data);
-        $this->_objectBuilder = $this->getMockBuilder(Form::class)
+        $objectArguments = $helper->getConstructArguments(\Magento\Config\Block\System\Config\Form::class, $data);
+        $this->_objectBuilder = $this->getMockBuilder(\Magento\Config\Block\System\Config\Form::class)
             ->setConstructorArgs($objectArguments)
             ->setMethods(['something']);
         $deploymentConfigMock = $this->getMockBuilder(DeploymentConfig::class)
@@ -191,14 +170,14 @@ class FormTest extends TestCase
             ->method('get')
             ->willReturn([]);
 
-        $objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
         $objectManagerMock->expects($this->any())
             ->method('get')
             ->willReturnMap([
                 [DeploymentConfig::class, $deploymentConfigMock]
             ]);
         \Magento\Framework\App\ObjectManager::setInstance($objectManagerMock);
-        $this->object = $helper->getObject(Form::class, $data);
+        $this->object = $helper->getObject(\Magento\Config\Block\System\Config\Form::class, $data);
         $this->object->setData('scope_id', 1);
     }
 
@@ -208,7 +187,7 @@ class FormTest extends TestCase
      */
     public function testInitForm($sectionIsVisible)
     {
-        /** @var Form|MockObject $object */
+        /** @var \Magento\Config\Block\System\Config\Form | \PHPUnit\Framework\MockObject\MockObject $object */
         $object = $this->_objectBuilder->setMethods(['_initGroup'])->getMock();
         $object->setData('scope_id', 1);
         $this->_formFactoryMock->expects($this->any())->method('create')->willReturn($this->_formMock);
@@ -216,7 +195,7 @@ class FormTest extends TestCase
         $this->_formMock->expects($this->once())->method('setBaseUrl')->with('base_url');
         $this->_urlModelMock->expects($this->any())->method('getBaseUrl')->willReturn('base_url');
 
-        $sectionMock = $this->getMockBuilder(Section::class)
+        $sectionMock = $this->getMockBuilder(\Magento\Config\Model\Config\Structure\Element\Section::class)
             ->disableOriginalConstructor()
             ->getMock();
         if ($sectionIsVisible) {
@@ -226,7 +205,7 @@ class FormTest extends TestCase
             $sectionMock->expects($this->once())
                 ->method('getChildren')
                 ->willReturn([
-                    $this->createMock(Group::class)
+                    $this->createMock(\Magento\Config\Model\Config\Structure\Element\Group::class)
                 ]);
         }
 
@@ -272,14 +251,14 @@ class FormTest extends TestCase
      */
     public function testInitGroup($shouldCloneFields, $prefixes, $callNum)
     {
-        /** @var Form|MockObject $object */
+        /** @var \Magento\Config\Block\System\Config\Form | \PHPUnit\Framework\MockObject\MockObject $object */
         $object = $this->_objectBuilder->setMethods(['initFields'])->getMock();
         $this->_formFactoryMock->expects($this->any())->method('create')->willReturn($this->_formMock);
         $this->_formMock->expects($this->once())->method('setParent')->with($object);
         $this->_formMock->expects($this->once())->method('setBaseUrl')->with('base_url');
         $this->_urlModelMock->expects($this->any())->method('getBaseUrl')->willReturn('base_url');
 
-        $fieldsetRendererMock = $this->createMock(Fieldset::class);
+        $fieldsetRendererMock = $this->createMock(\Magento\Config\Block\System\Config\Form\Fieldset::class);
         $this->_fieldsetFactoryMock->expects(
             $this->once()
         )->method(
@@ -288,12 +267,9 @@ class FormTest extends TestCase
             $fieldsetRendererMock
         );
 
-        $cloneModelMock = $this->getMockBuilder(Config::class)
-            ->addMethods(['getPrefixes'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $cloneModelMock = $this->createPartialMock(\Magento\Config\Model\Config::class, ['getPrefixes']);
 
-        $groupMock = $this->createMock(Group::class);
+        $groupMock = $this->createMock(\Magento\Config\Model\Config\Structure\Element\Group::class);
         $groupMock->expects($this->once())->method('getFrontendModel')->willReturn(false);
         $groupMock->expects($this->any())->method('getPath')->willReturn('section_id_group_id');
         $groupMock->expects($this->once())->method('getLabel')->willReturn('label');
@@ -312,7 +288,7 @@ class FormTest extends TestCase
             []
         );
 
-        $sectionMock = $this->createMock(Section::class);
+        $sectionMock = $this->createMock(\Magento\Config\Model\Config\Structure\Element\Section::class);
 
         $sectionMock->expects($this->once())->method('isVisible')->willReturn(true);
         $sectionMock->expects($this->once())->method('getChildren')->willReturn([$groupMock]);
@@ -413,13 +389,13 @@ class FormTest extends TestCase
     ) {
         // Parameters initialization
         $fieldsetMock = $this->createMock(\Magento\Framework\Data\Form\Element\Fieldset::class);
-        $groupMock = $this->createMock(Group::class);
-        $sectionMock = $this->createMock(Section::class);
+        $groupMock = $this->createMock(\Magento\Config\Model\Config\Structure\Element\Group::class);
+        $sectionMock = $this->createMock(\Magento\Config\Model\Config\Structure\Element\Section::class);
         $fieldPrefix = 'fieldPrefix';
         $labelPrefix = 'labelPrefix';
 
         // Field Renderer Mock configuration
-        $fieldRendererMock = $this->createMock(Field::class);
+        $fieldRendererMock = $this->createMock(\Magento\Config\Block\System\Config\Form\Field::class);
         $this->_fieldFactoryMock->expects(
             $this->once()
         )->method(
@@ -450,8 +426,8 @@ class FormTest extends TestCase
             $configValue
         );
 
-        /** @var StoreInterface|MockObject $storeMock */
-        $storeMock = $this->getMockBuilder(StoreInterface::class)
+        /** @var \Magento\Store\Api\Data\StoreInterface|\PHPUnit\Framework\MockObject\MockObject $storeMock */
+        $storeMock = $this->getMockBuilder(\Magento\Store\Api\Data\StoreInterface::class)
             ->getMockForAbstractClass();
         $storeMock->expects($this->once())
             ->method('getCode')
@@ -503,7 +479,7 @@ class FormTest extends TestCase
         $sectionMock->expects($this->once())->method('getId')->willReturn('section1');
 
         $formFieldMock = $this->getMockForAbstractClass(
-            AbstractElement::class,
+            \Magento\Framework\Data\Form\Element\AbstractElement::class,
             [],
             '',
             false,
@@ -564,7 +540,7 @@ class FormTest extends TestCase
             ->method('isDisabled')
             ->willReturn($isDisabled);
 
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $helper->setBackwardCompatibleProperty($this->object, 'settingChecker', $settingCheckerMock);
         $helper->setBackwardCompatibleProperty($this->object, 'elementVisibility', $elementVisibilityMock);

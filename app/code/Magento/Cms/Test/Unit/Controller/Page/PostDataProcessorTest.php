@@ -3,32 +3,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Controller\Page;
 
 use Magento\Cms\Controller\Adminhtml\Page\PostDataProcessor;
-use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Stdlib\DateTime\Filter\Date;
+use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Model\Layout\Update\ValidatorFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PostDataProcessorTest extends TestCase
+/**
+ * Class PostDataProcessorTest
+ * @package Magento\Cms\Test\Unit\Controller\Page
+ */
+class PostDataProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Date|MockObject
+     * @var Date|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $dateFilterMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var ManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $messageManagerMock;
 
     /**
-     * @var ValidatorFactory|MockObject
+     * @var ValidatorFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $validatorFactoryMock;
 

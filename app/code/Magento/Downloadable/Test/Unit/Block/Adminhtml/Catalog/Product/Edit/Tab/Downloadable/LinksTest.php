@@ -3,96 +3,80 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Downloadable\Test\Unit\Block\Adminhtml\Catalog\Product\Edit\Tab\Downloadable;
 
-use Magento\Backend\Model\Url;
-use Magento\Backend\Model\UrlFactory;
-use Magento\Catalog\Model\Product;
-use Magento\Downloadable\Block\Adminhtml\Catalog\Product\Edit\Tab\Downloadable\Links;
-use Magento\Downloadable\Helper\File;
-use Magento\Downloadable\Model\Link;
-use Magento\Downloadable\Model\Product\Type;
-use Magento\Eav\Model\Entity\AttributeFactory;
-use Magento\Framework\DataObject;
-use Magento\Framework\Escaper;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-
 /**
- * @deprecated Class replaced by other element
+ * Class LinksTest
+ *
+ * @package Magento\Downloadable\Test\Unit\Block\Adminhtml\Catalog\Product\Edit\Tab\Downloadable
+ *
+ * @deprecated
  * @see \Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Links
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class LinksTest extends TestCase
+class LinksTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Links
+     * @var \Magento\Downloadable\Block\Adminhtml\Catalog\Product\Edit\Tab\Downloadable\Links
      */
     protected $block;
 
     /**
-     * @var Product
+     * @var \Magento\Catalog\Model\Product
      */
     protected $productModel;
 
     /**
-     * @var Type
+     * @var \Magento\Downloadable\Model\Product\Type
      */
     protected $downloadableProductModel;
 
     /**
-     * @var Link
+     * @var \Magento\Downloadable\Model\Link
      */
     protected $downloadableLinkModel;
 
     /**
-     * @var Escaper
+     * @var \Magento\Framework\Escaper
      */
     protected $escaper;
 
     /**
-     * @var File
+     * @var \Magento\Downloadable\Helper\File
      */
     protected $fileHelper;
 
     /**
-     * @var Registry
+     * @var \Magento\Framework\Registry
      */
     protected $coreRegistry;
 
     /**
-     * @var Url
+     * @var \Magento\Backend\Model\Url
      */
     protected $urlBuilder;
 
     protected function setUp(): void
     {
-        $objectManagerHelper = new ObjectManager($this);
-        $this->urlBuilder = $this->createPartialMock(Url::class, ['getUrl']);
-        $attributeFactory = $this->createMock(AttributeFactory::class);
-        $urlFactory = $this->createMock(UrlFactory::class);
-        $this->fileHelper = $this->createPartialMock(File::class, [
-            'getFilePath',
-            'ensureFileInFilesystem',
-            'getFileSize'
-        ]);
-        $this->productModel = $this->createPartialMock(Product::class, [
-            '__wakeup',
-            'getTypeId',
-            'getTypeInstance',
-            'getStoreId'
-        ]);
-        $this->downloadableProductModel = $this->getMockBuilder(Type::class)
-            ->addMethods(['__wakeup'])
-            ->onlyMethods(['getLinks'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->downloadableLinkModel = $this->getMockBuilder(Link::class)
-            ->addMethods(['getStoreTitle'])
-            ->onlyMethods([
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->urlBuilder = $this->createPartialMock(\Magento\Backend\Model\Url::class, ['getUrl']);
+        $attributeFactory = $this->createMock(\Magento\Eav\Model\Entity\AttributeFactory::class);
+        $urlFactory = $this->createMock(\Magento\Backend\Model\UrlFactory::class);
+        $this->fileHelper = $this->createPartialMock(\Magento\Downloadable\Helper\File::class, [
+                'getFilePath',
+                'ensureFileInFilesystem',
+                'getFileSize'
+            ]);
+        $this->productModel = $this->createPartialMock(\Magento\Catalog\Model\Product::class, [
+                '__wakeup',
+                'getTypeId',
+                'getTypeInstance',
+                'getStoreId'
+            ]);
+        $this->downloadableProductModel = $this->createPartialMock(\Magento\Downloadable\Model\Product\Type::class, [
+                '__wakeup',
+                'getLinks'
+            ]);
+        $this->downloadableLinkModel = $this->createPartialMock(\Magento\Downloadable\Model\Link::class, [
                 '__wakeup',
                 'getId',
                 'getTitle',
@@ -103,21 +87,19 @@ class LinksTest extends TestCase
                 'getSampleFile',
                 'getSampleType',
                 'getSortOrder',
-                'getLinkFile'
-            ])
-            ->disableOriginalConstructor()
-            ->getMock();
+                'getLinkFile',
+                'getStoreTitle'
+            ]);
 
-        $this->coreRegistry = $this->getMockBuilder(Registry::class)
-            ->addMethods(['__wakeup'])
-            ->onlyMethods(['registry'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->coreRegistry = $this->createPartialMock(\Magento\Framework\Registry::class, [
+                '__wakeup',
+                'registry'
+            ]);
 
-        $this->escaper = $this->createPartialMock(Escaper::class, ['escapeHtml']);
+        $this->escaper = $this->createPartialMock(\Magento\Framework\Escaper::class, ['escapeHtml']);
 
         $this->block = $objectManagerHelper->getObject(
-            Links::class,
+            \Magento\Downloadable\Block\Adminhtml\Catalog\Product\Edit\Tab\Downloadable\Links::class,
             [
                 'urlBuilder' => $this->urlBuilder,
                 'attributeFactory' => $attributeFactory,
@@ -134,7 +116,7 @@ class LinksTest extends TestCase
      */
     public function testGetConfig()
     {
-        $this->assertInstanceOf(DataObject::class, $this->block->getConfig());
+        $this->assertInstanceOf(\Magento\Framework\DataObject::class, $this->block->getConfig());
     }
 
     public function testGetLinkData()

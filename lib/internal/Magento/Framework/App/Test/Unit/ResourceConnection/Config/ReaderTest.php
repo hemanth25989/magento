@@ -3,23 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\ResourceConnection\Config;
 
-use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\App\ResourceConnection\Config\Converter;
-use Magento\Framework\App\ResourceConnection\Config\Reader;
-use Magento\Framework\App\ResourceConnection\Config\SchemaLocator;
-use Magento\Framework\Config\FileResolverInterface;
-use Magento\Framework\Config\ValidationStateInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ReaderTest extends TestCase
+class ReaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Reader
+     * @var \Magento\Framework\App\ResourceConnection\Config\Reader
      */
     protected $_model;
 
@@ -29,27 +18,27 @@ class ReaderTest extends TestCase
     protected $_filePath;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_fileResolverMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_converterMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_schemaLocatorMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_configLocalMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_validationStateMock;
 
@@ -57,17 +46,17 @@ class ReaderTest extends TestCase
     {
         $this->_filePath = __DIR__ . '/_files/';
 
-        $this->_fileResolverMock = $this->getMockForAbstractClass(FileResolverInterface::class);
-        $this->_validationStateMock = $this->getMockForAbstractClass(ValidationStateInterface::class);
+        $this->_fileResolverMock = $this->createMock(\Magento\Framework\Config\FileResolverInterface::class);
+        $this->_validationStateMock = $this->createMock(\Magento\Framework\Config\ValidationStateInterface::class);
         $this->_schemaLocatorMock =
-            $this->createMock(SchemaLocator::class);
+            $this->createMock(\Magento\Framework\App\ResourceConnection\Config\SchemaLocator::class);
 
         $this->_converterMock =
-            $this->createMock(Converter::class);
+            $this->createMock(\Magento\Framework\App\ResourceConnection\Config\Converter::class);
 
-        $this->_configLocalMock = $this->createMock(DeploymentConfig::class);
+        $this->_configLocalMock = $this->createMock(\Magento\Framework\App\DeploymentConfig::class);
 
-        $this->_model = new Reader(
+        $this->_model = new \Magento\Framework\App\ResourceConnection\Config\Reader(
             $this->_fileResolverMock,
             $this->_converterMock,
             $this->_schemaLocatorMock,

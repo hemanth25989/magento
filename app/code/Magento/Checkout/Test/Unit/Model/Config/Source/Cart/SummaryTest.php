@@ -3,14 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Checkout\Test\Unit\Model\Config\Source\Cart;
 
-use Magento\Checkout\Model\Config\Source\Cart\Summary;
-use PHPUnit\Framework\TestCase;
+use \Magento\Checkout\Model\Config\Source\Cart\Summary;
 
-class SummaryTest extends TestCase
+class SummaryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Summary

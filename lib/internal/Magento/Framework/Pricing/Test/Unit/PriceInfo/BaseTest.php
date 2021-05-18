@@ -3,27 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Pricing\Test\Unit\PriceInfo;
 
-use Magento\Framework\Pricing\Price\Collection;
-use Magento\Framework\Pricing\PriceInfo\Base;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Pricing\PriceInfo\Base;
 
 /**
  * Test class for \Magento\Framework\Pricing\PriceInfo\Base
  */
-class BaseTest extends TestCase
+class BaseTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Collection
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\Pricing\Price\Collection
      */
     protected $priceCollection;
 
     /**
-     * @var MockObject|\Magento\Framework\Pricing\Adjustment\Collection
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\Pricing\Adjustment\Collection
      */
     protected $adjustmentCollection;
 
@@ -34,7 +30,7 @@ class BaseTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->priceCollection = $this->createMock(Collection::class);
+        $this->priceCollection = $this->createMock(\Magento\Framework\Pricing\Price\Collection::class);
         $this->adjustmentCollection = $this->createMock(\Magento\Framework\Pricing\Adjustment\Collection::class);
         $this->model = new Base($this->priceCollection, $this->adjustmentCollection);
     }
@@ -59,7 +55,7 @@ class BaseTest extends TestCase
         $this->priceCollection
             ->expects($this->exactly($createCount))
             ->method('get')
-            ->with($priceCode)
+            ->with($this->equalTo($priceCode))
             ->willReturn('basePrice');
 
         foreach ($entryParams as $params) {

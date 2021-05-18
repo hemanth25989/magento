@@ -3,32 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\SalesRule\Test\Unit\Block\Adminhtml\Promo\Quote\Edit;
 
-use Magento\Backend\Block\Widget\Context;
-use Magento\Framework\Registry;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\UrlInterface;
-use Magento\SalesRule\Block\Adminhtml\Promo\Quote\Edit\DeleteButton;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DeleteButtonTest extends TestCase
+class DeleteButtonTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DeleteButton
+     * @var \Magento\SalesRule\Block\Adminhtml\Promo\Quote\Edit\DeleteButton
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlBuilderMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $registryMock;
 
@@ -37,14 +29,14 @@ class DeleteButtonTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->urlBuilderMock = $this->getMockForAbstractClass(UrlInterface::class);
-        $this->registryMock = $this->createMock(Registry::class);
-        $contextMock = $this->createMock(Context::class);
+        $this->urlBuilderMock = $this->createMock(\Magento\Framework\UrlInterface::class);
+        $this->registryMock = $this->createMock(\Magento\Framework\Registry::class);
+        $contextMock = $this->createMock(\Magento\Backend\Block\Widget\Context::class);
 
         $contextMock->expects($this->any())->method('getUrlBuilder')->willReturn($this->urlBuilderMock);
 
         $this->model = (new ObjectManager($this))->getObject(
-            DeleteButton::class,
+            \Magento\SalesRule\Block\Adminhtml\Promo\Quote\Edit\DeleteButton::class,
             [
                 'context' => $contextMock,
                 'registry' => $this->registryMock

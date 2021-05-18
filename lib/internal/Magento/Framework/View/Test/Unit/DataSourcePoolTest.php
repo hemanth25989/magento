@@ -3,21 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\DataSourcePool;
-use Magento\Framework\View\Element\BlockFactory;
-use Magento\Framework\View\Element\BlockInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\View\DataSourcePool;
 
 /**
  * Test for view Context model
  */
-class DataSourcePoolTest extends TestCase
+class DataSourcePoolTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DataSourcePool
@@ -25,37 +19,40 @@ class DataSourcePoolTest extends TestCase
     protected $dataSourcePool;
 
     /**
-     * @var BlockFactory|MockObject
+     * @var \Magento\Framework\View\Element\BlockFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $blockFactory;
 
     protected function setUp(): void
     {
-        $this->blockFactory = $this->getMockBuilder(BlockFactory::class)
+        $this->blockFactory = $this->getMockBuilder(\Magento\Framework\View\Element\BlockFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->dataSourcePool = $objectManager->getObject(
-            DataSourcePool::class,
+            \Magento\Framework\View\DataSourcePool::class,
             ['blockFactory' => $this->blockFactory]
         );
     }
 
+    /**
+     */
     public function testAddWithException()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid Data Source class name: NotExistingBlockClass');
+
         $this->dataSourcePool->add('DataSourcePoolTestBlock', 'NotExistingBlockClass');
     }
 
     /**
      * @param $blockClass
-     * @return MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     protected function createBlock($blockClass)
     {
-        $block = $this->getMockForAbstractClass(BlockInterface::class);
+        $block = $this->createMock(\Magento\Framework\View\Element\BlockInterface::class);
 
         $this->blockFactory->expects($this->once())
             ->method('createBlock')
@@ -67,7 +64,7 @@ class DataSourcePoolTest extends TestCase
     public function testAdd()
     {
         $blockName = 'DataSourcePoolTestBlock';
-        $blockClass = DataSourcePoolTestBlock::class;
+        $blockClass = \Magento\Framework\View\Test\Unit\DataSourcePoolTestBlock::class;
 
         $block = $this->createBlock($blockClass);
 
@@ -77,7 +74,7 @@ class DataSourcePoolTest extends TestCase
     public function testGet()
     {
         $blockName = 'DataSourcePoolTestBlock';
-        $blockClass = DataSourcePoolTestBlock::class;
+        $blockClass = \Magento\Framework\View\Test\Unit\DataSourcePoolTestBlock::class;
 
         $block = $this->createBlock($blockClass);
         $this->dataSourcePool->add($blockName, $blockClass);
@@ -95,7 +92,7 @@ class DataSourcePoolTest extends TestCase
     public function testAssignAndGetNamespaceData()
     {
         $blockName = 'DataSourcePoolTestBlock';
-        $blockClass = DataSourcePoolTestBlock::class;
+        $blockClass = \Magento\Framework\View\Test\Unit\DataSourcePoolTestBlock::class;
 
         $block = $this->createBlock($blockClass);
         $this->dataSourcePool->add($blockName, $blockClass);

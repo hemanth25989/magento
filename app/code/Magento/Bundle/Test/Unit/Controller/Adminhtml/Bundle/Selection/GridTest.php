@@ -3,45 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Bundle\Test\Unit\Controller\Adminhtml\Bundle\Selection;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Bundle\Controller\Adminhtml\Bundle\Selection\Grid;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\App\ViewInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\LayoutInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class GridTest extends TestCase
+class GridTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Grid */
+    /** @var \Magento\Bundle\Controller\Adminhtml\Bundle\Selection\Grid */
     protected $controller;
 
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
     /**
-     * @var MockObject|RequestInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\App\RequestInterface
      */
     protected $request;
 
     /**
-     * @var MockObject|ResponseInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\App\ResponseInterface
      */
     protected $response;
 
     /**
-     * @var MockObject|ViewInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\App\ViewInterface
      */
     protected $view;
 
     /**
-     * @var MockObject|Context
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Backend\App\Action\Context
      */
     protected $context;
 
@@ -49,15 +40,18 @@ class GridTest extends TestCase
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
-        $this->context = $this->getMockBuilder(Context::class)
+        $this->context = $this->getMockBuilder(\Magento\Backend\App\Action\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->request = $this->getMockForAbstractClass(RequestInterface::class);
-        $this->response = $this->getMockBuilder(ResponseInterface::class)
-            ->addMethods(['setBody'])
-            ->onlyMethods(['sendResponse'])
-            ->getMockForAbstractClass();
-        $this->view = $this->getMockForAbstractClass(ViewInterface::class);
+        $this->request = $this->createMock(\Magento\Framework\App\RequestInterface::class);
+        $this->response = $this->createPartialMock(
+            \Magento\Framework\App\ResponseInterface::class,
+            [
+                'sendResponse',
+                'setBody'
+            ]
+        );
+        $this->view = $this->createMock(\Magento\Framework\App\ViewInterface::class);
 
         $this->context->expects($this->any())
             ->method('getRequest')
@@ -70,7 +64,7 @@ class GridTest extends TestCase
             ->willReturn($this->view);
 
         $this->controller = $this->objectManagerHelper->getObject(
-            Grid::class,
+            \Magento\Bundle\Controller\Adminhtml\Bundle\Selection\Grid::class,
             [
                 'context' => $this->context
             ]
@@ -79,7 +73,7 @@ class GridTest extends TestCase
 
     public function testExecute()
     {
-        $layout = $this->getMockForAbstractClass(LayoutInterface::class);
+        $layout = $this->createMock(\Magento\Framework\View\LayoutInterface::class);
         $block = $this->getMockBuilder(
             \Magento\Bundle\Block\Adminhtml\Catalog\Product\Edit\Tab\Bundle\Option\Search\Grid::class
         )
@@ -97,6 +91,8 @@ class GridTest extends TestCase
         $this->assertEquals($this->response, $this->controller->execute());
     }
 
+    /**
+     */
     public function testExecuteWithException()
     {
         $this->expectException(\InvalidArgumentException::class);

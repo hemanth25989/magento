@@ -3,33 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Module\Test\Unit;
 
 use Magento\Framework\Component\ComponentRegistrar;
-use Magento\Framework\Component\ComponentRegistrarInterface;
-use Magento\Framework\Module\Dir;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DirTest extends TestCase
+class DirTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Dir
+     * @var \Magento\Framework\Module\Dir
      */
     protected $_model;
 
     /**
-     * @var ComponentRegistrarInterface|MockObject
+     * @var \Magento\Framework\Component\ComponentRegistrarInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $moduleRegistryMock;
 
     protected function setUp(): void
     {
-        $this->moduleRegistryMock = $this->getMockForAbstractClass(ComponentRegistrarInterface::class);
+        $this->moduleRegistryMock = $this->createMock(\Magento\Framework\Component\ComponentRegistrarInterface::class);
 
-        $this->_model = new Dir($this->moduleRegistryMock);
+        $this->_model = new \Magento\Framework\Module\Dir($this->moduleRegistryMock);
     }
 
     public function testGetDirModuleRoot()
@@ -62,10 +56,13 @@ class DirTest extends TestCase
         $this->assertEquals('/Test/Module/Setup', $this->_model->getDir('Test_Module', 'Setup'));
     }
 
+    /**
+     */
     public function testGetDirModuleSubDirUnknown()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Directory type \'unknown\' is not recognized');
+
         $this->moduleRegistryMock->expects($this->once())
             ->method('getPath')
             ->with(ComponentRegistrar::MODULE, 'Test_Module')
@@ -74,10 +71,13 @@ class DirTest extends TestCase
         $this->_model->getDir('Test_Module', 'unknown');
     }
 
+    /**
+     */
     public function testGetDirModuleIncorrectlyRegistered()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Module \'Test Module\' is not correctly registered.');
+
         $this->moduleRegistryMock->expects($this->once())
             ->method('getPath')
             ->with($this->identicalTo(ComponentRegistrar::MODULE), $this->identicalTo('Test Module'))

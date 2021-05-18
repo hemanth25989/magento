@@ -7,23 +7,22 @@ declare(strict_types=1);
 
 namespace Magento\Checkout\Test\Unit\Model\Cart;
 
-use Magento\Checkout\Model\Cart\CollectQuote;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\Data\RegionInterface;
+use Magento\Checkout\Model\Cart\CollectQuote;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\Data\EstimateAddressInterface;
 use Magento\Quote\Api\Data\EstimateAddressInterfaceFactory;
 use Magento\Quote\Api\ShippingMethodManagementInterface;
 use Magento\Quote\Model\Quote;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * Class CollectQuoteTest
  */
 class CollectQuoteTest extends TestCase
 {
@@ -33,52 +32,52 @@ class CollectQuoteTest extends TestCase
     private $model;
 
     /**
-     * @var CustomerSession|MockObject
+     * @var CustomerSession|\PHPUnit\Framework\MockObject\MockObject
      */
     private $customerSessionMock;
 
     /**
-     * @var CustomerRepositoryInterface|MockObject
+     * @var CustomerRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $customerRepositoryMock;
 
     /**
-     * @var AddressRepositoryInterface|MockObject
+     * @var AddressRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $addressRepositoryMock;
 
     /**
-     * @var EstimateAddressInterfaceFactory|MockObject
+     * @var EstimateAddressInterfaceFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $estimateAddressFactoryMock;
 
     /**
-     * @var EstimateAddressInterface|MockObject
+     * @var EstimateAddressInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $estimateAddressMock;
 
     /**
-     * @var ShippingMethodManagementInterface|MockObject
+     * @var ShippingMethodManagementInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $shippingMethodManagerMock;
 
     /**
-     * @var CartRepositoryInterface|MockObject
+     * @var CartRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $quoteRepositoryMock;
 
     /**
-     * @var Quote|MockObject
+     * @var Quote|\PHPUnit\Framework\MockObject\MockObject
      */
     private $quoteMock;
 
     /**
-     * @var CustomerInterface|MockObject
+     * @var CustomerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $customerMock;
 
     /**
-     * @var AddressInterface|MockObject
+     * @var AddressInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $addressMock;
 

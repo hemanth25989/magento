@@ -3,24 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Encryption\Test\Unit;
 
-use Magento\Framework\Encryption\UrlCoder;
-use Magento\Framework\UrlInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class UrlCoderTest extends TestCase
+class UrlCoderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var UrlCoder
+     * @var \Magento\Framework\Encryption\UrlCoder
      */
     protected $_urlCoder;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_urlMock;
 
@@ -36,8 +29,8 @@ class UrlCoderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->_urlMock = $this->getMockForAbstractClass(UrlInterface::class);
-        $this->_urlCoder = new UrlCoder($this->_urlMock);
+        $this->_urlMock = $this->createMock(\Magento\Framework\UrlInterface::class);
+        $this->_urlCoder = new \Magento\Framework\Encryption\UrlCoder($this->_urlMock);
     }
 
     public function testDecode()

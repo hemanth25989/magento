@@ -3,23 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Filter\Test\Unit;
 
-use Magento\Framework\DataObject;
-use Magento\Framework\Filter\Template;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Model\Store;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Template Filter test.
  */
-class TemplateTest extends TestCase
+class TemplateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Template
+     * @var \Magento\Framework\Filter\Template
      */
     private $templateFilter;
 
@@ -30,8 +25,8 @@ class TemplateTest extends TestCase
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
-        $this->templateFilter = $objectManager->getObject(Template::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->templateFilter = $objectManager->getObject(\Magento\Framework\Filter\Template::class);
         $this->store = $objectManager->getObject(Store::class);
     }
 
@@ -200,8 +195,8 @@ TEMPLATE;
      */
     private function getObjectData()
     {
-        $objectManager = new ObjectManager($this);
-        $dataObject = $objectManager->getObject(DataObject::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $dataObject = $objectManager->getObject(\Magento\Framework\DataObject::class);
 
         /* $var @dataObject \Magento\Framework\DataObject */
 

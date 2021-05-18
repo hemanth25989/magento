@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Store\Test\Unit\Model\ResourceModel;
 
@@ -11,21 +10,19 @@ use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Select;
 use Magento\Store\Model\ResourceModel\StoreWebsiteRelation;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class StoreWebsiteRelationTest extends TestCase
+class StoreWebsiteRelationTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  StoreWebsiteRelation */
     private $model;
 
-    /** @var  ResourceConnection|MockObject */
+    /** @var  ResourceConnection | \PHPUnit\Framework\MockObject\MockObject */
     private $resourceConnection;
 
-    /** @var  AdapterInterface|MockObject */
+    /** @var  AdapterInterface | \PHPUnit\Framework\MockObject\MockObject */
     private $connection;
 
-    /** @var  Select|MockObject */
+    /** @var  Select | \PHPUnit\Framework\MockObject\MockObject */
     private $select;
 
     protected function setUp(): void

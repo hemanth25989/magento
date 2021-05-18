@@ -10,9 +10,11 @@ namespace Magento\CatalogImportExport\Test\Unit\Model\Import\Product\Validator;
 use Magento\CatalogImportExport\Model\Import\Product;
 use Magento\CatalogImportExport\Model\Import\Product\Validator\Weight;
 use Magento\ImportExport\Model\Import;
-use PHPUnit\Framework\TestCase;
 
-class WeightTest extends TestCase
+/**
+ * Class WeightTest
+ */
+class WeightTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Weight

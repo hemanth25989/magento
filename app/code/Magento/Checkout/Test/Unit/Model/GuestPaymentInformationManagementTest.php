@@ -26,7 +26,6 @@ use Magento\Quote\Model\Quote\Address;
 use Magento\Quote\Model\Quote\Address\Rate;
 use Magento\Quote\Model\QuoteIdMask;
 use Magento\Quote\Model\QuoteIdMaskFactory;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -36,27 +35,27 @@ use Psr\Log\LoggerInterface;
 class GuestPaymentInformationManagementTest extends TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $billingAddressManagementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $paymentMethodManagementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $cartManagementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $cartRepositoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $quoteIdMaskFactoryMock;
 
@@ -66,17 +65,17 @@ class GuestPaymentInformationManagementTest extends TestCase
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $loggerMock;
 
     /**
-     * @var PaymentProcessingRateLimiterInterface|MockObject
+     * @var PaymentProcessingRateLimiterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $limiterMock;
 
     /**
-     * @var PaymentSavingRateLimiterInterface|MockObject
+     * @var PaymentSavingRateLimiterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $saveLimiterMock;
 
@@ -133,9 +132,12 @@ class GuestPaymentInformationManagementTest extends TestCase
         $this->placeOrder();
     }
 
+    /**
+     */
     public function testSavePaymentInformationAndPlaceOrderException()
     {
-        $this->expectException('Magento\Framework\Exception\CouldNotSaveException');
+        $this->expectException(\Magento\Framework\Exception\CouldNotSaveException::class);
+
         $cartId = 100;
         $email = 'email@magento.com';
         $paymentMock = $this->getMockForAbstractClass(PaymentInterface::class);
@@ -185,11 +187,7 @@ class GuestPaymentInformationManagementTest extends TestCase
 
         $this->billingAddressManagementMock->expects($this->never())->method('assign');
         $this->paymentMethodManagementMock->expects($this->once())->method('set')->with($cartId, $paymentMock);
-        $quoteIdMaskMock = $this->getMockBuilder(QuoteIdMask::class)
-            ->addMethods(['getQuoteId'])
-            ->onlyMethods(['load'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $quoteIdMaskMock = $this->createPartialMock(QuoteIdMask::class, ['getQuoteId', 'load']);
         $this->quoteIdMaskFactoryMock->expects($this->once())->method('create')->willReturn($quoteIdMaskMock);
         $quoteIdMaskMock->expects($this->once())->method('load')->with($cartId, 'masked_id')->willReturnSelf();
         $quoteIdMaskMock->expects($this->once())->method('getQuoteId')->willReturn($cartId);
@@ -199,10 +197,13 @@ class GuestPaymentInformationManagementTest extends TestCase
         $this->assertTrue($this->model->savePaymentInformation($cartId, $email, $paymentMock));
     }
 
+    /**
+     */
     public function testSavePaymentInformationAndPlaceOrderWithLocalizedException()
     {
-        $this->expectException('Magento\Framework\Exception\CouldNotSaveException');
+        $this->expectException(\Magento\Framework\Exception\CouldNotSaveException::class);
         $this->expectExceptionMessage('DB exception');
+
         $cartId = 100;
         $email = 'email@magento.com';
         $paymentMock = $this->getMockForAbstractClass(PaymentInterface::class);
@@ -212,11 +213,7 @@ class GuestPaymentInformationManagementTest extends TestCase
         $quoteMock->method('getBillingAddress')->willReturn($billingAddressMock);
         $this->cartRepositoryMock->method('getActive')->with($cartId)->willReturn($quoteMock);
 
-        $quoteIdMask = $this->getMockBuilder(QuoteIdMask::class)
-            ->addMethods(['getQuoteId'])
-            ->onlyMethods(['load'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $quoteIdMask = $this->createPartialMock(QuoteIdMask::class, ['getQuoteId', 'load']);
         $this->quoteIdMaskFactoryMock->method('create')->willReturn($quoteIdMask);
         $quoteIdMask->method('load')->with($cartId, 'masked_id')->willReturnSelf();
         $quoteIdMask->method('getQuoteId')->willReturn($cartId);
@@ -233,18 +230,14 @@ class GuestPaymentInformationManagementTest extends TestCase
 
     /**
      * @param int $cartId
-     * @param MockObject $billingAddressMock
+     * @param \PHPUnit\Framework\MockObject\MockObject $billingAddressMock
      * @return void
      */
     private function getMockForAssignBillingAddress(
         int $cartId,
-        MockObject $billingAddressMock
+        \PHPUnit\Framework\MockObject\MockObject $billingAddressMock
     ) : void {
-        $quoteIdMask = $this->getMockBuilder(QuoteIdMask::class)
-            ->addMethods(['getQuoteId'])
-            ->onlyMethods(['load'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $quoteIdMask = $this->createPartialMock(QuoteIdMask::class, ['getQuoteId', 'load']);
         $this->quoteIdMaskFactoryMock->method('create')
             ->willReturn($quoteIdMask);
         $quoteIdMask->method('load')
@@ -258,11 +251,10 @@ class GuestPaymentInformationManagementTest extends TestCase
         $quoteBillingAddress = $this->createMock(Address::class);
         $shippingRate = $this->createPartialMock(Rate::class, []);
         $shippingRate->setCarrier('flatrate');
-        $quoteShippingAddress = $this->getMockBuilder(Address::class)
-            ->addMethods(['setLimitCarrier'])
-            ->onlyMethods(['getShippingMethod', 'getShippingRateByCode'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $quoteShippingAddress = $this->createPartialMock(
+            Address::class,
+            ['setLimitCarrier', 'getShippingMethod', 'getShippingRateByCode']
+        );
         $this->cartRepositoryMock->method('getActive')
             ->with($cartId)
             ->willReturn($quote);

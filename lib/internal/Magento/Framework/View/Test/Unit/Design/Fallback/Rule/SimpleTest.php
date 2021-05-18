@@ -3,19 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Design\Fallback\Rule;
 
-use Magento\Framework\View\Design\Fallback\Rule\Simple;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\View\Design\Fallback\Rule\Simple;
 
-class SimpleTest extends TestCase
+/**
+ * Simple Test
+ *
+ */
+class SimpleTest extends \PHPUnit\Framework\TestCase
 {
+    /**
+     */
     public function testGetPatternDirsException()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Required parameter \'required_parameter\' was not passed');
+
         $model = new Simple('<required_parameter> other text');
         $model->getPatternDirs([]);
     }

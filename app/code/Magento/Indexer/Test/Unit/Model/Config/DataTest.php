@@ -3,38 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Indexer\Test\Unit\Model\Config;
 
-use Magento\Framework\Config\CacheInterface;
-use Magento\Framework\Indexer\Config\Reader;
-use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Indexer\Model\Config\Data;
-use Magento\Indexer\Model\Indexer\State;
-use Magento\Indexer\Model\ResourceModel\Indexer\State\Collection;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class DataTest extends TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Data
+     * @var \Magento\Indexer\Model\Config\Data
      */
     protected $model;
 
     /**
-     * @var Reader|MockObject
+     * @var \Magento\Framework\Indexer\Config\Reader|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $reader;
 
     /**
-     * @var CacheInterface|MockObject
+     * @var \Magento\Framework\Config\CacheInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $cache;
 
     /**
-     * @var Collection|MockObject
+     * @var \Magento\Indexer\Model\ResourceModel\Indexer\State\Collection|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $stateCollection;
 
@@ -49,15 +38,15 @@ class DataTest extends TestCase
     protected $indexers = ['indexer1' => [], 'indexer3' => []];
 
     /**
-     * @var SerializerInterface|MockObject
+     * @var \Magento\Framework\Serialize\SerializerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $serializerMock;
 
     protected function setUp(): void
     {
-        $this->reader = $this->createPartialMock(Reader::class, ['read']);
+        $this->reader = $this->createPartialMock(\Magento\Framework\Indexer\Config\Reader::class, ['read']);
         $this->cache = $this->getMockForAbstractClass(
-            CacheInterface::class,
+            \Magento\Framework\Config\CacheInterface::class,
             [],
             '',
             false,
@@ -66,10 +55,10 @@ class DataTest extends TestCase
             ['test', 'load', 'save']
         );
         $this->stateCollection = $this->createPartialMock(
-            Collection::class,
+            \Magento\Indexer\Model\ResourceModel\Indexer\State\Collection::class,
             ['getItems']
         );
-        $this->serializerMock = $this->getMockForAbstractClass(SerializerInterface::class);
+        $this->serializerMock = $this->createMock(\Magento\Framework\Serialize\SerializerInterface::class);
     }
 
     public function testConstructorWithCache()
@@ -88,7 +77,7 @@ class DataTest extends TestCase
 
         $this->stateCollection->expects($this->never())->method('getItems');
 
-        $this->model = new Data(
+        $this->model = new \Magento\Indexer\Model\Config\Data(
             $this->reader,
             $this->cache,
             $this->stateCollection,
@@ -105,14 +94,14 @@ class DataTest extends TestCase
         $this->reader->expects($this->once())->method('read')->willReturn($this->indexers);
 
         $stateExistent = $this->createPartialMock(
-            State::class,
+            \Magento\Indexer\Model\Indexer\State::class,
             ['getIndexerId', '__wakeup', 'delete']
         );
         $stateExistent->expects($this->once())->method('getIndexerId')->willReturn('indexer1');
         $stateExistent->expects($this->never())->method('delete');
 
         $stateNonexistent = $this->createPartialMock(
-            State::class,
+            \Magento\Indexer\Model\Indexer\State::class,
             ['getIndexerId', '__wakeup', 'delete']
         );
         $stateNonexistent->expects($this->once())->method('getIndexerId')->willReturn('indexer2');
@@ -122,7 +111,7 @@ class DataTest extends TestCase
 
         $this->stateCollection->expects($this->once())->method('getItems')->willReturn($states);
 
-        $this->model = new Data(
+        $this->model = new \Magento\Indexer\Model\Config\Data(
             $this->reader,
             $this->cache,
             $this->stateCollection,

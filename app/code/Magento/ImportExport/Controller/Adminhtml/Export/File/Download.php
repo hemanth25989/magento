@@ -9,10 +9,11 @@ namespace Magento\ImportExport\Controller\Adminhtml\Export\File;
 
 use Magento\Backend\App\Action;
 use Magento\Framework\App\Action\HttpGetActionInterface;
-use Magento\Framework\App\Response\Http\FileFactory;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\ImportExport\Controller\Adminhtml\Export as ExportController;
+use Magento\Framework\App\Response\Http\FileFactory;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filesystem;
+use Magento\ImportExport\Controller\Adminhtml\Export as ExportController;
 use Throwable;
 
 /**
@@ -54,42 +55,39 @@ class Download extends ExportController implements HttpGetActionInterface
     /**
      * Controller basic method implementation.
      *
-     * @return \Magento\Framework\Controller\Result\Redirect | \Magento\Framework\App\ResponseInterface
+     * @return \Magento\Framework\App\ResponseInterface
+     * @throws LocalizedException
      */
     public function execute()
     {
-        $resultRedirect = $this->resultRedirectFactory->create();
-        $resultRedirect->setPath('adminhtml/export/index');
         $fileName = $this->getRequest()->getParam('filename');
-        $exportDirectory = $this->filesystem->getDirectoryRead(DirectoryList::VAR_IMPORT_EXPORT);
-
+        $exportDirectory = $this->filesystem->getDirectoryRead(DirectoryList::VAR_EXPORT);
         try {
-            $fileExist = $exportDirectory->isExist('export/' . $fileName);
+            $fileExist = $exportDirectory->isExist($fileName);
         } catch (Throwable $e) {
             $fileExist = false;
         }
-
         if (empty($fileName) || !$fileExist) {
-            $this->messageManager->addErrorMessage(__('Please provide valid export file name'));
-
-            return $resultRedirect;
+            throw new LocalizedException(__('Please provide valid export file name'));
         }
-
         try {
             $path = 'export/' . $fileName;
-            $directory = $this->filesystem->getDirectoryRead(DirectoryList::VAR_IMPORT_EXPORT);
+            $directory = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR);
             if ($directory->isFile($path)) {
                 return $this->fileFactory->create(
                     $path,
                     $directory->readFile($path),
-                    DirectoryList::VAR_IMPORT_EXPORT
+                    DirectoryList::VAR_DIR
                 );
+            } else {
+                $fileExist = false;
             }
-            $this->messageManager->addErrorMessage(__('%1 is not a valid file', $fileName));
-        } catch (\Exception $exception) {
-            $this->messageManager->addErrorMessage($exception->getMessage());
+        } catch (LocalizedException | \Exception $exception) {
+            $fileExist = false;
         }
 
-        return $resultRedirect;
+        if (!$fileExist) {
+            throw new LocalizedException(__('There are no export file with such name %1', $fileName));
+        }
     }
 }

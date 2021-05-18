@@ -3,29 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ImportExport\Test\Unit\Model\Import\Source;
 
-use Magento\Framework\Exception\FileSystemException;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\Write;
-use Magento\Framework\Filesystem\Driver\File;
-use Magento\Framework\Filesystem\Driver\Http;
-use Magento\Framework\Filesystem\File\Read;
-use Magento\ImportExport\Model\Import\Source\Csv;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CsvTest extends TestCase
+class CsvTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Filesystem|MockObject
+     * @var \Magento\Framework\Filesystem|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_filesystem;
 
     /**
-     * @var Write|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\Write|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_directoryMock;
 
@@ -34,17 +22,20 @@ class CsvTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->_filesystem = $this->createMock(Filesystem::class);
-        $this->_directoryMock = $this->createMock(Write::class);
+        $this->_filesystem = $this->createMock(\Magento\Framework\Filesystem::class);
+        $this->_directoryMock = $this->createMock(\Magento\Framework\Filesystem\Directory\Write::class);
     }
 
+    /**
+     */
     public function testConstructException()
     {
         $this->expectException(\LogicException::class);
+
         $this->_directoryMock->expects($this->any())
             ->method('openFile')
-            ->willThrowException(new FileSystemException(__('Error message')));
-        new Csv(__DIR__ . '/invalid_file', $this->_directoryMock);
+            ->willThrowException(new \Magento\Framework\Exception\FileSystemException(__('Error message')));
+        new \Magento\ImportExport\Model\Import\Source\Csv(__DIR__ . '/invalid_file', $this->_directoryMock);
     }
 
     public function testConstructStream()
@@ -57,7 +48,7 @@ class CsvTest extends TestCase
             'openFile'
         )->willReturn(
             
-                new Read($stream, new Http())
+                new \Magento\Framework\Filesystem\File\Read($stream, new \Magento\Framework\Filesystem\Driver\Http())
             
         );
         $this->_filesystem->expects(
@@ -68,7 +59,7 @@ class CsvTest extends TestCase
             $this->_directoryMock
         );
 
-        $model = new Csv($stream, $this->_filesystem);
+        $model = new \Magento\ImportExport\Model\Import\Source\Csv($stream, $this->_filesystem);
         foreach ($model as $value) {
             $this->assertSame(['column1' => 'value1', 'column2' => 'value2'], $value);
         }
@@ -87,12 +78,14 @@ class CsvTest extends TestCase
         )->method(
             'openFile'
         )->willReturn(
-            new Read(
-                __DIR__ . '/_files/test.csv',
-                new File()
-            )
+            
+                new \Magento\Framework\Filesystem\File\Read(
+                    __DIR__ . '/_files/test.csv',
+                    new \Magento\Framework\Filesystem\Driver\File()
+                )
+            
         );
-        $model = new Csv(
+        $model = new \Magento\ImportExport\Model\Import\Source\Csv(
             __DIR__ . '/_files/test.csv',
             $this->_directoryMock,
             $delimiter,
@@ -113,21 +106,26 @@ class CsvTest extends TestCase
         ];
     }
 
+    /**
+     */
     public function testRewind()
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('wrongColumnsNumber');
+
         $this->_directoryMock->expects(
             $this->any()
         )->method(
             'openFile'
         )->willReturn(
-            new Read(
-                __DIR__ . '/_files/test.csv',
-                new File()
-            )
+            
+                new \Magento\Framework\Filesystem\File\Read(
+                    __DIR__ . '/_files/test.csv',
+                    new \Magento\Framework\Filesystem\Driver\File()
+                )
+            
         );
-        $model = new Csv(
+        $model = new \Magento\ImportExport\Model\Import\Source\Csv(
             __DIR__ . '/_files/test.csv',
             $this->_directoryMock
         );

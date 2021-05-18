@@ -3,20 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Elasticsearch\Test\Unit\Model\ResourceModel;
 
-use Magento\Catalog\Model\Product\Visibility;
 use Magento\Elasticsearch\Model\ResourceModel\Engine;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\Indexer\ScopeResolver\IndexScopeResolver;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class EngineTest extends TestCase
+class EngineTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Engine
@@ -24,17 +16,17 @@ class EngineTest extends TestCase
     private $model;
 
     /**
-     * @var Visibility|MockObject
+     * @var \Magento\Catalog\Model\Product\Visibility|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $catalogProductVisibility;
 
     /**
-     * @var IndexScopeResolver|MockObject
+     * @var \Magento\Framework\Indexer\ScopeResolver\IndexScopeResolver|\PHPUnit\Framework\MockObject\MockObject
      */
     private $indexScopeResolver;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $connection;
 
@@ -45,11 +37,11 @@ class EngineTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->connection = $this->getMockBuilder(AdapterInterface::class)
+        $this->connection = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getIfNullSql'])
             ->getMockForAbstractClass();
-        $resource = $this->getMockBuilder(ResourceConnection::class)
+        $resource = $this->getMockBuilder(\Magento\Framework\App\ResourceConnection::class)
             ->disableOriginalConstructor()
             ->setMethods(['getConnection', 'getTableName'])
             ->getMock();
@@ -61,13 +53,13 @@ class EngineTest extends TestCase
             ->method('getTableName')
             ->willReturnArgument(0);
 
-        $this->catalogProductVisibility = $this->getMockBuilder(Visibility::class)
+        $this->catalogProductVisibility = $this->getMockBuilder(\Magento\Catalog\Model\Product\Visibility::class)
             ->disableOriginalConstructor()
             ->setMethods(['getVisibleInSiteIds'])
             ->getMock();
 
         $this->indexScopeResolver = $this->getMockBuilder(
-            IndexScopeResolver::class
+            \Magento\Framework\Indexer\ScopeResolver\IndexScopeResolver::class
         )
             ->disableOriginalConstructor()
             ->setMethods(['getVisibleInSiteIds'])
@@ -75,7 +67,7 @@ class EngineTest extends TestCase
 
         $objectManager = new ObjectManagerHelper($this);
         $this->model = $objectManager->getObject(
-            Engine::class,
+            \Magento\Elasticsearch\Model\ResourceModel\Engine::class,
             [
                 'catalogProductVisibility' => $this->catalogProductVisibility,
                 'indexScopeResolver' => $this->indexScopeResolver

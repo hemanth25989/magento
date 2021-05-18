@@ -3,31 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Eav\Test\Unit\Model;
 
-use Magento\Eav\Api\Data\AttributeSetSearchResultsInterface;
-use Magento\Eav\Api\Data\AttributeSetSearchResultsInterfaceFactory;
 use Magento\Eav\Model\AttributeSetRepository;
-use Magento\Eav\Model\Config;
-use Magento\Eav\Model\Entity\Attribute\SetFactory;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\Collection;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory;
-use Magento\Framework\Api\ExtensionAttribute\JoinProcessor;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
-use Magento\Framework\Api\SearchCriteriaInterface;
-use Magento\Framework\Exception\CouldNotDeleteException;
-use Magento\Framework\Exception\StateException;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.LongVariable)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AttributeSetRepositoryTest extends TestCase
+class AttributeSetRepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AttributeSetRepository
@@ -35,37 +21,37 @@ class AttributeSetRepositoryTest extends TestCase
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $resourceMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $setFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $collectionFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $eavConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $resultFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $extensionAttributesJoinProcessorMock;
 
     /**
-     * @var CollectionProcessorInterface|MockObject
+     * @var CollectionProcessorInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $collectionProcessor;
 
@@ -74,29 +60,29 @@ class AttributeSetRepositoryTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->resourceMock = $this->createMock(Set::class);
+        $this->resourceMock = $this->createMock(\Magento\Eav\Model\ResourceModel\Entity\Attribute\Set::class);
         $this->setFactoryMock = $this->createPartialMock(
-            SetFactory::class,
+            \Magento\Eav\Model\Entity\Attribute\SetFactory::class,
             ['create']
         );
         $this->collectionFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory::class,
             ['create']
         );
-        $this->eavConfigMock = $this->createPartialMock(Config::class, ['getEntityType']);
+        $this->eavConfigMock = $this->createPartialMock(\Magento\Eav\Model\Config::class, ['getEntityType']);
         $this->resultFactoryMock = $this->createPartialMock(
-            AttributeSetSearchResultsInterfaceFactory::class,
+            \Magento\Eav\Api\Data\AttributeSetSearchResultsInterfaceFactory::class,
             ['create']
         );
         $this->extensionAttributesJoinProcessorMock = $this->createPartialMock(
-            JoinProcessor::class,
+            \Magento\Framework\Api\ExtensionAttribute\JoinProcessor::class,
             ['process']
         );
 
         $this->collectionProcessor = $this->getMockBuilder(CollectionProcessorInterface::class)
             ->getMockForAbstractClass();
 
-        $this->model = new AttributeSetRepository(
+        $this->model = new \Magento\Eav\Model\AttributeSetRepository(
             $this->resourceMock,
             $this->setFactoryMock,
             $this->collectionFactoryMock,
@@ -125,8 +111,9 @@ class AttributeSetRepositoryTest extends TestCase
      */
     public function testGetThrowsExceptionIfRequestedAttributeSetDoesNotExist()
     {
-        $this->expectException('Magento\Framework\Exception\NoSuchEntityException');
+        $this->expectException(\Magento\Framework\Exception\NoSuchEntityException::class);
         $this->expectExceptionMessage('No such entity with id = 9999');
+
         $attributeSetId = 9999;
         $attributeSetMock = $this->createMock(\Magento\Eav\Model\Entity\Attribute\Set::class);
         $this->setFactoryMock->expects($this->once())->method('create')->willReturn($attributeSetMock);
@@ -149,7 +136,8 @@ class AttributeSetRepositoryTest extends TestCase
      */
     public function testSaveThrowsExceptionIfGivenEntityCannotBeSaved()
     {
-        $this->expectException('Magento\Framework\Exception\CouldNotSaveException');
+        $this->expectException(\Magento\Framework\Exception\CouldNotSaveException::class);
+
         $attributeSetMock = $this->createMock(\Magento\Eav\Model\Entity\Attribute\Set::class);
         $this->resourceMock->expects($this->once())->method('save')->with($attributeSetMock)->willThrowException(
             new \Exception('Some internal exception message.')
@@ -177,10 +165,11 @@ class AttributeSetRepositoryTest extends TestCase
      */
     public function testDeleteThrowsExceptionIfGivenEntityCannotBeDeleted()
     {
-        $this->expectException('Magento\Framework\Exception\CouldNotDeleteException');
+        $this->expectException(\Magento\Framework\Exception\CouldNotDeleteException::class);
+
         $attributeSetMock = $this->createMock(\Magento\Eav\Model\Entity\Attribute\Set::class);
         $this->resourceMock->expects($this->once())->method('delete')->with($attributeSetMock)->willThrowException(
-            new CouldNotDeleteException(__('Some internal exception message.'))
+            new \Magento\Framework\Exception\CouldNotDeleteException(__('Some internal exception message.'))
         );
         $this->model->delete($attributeSetMock);
 
@@ -195,11 +184,12 @@ class AttributeSetRepositoryTest extends TestCase
      */
     public function testDeleteThrowsExceptionIfGivenAttributeSetIsDefault()
     {
-        $this->expectException('Magento\Framework\Exception\CouldNotDeleteException');
+        $this->expectException(\Magento\Framework\Exception\CouldNotDeleteException::class);
         $this->expectExceptionMessage('The default attribute set can\'t be deleted.');
+
         $attributeSetMock = $this->createMock(\Magento\Eav\Model\Entity\Attribute\Set::class);
         $this->resourceMock->expects($this->once())->method('delete')->with($attributeSetMock)->willThrowException(
-            new StateException(__('Some internal exception message.'))
+            new \Magento\Framework\Exception\StateException(__('Some internal exception message.'))
         );
         $this->model->delete($attributeSetMock);
     }
@@ -225,7 +215,7 @@ class AttributeSetRepositoryTest extends TestCase
     {
         $attributeSetMock = $this->createMock(\Magento\Eav\Model\Entity\Attribute\Set::class);
 
-        $collectionMock = $this->getMockBuilder(Collection::class)
+        $collectionMock = $this->getMockBuilder(\Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\Collection::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getItems',
@@ -242,9 +232,9 @@ class AttributeSetRepositoryTest extends TestCase
 
         $this->collectionFactoryMock->expects($this->once())->method('create')->willReturn($collectionMock);
 
-        $searchCriteriaMock = $this->getMockForAbstractClass(SearchCriteriaInterface::class);
+        $searchCriteriaMock = $this->createMock(\Magento\Framework\Api\SearchCriteriaInterface::class);
 
-        $resultMock = $this->getMockBuilder(AttributeSetSearchResultsInterface::class)
+        $resultMock = $this->getMockBuilder(\Magento\Eav\Api\Data\AttributeSetSearchResultsInterface::class)
             ->getMockForAbstractClass();
 
         $resultMock->expects($this->once())
@@ -279,7 +269,7 @@ class AttributeSetRepositoryTest extends TestCase
     {
         $attributeSetMock = $this->createMock(\Magento\Eav\Model\Entity\Attribute\Set::class);
 
-        $collectionMock = $this->getMockBuilder(Collection::class)
+        $collectionMock = $this->getMockBuilder(\Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\Collection::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getItems',
@@ -298,9 +288,9 @@ class AttributeSetRepositoryTest extends TestCase
             ->method('create')
             ->willReturn($collectionMock);
 
-        $searchCriteriaMock = $this->getMockForAbstractClass(SearchCriteriaInterface::class);
+        $searchCriteriaMock = $this->createMock(\Magento\Framework\Api\SearchCriteriaInterface::class);
 
-        $resultMock = $this->getMockBuilder(AttributeSetSearchResultsInterface::class)
+        $resultMock = $this->getMockBuilder(\Magento\Eav\Api\Data\AttributeSetSearchResultsInterface::class)
             ->getMockForAbstractClass();
 
         $resultMock->expects($this->once())

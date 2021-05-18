@@ -3,39 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Directory\Test\Unit\Model\Currency\Import;
 
-use Magento\Directory\Model\Currency\Import\Config;
-use Magento\Directory\Model\Currency\Import\Factory;
-use Magento\Directory\Model\Currency\Import\ImportInterface;
-use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class FactoryTest extends TestCase
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Factory
+     * @var \Magento\Directory\Model\Currency\Import\Factory
      */
     protected $_model;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_objectManager;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Directory\Model\Currency\Import\Config|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_importConfig;
 
     protected function setUp(): void
     {
-        $this->_objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->_importConfig = $this->createMock(Config::class);
-        $this->_model = new Factory(
+        $this->_objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->_importConfig = $this->createMock(\Magento\Directory\Model\Currency\Import\Config::class);
+        $this->_model = new \Magento\Directory\Model\Currency\Import\Factory(
             $this->_objectManager,
             $this->_importConfig
         );
@@ -43,7 +34,7 @@ class FactoryTest extends TestCase
 
     public function testCreate()
     {
-        $expectedResult = $this->getMockForAbstractClass(ImportInterface::class);
+        $expectedResult = $this->createMock(\Magento\Directory\Model\Currency\Import\ImportInterface::class);
         $this->_importConfig->expects(
             $this->once()
         )->method(
@@ -67,10 +58,13 @@ class FactoryTest extends TestCase
         $this->assertSame($expectedResult, $actualResult);
     }
 
+    /**
+     */
     public function testCreateUndefinedServiceClass()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Currency import service \'test\' is not defined');
+
         $this->_importConfig->expects(
             $this->once()
         )->method(
@@ -84,12 +78,13 @@ class FactoryTest extends TestCase
         $this->_model->create('test');
     }
 
+    /**
+     */
     public function testCreateIrrelevantServiceClass()
     {
-        $this->expectException('UnexpectedValueException');
-        $this->expectExceptionMessage(
-            'Class \'stdClass\' has to implement \Magento\Directory\Model\Currency\Import\ImportInterface'
-        );
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('Class \'stdClass\' has to implement \\Magento\\Directory\\Model\\Currency\\Import\\ImportInterface');
+
         $this->_importConfig->expects(
             $this->once()
         )->method(

@@ -3,14 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\CheckoutAgreements\Test\Unit\Model\Api\SearchCriteria\CollectionProcessor\FilterProcessor;
 
-use Magento\CheckoutAgreements\Model\Api\SearchCriteria\CollectionProcessor\FilterProcessor\StoreFilter;
-use Magento\CheckoutAgreements\Model\ResourceModel\Agreement\Collection;
-use Magento\Framework\Api\Filter;
 use PHPUnit\Framework\TestCase;
+use Magento\CheckoutAgreements\Model\Api\SearchCriteria\CollectionProcessor\FilterProcessor\StoreFilter;
 
 class StoreFilterTest extends TestCase
 {
@@ -26,10 +23,10 @@ class StoreFilterTest extends TestCase
 
     public function testApply()
     {
-        $filterMock = $this->createMock(Filter::class);
+        $filterMock = $this->createMock(\Magento\Framework\Api\Filter::class);
         $filterMock->expects($this->once())->method('getValue')->willReturn(1);
         $collectionMock = $this->createMock(
-            Collection::class
+            \Magento\CheckoutAgreements\Model\ResourceModel\Agreement\Collection::class
         );
         $collectionMock->expects($this->once())->method('addStoreFilter')->with(1)->willReturnSelf();
         $this->assertTrue($this->model->apply($filterMock, $collectionMock));

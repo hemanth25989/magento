@@ -78,10 +78,6 @@ class SynonymAnalyzerTest extends \PHPUnit\Framework\TestCase
                 'phrase' => 'schlicht',
                 'expectedResult' => [['schlicht', 'natürlich']]
             ],
-            'withSlashInSearchPhrase' => [
-                'phrase' => 'orange hill/peak',
-                'expectedResult' => [['orange', 'magento'], ['hill/peak']]
-            ],
         ];
     }
 

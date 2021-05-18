@@ -12,10 +12,11 @@ use Magento\Framework\App\Config\ReinitableConfigInterface;
 use Magento\Framework\Mail\TransportInterface;
 use Magento\Framework\OsInfo;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class WindowsSmtpConfigTest extends TestCase
+/**
+ *  WindowsSmtpConfigTest
+ */
+class WindowsSmtpConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var WindowsSmtpConfig
@@ -23,12 +24,12 @@ class WindowsSmtpConfigTest extends TestCase
     private $windowsSmtpConfig;
 
     /**
-     * @var OsInfo|MockObject
+     * @var OsInfo|\PHPUnit\Framework\MockObject\MockObject
      */
     private $osInfoMock;
 
     /**
-     * @var ReinitableConfigInterface|MockObject
+     * @var ReinitableConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configMock;
 

@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Directory\Test\Unit\Model;
 
@@ -12,18 +11,16 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Api\Data\WebsiteInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AllowedCountriesTest extends TestCase
+class AllowedCountriesTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|ScopeConfigInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject | ScopeConfigInterface
      */
     private $scopeConfigMock;
 
     /**
-     * @var MockObject|StoreManagerInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject | StoreManagerInterface
      */
     private $storeManagerMock;
 

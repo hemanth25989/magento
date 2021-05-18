@@ -1,39 +1,38 @@
 <?php
-
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogUrlRewrite\Test\Unit\Model\Map;
 
+use Magento\Framework\DB\Select;
+use Magento\CatalogUrlRewrite\Model\Map\HashMapPool;
 use Magento\CatalogUrlRewrite\Model\Map\DataProductHashMap;
 use Magento\CatalogUrlRewrite\Model\Map\DataProductUrlRewriteDatabaseMap;
-use Magento\CatalogUrlRewrite\Model\Map\HashMapPool;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
-use Magento\Framework\DB\TemporaryTableService;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\App\ResourceConnection;
+use Magento\Framework\DB\TemporaryTableService;
 
-class DataProductUrlRewriteDatabaseMapTest extends TestCase
+/**
+ * Class DataProductUrlRewriteDatabaseMapTest
+ * Test for DataProductUrlRewriteDatabaseMap
+ */
+class DataProductUrlRewriteDatabaseMapTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var HashMapPool|MockObject */
+    /** @var HashMapPool|\PHPUnit\Framework\MockObject\MockObject */
     private $hashMapPoolMock;
 
-    /** @var DataProductHashMap|MockObject */
+    /** @var DataProductHashMap|\PHPUnit\Framework\MockObject\MockObject */
     private $dataProductMapMock;
 
-    /** @var TemporaryTableService|MockObject */
+    /** @var TemporaryTableService|\PHPUnit\Framework\MockObject\MockObject */
     private $temporaryTableServiceMock;
 
-    /** @var ResourceConnection|MockObject */
+    /** @var ResourceConnection|\PHPUnit\Framework\MockObject\MockObject */
     private $connectionMock;
 
-    /** @var DataProductUrlRewriteDatabaseMap|MockObject */
+    /** @var DataProductUrlRewriteDatabaseMap|\PHPUnit\Framework\MockObject\MockObject */
     private $model;
 
     protected function setUp(): void

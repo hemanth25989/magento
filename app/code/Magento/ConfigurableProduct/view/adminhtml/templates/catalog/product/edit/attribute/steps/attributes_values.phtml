@@ -26,7 +26,7 @@ $optionsUrl = $block->getUrl('catalog/product_attribute/createOptions');
                 <div class="attribute-entity-title-block">
                     <span class="draggable-handle"
                           data-role="draggable"
-                          title="<?= $block->escapeHtml(__('Sort Variations')) ?>">
+                          title="<?= $block->escapeHtmlAttr(__('Sort Variations')) ?>">
                     </span>
                     <div class="attribute-entity-title" data-bind="text: label"></div>
                     <div class="attribute-options-block">
@@ -41,7 +41,7 @@ $optionsUrl = $block->getUrl('catalog/product_attribute/createOptions');
                     <button type="button"
                             class="action-select-all action-tertiary"
                             data-bind="click: $parent.selectAllAttributes"
-                            title="<?= $block->escapeHtml(__('Select All')) ?>">
+                            title="<?= $block->escapeHtmlAttr(__('Select All')) ?>">
                         <span><?= $block->escapeHtml(
                             __('Select All')
                         ); ?></span>
@@ -49,7 +49,7 @@ $optionsUrl = $block->getUrl('catalog/product_attribute/createOptions');
                     <button type="button"
                             class="action-deselect-all action-tertiary"
                             data-bind="click: $parent.deSelectAllAttributes"
-                            title="<?= $block->escapeHtml(__('Deselect All')) ?>">
+                            title="<?= $block->escapeHtmlAttr(__('Deselect All')) ?>">
                         <span><?= $block->escapeHtml(
                             __('Deselect All')
                         ); ?></span>
@@ -57,7 +57,7 @@ $optionsUrl = $block->getUrl('catalog/product_attribute/createOptions');
                     <button type="button"
                             class="action-remove-all action-tertiary"
                             data-bind="click: $parent.removeAttribute.bind($parent)"
-                            title="<?= $block->escapeHtml(__('Remove Attribute')) ?>">
+                            title="<?= $block->escapeHtmlAttr(__('Remove Attribute')) ?>">
                         <span><?= $block->escapeHtml(
                             __('Remove Attribute')
                         ); ?></span>
@@ -86,7 +86,7 @@ $optionsUrl = $block->getUrl('catalog/product_attribute/createOptions');
                             </div>
                             <button type="button"
                                     class="action-save"
-                                    title="<?= $block->escapeHtml(__('Save Option')) ?>"
+                                    title="<?= $block->escapeHtmlAttr(__('Save Option')) ?>"
                                     data-action="save"
                                     data-bind="click: $parents[1].saveOption.bind($parent)">
                                 <span><?= $block->escapeHtml(
@@ -95,7 +95,7 @@ $optionsUrl = $block->getUrl('catalog/product_attribute/createOptions');
                             </button>
                             <button type="button"
                                     class="action-remove"
-                                    title="<?= $block->escapeHtml(__('Remove Option')) ?>"
+                                    title="<?= $block->escapeHtmlAttr(__('Remove Option')) ?>"
                                     data-action="remove"
                                     data-bind="click: $parents[1].removeOption.bind($parent)">
                                 <span><?= $block->escapeHtml(

@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace Magento\Vault\Test\Unit\Model\Method;
 
-use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Payment\Gateway\Command\CommandManagerInterface;
 use Magento\Payment\Gateway\Command\CommandManagerPoolInterface;
@@ -24,13 +23,15 @@ use Magento\Vault\Api\Data\PaymentTokenInterface;
 use Magento\Vault\Api\PaymentTokenManagementInterface;
 use Magento\Vault\Model\Method\Vault;
 use Magento\Vault\Model\VaultPaymentInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Serialize\Serializer\Json;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 
 /**
+ * Class VaultTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class VaultTest extends TestCase
+class VaultTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -57,10 +58,13 @@ class VaultTest extends TestCase
         $this->jsonSerializer = $this->createMock(Json::class);
     }
 
+    /**
+     */
     public function testAuthorizeNotOrderPayment()
     {
-        $this->expectException('DomainException');
+        $this->expectException(\DomainException::class);
         $this->expectExceptionMessage('Not implemented');
+
         $paymentModel = $this->getMockForAbstractClass(InfoInterface::class);
 
         /** @var Vault $model */
@@ -74,8 +78,9 @@ class VaultTest extends TestCase
      */
     public function testAuthorizeNoTokenMetadata(array $additionalInfo)
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Public hash should be defined');
+
         $paymentModel = $this->getMockBuilder(Payment::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -102,10 +107,13 @@ class VaultTest extends TestCase
         ];
     }
 
+    /**
+     */
     public function testAuthorizeNoToken()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('No token found');
+
         $customerId = 1;
         $publicHash = 'token_public_hash';
 
@@ -222,10 +230,13 @@ class VaultTest extends TestCase
         $model->authorize($paymentModel, $amount);
     }
 
+    /**
+     */
     public function testCaptureNotOrderPayment()
     {
-        $this->expectException('DomainException');
+        $this->expectException(\DomainException::class);
         $this->expectExceptionMessage('Not implemented');
+
         $paymentModel = $this->getMockForAbstractClass(InfoInterface::class);
 
         /** @var Vault $model */
@@ -233,10 +244,13 @@ class VaultTest extends TestCase
         $model->capture($paymentModel, 0);
     }
 
+    /**
+     */
     public function testCapture()
     {
-        $this->expectException('DomainException');
+        $this->expectException(\DomainException::class);
         $this->expectExceptionMessage('Capture can not be performed through vault');
+
         $paymentModel = $this->getMockBuilder(Payment::class)
             ->disableOriginalConstructor()
             ->getMock();

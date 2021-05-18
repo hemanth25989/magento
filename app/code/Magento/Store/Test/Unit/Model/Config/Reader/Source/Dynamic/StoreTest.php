@@ -3,60 +3,58 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\Model\Config\Reader\Source\Dynamic;
 
 use Magento\Framework\App\Config\Scope\Converter;
-use Magento\Framework\DataObject;
-use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\Config\Reader\Source\Dynamic\Store as StoreSource;
-use Magento\Store\Model\Config\Reader\Source\Dynamic\Website as WebsiteSource;
 use Magento\Store\Model\ResourceModel\Config\Collection\ScopedFactory;
 use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Store\Model\Website;
 use Magento\Store\Model\WebsiteFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Store\Model\Website;
+use Magento\Store\Model\Config\Reader\Source\Dynamic\Website as WebsiteSource;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Framework\DataObject;
 
 /**
+ * Class StoreTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class StoreTest extends TestCase
+class StoreTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ScopedFactory|MockObject
+     * @var ScopedFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $collectionFactory;
 
     /**
-     * @var Converter|MockObject
+     * @var Converter|\PHPUnit\Framework\MockObject\MockObject
      */
     private $converter;
 
     /**
-     * @var WebsiteFactory|MockObject
+     * @var WebsiteFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $websiteFactory;
 
     /**
-     * @var Website|MockObject
+     * @var Website|\PHPUnit\Framework\MockObject\MockObject
      */
     private $website;
 
     /**
-     * @var WebsiteSource|MockObject
+     * @var WebsiteSource|\PHPUnit\Framework\MockObject\MockObject
      */
     private $websiteSource;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $storeManager;
 
     /**
-     * @var StoreInterface|MockObject
+     * @var StoreInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $store;
 
@@ -74,7 +72,7 @@ class StoreTest extends TestCase
         $this->converter = $this->getMockBuilder(Converter::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->websiteFactory = $this->getMockBuilder(WebsiteFactory::class)
+        $this->websiteFactory = $this->getMockBuilder(\Magento\Store\Model\WebsiteFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMockForAbstractClass();

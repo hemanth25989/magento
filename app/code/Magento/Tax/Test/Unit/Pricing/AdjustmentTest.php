@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Tax\Test\Unit\Pricing;
 
+use \Magento\Tax\Pricing\Adjustment;
+
 use Magento\Framework\Pricing\SaleableInterface;
-use Magento\Tax\Helper\Data;
-use Magento\Tax\Pricing\Adjustment;
-use PHPUnit\Framework\MockObject\MockObject;
 
-use PHPUnit\Framework\TestCase;
-
-class AdjustmentTest extends TestCase
+class AdjustmentTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Adjustment
@@ -22,12 +18,12 @@ class AdjustmentTest extends TestCase
     protected $adjustment;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Tax\Helper\Data | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $taxHelper;
 
     /**
-     * @var \Magento\Catalog\Helper\Data|MockObject
+     * @var \Magento\Catalog\Helper\Data | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $catalogHelper;
 
@@ -38,7 +34,7 @@ class AdjustmentTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->taxHelper = $this->createMock(Data::class);
+        $this->taxHelper = $this->createMock(\Magento\Tax\Helper\Data::class);
         $this->catalogHelper = $this->createMock(\Magento\Catalog\Helper\Data::class);
         $this->adjustment = new Adjustment($this->taxHelper, $this->catalogHelper, $this->sortOrder);
     }
@@ -107,7 +103,7 @@ class AdjustmentTest extends TestCase
      */
     public function testExtractAdjustment($isPriceIncludesTax, $amount, $price, $expectedResult)
     {
-        $object = $this->getMockForAbstractClass(SaleableInterface::class);
+        $object = $this->getMockForAbstractClass(\Magento\Framework\Pricing\SaleableInterface::class);
 
         $this->taxHelper->expects($this->any())
             ->method('priceIncludesTax')
@@ -142,8 +138,7 @@ class AdjustmentTest extends TestCase
      */
     public function testApplyAdjustment($amount, $price, $expectedResult)
     {
-        $object = $this->getMockBuilder(SaleableInterface::class)
-            ->getMock();
+        $object = $this->getMockBuilder(\Magento\Framework\Pricing\SaleableInterface::class)->getMock();
 
         $this->catalogHelper->expects($this->any())
             ->method('getTaxPrice')

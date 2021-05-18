@@ -17,7 +17,7 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\ObjectManager;
 use Magento\TestModuleCatalogSearch\Model\ElasticsearchVersionChecker;
-use Magento\Framework\Search\EngineResolverInterface;
+use \Magento\Framework\Search\EngineResolverInterface;
 
 /**
  * Test for Magento\Catalog\Model\Indexer\Category\Product\Action\Rows class.
@@ -137,8 +137,8 @@ class RowsTest extends \PHPUnit\Framework\TestCase
         $secondProductId = $productRepository->get('simpleC')->getId();
 
         $this->assertCount(2, $productIds);
-        $this->assertContains($secondProductId, $productIds);
-        $this->assertContains($firstProductId, $productIds);
+        $this->assertContains($secondProductId,$productIds);
+        $this->assertContains($firstProductId,$productIds);
     }
 
     /**

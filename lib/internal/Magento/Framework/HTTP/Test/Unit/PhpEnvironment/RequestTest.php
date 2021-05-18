@@ -3,21 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\HTTP\Test\Unit\PhpEnvironment;
 
-use Laminas\Stdlib\Parameters;
-use Magento\Framework\HTTP\PhpEnvironment\Request;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Stdlib\Cookie\CookieReaderInterface;
-use Magento\Framework\Stdlib\StringUtils;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
+use \Magento\Framework\HTTP\PhpEnvironment\Request;
 
-use PHPUnit\Framework\TestCase;
+use Zend\Stdlib\Parameters;
 
-class RequestTest extends TestCase
+class RequestTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Request
@@ -25,17 +17,17 @@ class RequestTest extends TestCase
     protected $model;
 
     /**
-     * @var ObjectManager|MockObject
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager  | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $objectManager;
 
     /**
-     * @var CookieReaderInterface|MockObject
+     * @var \Magento\Framework\Stdlib\Cookie\CookieReaderInterface | \PHPUnit\Framework\MockObject\MockObject
      */
     private $cookieReader;
 
     /**
-     * @var StringUtils|MockObject
+     * @var \Magento\Framework\Stdlib\StringUtils | \PHPUnit\Framework\MockObject\MockObject
      */
     private $converter;
 
@@ -46,9 +38,9 @@ class RequestTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->cookieReader = $this->getMockForAbstractClass(CookieReaderInterface::class);
-        $this->converter = $this->createMock(StringUtils::class);
+        $this->objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->cookieReader = $this->createMock(\Magento\Framework\Stdlib\Cookie\CookieReaderInterface::class);
+        $this->converter = $this->createMock(\Magento\Framework\Stdlib\StringUtils::class);
         // Stash the $_SERVER array to protect it from modification in test
         $this->serverArray = $_SERVER;
     }

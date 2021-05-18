@@ -11,19 +11,16 @@ declare(strict_types=1);
  */
 namespace Magento\Framework\Encryption\Test\Unit\Adapter;
 
-use Magento\Framework\Encryption\Adapter\Mcrypt;
-use PHPUnit\Framework\TestCase;
-
-class McryptTest extends TestCase
+class McryptTest extends \PHPUnit\Framework\TestCase
 {
     private $key;
 
     private static $cipherInfo;
 
     private const SUPPORTED_CIPHER_MODE_COMBINATIONS = [
-        MCRYPT_BLOWFISH => [MCRYPT_MODE_ECB],
-        MCRYPT_RIJNDAEL_128 => [MCRYPT_MODE_ECB],
-        MCRYPT_RIJNDAEL_256 => [MCRYPT_MODE_CBC],
+        MCRYPT_BLOWFISH => [MCRYPT_MODE_ECB],//phpcs:ignore
+        MCRYPT_RIJNDAEL_128 => [MCRYPT_MODE_ECB],//phpcs:ignore
+        MCRYPT_RIJNDAEL_256 => [MCRYPT_MODE_CBC],//phpcs:ignore
     ];
 
     protected function setUp(): void
@@ -103,7 +100,7 @@ class McryptTest extends TestCase
         /* Generate random init vector */
         $initVector = $this->getRandomString($this->getInitVectorSize($cipher, $mode));
 
-        $crypt = new Mcrypt($this->key, $cipher, $mode, $initVector);
+        $crypt = new \Magento\Framework\Encryption\Adapter\Mcrypt($this->key, $cipher, $mode, $initVector);//phpcs:ignore
 
         $this->assertEquals($cipher, $crypt->getCipher());
         $this->assertEquals($mode, $crypt->getMode());
@@ -137,19 +134,20 @@ class McryptTest extends TestCase
      */
     public function testConstructorException(string $key, string $cipher, string $mode, ?string $initVector = null)
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        new Mcrypt($key, $cipher, $mode, $initVector);
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
+
+        new \Magento\Framework\Encryption\Adapter\Mcrypt($key, $cipher, $mode, $initVector);//phpcs:ignore
     }
 
     public function testConstructorDefaults()
     {
-        $cryptExpected = new Mcrypt(
-            $this->key,
-            MCRYPT_BLOWFISH,
-            MCRYPT_MODE_ECB,
+        $cryptExpected = new \Magento\Framework\Encryption\Adapter\Mcrypt(//phpcs:ignore
+            $this->key,//phpcs:ignore
+            MCRYPT_BLOWFISH,//phpcs:ignore
+            MCRYPT_MODE_ECB,//phpcs:ignore
             null
         );
-        $cryptActual = new Mcrypt($this->key);
+        $cryptActual = new \Magento\Framework\Encryption\Adapter\Mcrypt($this->key);//phpcs:ignore
 
         $this->assertEquals($cryptExpected->getCipher(), $cryptActual->getCipher());
         $this->assertEquals($cryptExpected->getMode(), $cryptActual->getMode());
@@ -184,7 +182,7 @@ class McryptTest extends TestCase
         string $expectedData,
         string $inputData
     ) {
-        $crypt = new Mcrypt($key, $cipher, $mode, $initVector);
+        $crypt = new \Magento\Framework\Encryption\Adapter\Mcrypt($key, $cipher, $mode, $initVector);//phpcs:ignore
         $actualData = $crypt->decrypt($inputData);
         $this->assertEquals($expectedData, $actualData);
     }
@@ -194,7 +192,7 @@ class McryptTest extends TestCase
      */
     public function testInitVectorNone(string $cipher, string $mode)
     {
-        $crypt = new Mcrypt(
+        $crypt = new \Magento\Framework\Encryption\Adapter\Mcrypt(//phpcs:ignore
             $this->key,
             $cipher,
             $mode,

@@ -1,49 +1,37 @@
 <?php
-
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Directory\Test\Unit\Model;
 
-use Magento\Directory\Model\Currency;
-use Magento\Directory\Model\CurrencyInformationAcquirer;
-use Magento\Directory\Model\Data\CurrencyInformation;
-use Magento\Directory\Model\Data\CurrencyInformationFactory;
-use Magento\Directory\Model\Data\ExchangeRate;
-use Magento\Directory\Model\Data\ExchangeRateFactory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CurrencyInformationAcquirerTest extends TestCase
+/**
+ * Class CurrencyInformationAcquirerTest
+ */
+class CurrencyInformationAcquirerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CurrencyInformationAcquirer
+     * @var \Magento\Directory\Model\CurrencyInformationAcquirer
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $currencyInformationFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $exchangeRateFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeManager;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
@@ -52,25 +40,19 @@ class CurrencyInformationAcquirerTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->currencyInformationFactory = $this->getMockBuilder(CurrencyInformationFactory::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['create'])
-            ->getMock();
+        $className = \Magento\Directory\Model\Data\CurrencyInformationFactory::class;
+        $this->currencyInformationFactory = $this->createPartialMock($className, ['create']);
 
-        $this->exchangeRateFactory = $this->getMockBuilder(ExchangeRateFactory::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['create'])
-            ->getMock();
+        $className = \Magento\Directory\Model\Data\ExchangeRateFactory::class;
+        $this->exchangeRateFactory = $this->createPartialMock($className, ['create']);
 
-        $this->storeManager = $this->getMockBuilder(StoreManager::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['getStore'])
-            ->getMock();
+        $className = \Magento\Store\Model\StoreManager::class;
+        $this->storeManager = $this->createPartialMock($className, ['getStore']);
 
         $this->model = $this->objectManager->getObject(
-            CurrencyInformationAcquirer::class,
+            \Magento\Directory\Model\CurrencyInformationAcquirer::class,
             [
                 'currencyInformationFactory' => $this->currencyInformationFactory,
                 'exchangeRateFactory' => $this->exchangeRateFactory,
@@ -84,30 +66,27 @@ class CurrencyInformationAcquirerTest extends TestCase
      */
     public function testGetCurrencyInfo()
     {
-        /** @var ExchangeRate $exchangeRate */
-        $exchangeRate = $this->getMockBuilder(ExchangeRate::class)
-            ->addMethods(['load'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        /** @var \Magento\Directory\Model\Data\ExchangeRate $exchangeRate */
+        $exchangeRate = $this->createPartialMock(\Magento\Directory\Model\Data\ExchangeRate::class, ['load']);
 
         $exchangeRate->expects($this->any())->method('load')->willReturnSelf();
         $this->exchangeRateFactory->expects($this->any())->method('create')->willReturn($exchangeRate);
 
-        /** @var CurrencyInformation $currencyInformation */
-        $currencyInformation = $this->getMockBuilder(CurrencyInformation::class)
-            ->addMethods(['load'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        /** @var \Magento\Directory\Model\Data\CurrencyInformation $currencyInformation */
+        $currencyInformation = $this->createPartialMock(
+            \Magento\Directory\Model\Data\CurrencyInformation::class,
+            ['load']
+        );
 
         $currencyInformation->expects($this->any())->method('load')->willReturnSelf();
         $this->currencyInformationFactory->expects($this->any())->method('create')->willReturn($currencyInformation);
 
-        /** @var Store $store */
-        $store = $this->createMock(Store::class);
+        /** @var \Magento\Store\Model\Store $store */
+        $store = $this->createMock(\Magento\Store\Model\Store::class);
 
-        /** @var Currency $baseCurrency */
+        /** @var \Magento\Directory\Model\Currency $baseCurrency */
         $baseCurrency = $this->createPartialMock(
-            Currency::class,
+            \Magento\Directory\Model\Currency::class,
             ['getCode', 'getCurrencySymbol', 'getRate']
         );
         $baseCurrency->expects($this->atLeastOnce())->method('getCode')->willReturn('USD');

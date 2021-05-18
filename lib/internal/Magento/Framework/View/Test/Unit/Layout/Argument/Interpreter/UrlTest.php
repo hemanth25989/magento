@@ -3,25 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Layout\Argument\Interpreter;
 
-use Magento\Framework\UrlInterface;
-use Magento\Framework\View\Layout\Argument\Interpreter\NamedParams;
-use Magento\Framework\View\Layout\Argument\Interpreter\Url;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\View\Layout\Argument\Interpreter\Url;
 
-class UrlTest extends TestCase
+class UrlTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var UrlInterface|MockObject
+     * @var \Magento\Framework\UrlInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_urlResolver;
 
     /**
-     * @var NamedParams|MockObject
+     * @var \Magento\Framework\View\Layout\Argument\Interpreter\NamedParams|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_interpreter;
 
@@ -32,8 +26,8 @@ class UrlTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->_urlResolver = $this->getMockForAbstractClass(UrlInterface::class);
-        $this->_interpreter = $this->createMock(NamedParams::class);
+        $this->_urlResolver = $this->createMock(\Magento\Framework\UrlInterface::class);
+        $this->_interpreter = $this->createMock(\Magento\Framework\View\Layout\Argument\Interpreter\NamedParams::class);
         $this->_model = new Url($this->_urlResolver, $this->_interpreter);
     }
 
@@ -68,10 +62,13 @@ class UrlTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
+    /**
+     */
     public function testEvaluateWrongPath()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('URL path is missing');
+
         $input = [];
         $this->_model->evaluate($input);
     }

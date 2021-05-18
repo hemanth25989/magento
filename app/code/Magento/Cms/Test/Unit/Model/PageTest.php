@@ -3,25 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Model;
 
 use Magento\Cms\Model\Page;
-use Magento\Cms\Model\ResourceModel\Page as PageResource;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Model\Context;
+use Magento\Cms\Model\ResourceModel\Page as PageResource;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Magento\Cms\Model\Page
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PageTest extends TestCase
+class PageTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Cms\Model\Page
@@ -29,27 +24,27 @@ class PageTest extends TestCase
     protected $model;
 
     /**
-     * @var \Magento\Backend\Block\Template\Context|MockObject
+     * @var \Magento\Backend\Block\Template\Context|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $contextMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var ManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $eventManagerMock;
 
     /**
-     * @var PageResource|MockObject
+     * @var PageResource|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resourcePageMock;
 
     /**
-     * @var AbstractResource|MockObject
+     * @var AbstractResource|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resourcesMock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $scopeConfigMock;
 
@@ -81,7 +76,7 @@ class PageTest extends TestCase
             ->method('getResources')
             ->willReturn($this->resourcesMock);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->model = $objectManager->getObject(
             Page::class,
@@ -120,14 +115,15 @@ class PageTest extends TestCase
             ->willReturn($fetchOneResult);
 
         $this->assertIsString($this->model->checkIdentifier($identifier, $storeId));
-        // TODO: After migration to PHPUnit 8, replace deprecated method
-        // $this->assertIsString($this->model->checkIdentifier($identifier, $storeId));
     }
 
+    /**
+     */
     public function testBeforeSave404Identifier()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('This identifier is reserved for "CMS No Route Page" in configuration.');
+
         $this->model->setId(1);
         $this->model->setOrigData('identifier', 'no-route');
         $this->model->setIdentifier('no-route2');
@@ -148,10 +144,13 @@ class PageTest extends TestCase
         $this->model->beforeSave();
     }
 
+    /**
+     */
     public function testBeforeSaveHomeIdentifier()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('This identifier is reserved for "CMS Home Page" in configuration.');
+
         $this->model->setId(1);
         $this->model->setOrigData('identifier', 'home');
         $this->model->setIdentifier('home2');
@@ -172,10 +171,13 @@ class PageTest extends TestCase
         $this->model->beforeSave();
     }
 
+    /**
+     */
     public function testBeforeSaveNoCookiesIdentifier()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('This identifier is reserved for "CMS No Cookies Page" in configuration.');
+
         $this->model->setId(1);
         $this->model->setOrigData('identifier', 'no-cookies');
         $this->model->setIdentifier('no-cookies2');

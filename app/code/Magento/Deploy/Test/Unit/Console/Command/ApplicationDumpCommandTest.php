@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Deploy\Test\Unit\Console\Command;
 
 use Magento\Config\Model\Config\Export\Comment;
@@ -14,48 +12,46 @@ use Magento\Framework\App\Config\Reader\Source\SourceInterface;
 use Magento\Framework\App\DeploymentConfig\Writer;
 use Magento\Framework\Config\File\ConfigFilePool;
 use Magento\Framework\Console\Cli;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Test command for dump application state
  */
-class ApplicationDumpCommandTest extends TestCase
+class ApplicationDumpCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var InputInterface|MockObject
+     * @var InputInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $input;
 
     /**
-     * @var OutputInterface|MockObject
+     * @var OutputInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $output;
 
     /**
-     * @var Writer|MockObject
+     * @var Writer|\PHPUnit\Framework\MockObject\MockObject
      */
     private $writer;
 
     /**
-     * @var SourceInterface|MockObject
+     * @var SourceInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $source;
 
     /**
-     * @var SourceInterface|MockObject
+     * @var SourceInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $sourceEnv;
 
     /**
-     * @var Hash|MockObject
+     * @var Hash|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configHashMock;
 
     /**
-     * @var Comment|MockObject
+     * @var Comment|\PHPUnit\Framework\MockObject\MockObject
      */
     private $commentMock;
 

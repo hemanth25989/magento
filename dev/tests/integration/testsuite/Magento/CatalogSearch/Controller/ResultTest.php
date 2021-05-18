@@ -25,10 +25,10 @@ class ResultTest extends \Magento\TestFramework\TestCase\AbstractController
         $this->dispatch('catalogsearch/result');
 
         $responseBody = $this->getResponse()->getBody();
-        $this->assertStringNotContainsString('for="search">Search', $responseBody);
+        $this->assertNotContains('for="search">Search', $responseBody);
         $this->assertStringMatchesFormat('%aSuche%S%a', $responseBody);
 
-        $this->assertStringNotContainsString('Search entire store here...', $responseBody);
+        $this->assertNotContains('Search entire store here...', $responseBody);
         $this->assertStringContainsString('Den gesamten Shop durchsuchen...', $responseBody);
     }
 

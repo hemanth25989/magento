@@ -3,18 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit\Layout;
 
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Layout\Builder;
-use Magento\Framework\View\Layout\BuilderFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class BuilderFactoryTest extends TestCase
+class BuilderFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -22,12 +16,12 @@ class BuilderFactoryTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var BuilderFactory
+     * @var \Magento\Framework\View\Layout\BuilderFactory
      */
     protected $buildFactory;
 
@@ -35,16 +29,16 @@ class BuilderFactoryTest extends TestCase
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
 
         $this->buildFactory = $this->objectManagerHelper->getObject(
-            BuilderFactory::class,
+            \Magento\Framework\View\Layout\BuilderFactory::class,
             [
                 'objectManager' => $this->objectManagerMock,
                 'typeMap' => [
                     [
                         'type' => 'invalid_type',
-                        'class' => BuilderFactory::class,
+                        'class' => \Magento\Framework\View\Layout\BuilderFactory::class,
                     ],
                 ]
             ]
@@ -59,7 +53,7 @@ class BuilderFactoryTest extends TestCase
      */
     public function testCreate($type, $arguments, $layoutBuilderClass)
     {
-        $layoutBuilderMock = $this->getMockBuilder(Builder::class)
+        $layoutBuilderMock = $this->getMockBuilder(\Magento\Framework\View\Layout\Builder::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -78,23 +72,29 @@ class BuilderFactoryTest extends TestCase
     {
         return [
             'layout_type' => [
-                'type' => BuilderFactory::TYPE_LAYOUT,
+                'type' => \Magento\Framework\View\Layout\BuilderFactory::TYPE_LAYOUT,
                 'arguments' => ['key' => 'val'],
-                'layoutBuilderClass' => Builder::class,
+                'layoutBuilderClass' => \Magento\Framework\View\Layout\Builder::class,
             ]
         ];
     }
 
+    /**
+     */
     public function testCreateInvalidData()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->buildFactory->create('some_wrong_type', []);
     }
 
+    /**
+     */
     public function testCreateWithNonBuilderClass()
     {
-        $this->expectException('InvalidArgumentException');
-        $wrongClass = $this->getMockBuilder(BuilderFactory::class)
+        $this->expectException(\InvalidArgumentException::class);
+
+        $wrongClass = $this->getMockBuilder(\Magento\Framework\View\Layout\BuilderFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 

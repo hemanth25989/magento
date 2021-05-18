@@ -3,43 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Deploy\Test\Unit\Model\DeploymentConfig;
 
 use Magento\Deploy\Model\DeploymentConfig\DataCollector;
 use Magento\Deploy\Model\DeploymentConfig\Hash;
 use Magento\Deploy\Model\DeploymentConfig\Hash\Generator;
+use Magento\Framework\App\DeploymentConfig;
 use Magento\Framework\Flag;
 use Magento\Framework\Flag\FlagResource;
 use Magento\Framework\FlagFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class HashTest extends TestCase
+class HashTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Generator|MockObject
+     * @var Generator|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configHashGeneratorMock;
 
     /**
-     * @var DataCollector|MockObject
+     * @var DataCollector|\PHPUnit\Framework\MockObject\MockObject
      */
     private $dataConfigCollectorMock;
 
     /**
-     * @var FlagFactory|MockObject
+     * @var FlagFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $flagFactoryMock;
 
     /**
-     * @var FlagResource|MockObject
+     * @var FlagResource|\PHPUnit\Framework\MockObject\MockObject
      */
     private $flagResourceMock;
 
     /**
-     * @var Flag|MockObject
+     * @var Flag|\PHPUnit\Framework\MockObject\MockObject
      */
     private $flagMock;
 
@@ -60,6 +58,9 @@ class HashTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $this->flagMock = $this->getMockBuilder(Flag::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->deploymentConfigMock = $this->getMockBuilder(DeploymentConfig::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->configHashGeneratorMock = $this->getMockBuilder(Generator::class)
@@ -139,8 +140,9 @@ class HashTest extends TestCase
      */
     public function testRegenerateWithException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('The hash isn\'t saved.');
+
         $section = 'section';
         $config = 'some config';
         $fullConfig = ['section' => $config];

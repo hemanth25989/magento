@@ -686,6 +686,7 @@ class Eav extends AbstractModifier
                 'scopeLabel' => $this->getScopeLabel($attribute),
                 'globalScope' => $this->isScopeGlobal($attribute),
                 'sortOrder' => $sortOrder * self::SORT_ORDER_MULTIPLIER,
+                '__disableTmpl' => ['label' => true, 'code' => true]
             ]
         );
         $product = $this->locator->getProduct();
@@ -751,9 +752,6 @@ class Eav extends AbstractModifier
             case 'gallery':
                 // Gallery attribute is being handled by "Images And Videos" section
                 $meta = [];
-                break;
-            case 'datetime':
-                $meta = $this->customizeDatetimeAttribute($meta);
                 break;
         }
 
@@ -862,6 +860,7 @@ class Eav extends AbstractModifier
                 'breakLine' => false,
                 'label' => $attribute->getDefaultFrontendLabel(),
                 'required' => $attribute->getIsRequired(),
+                '__disableTmpl' => ['label' => true]
             ]
         );
 
@@ -957,19 +956,6 @@ class Eav extends AbstractModifier
         $meta['arguments']['data']['config']['formElement'] = WysiwygElement::NAME;
         $meta['arguments']['data']['config']['wysiwyg'] = true;
         $meta['arguments']['data']['config']['wysiwygConfigData'] = $this->wysiwygConfigProcessor->process($attribute);
-
-        return $meta;
-    }
-
-    /**
-     * Customize datetime attribute
-     *
-     * @param array $meta
-     * @return array
-     */
-    private function customizeDatetimeAttribute(array $meta): array
-    {
-        $meta['arguments']['data']['config']['options']['showsTime'] = 1;
 
         return $meta;
     }

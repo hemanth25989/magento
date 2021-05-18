@@ -3,18 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Elasticsearch\Test\Unit\Model\Adapter\FieldMapper;
 
-use Magento\Elasticsearch\Model\Adapter\FieldMapper\FieldMapperResolver;
-use Magento\Elasticsearch\Model\Adapter\FieldMapperInterface;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Elasticsearch\Model\Adapter\FieldMapper\FieldMapperResolver;
+use Magento\Framework\ObjectManagerInterface;
 
-class FieldMapperResolverTest extends TestCase
+class FieldMapperResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var FieldMapperResolver
@@ -22,7 +17,7 @@ class FieldMapperResolverTest extends TestCase
     private $model;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $objectManagerMock;
 
@@ -32,7 +27,7 @@ class FieldMapperResolverTest extends TestCase
     private $fieldMappers;
 
     /**
-     * @var FieldMapperInterface|MockObject
+     * @var FieldMapperInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $fieldMapperEntity;
 
@@ -43,11 +38,11 @@ class FieldMapperResolverTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->fieldMapperEntity = $this->getMockBuilder(
-            FieldMapperInterface::class
+            \Magento\Elasticsearch\Model\Adapter\FieldMapperInterface::class
         )
             ->disableOriginalConstructor()
             ->getMock();
@@ -56,7 +51,7 @@ class FieldMapperResolverTest extends TestCase
         ];
         $objectManager = new ObjectManagerHelper($this);
         $this->model = $objectManager->getObject(
-            FieldMapperResolver::class,
+            \Magento\Elasticsearch\Model\Adapter\FieldMapper\FieldMapperResolver::class,
             [
                 'objectManager' => $this->objectManagerMock,
                 'fieldMappers' => $this->fieldMappers

@@ -65,6 +65,18 @@ class PhpCookieManager implements CookieManagerInterface
      */
     private $httpHeader;
 
+    /**#@+
+     * Constant for SameSite Supported Php Version
+     */
+    private const SAMESITE_SUPPORTED_PHP_VERSION = '7.3';
+    /**#@-*/
+
+    /**#@+
+     * Constant for Set-Cookie Header
+     */
+    private const COOKIE_HEADER = 'Set-Cookie:';
+    /**#@-*/
+
     /**
      * @param CookieScopeInterface $scope
      * @param CookieReaderInterface $reader
@@ -140,30 +152,35 @@ class PhpCookieManager implements CookieManagerInterface
 
         $this->checkAbilityToSendCookie($name, $value);
 
-        $phpSetcookieSuccess = setcookie(
-            $name,
-            $value,
-            [
-                'expires' => $expire,
-                'path' => $this->extractValue(CookieMetadata::KEY_PATH, $metadataArray, ''),
-                'domain' => $this->extractValue(CookieMetadata::KEY_DOMAIN, $metadataArray, ''),
-                'secure' => $this->extractValue(CookieMetadata::KEY_SECURE, $metadataArray, false),
-                'httponly' => $this->extractValue(CookieMetadata::KEY_HTTP_ONLY, $metadataArray, false),
-                'samesite' => $this->extractValue(CookieMetadata::KEY_SAME_SITE, $metadataArray, 'Lax')
-            ]
-        );
+        if (version_compare(phpversion(), self::SAMESITE_SUPPORTED_PHP_VERSION, '>=')) {
 
-        if (!$phpSetcookieSuccess) {
-            $params['name'] = $name;
-            if ($value == '') {
-                throw new FailureToSendException(
-                    new Phrase('The cookie with "%name" cookieName couldn\'t be deleted.', $params)
-                );
-            } else {
-                throw new FailureToSendException(
-                    new Phrase('The cookie with "%name" cookieName couldn\'t be sent. Please try again later.', $params)
-                );
+            $phpSetcookieSuccess = setcookie(
+                $name,
+                $value,
+                [
+                    'expires' => $expire,
+                    'path' => $this->extractValue(CookieMetadata::KEY_PATH, $metadataArray, ''),
+                    'domain' => $this->extractValue(CookieMetadata::KEY_DOMAIN, $metadataArray, ''),
+                    'secure' => $this->extractValue(CookieMetadata::KEY_SECURE, $metadataArray, false),
+                    'httponly' => $this->extractValue(CookieMetadata::KEY_HTTP_ONLY, $metadataArray, false),
+                    'samesite' => $this->extractValue(CookieMetadata::KEY_SAME_SITE, $metadataArray, 'Lax')
+                ]
+            );
+            if (!$phpSetcookieSuccess) {
+                $params['name'] = $name;
+                if ($value == '') {
+                    throw new FailureToSendException(
+                        new Phrase('The cookie with "%name" cookieName couldn\'t be deleted.', $params)
+                    );
+                } else {
+                    $exceptionMessage = 'The cookie with "%name" cookieName couldn\'t be sent. Please try again later.';
+                    throw new FailureToSendException(
+                        new Phrase($exceptionMessage, $params)
+                    );
+                }
             }
+        } else {
+            $this->setCookieSameSite($name, $value, $metadataArray);
         }
     }
 
@@ -308,5 +325,79 @@ class PhpCookieManager implements CookieManagerInterface
 
         // Remove the cookie
         unset($_COOKIE[$name]);
+    }
+
+    /**
+     * Polyfill for Set-Cookie with support for SameSite attribute
+     *
+     * Supports Php version 7.2 and lower
+     *
+     * @param string $name
+     * @param string $value
+     * @param array $metadataArray
+     * @throws FailureToSendException
+     * @return void
+     */
+    private function setCookieSameSite(string $name, string $value, array $metadataArray): void
+    {
+
+        $expires = $this->computeExpirationTime($metadataArray);
+        $path = $this->extractValue(CookieMetadata::KEY_PATH, $metadataArray, '');
+        $domain = $this->extractValue(CookieMetadata::KEY_DOMAIN, $metadataArray, '');
+        $secure = $this->extractValue(CookieMetadata::KEY_SECURE, $metadataArray, false);
+        $httpOnly = $this->extractValue(CookieMetadata::KEY_HTTP_ONLY, $metadataArray, false);
+        $sameSite = $this->extractValue(CookieMetadata::KEY_SAME_SITE, $metadataArray, 'Lax');
+        $params = [];
+        $setCookieSuccess = false;
+
+        if ('' === $value) {
+            $params[] = $name . '=' . 'deleted';
+
+        } else {
+            $params[] = $name . '=' . rawurlencode($value);
+        }
+
+        if (0 !== $expires) {
+            $formattedExpirationTime = gmdate('D, d-M-Y H:i:s T', $expires);
+            $params[] = sprintf('expires=%s', $formattedExpirationTime);
+        }
+
+        if ($path) {
+            $params[] = sprintf('path=%s', $path);
+        }
+
+        if ($domain) {
+            $params[] = sprintf('domain=%s', $domain);
+        }
+
+        if ($httpOnly) {
+            $params[] = 'HttpOnly';
+        }
+
+        if ($secure) {
+            $params[] = 'secure';
+        }
+
+        $params[] = sprintf('SameSite=%s', $sameSite);
+        $header = sprintf(self::COOKIE_HEADER . "%s", implode('; ', $params));
+        header($header, false);
+
+        $setCookieSuccess = array_filter(headers_list(), function ($value) use ($header) {
+            return strpos($value, $header) !== false;
+        });
+
+        if (!$setCookieSuccess) {
+            $args['name'] = $name;
+            if ($value == '') {
+                throw new FailureToSendException(
+                    new Phrase('The cookie with "%name" cookieName couldn\'t be deleted.', $args)
+                );
+            } else {
+                $exceptionMessage = 'The cookie with "%name" cookieName couldn\'t be sent. Please try again later.';
+                throw new FailureToSendException(
+                    new Phrase($exceptionMessage, $args)
+                );
+            }
+        }
     }
 }

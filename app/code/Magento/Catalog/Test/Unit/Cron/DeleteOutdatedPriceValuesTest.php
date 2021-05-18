@@ -16,13 +16,11 @@ use Magento\Framework\App\Config\MutableScopeConfigInterface as ScopeConfig;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Magento\Catalog\Cron\DeleteOutdatedPriceValues
  */
-class DeleteOutdatedPriceValuesTest extends TestCase
+class DeleteOutdatedPriceValuesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Testable Object
@@ -32,32 +30,32 @@ class DeleteOutdatedPriceValuesTest extends TestCase
     private $deleteOutdatedPriceValues;
 
     /**
-     * @var AttributeRepository|MockObject
+     * @var AttributeRepository|\PHPUnit\Framework\MockObject\MockObject
      */
     private $attributeRepositoryMock;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit\Framework\MockObject\MockObject
      */
     private $resourceConnectionMock;
 
     /**
-     * @var ScopeConfig|MockObject
+     * @var ScopeConfig|\PHPUnit\Framework\MockObject\MockObject
      */
     private $scopeConfigMock;
 
     /**
-     * @var Attribute|MockObject
+     * @var Attribute|\PHPUnit\Framework\MockObject\MockObject
      */
     private $attributeMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var AdapterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $dbAdapterMock;
 
     /**
-     * @var BackendInterface|MockObject
+     * @var BackendInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $attributeBackendMock;
 

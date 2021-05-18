@@ -3,44 +3,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Downloadable\Test\Unit\Model\Sales\Order\Pdf\Items;
-
-use Magento\Downloadable\Model\Sales\Order\Pdf\Items\Creditmemo;
-use Magento\Framework\DataObject;
-use Magento\Framework\Filter\FilterManager;
-use Magento\Framework\Stdlib\StringUtils;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Pdf\AbstractPdf;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CreditmemoTest extends TestCase
+class CreditmemoTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Creditmemo
+     * @var \Magento\Downloadable\Model\Sales\Order\Pdf\Items\Creditmemo
      */
     private $model;
 
     /**
-     * @var Order|MockObject
+     * @var \Magento\Sales\Model\Order|\PHPUnit\Framework\MockObject\MockObject
      */
     private $order;
 
     /**
-     * @var AbstractPdf|MockObject
+     * @var \Magento\Sales\Model\Order\Pdf\AbstractPdf|\PHPUnit\Framework\MockObject\MockObject
      */
     private $pdf;
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
-        $this->order = $this->getMockBuilder(Order::class)
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->order = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->order->expects($this->any())
@@ -48,22 +36,22 @@ class CreditmemoTest extends TestCase
             ->willReturnCallback([$this, 'formatPrice']);
 
         $this->pdf = $this->createPartialMock(
-            AbstractPdf::class,
+            \Magento\Sales\Model\Order\Pdf\AbstractPdf::class,
             ['drawLineBlocks', 'getPdf']
         );
 
-        $filterManager = $this->getMockBuilder(FilterManager::class)
-            ->addMethods(['stripTags'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $filterManager = $this->createPartialMock(
+            \Magento\Framework\Filter\FilterManager::class,
+            ['stripTags']
+        );
         $filterManager->expects($this->any())->method('stripTags')->willReturnArgument(0);
 
         $modelConstructorArgs = $objectManager->getConstructArguments(
-            Creditmemo::class,
-            ['string' => new StringUtils(), 'filterManager' => $filterManager]
+            \Magento\Downloadable\Model\Sales\Order\Pdf\Items\Creditmemo::class,
+            ['string' => new \Magento\Framework\Stdlib\StringUtils(), 'filterManager' => $filterManager]
         );
 
-        $this->model = $this->getMockBuilder(Creditmemo::class)
+        $this->model = $this->getMockBuilder(\Magento\Downloadable\Model\Sales\Order\Pdf\Items\Creditmemo::class)
             ->setMethods(['getLinks', 'getLinksTitle'])
             ->setConstructorArgs($modelConstructorArgs)
             ->getMock();
@@ -117,7 +105,7 @@ class CreditmemoTest extends TestCase
         ];
 
         $this->model->setItem(
-            new DataObject(
+            new \Magento\Framework\DataObject(
                 [
                     'name' => 'Downloadable Documentation',
                     'sku' => 'downloadable-documentation',
@@ -126,7 +114,7 @@ class CreditmemoTest extends TestCase
                     'qty' => 1,
                     'tax_amount' => 2.00,
                     'discount_tax_compensation_amount' => 0.00,
-                    'order_item' => new DataObject(
+                    'order_item' => new \Magento\Framework\DataObject(
                         [
                             'product_options' => [
                                 'options' => [['label' => 'Test Custom Option', 'value' => 'test value']],
@@ -143,9 +131,9 @@ class CreditmemoTest extends TestCase
             'getLinks'
         )->willReturn(
             
-                new DataObject(
+                new \Magento\Framework\DataObject(
                     ['purchased_items' => [
-                        new DataObject(['link_title' => 'Magento User Guide']), ],
+                        new \Magento\Framework\DataObject(['link_title' => 'Magento User Guide']), ],
                     ]
                 )
             

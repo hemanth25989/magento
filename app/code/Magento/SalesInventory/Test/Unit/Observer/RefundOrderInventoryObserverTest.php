@@ -3,30 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\SalesInventory\Test\Unit\Observer;
 
-use Magento\Catalog\Model\Indexer\Product\Price\Processor;
-use Magento\CatalogInventory\Api\StockConfigurationInterface;
-use Magento\CatalogInventory\Api\StockManagementInterface;
-use Magento\CatalogInventory\Model\StockManagement;
-use Magento\Framework\Event;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Model\Order\Creditmemo;
-use Magento\Sales\Model\Order\Creditmemo\Item;
 use Magento\Sales\Model\OrderRepository;
 use Magento\SalesInventory\Model\Order\ReturnProcessor;
 use Magento\SalesInventory\Observer\RefundOrderInventoryObserver;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RefundOrderInventoryObserverTest extends TestCase
+class RefundOrderInventoryObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var RefundOrderInventoryObserver
@@ -34,52 +21,52 @@ class RefundOrderInventoryObserverTest extends TestCase
     protected $observer;
 
     /**
-     * @var Processor|MockObject
+     * @var \Magento\Catalog\Model\Indexer\Product\Price\Processor|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $priceIndexer;
 
     /**
-     * @var \Magento\CatalogInventory\Model\Indexer\Stock\Processor|MockObject
+     * @var \Magento\CatalogInventory\Model\Indexer\Stock\Processor|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $stockIndexerProcessor;
 
     /**
-     * @var StockManagementInterface|MockObject
+     * @var \Magento\CatalogInventory\Api\StockManagementInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $stockManagement;
 
     /**
-     * @var StockConfigurationInterface|MockObject
+     * @var \Magento\CatalogInventory\Api\StockConfigurationInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $stockConfiguration;
 
     /**
-     * @var Event|MockObject
+     * @var \Magento\Framework\Event|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $event;
 
     /**
-     * @var Observer|MockObject
+     * @var \Magento\Framework\Event\Observer|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $eventObserver;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManagerHelper;
 
     /**
-     * @var OrderRepository|MockObject
+     * @var OrderRepository|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $orderRepositoryMock;
 
     /**
-     * @var ReturnProcessor|MockObject
+     * @var ReturnProcessor|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $returnProcessorMock;
 
     /**
-     * @var OrderInterface|MockObject
+     * @var OrderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $orderMock;
 
@@ -90,10 +77,10 @@ class RefundOrderInventoryObserverTest extends TestCase
             ['reindexList']
         );
 
-        $this->stockManagement = $this->createMock(StockManagement::class);
+        $this->stockManagement = $this->createMock(\Magento\CatalogInventory\Model\StockManagement::class);
 
         $this->stockConfiguration = $this->getMockForAbstractClass(
-            StockConfigurationInterface::class,
+            \Magento\CatalogInventory\Api\StockConfigurationInterface::class,
             [
                 'isAutoReturnEnabled',
                 'isDisplayProductStockStatus'
@@ -102,16 +89,16 @@ class RefundOrderInventoryObserverTest extends TestCase
             false
         );
 
-        $this->priceIndexer = $this->getMockBuilder(Processor::class)
+        $this->priceIndexer = $this->getMockBuilder(\Magento\Catalog\Model\Indexer\Product\Price\Processor::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->event = $this->getMockBuilder(Event::class)
+        $this->event = $this->getMockBuilder(\Magento\Framework\Event::class)
             ->disableOriginalConstructor()
             ->setMethods(['getProduct', 'getCollection', 'getCreditmemo', 'getQuote', 'getWebsite'])
             ->getMock();
 
-        $this->eventObserver = $this->getMockBuilder(Observer::class)
+        $this->eventObserver = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->disableOriginalConstructor()
             ->setMethods(['getEvent'])
             ->getMock();
@@ -132,10 +119,10 @@ class RefundOrderInventoryObserverTest extends TestCase
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-        $this->objectManagerHelper = new ObjectManager($this);
+        $this->objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->observer = $this->objectManagerHelper->getObject(
-            RefundOrderInventoryObserver::class,
+            \Magento\SalesInventory\Observer\RefundOrderInventoryObserver::class,
             [
                 'stockConfiguration' => $this->stockConfiguration,
                 'stockManagement' => $this->stockManagement,
@@ -161,7 +148,7 @@ class RefundOrderInventoryObserverTest extends TestCase
         $ids = ['1', '14'];
         $items = [];
 
-        $creditMemo = $this->createMock(Creditmemo::class);
+        $creditMemo = $this->createMock(\Magento\Sales\Model\Order\Creditmemo::class);
 
         foreach ($ids as $id) {
             $item = $this->getCreditMemoItem($id);
@@ -188,16 +175,15 @@ class RefundOrderInventoryObserverTest extends TestCase
 
     /**
      * @param $productId
-     * @return MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function getCreditMemoItem($productId)
     {
         $backToStock = true;
-        $item = $this->getMockBuilder(Item::class)
-            ->addMethods(['getBackToStock'])
-            ->onlyMethods(['getOrderItemId', 'getQty', '__wakeup'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $item = $this->createPartialMock(
+            \Magento\Sales\Model\Order\Creditmemo\Item::class,
+            ['getOrderItemId', 'getBackToStock', 'getQty', '__wakeup']
+        );
         $item->expects($this->any())->method('getBackToStock')->willReturn($backToStock);
         $item->expects($this->any())->method('getOrderItemId')->willReturn($productId);
         return $item;

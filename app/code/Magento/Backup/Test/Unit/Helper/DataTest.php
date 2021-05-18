@@ -3,41 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backup\Test\Unit\Helper;
 
-use Magento\Backup\Helper\Data;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\MaintenanceMode;
 use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\ReadInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DataTest extends TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Data
+     * @var \Magento\Backup\Helper\Data
      */
     protected $helper;
 
     /**
-     * @var Filesystem|MockObject
+     * @var \Magento\Framework\Filesystem | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $filesystem;
 
     protected function setUp(): void
     {
-        $this->filesystem = $this->getMockBuilder(Filesystem::class)
-            ->disableOriginalConstructor()
+        $this->filesystem = $this->getMockBuilder(\Magento\Framework\Filesystem::class)->disableOriginalConstructor()
             ->getMock();
 
         $this->filesystem->expects($this->any())
             ->method('getDirectoryRead')
             ->willReturnCallback(function ($code) {
-                $dir = $this->getMockForAbstractClass(ReadInterface::class);
+                $dir = $this->getMockForAbstractClass(\Magento\Framework\Filesystem\Directory\ReadInterface::class);
                 $dir->expects($this->any())
                     ->method('getAbsolutePath')
                     ->willReturnCallback(function ($path) use ($code) {
@@ -47,9 +39,9 @@ class DataTest extends TestCase
                 return $dir;
             });
 
-        $this->helper = (new ObjectManager($this))
+        $this->helper = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))
             ->getObject(
-                Data::class,
+                \Magento\Backup\Helper\Data::class,
                 ['filesystem' => $this->filesystem]
             );
     }

@@ -3,27 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\CatalogWidget\Test\Unit\Model\Rule\Condition;
 
-use Magento\Catalog\Model\ResourceModel\Product\Collection;
-use Magento\CatalogWidget\Model\Rule\Condition\Combine;
-use Magento\CatalogWidget\Model\Rule\Condition\Product;
-use Magento\CatalogWidget\Model\Rule\Condition\ProductFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CombineTest extends TestCase
+/**
+ * Class CombineTest
+ */
+class CombineTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Combine|MockObject
+     * @var \Magento\CatalogWidget\Model\Rule\Condition\Combine|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $condition;
 
     /**
-     * @var ProductFactory|MockObject
+     * @var \Magento\CatalogWidget\Model\Rule\Condition\ProductFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $conditionFactory;
 
@@ -31,11 +27,11 @@ class CombineTest extends TestCase
     {
         $objectManagerHelper = new ObjectManagerHelper($this);
         $arguments = $objectManagerHelper->getConstructArguments(
-            Combine::class
+            \Magento\CatalogWidget\Model\Rule\Condition\Combine::class
         );
 
         $this->conditionFactory = $this->getMockBuilder(
-            ProductFactory::class
+            \Magento\CatalogWidget\Model\Rule\Condition\ProductFactory::class
         )->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -43,7 +39,7 @@ class CombineTest extends TestCase
         $arguments['excludedAttributes'] = ['excluded_attribute'];
 
         $this->condition = $objectManagerHelper->getObject(
-            Combine::class,
+            \Magento\CatalogWidget\Model\Rule\Condition\Combine::class,
             $arguments
         );
     }
@@ -52,7 +48,7 @@ class CombineTest extends TestCase
     {
         $expectedOptions = [
             ['value' => '', 'label' => __('Please choose a condition to add.')],
-            ['value' => Combine::class,
+            ['value' => \Magento\CatalogWidget\Model\Rule\Condition\Combine::class,
                 'label' => __('Conditions Combination')],
             ['label' => __('Product Attribute'), 'value' => [
                 ['value' => 'Magento\CatalogWidget\Model\Rule\Condition\Product|sku', 'label' => 'SKU'],
@@ -65,7 +61,7 @@ class CombineTest extends TestCase
             'category' => 'Category',
             'excluded_attribute' => 'Excluded attribute',
         ];
-        $productCondition = $this->getMockBuilder(Product::class)
+        $productCondition = $this->getMockBuilder(\Magento\CatalogWidget\Model\Rule\Condition\Product::class)
             ->setMethods(['loadAttributeOptions', 'getAttributeOption'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -80,14 +76,14 @@ class CombineTest extends TestCase
 
     public function testCollectValidatedAttributes()
     {
-        $collection = $this->getMockBuilder(Collection::class)
+        $collection = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\Collection::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $condition = $this->getMockBuilder(Combine::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['collectValidatedAttributes'])
+        $condition = $this->getMockBuilder(\Magento\CatalogWidget\Model\Rule\Condition\Combine::class)
+            ->disableOriginalConstructor()->setMethods(['collectValidatedAttributes'])
             ->getMock();
-        $condition->expects($this->any())->method('collectValidatedAttributes')->with($collection)->willReturnSelf();
+        $condition->expects($this->any())->method('collectValidatedAttributes')->with($collection)
+            ->willReturnSelf();
 
         $this->condition->setConditions([$condition]);
 

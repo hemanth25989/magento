@@ -5,14 +5,15 @@
  */
 declare(strict_types=1);
 
+
 namespace Magento\Catalog\Controller;
 
-use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Catalog\Model\Session;
-use Magento\Framework\Registry;
 use Magento\TestFramework\Catalog\Model\ProductLayoutUpdateManager;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Model\Session;
+use Magento\Framework\Registry;
 use Magento\TestFramework\Helper\Xpath;
 use Magento\TestFramework\TestCase\AbstractController;
 
@@ -42,12 +43,6 @@ class ProductTest extends AbstractController
         if (defined('HHVM_VERSION')) {
             $this->markTestSkipped('Randomly fails due to known HHVM bug (DOMText mixed with DOMElement)');
         }
-        Bootstrap::getObjectManager()->configure([
-            'preferences' => [
-                \Magento\Catalog\Model\Product\Attribute\LayoutUpdateManager::class =>
-                    \Magento\TestFramework\Catalog\Model\ProductLayoutUpdateManager::class
-            ]
-        ]);
         parent::setUp();
 
         $this->registry = $this->_objectManager->get(Registry::class);
@@ -169,10 +164,7 @@ class ProductTest extends AbstractController
         $product = $this->productRepository->get('simple_product_1');
         $this->dispatch(sprintf('catalog/product/gallery/id/%s', $product->getEntityId()));
 
-        $this->assertStringContainsString(
-            'http://localhost/media/catalog/product/',
-            $this->getResponse()->getBody()
-        );
+        $this->assertStringContainsString('http://localhost/pub/media/catalog/product/', $this->getResponse()->getBody());
         $this->assertStringContainsString($this->getProductImageFile(), $this->getResponse()->getBody());
     }
 
@@ -209,7 +201,6 @@ class ProductTest extends AbstractController
         $imageContent = ob_get_clean();
         /**
          * Check against PNG file signature.
-         *
          * @link http://www.libpng.org/pub/png/spec/1.2/PNG-Rationale.html#R.PNG-file-signature
          */
         $this->assertStringStartsWith(sprintf("%cPNG\r\n%c\n", 137, 26), $imageContent);

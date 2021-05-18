@@ -3,55 +3,45 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\DB\Test\Unit;
 
-use Magento\Framework\Api\CriteriaInterface;
-use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\DB\Query;
-use Magento\Framework\DB\Select;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
-
-class QueryTest extends TestCase
+/**
+ * Class QueryTest
+ */
+class QueryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $selectMock;
 
     /**
-     * @var CriteriaInterface|MockObject
+     * @var \Magento\Framework\Api\CriteriaInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $criteriaMock;
 
     /**
-     * @var AbstractDb|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\Db\AbstractDb|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resourceMock;
 
     /**
-     * @var \Zend_Db_Statement_Pdo|MockObject
+     * @var \Zend_Db_Statement_Pdo|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $fetchStmtMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $loggerMock;
 
     /**
-     * @var FetchStrategyInterface|MockObject
+     * @var \Magento\Framework\Data\Collection\Db\FetchStrategyInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $fetchStrategyMock;
 
     /**
-     * @var Query
+     * @var \Magento\Framework\DB\Query
      */
     protected $query;
 
@@ -62,12 +52,12 @@ class QueryTest extends TestCase
      */
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->selectMock =
-            $this->createPartialMock(Select::class, ['reset', 'columns', 'getConnection']);
+            $this->createPartialMock(\Magento\Framework\DB\Select::class, ['reset', 'columns', 'getConnection']);
         $this->criteriaMock = $this->getMockForAbstractClass(
-            CriteriaInterface::class,
+            \Magento\Framework\Api\CriteriaInterface::class,
             [],
             '',
             false,
@@ -76,7 +66,7 @@ class QueryTest extends TestCase
             []
         );
         $this->resourceMock = $this->getMockForAbstractClass(
-            AbstractDb::class,
+            \Magento\Framework\Model\ResourceModel\Db\AbstractDb::class,
             [],
             '',
             false,
@@ -85,9 +75,9 @@ class QueryTest extends TestCase
             ['getIdFieldName']
         );
         $this->fetchStmtMock = $this->createPartialMock(\Zend_Db_Statement_Pdo::class, ['fetch']);
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
         $this->fetchStrategyMock = $this->getMockForAbstractClass(
-            FetchStrategyInterface::class,
+            \Magento\Framework\Data\Collection\Db\FetchStrategyInterface::class,
             [],
             '',
             false,
@@ -97,7 +87,7 @@ class QueryTest extends TestCase
         );
 
         $this->query = $objectManager->getObject(
-            Query::class,
+            \Magento\Framework\DB\Query::class,
             [
                 'select' => $this->selectMock,
                 'criteria' => $this->criteriaMock,
@@ -114,7 +104,7 @@ class QueryTest extends TestCase
      */
     public function testGetAllIds()
     {
-        $adapterMock = $this->createPartialMock(Mysql::class, ['fetchCol']);
+        $adapterMock = $this->createPartialMock(\Magento\Framework\DB\Adapter\Pdo\Mysql::class, ['fetchCol']);
         $this->resourceMock->expects($this->once())
             ->method('getIdFieldName')
             ->willReturn('return-value');
@@ -135,7 +125,7 @@ class QueryTest extends TestCase
      */
     public function testGetSize()
     {
-        $adapterMock = $this->createPartialMock(Mysql::class, ['fetchOne']);
+        $adapterMock = $this->createPartialMock(\Magento\Framework\DB\Adapter\Pdo\Mysql::class, ['fetchOne']);
 
         $this->selectMock->expects($this->once())
             ->method('columns')
@@ -171,7 +161,7 @@ class QueryTest extends TestCase
      */
     public function testFetchItem()
     {
-        $adapterMock = $this->createPartialMock(Mysql::class, ['query']);
+        $adapterMock = $this->createPartialMock(\Magento\Framework\DB\Adapter\Pdo\Mysql::class, ['query']);
         $this->selectMock->expects($this->once())
             ->method('getConnection')
             ->willReturn($adapterMock);

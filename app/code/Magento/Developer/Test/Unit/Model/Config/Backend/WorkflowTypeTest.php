@@ -1,20 +1,18 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Developer\Test\Unit\Model\Config\Backend;
 
-use Magento\Developer\Model\Config\Backend\WorkflowType;
-use Magento\Developer\Model\Config\Source\WorkflowType as SourceWorkflowType;
 use Magento\Framework\App\State;
-use Magento\Framework\App\State\CleanupFiles;
 use Magento\Framework\Model\Context;
+use Magento\Developer\Model\Config\Backend\WorkflowType;
+use Magento\Framework\App\State\CleanupFiles;
+use Magento\Developer\Model\Config\Source\WorkflowType as SourceWorkflowType;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class WorkflowTypeTest extends TestCase
+class WorkflowTypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var WorkflowType
@@ -22,12 +20,12 @@ class WorkflowTypeTest extends TestCase
     private $model;
 
     /**
-     * @var State|MockObject
+     * @var State|\PHPUnit\Framework\MockObject\MockObject
      */
     private $appStateMock;
 
     /**
-     * @var CleanupFiles|MockObject
+     * @var CleanupFiles|\PHPUnit\Framework\MockObject\MockObject
      */
     private $cleanerMock;
 
@@ -58,10 +56,13 @@ class WorkflowTypeTest extends TestCase
         parent::setUp();
     }
 
+    /**
+     */
     public function testBeforeSaveSwitchedToClientSideInProductionShouldThrowException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Client side compilation doesn\'t work in production mode');
+
         $this->appStateMock->expects($this->once())
             ->method('getMode')
             ->willReturn(State::MODE_PRODUCTION);

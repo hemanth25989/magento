@@ -3,47 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Console\Command;
 
 use Magento\Setup\Console\Command\AdminUserCreateCommand;
 use Magento\Setup\Model\AdminAccount;
-use Magento\Setup\Model\Installer;
-use Magento\Setup\Model\InstallerFactory;
 use Magento\Setup\Mvc\Bootstrap\InitParamListener;
 use Magento\User\Model\UserValidationRules;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AdminUserCreateCommandTest extends TestCase
+class AdminUserCreateCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|QuestionHelper
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Symfony\Component\Console\Helper\QuestionHelper
      */
     private $questionHelperMock;
 
     /**
-     * @var MockObject|InstallerFactory
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Setup\Model\InstallerFactory
      */
     private $installerFactoryMock;
 
     /**
-     * @var MockObject|AdminUserCreateCommand
+     * @var \PHPUnit\Framework\MockObject\MockObject|AdminUserCreateCommand
      */
     private $command;
 
     protected function setUp(): void
     {
-        $this->installerFactoryMock = $this->createMock(InstallerFactory::class);
+        $this->installerFactoryMock = $this->createMock(\Magento\Setup\Model\InstallerFactory::class);
         $this->command = new AdminUserCreateCommand($this->installerFactoryMock, new UserValidationRules());
 
         $this->questionHelperMock = $this->getMockBuilder(QuestionHelper::class)
@@ -69,7 +62,7 @@ class AdminUserCreateCommandTest extends TestCase
             InitParamListener::BOOTSTRAP_PARAM => null,
         ];
         $commandTester = new CommandTester($this->command);
-        $installerMock = $this->createMock(Installer::class);
+        $installerMock = $this->createMock(\Magento\Setup\Model\Installer::class);
         $installerMock->expects($this->once())->method('installAdminUser')->with($data);
         $this->installerFactoryMock->expects($this->once())->method('create')->willReturn($installerMock);
         $commandTester->execute($options, ['interactive' => false]);
@@ -104,7 +97,7 @@ class AdminUserCreateCommandTest extends TestCase
         // We override the standard helper with our mock
         $this->command->getHelperSet()->set($this->questionHelperMock, 'question');
 
-        $installerMock = $this->createMock(Installer::class);
+        $installerMock = $this->createMock(\Magento\Setup\Model\Installer::class);
 
         $expectedData = [
             'admin-user' => 'admin',
@@ -174,7 +167,7 @@ class AdminUserCreateCommandTest extends TestCase
     public function testValidate(array $options, array $errors)
     {
         $inputMock = $this->getMockForAbstractClass(
-            InputInterface::class,
+            \Symfony\Component\Console\Input\InputInterface::class,
             [],
             '',
             false

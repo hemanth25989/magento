@@ -3,105 +3,82 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Authorization\Test\Unit\Model\Acl\Loader;
 
-use Magento\Authorization\Model\Acl\Loader\Rule;
-use Magento\Framework\Acl;
-use Magento\Framework\Acl\Data\CacheInterface;
-use Magento\Framework\Acl\RootResource;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-/**
- * @covers \Magento\Authorization\Model\Acl\Loader\Rule
- */
-class RuleTest extends TestCase
+class RuleTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Rule
+     * @var \Magento\Authorization\Model\Acl\Loader\Rule
      */
-    private $model;
+    protected $_model;
 
     /**
-     * @var RootResource
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
-    private $rootResource;
+    protected $_resourceMock;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var \Magento\Framework\Acl\RootResource
      */
-    private $resourceMock;
+    protected $_rootResourceMock;
 
     /**
-     * @var CacheInterface|MockObject
+     * @var \Magento\Framework\Acl\Data\CacheInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $aclDataCacheMock;
 
     /**
-     * @var Json|MockObject
+     * @var \Magento\Framework\Serialize\Serializer\Json|\PHPUnit\Framework\MockObject\MockObject
      */
     private $serializerMock;
 
-    /**
-     * @inheritDoc
-     */
     protected function setUp(): void
     {
-        $this->rootResource = new RootResource('Magento_Backend::all');
-        $this->resourceMock = $this->getMockBuilder(ResourceConnection::class)
-            ->addMethods(['getTable'])
-            ->onlyMethods(['getConnection'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->aclDataCacheMock = $this->getMockForAbstractClass(CacheInterface::class);
+        $this->_resourceMock = $this->createPartialMock(
+            \Magento\Framework\App\ResourceConnection::class,
+            ['getTable', 'getConnection']
+        );
         $this->serializerMock = $this->createPartialMock(
-            Json::class,
+            \Magento\Framework\Serialize\Serializer\Json::class,
             ['serialize', 'unserialize']
         );
-
-        $this->serializerMock->method('serialize')
+        $this->serializerMock->expects($this->any())
+            ->method('serialize')
             ->willReturnCallback(
-                static function ($value) {
+                function ($value) {
                     return json_encode($value);
                 }
             );
 
-        $this->serializerMock->method('unserialize')
+        $this->serializerMock->expects($this->any())
+            ->method('unserialize')
             ->willReturnCallback(
-                static function ($value) {
+                function ($value) {
                     return json_decode($value, true);
                 }
             );
 
-        $objectManager = new ObjectManager($this);
-        $this->model = $objectManager->getObject(
-            Rule::class,
-            [
-                'rootResource' => $this->rootResource,
-                'resource' => $this->resourceMock,
-                'aclDataCache' => $this->aclDataCacheMock,
-                'serializer' => $this->serializerMock
-            ]
+        $this->aclDataCacheMock = $this->createMock(\Magento\Framework\Acl\Data\CacheInterface::class);
+
+        $this->_rootResourceMock = new \Magento\Framework\Acl\RootResource('Magento_Backend::all');
+        $this->_model = new \Magento\Authorization\Model\Acl\Loader\Rule(
+            $this->_rootResourceMock,
+            $this->_resourceMock,
+            [],
+            $this->aclDataCacheMock,
+            $this->serializerMock
         );
     }
 
-    /**
-     * Test populating acl rule from cache
-     */
     public function testPopulateAclFromCache()
     {
-        $this->resourceMock->expects($this->never())->method('getTable');
-        $this->resourceMock->expects($this->never())
+        $this->_resourceMock->expects($this->never())->method('getTable');
+        $this->_resourceMock->expects($this->never())
             ->method('getConnection');
 
         $this->aclDataCacheMock->expects($this->once())
             ->method('load')
-            ->with(Rule::ACL_RULE_CACHE_KEY)
+            ->with(\Magento\Authorization\Model\Acl\Loader\Rule::ACL_RULE_CACHE_KEY)
             ->willReturn(
                 json_encode(
                     [
@@ -112,13 +89,13 @@ class RuleTest extends TestCase
                 )
             );
 
-        $aclMock = $this->createMock(Acl::class);
-        $aclMock->method('has')->willReturn(true);
+        $aclMock = $this->createMock(\Magento\Framework\Acl::class);
+        $aclMock->expects($this->any())->method('has')->willReturn(true);
         $aclMock->expects($this->at(1))->method('allow')->with('1', null, null);
         $aclMock->expects($this->at(2))->method('allow')->with('1', 'Magento_Backend::all', null);
         $aclMock->expects($this->at(4))->method('allow')->with('2', 1, null);
         $aclMock->expects($this->at(6))->method('deny')->with('3', 1, null);
 
-        $this->model->populateAcl($aclMock);
+        $this->_model->populateAcl($aclMock);
     }
 }

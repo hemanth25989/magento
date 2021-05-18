@@ -3,21 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogUrlRewrite\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
 use Magento\Catalog\Api\Data\ProductAttributeInterface;
 use Magento\Catalog\Test\Unit\Ui\DataProvider\Product\Form\Modifier\AbstractModifierTest;
 use Magento\CatalogUrlRewrite\Ui\DataProvider\Product\Form\Modifier\ProductUrlRewrite;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Ui\DataProvider\Modifier\ModifierInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 
+/**
+ * Class ProductUrlRewriteTest
+ */
 class ProductUrlRewriteTest extends AbstractModifierTest
 {
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $scopeConfigMock;
 
@@ -29,7 +28,7 @@ class ProductUrlRewriteTest extends AbstractModifierTest
     }
 
     /**
-     * @return ModifierInterface|object
+     * @return \Magento\Ui\DataProvider\Modifier\ModifierInterface|object
      */
     protected function createModel()
     {

@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Magento\Wishlist\Controller\Index;
 
+use Laminas\Stdlib\Parameters;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\Request\Http as HttpRequest;
@@ -14,12 +15,11 @@ use Magento\Framework\Escaper;
 use Magento\Framework\Message\MessageInterface;
 use Magento\TestFramework\TestCase\AbstractController;
 use Magento\TestFramework\Wishlist\Model\GetWishlistByCustomerId;
-use Laminas\Stdlib\Parameters;
 
 /**
  * Test for add product to wish list.
  *
- * @magentoDbIsolation disabled
+ * @magentoDbIsolation enabled
  * @magentoAppArea frontend
  * @magentoDataFixture Magento/Customer/_files/customer.php
  */

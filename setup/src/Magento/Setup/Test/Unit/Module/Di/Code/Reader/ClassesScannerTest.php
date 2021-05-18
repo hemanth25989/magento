@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\Di\Code\Reader;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Setup\Module\Di\Code\Reader\ClassesScanner;
-use PHPUnit\Framework\TestCase;
 
-class ClassesScannerTest extends TestCase
+class ClassesScannerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ClassesScanner
+     * @var \Magento\Setup\Module\Di\Code\Reader\ClassesScanner
      */
     private $model;
 
@@ -29,13 +25,11 @@ class ClassesScannerTest extends TestCase
     protected function setUp(): void
     {
         $this->generation = realpath(__DIR__ . '/../../_files/var/generation');
-        $mock = $this->getMockBuilder(DirectoryList::class)
-            ->disableOriginalConstructor()
-            ->setMethods(
-                ['getPath']
-            )->getMock();
+        $mock = $this->getMockBuilder(DirectoryList::class)->disableOriginalConstructor()->setMethods(
+            ['getPath']
+        )->getMock();
         $mock->method('getPath')->willReturn($this->generation);
-        $this->model = new ClassesScanner([], $mock);
+        $this->model = new \Magento\Setup\Module\Di\Code\Reader\ClassesScanner([], $mock);
     }
 
     public function testGetList()
@@ -43,6 +37,6 @@ class ClassesScannerTest extends TestCase
         $pathToScan = str_replace('\\', '/', realpath(__DIR__ . '/../../') . '/_files/app/code/Magento/SomeModule');
         $actual = $this->model->getList($pathToScan);
         $this->assertIsArray($actual);
-        $this->assertCount(6, $actual);
+        $this->assertCount(5, $actual);
     }
 }

@@ -65,6 +65,7 @@
 //  _____________________________________________
 
 & when (@media-common = true) {
+
     .swatch {
         &-attribute {
             &-label {
@@ -154,7 +155,7 @@
                 padding: 4px 8px;
 
                 &.selected {
-                    .lib-css(background-color, @swatch-option-text__selected__background-color);
+                    .lib-css(background-color, @swatch-option-text__selected__background-color) !important;
                 }
             }
 
@@ -200,7 +201,6 @@
                     top: 0;
                 }
             }
-
             &-disabled {
                 border: 0;
                 cursor: default;
@@ -208,7 +208,6 @@
 
                 &:after {
                     .lib-rotate(-30deg);
-                    .lib-css(background, @swatch-option__disabled__background);
                     content: '';
                     height: 2px;
                     left: -4px;
@@ -216,6 +215,7 @@
                     top: 10px;
                     width: 42px;
                     z-index: 995;
+                    .lib-css(background, @swatch-option__disabled__background);
                 }
             }
 
@@ -226,7 +226,6 @@
             &-tooltip {
                 .lib-css(border, @swatch-option-tooltip__border);
                 .lib-css(color, @swatch-option-tooltip__color);
-                .lib-css(background, @swatch-option-tooltip__background);
                 display: none;
                 max-height: 100%;
                 min-height: 20px;
@@ -235,6 +234,7 @@
                 position: absolute;
                 text-align: center;
                 z-index: 999;
+                .lib-css(background, @swatch-option-tooltip__background);
 
                 &,
                 &-layered {
@@ -278,9 +278,9 @@
                 }
 
                 &-layered {
-                    .lib-css(background, @swatch-option-tooltip-layered__background);
                     .lib-css(border, @swatch-option-tooltip-layered__border);
                     .lib-css(color, @swatch-option-tooltip-layered__color);
+                    .lib-css(background, @swatch-option-tooltip-layered__background);
                     display: none;
                     left: -47px;
                     position: absolute;
@@ -326,6 +326,7 @@
             margin: 2px 0;
             padding: 2px;
             position: static;
+            z-index: 1;
         }
 
         &-visual-tooltip-layered {

@@ -3,36 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Helper\Session;
 
-use Magento\Customer\Api\AccountManagementInterface;
-use Magento\Customer\Api\Data\AddressInterface;
-use Magento\Customer\Helper\Session\CurrentCustomer;
-use Magento\Customer\Helper\Session\CurrentCustomerAddress;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CurrentCustomerAddressTest extends TestCase
+class CurrentCustomerAddressTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CurrentCustomerAddress
+     * @var \Magento\Customer\Helper\Session\CurrentCustomerAddress
      */
     protected $currentCustomerAddress;
 
     /**
-     * @var CurrentCustomer|MockObject
+     * @var \Magento\Customer\Helper\Session\CurrentCustomer|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $currentCustomerMock;
 
     /**
-     * @var AccountManagementInterface|MockObject
+     * @var \Magento\Customer\Api\AccountManagementInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $customerAccountManagementMock;
 
     /**
-     * @var AddressInterface
+     * @var \Magento\Customer\Api\Data\AddressInterface
      */
     protected $customerAddressDataMock;
 
@@ -46,15 +37,14 @@ class CurrentCustomerAddressTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->currentCustomerMock = $this->getMockBuilder(CurrentCustomer::class)
+        $this->currentCustomerMock = $this->getMockBuilder(\Magento\Customer\Helper\Session\CurrentCustomer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->customerAccountManagementMock = $this->getMockBuilder(
-            AccountManagementInterface::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Customer\Api\AccountManagementInterface::class
+        )->disableOriginalConstructor()->getMock();
 
-        $this->currentCustomerAddress = new CurrentCustomerAddress(
+        $this->currentCustomerAddress = new \Magento\Customer\Helper\Session\CurrentCustomerAddress(
             $this->currentCustomerMock,
             $this->customerAccountManagementMock
         );

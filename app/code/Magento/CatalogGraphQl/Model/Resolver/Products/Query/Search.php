@@ -12,12 +12,9 @@ use Magento\CatalogGraphQl\Model\Resolver\Products\DataProvider\ProductSearch;
 use Magento\CatalogGraphQl\Model\Resolver\Products\SearchResult;
 use Magento\CatalogGraphQl\Model\Resolver\Products\SearchResultFactory;
 use Magento\Framework\Api\Search\SearchCriteriaInterface;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\GraphQl\Exception\GraphQlInputException;
-use Magento\Framework\GraphQl\Query\Resolver\ArgumentsProcessorInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use Magento\GraphQl\Model\Query\ContextInterface;
 use Magento\Search\Api\SearchInterface;
+use Magento\Framework\Api\Search\SearchCriteriaInterfaceFactory;
 use Magento\Search\Model\Search\PageSizeProvider;
 
 /**
@@ -41,14 +38,14 @@ class Search implements ProductQueryInterface
     private $pageSizeProvider;
 
     /**
+     * @var SearchCriteriaInterfaceFactory
+     */
+    private $searchCriteriaFactory;
+
+    /**
      * @var FieldSelection
      */
     private $fieldSelection;
-
-    /**
-     * @var ArgumentsProcessorInterface
-     */
-    private $argsSelection;
 
     /**
      * @var ProductSearch
@@ -64,28 +61,27 @@ class Search implements ProductQueryInterface
      * @param SearchInterface $search
      * @param SearchResultFactory $searchResultFactory
      * @param PageSizeProvider $pageSize
+     * @param SearchCriteriaInterfaceFactory $searchCriteriaFactory
      * @param FieldSelection $fieldSelection
      * @param ProductSearch $productsProvider
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param ArgumentsProcessorInterface|null $argsSelection
      */
     public function __construct(
         SearchInterface $search,
         SearchResultFactory $searchResultFactory,
         PageSizeProvider $pageSize,
+        SearchCriteriaInterfaceFactory $searchCriteriaFactory,
         FieldSelection $fieldSelection,
         ProductSearch $productsProvider,
-        SearchCriteriaBuilder $searchCriteriaBuilder,
-        ArgumentsProcessorInterface $argsSelection = null
+        SearchCriteriaBuilder $searchCriteriaBuilder
     ) {
         $this->search = $search;
         $this->searchResultFactory = $searchResultFactory;
         $this->pageSizeProvider = $pageSize;
+        $this->searchCriteriaFactory = $searchCriteriaFactory;
         $this->fieldSelection = $fieldSelection;
         $this->productsProvider = $productsProvider;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->argsSelection = $argsSelection ?: ObjectManager::getInstance()
-            ->get(ArgumentsProcessorInterface::class);
     }
 
     /**
@@ -93,15 +89,14 @@ class Search implements ProductQueryInterface
      *
      * @param array $args
      * @param ResolveInfo $info
-     * @param ContextInterface $context
      * @return SearchResult
-     * @throws GraphQlInputException
+     * @throws \Exception
      */
     public function getResult(
         array $args,
-        ResolveInfo $info,
-        ContextInterface $context
+        ResolveInfo $info
     ): SearchResult {
+        $queryFields = $this->fieldSelection->getProductsFieldSelection($info);
         $searchCriteria = $this->buildSearchCriteria($args, $info);
 
         $realPageSize = $searchCriteria->getPageSize();
@@ -115,12 +110,7 @@ class Search implements ProductQueryInterface
         //Address limitations of sort and pagination on search API apply original pagination from GQL query
         $searchCriteria->setPageSize($realPageSize);
         $searchCriteria->setCurrentPage($realCurrentPage);
-        $searchResults = $this->productsProvider->getList(
-            $searchCriteria,
-            $itemsResults,
-            $this->fieldSelection->getProductsFieldSelection($info),
-            $context
-        );
+        $searchResults = $this->productsProvider->getList($searchCriteria, $itemsResults, $queryFields);
 
         $totalPages = $realPageSize ? ((int)ceil($searchResults->getTotalCount() / $realPageSize)) : 0;
 
@@ -154,8 +144,7 @@ class Search implements ProductQueryInterface
     {
         $productFields = (array)$info->getFieldSelection(1);
         $includeAggregations = isset($productFields['filters']) || isset($productFields['aggregations']);
-        $processedArgs = $this->argsSelection->process((string) $info->fieldName, $args);
-        $searchCriteria = $this->searchCriteriaBuilder->build($processedArgs, $includeAggregations);
+        $searchCriteria = $this->searchCriteriaBuilder->build($args, $includeAggregations);
 
         return $searchCriteria;
     }

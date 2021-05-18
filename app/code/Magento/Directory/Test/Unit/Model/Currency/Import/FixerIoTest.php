@@ -14,10 +14,12 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\DataObject;
 use Magento\Framework\HTTP\ZendClient;
 use Magento\Framework\HTTP\ZendClientFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 
-class FixerIoTest extends TestCase
+/**
+ * FixerIo Test
+ */
+class FixerIoTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var FixerIo

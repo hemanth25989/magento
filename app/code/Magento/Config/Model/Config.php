@@ -207,9 +207,10 @@ class Config extends \Magento\Framework\DataObject
                 $deleteTransaction
             );
 
-            $changedPaths[] = $this->getChangedPaths($sectionId, $groupId, $groupData, $oldConfig, $extraOldGroups);
+            $groupChangedPaths = $this->getChangedPaths($sectionId, $groupId, $groupData, $oldConfig, $extraOldGroups);
+            // phpcs:ignore Magento2.Performance.ForeachArrayMerge
+            $changedPaths = \array_merge($changedPaths, $groupChangedPaths);
         }
-        $changedPaths = array_merge([], ...$changedPaths);
 
         try {
             $deleteTransaction->delete();
@@ -355,7 +356,7 @@ class Config extends \Magento\Framework\DataObject
                 $field = $this->getField($sectionId, $groupId, $fieldId);
                 $path = $this->getFieldPath($field, $fieldId, $oldConfig, $extraOldGroups);
                 if ($this->isValueChanged($oldConfig, $path, $fieldData)) {
-                    $changedPaths[] = [$path];
+                    $changedPaths[] = $path;
                 }
             }
         }
@@ -370,11 +371,12 @@ class Config extends \Magento\Framework\DataObject
                     $oldConfig,
                     $extraOldGroups
                 );
-                $changedPaths[] = $subGroupChangedPaths;
+                // phpcs:ignore Magento2.Performance.ForeachArrayMerge
+                $changedPaths = \array_merge($changedPaths, $subGroupChangedPaths);
             }
         }
 
-        return \array_merge([], ...$changedPaths);
+        return $changedPaths;
     }
 
     /**

@@ -3,57 +3,46 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Config\CatalogClone\Media;
 
-use Magento\Catalog\Model\Config\CatalogClone\Media\Image;
 use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory;
-use Magento\Eav\Model\Config;
-use Magento\Eav\Model\Entity\Attribute;
 use Magento\Eav\Model\Entity\Attribute\Frontend\AbstractFrontend;
-use Magento\Eav\Model\Entity\Type;
-use Magento\Framework\Escaper;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests \Magento\Catalog\Model\Config\CatalogClone\Media\Image.
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ImageTest extends TestCase
+class ImageTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Image
+     * @var \Magento\Catalog\Model\Config\CatalogClone\Media\Image
      */
     private $model;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Eav\Model\Config|\PHPUnit\Framework\MockObject\MockObject
      */
     private $eavConfig;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $attributeCollectionFactory;
 
     /**
-     * @var Collection|MockObject
+     * @var \Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection|\PHPUnit\Framework\MockObject\MockObject
      */
     private $attributeCollection;
 
     /**
-     * @var Attribute|MockObject
+     * @var \Magento\Eav\Model\Entity\Attribute|\PHPUnit\Framework\MockObject\MockObject
      */
     private $attribute;
 
     /**
-     * @var Escaper|MockObject
+     * @var \Magento\Framework\Escaper|\PHPUnit\Framework\MockObject\MockObject
      */
     private $escaperMock;
 
@@ -62,18 +51,18 @@ class ImageTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->eavConfig = $this->getMockBuilder(Config::class)
+        $this->eavConfig = $this->getMockBuilder(\Magento\Eav\Model\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->attributeCollection = $this->getMockBuilder(
-            Collection::class
+            \Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection::class
         )
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->attributeCollectionFactory = $this->getMockBuilder(
-            CollectionFactory::class
+            \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory::class
         )
             ->setMethods(['create'])
             ->disableOriginalConstructor()
@@ -82,12 +71,12 @@ class ImageTest extends TestCase
             $this->attributeCollection
         );
 
-        $this->attribute = $this->getMockBuilder(Attribute::class)
+        $this->attribute = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->escaperMock = $this->getMockBuilder(
-            Escaper::class
+            \Magento\Framework\Escaper::class
         )
             ->disableOriginalConstructor()
             ->setMethods(['escapeHtml'])
@@ -95,7 +84,7 @@ class ImageTest extends TestCase
 
         $helper = new ObjectManager($this);
         $this->model = $helper->getObject(
-            Image::class,
+            \Magento\Catalog\Model\Config\CatalogClone\Media\Image::class,
             [
                 'eavConfig' => $this->eavConfig,
                 'attributeCollectionFactory' => $this->attributeCollectionFactory,
@@ -114,14 +103,14 @@ class ImageTest extends TestCase
     public function testGetPrefixes(string $actualLabel, string $expectedLabel): void
     {
         $entityTypeId = 3;
-        /** @var Type|MockObject $entityType */
-        $entityType = $this->getMockBuilder(Type::class)
+        /** @var \Magento\Eav\Model\Entity\Type|\PHPUnit\Framework\MockObject\MockObject $entityType */
+        $entityType = $this->getMockBuilder(\Magento\Eav\Model\Entity\Type::class)
             ->disableOriginalConstructor()
             ->getMock();
         $entityType->expects($this->once())->method('getId')->willReturn($entityTypeId);
 
-        /** @var AbstractFrontend|MockObject $frontend */
-        $frontend = $this->getMockBuilder(AbstractFrontend::class)
+        /** @var AbstractFrontend|\PHPUnit\Framework\MockObject\MockObject $frontend */
+        $frontend = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute\Frontend\AbstractFrontend::class)
             ->setMethods(['getLabel'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();

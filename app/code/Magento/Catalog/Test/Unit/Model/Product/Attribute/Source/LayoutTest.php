@@ -3,38 +3,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Product\Attribute\Source;
 
-use Magento\Catalog\Model\Product\Attribute\Source\Layout;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Model\PageLayout\Config\BuilderInterface;
-use Magento\Framework\View\PageLayout\Config;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class LayoutTest extends TestCase
+class LayoutTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Layout */
+    /** @var \Magento\Catalog\Model\Product\Attribute\Source\Layout */
     protected $layoutModel;
 
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    /** @var BuilderInterface|MockObject */
+    /** @var \Magento\Framework\View\Model\PageLayout\Config\BuilderInterface
+     * |\PHPUnit\Framework\MockObject\MockObject */
     protected $pageLayoutBuilder;
 
     protected function setUp(): void
     {
         $this->pageLayoutBuilder = $this->getMockBuilder(
-            BuilderInterface::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\View\Model\PageLayout\Config\BuilderInterface::class
+        )->disableOriginalConstructor()->getMock();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->layoutModel = $this->objectManagerHelper->getObject(
-            Layout::class,
+            \Magento\Catalog\Model\Product\Attribute\Source\Layout::class,
             [
                 'pageLayoutBuilder' => $this->pageLayoutBuilder
             ]
@@ -47,7 +41,7 @@ class LayoutTest extends TestCase
             '0' => ['value' => '', 'label' => 'No layout updates'],
             '1' => ['value' => 'option_value', 'label' => 'option_label'],
         ];
-        $mockPageLayoutConfig = $this->getMockBuilder(Config::class)
+        $mockPageLayoutConfig = $this->getMockBuilder(\Magento\Framework\View\PageLayout\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
         $mockPageLayoutConfig->expects($this->any())

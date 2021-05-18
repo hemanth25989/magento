@@ -3,22 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Downloadable\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\Locator\LocatorInterface;
-use Magento\Catalog\Model\Product\Type as CatalogType;
-use Magento\Downloadable\Model\Product\Type as DownloadableType;
-use Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Composite;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Composite;
 use Magento\Ui\DataProvider\Modifier\ModifierFactory;
+use Magento\Catalog\Model\Locator\LocatorInterface;
+use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Ui\DataProvider\Modifier\ModifierInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Downloadable\Model\Product\Type as DownloadableType;
+use Magento\Catalog\Model\Product\Type as CatalogType;
 
-class CompositeTest extends TestCase
+class CompositeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -26,17 +22,17 @@ class CompositeTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var ModifierFactory|MockObject
+     * @var ModifierFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $modifierFactoryMock;
 
     /**
-     * @var LocatorInterface|MockObject
+     * @var LocatorInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $locatorMock;
 
     /**
-     * @var ProductInterface|MockObject
+     * @var ProductInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $productMock;
 
@@ -46,7 +42,7 @@ class CompositeTest extends TestCase
     protected $composite;
 
     /**
-     * @var ModifierInterface|MockObject
+     * @var ModifierInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $modifierMock;
 

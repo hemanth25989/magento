@@ -3,20 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Model\Design\Config\DataProvider;
 
-use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\App\Request\Http;
-use Magento\Theme\Api\Data\DesignConfigDataInterface;
-use Magento\Theme\Api\Data\DesignConfigInterface;
-use Magento\Theme\Api\DesignConfigRepositoryInterface;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Theme\Model\Design\Config\DataProvider\DataLoader;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DataLoaderTest extends TestCase
+class DataLoaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DataLoader
@@ -24,47 +17,47 @@ class DataLoaderTest extends TestCase
     protected $model;
 
     /**
-     * @var Http|MockObject
+     * @var Http|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $request;
 
     /**
-     * @var DataPersistorInterface|MockObject
+     * @var \Magento\Framework\App\Request\DataPersistorInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $dataPersistor;
 
     /**
-     * @var DesignConfigRepositoryInterface|MockObject
+     * @var \Magento\Theme\Api\DesignConfigRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $designConfigRepository;
 
     /**
-     * @var DesignConfigInterface|MockObject
+     * @var \Magento\Theme\Api\Data\DesignConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $designConfig;
 
     /**
-     * @var DesignConfigDataInterface|MockObject
+     * @var \Magento\Theme\Api\Data\DesignConfigDataInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $designConfigData;
 
     /**
-     * @var \Magento\Theme\Api\Data\DesignConfigExtensionInterface|MockObject
+     * @var \Magento\Theme\Api\Data\DesignConfigExtensionInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $designConfigExtension;
 
     protected function setUp(): void
     {
-        $this->request = $this->getMockBuilder(Http::class)
+        $this->request = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->dataPersistor = $this->getMockBuilder(DataPersistorInterface::class)
+        $this->dataPersistor = $this->getMockBuilder(\Magento\Framework\App\Request\DataPersistorInterface::class)
             ->getMockForAbstractClass();
-        $this->designConfigRepository = $this->getMockBuilder(DesignConfigRepositoryInterface::class)
+        $this->designConfigRepository = $this->getMockBuilder(\Magento\Theme\Api\DesignConfigRepositoryInterface::class)
             ->getMockForAbstractClass();
-        $this->designConfig = $this->getMockBuilder(DesignConfigInterface::class)
+        $this->designConfig = $this->getMockBuilder(\Magento\Theme\Api\Data\DesignConfigInterface::class)
             ->getMockForAbstractClass();
-        $this->designConfigData = $this->getMockBuilder(DesignConfigDataInterface::class)
+        $this->designConfigData = $this->getMockBuilder(\Magento\Theme\Api\Data\DesignConfigDataInterface::class)
             ->getMockForAbstractClass();
         $this->designConfigExtension = $this->getMockBuilder(
             \Magento\Theme\Api\Data\DesignConfigExtensionInterface::class

@@ -3,23 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Elasticsearch\Test\Unit\SearchAdapter;
 
-use Magento\AdvancedSearch\Model\Client\ClientFactoryInterface;
-use Magento\AdvancedSearch\Model\Client\ClientInterface;
 use Magento\AdvancedSearch\Model\Client\ClientOptionsInterface;
+use Magento\AdvancedSearch\Model\Client\ClientFactoryInterface;
 use Magento\Elasticsearch\SearchAdapter\ConnectionManager;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
 /**
- *  Test for Magento\Elasticsearch\SearchAdapter\ConnectionManager
+ * Class ConnectionManagerTest
  */
-class ConnectionManagerTest extends TestCase
+class ConnectionManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConnectionManager
@@ -27,17 +22,17 @@ class ConnectionManagerTest extends TestCase
     protected $model;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var LoggerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $logger;
 
     /**
-     * @var ClientFactoryInterface|MockObject
+     * @var ClientFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $clientFactory;
 
     /**
-     * @var ClientOptionsInterface|MockObject
+     * @var ClientOptionsInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $clientConfig;
 
@@ -48,13 +43,13 @@ class ConnectionManagerTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->logger = $this->getMockBuilder(LoggerInterface::class)
+        $this->logger = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->clientFactory = $this->getMockBuilder(ClientFactoryInterface::class)
+            ->getMock();
+        $this->clientFactory = $this->getMockBuilder(\Magento\AdvancedSearch\Model\Client\ClientFactoryInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->clientConfig = $this->getMockBuilder(ClientOptionsInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
@@ -72,7 +67,7 @@ class ConnectionManagerTest extends TestCase
 
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $objectManagerHelper->getObject(
-            ConnectionManager::class,
+            \Magento\Elasticsearch\SearchAdapter\ConnectionManager::class,
             [
                 'clientFactory' => $this->clientFactory,
                 'clientConfig' => $this->clientConfig,
@@ -86,9 +81,9 @@ class ConnectionManagerTest extends TestCase
      */
     public function testGetConnectionSuccessfull()
     {
-        $client = $this->getMockBuilder(ClientInterface::class)
+        $client = $this->getMockBuilder(\Magento\Elasticsearch\Model\Client\Elasticsearch::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->clientFactory->expects($this->once())
             ->method('create')
             ->willReturn($client);

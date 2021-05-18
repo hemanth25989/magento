@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Elasticsearch\Test\Unit\Model\Adapter\Index;
 
 use Magento\Elasticsearch\Model\Adapter\Index\Builder;
-use Magento\Elasticsearch\Model\Adapter\Index\Config\EsConfigInterface;
 use Magento\Framework\Locale\Resolver as LocaleResolver;
+use Magento\Elasticsearch\Model\Adapter\Index\Config\EsConfigInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class BuilderTest extends TestCase
+class BuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Builder
@@ -22,12 +18,12 @@ class BuilderTest extends TestCase
     protected $model;
 
     /**
-     * @var LocaleResolver|MockObject
+     * @var LocaleResolver|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $localeResolver;
 
     /**
-     * @var EsConfigInterface|MockObject
+     * @var EsConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $esConfig;
 
@@ -45,14 +41,14 @@ class BuilderTest extends TestCase
             ])
             ->getMock();
         $this->esConfig = $this->getMockBuilder(
-            EsConfigInterface::class
+            \Magento\Elasticsearch\Model\Adapter\Index\Config\EsConfigInterface::class
         )
             ->disableOriginalConstructor()
             ->getMock();
 
         $objectManager = new ObjectManagerHelper($this);
         $this->model = $objectManager->getObject(
-            Builder::class,
+            \Magento\Elasticsearch\Model\Adapter\Index\Builder::class,
             [
                 'localeResolver' => $this->localeResolver,
                 'esConfig' => $this->esConfig

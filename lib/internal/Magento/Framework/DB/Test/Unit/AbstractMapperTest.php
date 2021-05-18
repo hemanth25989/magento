@@ -3,61 +3,53 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\DB\Test\Unit;
 
-use Magento\Framework\Api\CriteriaInterface;
-use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
-use Magento\Framework\Data\ObjectFactory;
-use Magento\Framework\DB\AbstractMapper;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\MapperFactory;
 use Magento\Framework\DB\Select;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
-class AbstractMapperTest extends TestCase
+/**
+ * Class AbstractMapperTest
+ */
+class AbstractMapperTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AbstractDb|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\Db\AbstractDb|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resourceMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $connectionMock;
 
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $selectMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $loggerMock;
 
     /**
-     * @var FetchStrategyInterface|MockObject
+     * @var \Magento\Framework\Data\Collection\Db\FetchStrategyInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $fetchStrategyMock;
 
     /**
-     * @var ObjectFactory|MockObject
+     * @var \Magento\Framework\Data\ObjectFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $objectFactoryMock;
 
     /**
-     * @var MapperFactory|MockObject
+     * @var \Magento\Framework\DB\MapperFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $mapperFactoryMock;
 
     /**
-     * @var AbstractMapper|MockObject
+     * @var \Magento\Framework\DB\AbstractMapper|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $mapper;
 
@@ -69,7 +61,7 @@ class AbstractMapperTest extends TestCase
     protected function setUp(): void
     {
         $this->resourceMock = $this->getMockForAbstractClass(
-            AbstractDb::class,
+            \Magento\Framework\Model\ResourceModel\Db\AbstractDb::class,
             [],
             '',
             false,
@@ -78,7 +70,7 @@ class AbstractMapperTest extends TestCase
             []
         );
         $this->connectionMock = $this->getMockForAbstractClass(
-            AdapterInterface::class,
+            \Magento\Framework\DB\Adapter\AdapterInterface::class,
             [],
             '',
             false,
@@ -86,10 +78,10 @@ class AbstractMapperTest extends TestCase
             true,
             []
         );
-        $this->selectMock = $this->createMock(Select::class);
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->selectMock = $this->createMock(\Magento\Framework\DB\Select::class);
+        $this->loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
         $this->fetchStrategyMock = $this->getMockForAbstractClass(
-            FetchStrategyInterface::class,
+            \Magento\Framework\Data\Collection\Db\FetchStrategyInterface::class,
             [],
             '',
             false,
@@ -97,8 +89,8 @@ class AbstractMapperTest extends TestCase
             true,
             []
         );
-        $this->objectFactoryMock = $this->createMock(ObjectFactory::class);
-        $this->mapperFactoryMock = $this->createMock(MapperFactory::class);
+        $this->objectFactoryMock = $this->createMock(\Magento\Framework\Data\ObjectFactory::class);
+        $this->mapperFactoryMock = $this->createMock(\Magento\Framework\DB\MapperFactory::class);
     }
 
     /**
@@ -112,9 +104,9 @@ class AbstractMapperTest extends TestCase
      */
     public function testMap(array $mapperMethods, array $criteriaParts)
     {
-        /** @var AbstractMapper|MockObject $mapper */
+        /** @var \Magento\Framework\DB\AbstractMapper|\PHPUnit\Framework\MockObject\MockObject $mapper */
         $mapper = $this->getMockForAbstractClass(
-            AbstractMapper::class,
+            \Magento\Framework\DB\AbstractMapper::class,
             [
                 'logger' => $this->loggerMock,
                 'fetchStrategy' => $this->fetchStrategyMock,
@@ -129,7 +121,7 @@ class AbstractMapperTest extends TestCase
             $mapperMethods
         );
         $criteriaMock = $this->getMockForAbstractClass(
-            CriteriaInterface::class,
+            \Magento\Framework\Api\CriteriaInterface::class,
             [],
             '',
             false,
@@ -158,9 +150,9 @@ class AbstractMapperTest extends TestCase
         $criteriaParts = [
             'my_mapper_method_one' => 'my-test-value1'
         ];
-        /** @var AbstractMapper|MockObject $mapper */
+        /** @var \Magento\Framework\DB\AbstractMapper|\PHPUnit\Framework\MockObject\MockObject $mapper */
         $mapper = $this->getMockForAbstractClass(
-            AbstractMapper::class,
+            \Magento\Framework\DB\AbstractMapper::class,
             [
                 'logger' => $this->loggerMock,
                 'fetchStrategy' => $this->fetchStrategyMock,
@@ -175,7 +167,7 @@ class AbstractMapperTest extends TestCase
             $mapperMethods
         );
         $criteriaMock = $this->getMockForAbstractClass(
-            CriteriaInterface::class,
+            \Magento\Framework\Api\CriteriaInterface::class,
             [],
             '',
             false,
@@ -200,9 +192,9 @@ class AbstractMapperTest extends TestCase
         $fields = [
             'key-attribute' => 'value-attribute',
         ];
-        /** @var AbstractMapper|MockObject $mapper */
+        /** @var \Magento\Framework\DB\AbstractMapper|\PHPUnit\Framework\MockObject\MockObject $mapper */
         $mapper = $this->getMockForAbstractClass(
-            AbstractMapper::class,
+            \Magento\Framework\DB\AbstractMapper::class,
             [
                 'logger' => $this->loggerMock,
                 'fetchStrategy' => $this->fetchStrategyMock,
@@ -237,9 +229,9 @@ class AbstractMapperTest extends TestCase
     {
         $resultCondition = 'sql-condition-value';
 
-        /** @var AbstractMapper|MockObject $mapper */
+        /** @var \Magento\Framework\DB\AbstractMapper|\PHPUnit\Framework\MockObject\MockObject $mapper */
         $mapper = $this->getMockForAbstractClass(
-            AbstractMapper::class,
+            \Magento\Framework\DB\AbstractMapper::class,
             [
                 'logger' => $this->loggerMock,
                 'fetchStrategy' => $this->fetchStrategyMock,
@@ -254,7 +246,7 @@ class AbstractMapperTest extends TestCase
             ['getConnection']
         );
         $connectionMock = $this->getMockForAbstractClass(
-            AdapterInterface::class,
+            \Magento\Framework\DB\Adapter\AdapterInterface::class,
             [],
             '',
             true,
@@ -277,7 +269,7 @@ class AbstractMapperTest extends TestCase
 
         if (is_array($field)) {
             $resultCondition = '(' . implode(
-                ') ' . Select::SQL_OR . ' (',
+                ') ' . \Magento\Framework\DB\Select::SQL_OR . ' (',
                 array_fill(0, count($field), $resultCondition)
             ) . ')';
         }

@@ -3,21 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableProduct\Test\Unit\Block\Adminhtml\Product\Steps;
 
-use Magento\Backend\Block\Widget\Button;
-use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\ConfigurableProduct\Block\Adminhtml\Product\Steps\SelectAttributes;
-use Magento\Framework\Registry;
-use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Template\Context;
+use Magento\Framework\Registry;
+use Magento\Backend\Block\Widget\Button;
 use Magento\Framework\View\LayoutInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Framework\UrlInterface;
 
-class SelectAttributesTest extends TestCase
+class SelectAttributesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SelectAttributes
@@ -25,27 +21,27 @@ class SelectAttributesTest extends TestCase
     private $selectAttributes;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit\Framework\MockObject\MockObject
      */
     private $contextMock;
 
     /**
-     * @var Registry|MockObject
+     * @var Registry|\PHPUnit\Framework\MockObject\MockObject
      */
     private $registryMock;
 
     /**
-     * @var Button|MockObject
+     * @var Button|\PHPUnit\Framework\MockObject\MockObject
      */
     private $buttonMock;
 
     /**
-     * @var LayoutInterface|MockObject
+     * @var LayoutInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $layoutMock;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var UrlInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $urlBuilderMock;
 

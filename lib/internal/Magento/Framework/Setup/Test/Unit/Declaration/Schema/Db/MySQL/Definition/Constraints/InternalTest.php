@@ -3,24 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Setup\Test\Unit\Declaration\Schema\Db\MySQL\Definition\Constraints;
 
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Constraints\Internal;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Constraints\Internal as InternalConstraintDto;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Table;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for internal (primary key, unique key) constraint definition.
  *
+ * @package Magento\Framework\Setup\Test\Unit\Declaration\Schema\Db\MySQL\Definition\Constraints
  */
-class InternalTest extends TestCase
+class InternalTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -33,7 +30,7 @@ class InternalTest extends TestCase
     private $internal;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit\Framework\MockObject\MockObject
      */
     private $resourceConnectionMock;
 
@@ -58,7 +55,7 @@ class InternalTest extends TestCase
      */
     public function testToDefinition($name, $type, $columns, $expectedExpression)
     {
-        /** @var InternalConstraintDto|MockObject $constraint */
+        /** @var InternalConstraintDto|\PHPUnit\Framework\MockObject\MockObject $constraint */
         $constraint = $this->getMockBuilder(InternalConstraintDto::class)
             ->disableOriginalConstructor()
             ->getMock();

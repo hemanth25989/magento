@@ -3,81 +3,70 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Persistent\Test\Unit\Observer;
 
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Event\Observer;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Persistent\Helper\Data;
-use Magento\Persistent\Helper\Session;
-use Magento\Persistent\Model\QuoteManager;
-use Magento\Persistent\Observer\CheckExpirePersistentQuoteObserver;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Model\Quote;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\MockObject\Rule\InvokedCount;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CheckExpirePersistentQuoteObserverTest extends TestCase
+class CheckExpirePersistentQuoteObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CheckExpirePersistentQuoteObserver
+     * @var \Magento\Persistent\Observer\CheckExpirePersistentQuoteObserver
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $sessionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $checkoutSessionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $customerSessionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $persistentHelperMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $observerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $quoteManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $eventManagerMock;
 
     /**
-     * @var MockObject|RequestInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\App\RequestInterface
      */
     private $requestMock;
 
     /**
-     * @var MockObject|Quote
+     * @var \PHPUnit\Framework\MockObject\MockObject|Quote
      */
     private $quoteMock;
 
     /**
-     * @var MockObject|CartRepositoryInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|CartRepositoryInterface
      */
     private $quoteRepositoryMock;
 
@@ -86,23 +75,23 @@ class CheckExpirePersistentQuoteObserverTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->sessionMock = $this->createMock(Session::class);
+        $this->sessionMock = $this->createMock(\Magento\Persistent\Helper\Session::class);
         $this->customerSessionMock = $this->createMock(\Magento\Customer\Model\Session::class);
-        $this->persistentHelperMock = $this->createMock(Data::class);
-        $this->observerMock = $this->getMockBuilder(Observer::class)
-            ->addMethods(['getControllerAction'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->quoteManagerMock = $this->createMock(QuoteManager::class);
-        $this->eventManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
+        $this->persistentHelperMock = $this->createMock(\Magento\Persistent\Helper\Data::class);
+        $this->observerMock = $this->createPartialMock(
+            \Magento\Framework\Event\Observer::class,
+            ['getControllerAction','__wakeUp']
+        );
+        $this->quoteManagerMock = $this->createMock(\Magento\Persistent\Model\QuoteManager::class);
+        $this->eventManagerMock = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
         $this->checkoutSessionMock = $this->createMock(\Magento\Checkout\Model\Session::class);
-        $this->requestMock = $this->getMockBuilder(RequestInterface::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getRequestUri', 'getServer'])
             ->getMockForAbstractClass();
         $this->quoteRepositoryMock = $this->getMockForAbstractClass(CartRepositoryInterface::class);
 
-        $this->model = new CheckExpirePersistentQuoteObserver(
+        $this->model = new \Magento\Persistent\Observer\CheckExpirePersistentQuoteObserver(
             $this->sessionMock,
             $this->persistentHelperMock,
             $this->quoteManagerMock,
@@ -113,9 +102,9 @@ class CheckExpirePersistentQuoteObserverTest extends TestCase
             $this->quoteRepositoryMock
         );
         $this->quoteMock = $this->getMockBuilder(Quote::class)
-            ->setMethods(['getCustomerIsGuest', 'getIsPersistent'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        ->setMethods(['getCustomerIsGuest', 'getIsPersistent'])
+        ->disableOriginalConstructor()
+        ->getMock();
     }
 
     public function testExecuteWhenCanNotApplyPersistentData()
@@ -153,18 +142,20 @@ class CheckExpirePersistentQuoteObserverTest extends TestCase
      *
      * @param string $refererUri
      * @param string $requestUri
-     * @param InvokedCount $expireCounter
-     * @param InvokedCount $dispatchCounter
-     * @param InvokedCount $setCustomerIdCounter
+     * @param \PHPUnit\Framework\MockObject\Rule\InvokedCount $expireCounter
+     * @param \PHPUnit\Framework\MockObject\Rule\InvokedCount $dispatchCounter
+     * @param \PHPUnit\Framework\MockObject\Rule\InvokedCount $setCustomerIdCounter
      * @return void
+     * @throws NoSuchEntityException
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @dataProvider requestDataProvider
      */
     public function testExecuteWhenPersistentIsEnabled(
         string $refererUri,
         string $requestUri,
-        InvokedCount $expireCounter,
-        InvokedCount $dispatchCounter,
-        InvokedCount $setCustomerIdCounter
+        \PHPUnit\Framework\MockObject\Rule\InvokedCount $expireCounter,
+        \PHPUnit\Framework\MockObject\Rule\InvokedCount $dispatchCounter,
+        \PHPUnit\Framework\MockObject\Rule\InvokedCount $setCustomerIdCounter
     ): void {
         $this->persistentHelperMock
             ->expects($this->once())

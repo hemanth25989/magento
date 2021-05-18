@@ -3,56 +3,46 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\ResourceModel\Product;
 
-use Magento\Catalog\Model\ResourceModel\Product\Link;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class LinkTest extends TestCase
+class LinkTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Link
+     * @var \Magento\Catalog\Model\ResourceModel\Product\Link
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $resource;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $connection;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $dbSelect;
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
-        $this->resource = $this->createMock(ResourceConnection::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->resource = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
         $this->connection =
-            $this->getMockForAbstractClass(AdapterInterface::class);
+            $this->createMock(\Magento\Framework\DB\Adapter\AdapterInterface::class);
 
         $this->model = $objectManager->getObject(
-            Link::class,
+            \Magento\Catalog\Model\ResourceModel\Product\Link::class,
             ['resource' => $this->resource]
         );
     }
 
     protected function prepareAdapter()
     {
-        $this->dbSelect = $this->createMock(Select::class);
+        $this->dbSelect = $this->createMock(\Magento\Framework\DB\Select::class);
 
         // method flow
         $this->resource->expects(

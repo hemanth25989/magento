@@ -9,14 +9,13 @@ use Magento\Framework\Module\Manager;
 use Magento\Framework\Stdlib\DateTime;
 use Magento\Security\Model\ResourceModel\PasswordResetRequestEvent;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
 $objectManager = Bootstrap::getObjectManager();
 /** @var Manager $moduleManager */
 $moduleManager = $objectManager->get(Manager::class);
 //This check is needed because Magento_Security independent of Magento_Customer
 if ($moduleManager->isEnabled('Magento_Customer')) {
-    Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer_rollback.php');
+    require __DIR__ . '/../../../Magento/Customer/_files/customer_rollback.php';
 
     /** @var PasswordResetRequestEvent $passwordResetRequestEventResource */
     $passwordResetRequestEventResource = $objectManager->get(PasswordResetRequestEvent::class);

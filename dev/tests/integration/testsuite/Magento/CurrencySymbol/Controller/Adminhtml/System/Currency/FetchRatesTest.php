@@ -9,7 +9,7 @@ namespace Magento\CurrencySymbol\Controller\Adminhtml\System\Currency;
 use Magento\Framework\Escaper;
 
 /**
- * Test for fetchRates action
+ * Fetch Rates Test
  */
 class FetchRatesTest extends \Magento\TestFramework\TestCase\AbstractBackendController
 {

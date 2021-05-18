@@ -4,14 +4,13 @@
  */
 
 'use strict';
-
 var main = angular.module('main', ['ngStorage', 'ngDialog']);
 main.controller('navigationController',
         ['$scope', '$state', '$rootScope', '$window', 'navigationService', '$localStorage',
             function ($scope, $state, $rootScope, $window, navigationService, $localStorage) {
 
     function loadMenu() {
-        angular.element(document).ready(function () {
+        angular.element(document).ready(function() {
             $scope.menu = $localStorage.menu;
         });
     }
@@ -38,7 +37,7 @@ main.controller('navigationController',
 
         $scope.previousState = function () {
                 $state.go(navigationService.getPreviousState().id);
-            };
+        };
     }
 ])
 .service('navigationService', ['$location', '$state', '$http', '$localStorage',
@@ -62,11 +61,9 @@ main.controller('navigationController',
                     data.titles[value] = data.titles[value] + $localStorage.moduleName;
                 });
                 $localStorage.titles = data.titles;
-
                 if (self.isLoadedStates == false) {
                     data.nav.forEach(function (item) {
                         app.stateProvider.state(item.id, item);
-
                         if (item.default) {
                             self.mainState = item;
                         }
@@ -76,7 +73,6 @@ main.controller('navigationController',
                             isCurrentStateFound = true;
                         }
                     });
-
                     if (!isCurrentStateFound) {
                         $state.go(self.mainState.id);
                     }
@@ -91,7 +87,6 @@ main.controller('navigationController',
                     nItem = item;
                 }
             });
-
             return nItem;
         },
         getPreviousState: function () {
@@ -101,7 +96,6 @@ main.controller('navigationController',
                     nItem = item;
                 }
             });
-
             return nItem;
         }
     };
@@ -110,10 +104,8 @@ main.controller('navigationController',
     return function (input, start) {
         if (input !== undefined && start !== 'NaN') {
             start = parseInt(start, 10);
-
             return input.slice(start);
         }
-
         return 0;
     };
 });

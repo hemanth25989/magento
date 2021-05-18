@@ -23,12 +23,11 @@ class MultiselectTest extends \PHPUnit\Framework\TestCase
         $optionsToCompare = [];
         foreach ($options as $option) {
             if (is_array($option['value'])) {
-                $optionsToCompare[] = $option['value'];
+                $optionsToCompare = array_merge($optionsToCompare, $option['value']);
             } else {
-                $optionsToCompare[] = [$option];
+                $optionsToCompare[] = $option;
             }
         }
-        $optionsToCompare = array_merge([], ...$optionsToCompare);
         sort($optionsToCompare);
         foreach ($optionsToCompare as $item) {
             $this->assertTrue(
@@ -38,18 +37,25 @@ class MultiselectTest extends \PHPUnit\Framework\TestCase
                         [
                             'value' => 1,
                             'label' => 'Default (General)',
+                            '__disableTmpl' => true,
                         ],
                         [
                             'value' => 1,
                             'label' => 'General',
+                            '__disableTmpl' => true,
+
                         ],
                         [
                             'value' => 2,
                             'label' => 'Wholesale',
+                            '__disableTmpl' => true,
+
                         ],
                         [
                             'value' => 3,
                             'label' => 'Retailer',
+                            '__disableTmpl' => true,
+
                         ],
                     ]
                 )

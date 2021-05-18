@@ -3,118 +3,97 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Controller\Adminhtml\Order\Invoice;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Block\Menu;
-use Magento\Backend\Helper\Data;
-use Magento\Backend\Model\Session;
-use Magento\Backend\Model\View\Result\Page;
-use Magento\Backend\Model\View\Result\Redirect;
-use Magento\Backend\Model\View\Result\RedirectFactory;
-use Magento\Framework\App\ActionFlag;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\View;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Page\Config;
-use Magento\Framework\View\Page\Title;
-use Magento\Framework\View\Result\PageFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Sales\Controller\Adminhtml\Order\Invoice\NewAction;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Invoice;
-use Magento\Sales\Model\Service\InvoiceService;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class NewActionTest
+ * @package Magento\Sales\Controller\Adminhtml\Order\Invoice
  * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.TooManyFields)
  */
-class NewActionTest extends TestCase
+class NewActionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $requestMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $responseMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $actionFlagMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $helperMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $viewMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $sessionMock;
 
     /**
-     * @var Page|MockObject
+     * @var \Magento\Backend\Model\View\Result\Page|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resultPageMock;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Framework\View\Page\Config|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $pageConfigMock;
 
     /**
-     * @var Title|MockObject
+     * @var \Magento\Framework\View\Page\Title|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $pageTitleMock;
 
     /**
-     * @var NewAction
+     * @var \Magento\Sales\Controller\Adminhtml\Order\Invoice\NewAction
      */
     protected $controller;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Message\ManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $messageManagerMock;
 
     /**
-     * @var PageFactory|MockObject
+     * @var \Magento\Framework\View\Result\PageFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resultPageFactoryMock;
 
     /**
-     * @var RedirectFactory|MockObject
+     * @var \Magento\Backend\Model\View\Result\RedirectFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resultRedirectFactoryMock;
 
     /**
-     * @var InvoiceService|MockObject
+     * @var \Magento\Sales\Model\Service\InvoiceService|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $invoiceServiceMock;
 
     /**
-     * @var OrderRepositoryInterface|MockObject
+     * @var OrderRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $orderRepositoryMock;
 
@@ -126,25 +105,25 @@ class NewActionTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->viewMock = $this->getMockBuilder(View::class)
+        $this->viewMock = $this->getMockBuilder(\Magento\Framework\App\View::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->messageManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->messageManagerMock = $this->createMock(\Magento\Framework\Message\ManagerInterface::class);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
 
-        $this->actionFlagMock = $this->getMockBuilder(ActionFlag::class)
+        $this->actionFlagMock = $this->getMockBuilder(\Magento\Framework\App\ActionFlag::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->helperMock = $this->getMockBuilder(Data::class)
+        $this->helperMock = $this->getMockBuilder(\Magento\Backend\Helper\Data::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->requestMock = $this->getMockBuilder(Http::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -153,32 +132,32 @@ class NewActionTest extends TestCase
             ->setMethods([])
             ->getMock();
 
-        $this->sessionMock = $this->getMockBuilder(Session::class)
+        $this->sessionMock = $this->getMockBuilder(\Magento\Backend\Model\Session::class)
             ->disableOriginalConstructor()
             ->setMethods(['getCommentText', 'setIsUrlNotice'])
             ->getMock();
-        $this->resultPageMock = $this->getMockBuilder(Page::class)
+        $this->resultPageMock = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Page::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->pageConfigMock = $this->getMockBuilder(Config::class)
+        $this->pageConfigMock = $this->getMockBuilder(\Magento\Framework\View\Page\Config::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->pageTitleMock = $this->getMockBuilder(Title::class)
+        $this->pageTitleMock = $this->getMockBuilder(\Magento\Framework\View\Page\Title::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resultPageFactoryMock = $this->getMockBuilder(PageFactory::class)
+        $this->resultPageFactoryMock = $this->getMockBuilder(\Magento\Framework\View\Result\PageFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
         $this->resultRedirectFactoryMock = $this->getMockBuilder(
-            RedirectFactory::class
+            \Magento\Backend\Model\View\Result\RedirectFactory::class
         )->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $contextMock = $this->getMockBuilder(Context::class)
+        $contextMock = $this->getMockBuilder(\Magento\Backend\App\Action\Context::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -239,14 +218,14 @@ class NewActionTest extends TestCase
             ->method('getTitle')
             ->willReturn($this->pageTitleMock);
 
-        $this->invoiceServiceMock = $this->getMockBuilder(InvoiceService::class)
+        $this->invoiceServiceMock = $this->getMockBuilder(\Magento\Sales\Model\Service\InvoiceService::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->orderRepositoryMock = $this->getMockForAbstractClass(OrderRepositoryInterface::class);
 
         $this->controller = $objectManager->getObject(
-            NewAction::class,
+            \Magento\Sales\Controller\Adminhtml\Order\Invoice\NewAction::class,
             [
                 'context' => $contextMock,
                 'resultPageFactory' => $this->resultPageFactoryMock,
@@ -271,7 +250,7 @@ class NewActionTest extends TestCase
             ->with('invoice', [])
             ->willReturn($invoiceData);
 
-        $invoiceMock = $this->getMockBuilder(Invoice::class)
+        $invoiceMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Invoice::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -279,7 +258,7 @@ class NewActionTest extends TestCase
             ->method('getTotalQty')
             ->willReturn(2);
 
-        $orderMock = $this->getMockBuilder(Order::class)
+        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->setMethods(['load', 'canInvoice'])
             ->getMock();
@@ -297,12 +276,13 @@ class NewActionTest extends TestCase
             ->with($orderMock, [])
             ->willReturn($invoiceMock);
 
-        $menuBlockMock = $this->getMockBuilder(Menu::class)
+        $menuBlockMock = $this->getMockBuilder(\Magento\Backend\Block\Menu::class)
             ->disableOriginalConstructor()
             ->setMethods(['getParentItems', 'getMenuModel'])
             ->getMock();
         $menuBlockMock->expects($this->any())
-            ->method('getMenuModel')->willReturnSelf();
+            ->method('getMenuModel')
+            ->willReturnSelf();
         $menuBlockMock->expects($this->any())
             ->method('getParentItems')
             ->with('Magento_Sales::sales_order')
@@ -315,7 +295,7 @@ class NewActionTest extends TestCase
 
         $this->objectManagerMock->expects($this->once())
             ->method('get')
-            ->with(Session::class)
+            ->with(\Magento\Backend\Model\Session::class)
             ->willReturn($this->sessionMock);
 
         $this->resultPageMock->expects($this->once())->method('setActiveMenu')->with('Magento_Sales::sales_order');
@@ -340,7 +320,7 @@ class NewActionTest extends TestCase
             ->with('invoice', [])
             ->willReturn($invoiceData);
 
-        $orderMock = $this->getMockBuilder(Order::class)
+        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->setMethods(['canInvoice'])
             ->getMock();
@@ -350,7 +330,7 @@ class NewActionTest extends TestCase
             ->with($orderId)
             ->willReturn($orderMock);
 
-        $resultRedirect = $this->getMockBuilder(Redirect::class)
+        $resultRedirect = $this->getMockBuilder(\Magento\Backend\Model\View\Result\Redirect::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();

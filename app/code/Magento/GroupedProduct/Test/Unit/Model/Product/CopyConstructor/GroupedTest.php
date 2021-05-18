@@ -3,65 +3,53 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GroupedProduct\Test\Unit\Model\Product\CopyConstructor;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Link;
-use Magento\Catalog\Model\ResourceModel\Product\Link\Collection;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\GroupedProduct\Model\Product\CopyConstructor\Grouped;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class GroupedTest extends TestCase
+class GroupedTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Grouped
+     * @var \Magento\GroupedProduct\Model\Product\CopyConstructor\Grouped
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_productMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_duplicateMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_linkMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_linkCollectionMock;
 
     protected function setUp(): void
     {
-        $this->_model = new Grouped();
+        $this->_model = new \Magento\GroupedProduct\Model\Product\CopyConstructor\Grouped();
 
         $this->_productMock = $this->createPartialMock(
-            Product::class,
+            \Magento\Catalog\Model\Product::class,
             ['getTypeId', '__wakeup', 'getLinkInstance']
         );
 
-        $this->_duplicateMock = $this->getMockBuilder(Product::class)
-            ->addMethods(['setGroupedLinkData'])
-            ->onlyMethods(['__wakeup'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->_duplicateMock = $this->createPartialMock(
+            \Magento\Catalog\Model\Product::class,
+            ['setGroupedLinkData', '__wakeup']
+        );
 
-        $this->_linkMock = $this->getMockBuilder(Link::class)
-            ->addMethods(['setLinkTypeId'])
-            ->onlyMethods(['__wakeup', 'getAttributes', 'getLinkCollection'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->_linkMock = $this->createPartialMock(
+            \Magento\Catalog\Model\Product\Link::class,
+            ['setLinkTypeId', '__wakeup', 'getAttributes', 'getLinkCollection']
+        );
 
         $this->_productMock->expects(
             $this->any()
@@ -83,7 +71,7 @@ class GroupedTest extends TestCase
 
     public function testBuild()
     {
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $expectedData = ['100500' => ['some' => 'data']];
 
         $this->_productMock->expects(
@@ -98,12 +86,10 @@ class GroupedTest extends TestCase
 
         $this->_linkMock->expects($this->once())->method('getAttributes')->willReturn($attributes);
 
-        $productLinkMock = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\Link::class)->addMethods(
-            ['getLinkedProductId', 'toArray']
-        )
-            ->onlyMethods(['__wakeup'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $productLinkMock = $this->createPartialMock(
+            \Magento\Catalog\Model\ResourceModel\Product\Link::class,
+            ['__wakeup', 'getLinkedProductId', 'toArray']
+        );
         $this->_linkMock->expects(
             $this->atLeastOnce()
         )->method(
@@ -124,7 +110,7 @@ class GroupedTest extends TestCase
         );
 
         $collectionMock = $helper->getCollectionMock(
-            Collection::class,
+            \Magento\Catalog\Model\ResourceModel\Product\Link\Collection::class,
             [$productLinkMock]
         );
         $collectionMock->expects($this->once())->method('setProduct')->with($this->_productMock);

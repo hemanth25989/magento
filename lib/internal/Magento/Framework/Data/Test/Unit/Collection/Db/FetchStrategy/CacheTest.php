@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit\Collection\Db\FetchStrategy;
 
 use Magento\Framework\Cache\FrontendInterface;
@@ -13,10 +11,8 @@ use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
 use Magento\Framework\DB\Select;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CacheTest extends TestCase
+class CacheTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Cache
@@ -24,22 +20,22 @@ class CacheTest extends TestCase
     private $fetchStrategyCache;
 
     /**
-     * @var FrontendInterface|MockObject
+     * @var FrontendInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $cacheMock;
 
     /**
-     * @var FetchStrategyInterface|MockObject
+     * @var FetchStrategyInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $fetchStrategyMock;
 
     /**
-     * @var Select|MockObject
+     * @var Select|\PHPUnit\Framework\MockObject\MockObject
      */
     private $selectMock;
 
     /**
-     * @var SerializerInterface|MockObject
+     * @var SerializerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $serializerMock;
 

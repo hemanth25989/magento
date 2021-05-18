@@ -13,52 +13,50 @@ use Magento\Framework\Api\Search\AggregationInterface;
 use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
 use Magento\Framework\Data\Collection\EntityFactoryInterface;
 use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
 use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\DB\Select;
 
 /**
  * CollectionTest contains unit tests for \Magento\Customer\Model\ResourceModel\Group\Grid\Collection class
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CollectionTest extends TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var EntityFactoryInterface|MockObject
+     * @var EntityFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $entityFactoryMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var LoggerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $loggerMock;
 
     /**
-     * @var FetchStrategyInterface|MockObject
+     * @var FetchStrategyInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $fetchStrategyMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var ManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $eventManagerMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var AdapterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $connectionMock;
 
     /**
-     * @var AbstractDb|MockObject
+     * @var AbstractDb|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resourceMock;
 
     /**
-     * @var AggregationInterface|MockObject
+     * @var AggregationInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $aggregationsMock;
 

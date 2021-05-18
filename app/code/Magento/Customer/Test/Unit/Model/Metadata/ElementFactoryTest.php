@@ -3,25 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Model\Metadata;
 
-use Magento\Customer\Model\Attribute\Data\Postcode;
-use Magento\Customer\Model\Data\AttributeMetadata;
 use Magento\Customer\Model\Metadata\ElementFactory;
-use Magento\Customer\Model\Metadata\Form\Text;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Stdlib\StringUtils;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ElementFactoryTest extends TestCase
+class ElementFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ObjectManagerInterface|MockObject */
+    /** @var \Magento\Framework\ObjectManagerInterface | \PHPUnit\Framework\MockObject\MockObject */
     private $_objectManager;
 
-    /** @var AttributeMetadata|MockObject */
+    /** @var \Magento\Customer\Model\Data\AttributeMetadata | \PHPUnit\Framework\MockObject\MockObject */
     private $_attributeMetadata;
 
     /** @var string */
@@ -32,9 +23,9 @@ class ElementFactoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->_objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->_attributeMetadata = $this->createMock(AttributeMetadata::class);
-        $this->_elementFactory = new ElementFactory($this->_objectManager, new StringUtils());
+        $this->_objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->_attributeMetadata = $this->createMock(\Magento\Customer\Model\Data\AttributeMetadata::class);
+        $this->_elementFactory = new ElementFactory($this->_objectManager, new \Magento\Framework\Stdlib\StringUtils());
     }
 
     /** TODO fix when Validation is implemented MAGETWO-17341 */
@@ -45,10 +36,10 @@ class ElementFactoryTest extends TestCase
         )->method(
             'getDataModel'
         )->willReturn(
-            Postcode::class
+            \Magento\Customer\Model\Attribute\Data\Postcode::class
         );
 
-        $dataModel = $this->createMock(Text::class);
+        $dataModel = $this->createMock(\Magento\Customer\Model\Metadata\Form\Text::class);
         $this->_objectManager->expects($this->once())->method('create')->willReturn($dataModel);
 
         $actual = $this->_elementFactory->create($this->_attributeMetadata, '95131', $this->_entityTypeCode);
@@ -66,7 +57,7 @@ class ElementFactoryTest extends TestCase
             'text'
         );
 
-        $dataModel = $this->createMock(Text::class);
+        $dataModel = $this->createMock(\Magento\Customer\Model\Metadata\Form\Text::class);
         $params = [
             'entityTypeCode' => $this->_entityTypeCode,
             'value' => 'Some Text',
@@ -78,7 +69,7 @@ class ElementFactoryTest extends TestCase
         )->method(
             'create'
         )->with(
-            Text::class,
+            \Magento\Customer\Model\Metadata\Form\Text::class,
             $params
         )->willReturn(
             $dataModel

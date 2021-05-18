@@ -3,40 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Message\Test\Unit;
 
-use Magento\Framework\Message\Factory;
-use Magento\Framework\Message\Success;
-use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class FactoryTest extends TestCase
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Factory
+     * @var \Magento\Framework\Message\Factory
      */
     protected $factory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $objectManagerMock;
 
     protected function setUp(): void
     {
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->factory = new Factory(
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->factory = new \Magento\Framework\Message\Factory(
             $this->objectManagerMock
         );
     }
 
+    /**
+     */
     public function testCreateWithWrongTypeException()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Wrong message type');
+
         $this->objectManagerMock->expects($this->never())->method('create');
         $this->factory->create('type', 'text');
     }
@@ -60,7 +56,7 @@ class FactoryTest extends TestCase
 
     public function testSuccessfulCreateMessage()
     {
-        $messageMock = $this->createMock(Success::class);
+        $messageMock = $this->createMock(\Magento\Framework\Message\Success::class);
         $type = 'success';
         $className = 'Magento\\Framework\\Message\\' . ucfirst($type);
         $this->objectManagerMock

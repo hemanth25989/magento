@@ -201,10 +201,10 @@ class AddOptionToAttributeTest extends TestCase
             ]
         );
         $updatedOptions = $this->getAttributeOptions();
-        $this->assertEquals(count($updatedOptions), count($optionsBefore) - 1);
         foreach ($updatedOptions as $option) {
             $this->assertContainsEquals($option, $optionsBefore);
         }
+        $this->assertEquals(count($updatedOptions), count($optionsBefore) - 1);
     }
 
     /**

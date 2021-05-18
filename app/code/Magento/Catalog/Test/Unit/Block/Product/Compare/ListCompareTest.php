@@ -3,21 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Block\Product\Compare;
 
-use Magento\Catalog\Block\Product\Compare\ListCompare;
-use Magento\Catalog\Block\Product\Context;
-use Magento\Catalog\Model\Product;
-use Magento\Framework\Pricing\Render;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Layout;
-use Magento\Framework\View\LayoutInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Catalog\Block\Product\Compare\ListCompare;
 
-class ListCompareTest extends TestCase
+/**
+ * Class ListCompareTest
+ */
+class ListCompareTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ListCompare
@@ -25,22 +18,22 @@ class ListCompareTest extends TestCase
     protected $block;
 
     /**
-     * @var LayoutInterface|MockObject
+     * @var \Magento\Framework\View\LayoutInterface | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $layout;
 
     protected function setUp(): void
     {
-        $this->layout = $this->createPartialMock(Layout::class, ['getBlock']);
+        $this->layout = $this->createPartialMock(\Magento\Framework\View\Layout::class, ['getBlock']);
 
-        $context = $this->createPartialMock(Context::class, ['getLayout']);
+        $context = $this->createPartialMock(\Magento\Catalog\Block\Product\Context::class, ['getLayout']);
         $context->expects($this->any())
             ->method('getLayout')
             ->willReturn($this->layout);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->block = $objectManager->getObject(
-            ListCompare::class,
+            \Magento\Catalog\Block\Product\Compare\ListCompare::class,
             ['context' => $context]
         );
     }
@@ -58,12 +51,12 @@ class ListCompareTest extends TestCase
         $productId = 1;
 
         //Verification
-        $product = $this->createPartialMock(Product::class, ['getId']);
+        $product = $this->createPartialMock(\Magento\Catalog\Model\Product::class, ['getId', '__wakeup']);
         $product->expects($this->once())
             ->method('getId')
             ->willReturn($productId);
 
-        $blockMock = $this->createPartialMock(Render::class, ['render']);
+        $blockMock = $this->createPartialMock(\Magento\Framework\Pricing\Render::class, ['render']);
         $blockMock->expects($this->once())
             ->method('render')
             ->with(
@@ -72,7 +65,7 @@ class ListCompareTest extends TestCase
                 [
                     'price_id' => 'product-price-' . $productId . '-compare-list-top',
                     'display_minimal_price' => true,
-                    'zone' => Render::ZONE_ITEM_LIST
+                    'zone' => \Magento\Framework\Pricing\Render::ZONE_ITEM_LIST
                 ]
             )
             ->willReturn($expectedResult);

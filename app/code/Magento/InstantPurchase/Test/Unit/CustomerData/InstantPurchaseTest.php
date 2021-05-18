@@ -8,26 +8,24 @@ declare(strict_types=1);
 
 namespace Magento\InstantPurchase\Test\Unit\CustomerData;
 
-use Magento\Customer\Model\Customer;
-use Magento\Customer\Model\Session;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\InstantPurchase\CustomerData\InstantPurchase as CustomerData;
+use Magento\Customer\Model\Session;
 use Magento\InstantPurchase\Model\InstantPurchaseInterface as InstantPurchaseModel;
-use Magento\InstantPurchase\Model\InstantPurchaseOption;
 use Magento\InstantPurchase\Model\Ui\CustomerAddressesFormatter;
 use Magento\InstantPurchase\Model\Ui\PaymentTokenFormatter;
 use Magento\InstantPurchase\Model\Ui\ShippingMethodFormatter;
-use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Store\Model\Store;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\InstantPurchase\Model\InstantPurchaseOption;
+use Magento\Customer\Model\Customer;
 
 /**
  * Test class for InstantPurchase Customer Data
  *
  * Class \Magento\InstantPurchase\Test\Unit\CustomerData\InstantPurchaseTest
  */
-class InstantPurchaseTest extends TestCase
+class InstantPurchaseTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var objectManagerHelper
@@ -35,52 +33,52 @@ class InstantPurchaseTest extends TestCase
     private $objectManager;
 
     /**
-     * @var CustomerData|MockObject
+     * @var CustomerData | \PHPUnit\Framework\MockObject\MockObject
      */
     private $customerData;
 
     /**
-     * @var Session|MockObject
+     * @var Session | \PHPUnit\Framework\MockObject\MockObject
      */
     private $customerSession;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface | \PHPUnit\Framework\MockObject\MockObject
      */
     private $storeManager;
 
     /**
-     * @var InstantPurchaseModel|MockObject
+     * @var InstantPurchaseModel | \PHPUnit\Framework\MockObject\MockObject
      */
     private $instantPurchase;
 
     /**
-     * @var PaymentTokenFormatter|MockObject
+     * @var PaymentTokenFormatter | \PHPUnit\Framework\MockObject\MockObject
      */
     private $paymentTokenFormatter;
 
     /**
-     * @var CustomerAddressesFormatter|MockObject
+     * @var CustomerAddressesFormatter | \PHPUnit\Framework\MockObject\MockObject
      */
     private $customerAddressesFormatter;
 
     /**
-     * @var ShippingMethodFormatter|MockObject
+     * @var ShippingMethodFormatter | \PHPUnit\Framework\MockObject\MockObject
      */
     private $shippingMethodFormatter;
 
     /**
-     * @var Store|MockObject
+     * @var Store | \PHPUnit\Framework\MockObject\MockObject
      */
     private $store;
 
     /**
-     * @var Customer|MockObject
+     * @var Customer | \PHPUnit\Framework\MockObject\MockObject
      */
     private $customer;
 
     /**
-     * @var InstantPurchaseOption|MockObject
+     * @var InstantPurchaseOption | \PHPUnit\Framework\MockObject\MockObject
      */
     private $instantPurchaseOption;
 

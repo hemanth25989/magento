@@ -11,7 +11,7 @@ use Magento\Framework\Escaper;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
- * Test for \Magento\Customer\Block\Adminhtml\Edit\Tab\View\Cart
+ * Class CartTest
  *
  * @magentoAppArea adminhtml
  */
@@ -91,10 +91,7 @@ class CartTest extends \PHPUnit\Framework\TestCase
     public function testToHtmlEmptyCart()
     {
         $this->assertEquals(0, $this->block->getCollection()->getSize());
-        $this->assertStringContainsString(
-            $this->escaper->escapeHtml('There are no items in customer\'s shopping cart.'),
-            $this->block->toHtml()
-        );
+        $this->assertStringContainsString($this->escaper->escapeHtml('There are no items in customer\'s shopping cart.'), $this->block->toHtml());
     }
 
     /**

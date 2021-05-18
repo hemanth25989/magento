@@ -3,21 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\AsynchronousOperations\Test\Unit\Ui\Component\Operation;
 
-use Magento\AsynchronousOperations\Model\BulkSummary;
-use Magento\AsynchronousOperations\Model\Operation\Details;
-use Magento\AsynchronousOperations\Model\ResourceModel\Bulk\Collection;
-use Magento\AsynchronousOperations\Model\ResourceModel\Bulk\CollectionFactory;
 use Magento\AsynchronousOperations\Ui\Component\Operation\DataProvider;
-use Magento\Framework\App\RequestInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DataProviderTest extends TestCase
+class DataProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DataProvider
@@ -25,27 +17,27 @@ class DataProviderTest extends TestCase
     private $dataProvider;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $bulkCollectionFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $bulkCollectionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $operationDetailsMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $requestMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $bulkMock;
 
@@ -59,15 +51,15 @@ class DataProviderTest extends TestCase
         $helper = new ObjectManager($this);
 
         $this->bulkCollectionFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\AsynchronousOperations\Model\ResourceModel\Bulk\CollectionFactory::class,
             ['create']
         );
         $this->bulkCollectionMock = $this->createMock(
-            Collection::class
+            \Magento\AsynchronousOperations\Model\ResourceModel\Bulk\Collection::class
         );
-        $this->operationDetailsMock = $this->createMock(Details::class);
-        $this->bulkMock = $this->createMock(BulkSummary::class);
-        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->operationDetailsMock = $this->createMock(\Magento\AsynchronousOperations\Model\Operation\Details::class);
+        $this->bulkMock = $this->createMock(\Magento\AsynchronousOperations\Model\BulkSummary::class);
+        $this->requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
 
         $this->bulkCollectionFactoryMock
             ->expects($this->once())
@@ -75,7 +67,7 @@ class DataProviderTest extends TestCase
             ->willReturn($this->bulkCollectionMock);
 
         $this->dataProvider = $helper->getObject(
-            DataProvider::class,
+            \Magento\AsynchronousOperations\Ui\Component\Operation\DataProvider::class,
             [
                 'name' => 'test-name',
                 'bulkCollectionFactory' => $this->bulkCollectionFactoryMock,

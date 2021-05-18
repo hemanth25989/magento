@@ -3,22 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Module;
 
 use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Setup\Module\Setup;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SetupTest extends TestCase
+class SetupTest extends \PHPUnit\Framework\TestCase
 {
     const CONNECTION_NAME = 'connection';
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $connection;
 
@@ -28,14 +24,14 @@ class SetupTest extends TestCase
     private $setup;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit\Framework\MockObject\MockObject
      */
     private $resourceModelMock;
 
     protected function setUp(): void
     {
         $this->resourceModelMock = $this->createMock(ResourceConnection::class);
-        $this->connection = $this->getMockForAbstractClass(AdapterInterface::class);
+        $this->connection = $this->getMockForAbstractClass(\Magento\Framework\DB\Adapter\AdapterInterface::class);
         $this->resourceModelMock->expects($this->any())
             ->method('getConnection')
             ->with(self::CONNECTION_NAME)

@@ -10,7 +10,6 @@ use Magento\TestFramework\Helper\Bootstrap;
 use Magento\Wishlist\Model\ResourceModel\Wishlist as WishlistResource;
 use Magento\Wishlist\Model\Wishlist;
 use Magento\Wishlist\Model\WishlistFactory;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
 $objectManager = Bootstrap::getObjectManager();
 /** @var Registry $registry */
@@ -29,6 +28,5 @@ if ($wishlist->getId()) {
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);
 
-Resolver::getInstance()
-    ->requireDataFixture('Magento/Catalog/_files/simple_products_not_visible_individually_rollback.php');
-Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer_rollback.php');
+require __DIR__ . '/../../../Magento/Catalog/_files/simple_products_not_visible_individually_rollback.php';
+require __DIR__ . '/../../../Magento/Customer/_files/customer_rollback.php';

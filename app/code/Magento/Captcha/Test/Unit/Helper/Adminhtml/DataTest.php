@@ -3,20 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Captcha\Test\Unit\Helper\Adminhtml;
 
-use Magento\Captcha\Helper\Adminhtml\Data;
-use Magento\Framework\Filesystem\Directory\Write;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class DataTest extends TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Data|MockObject
+     * @var \Magento\Captcha\Helper\Adminhtml\Data | |PHPUnit\Framework\MockObject\MockObject
      */
     protected $_model;
 
@@ -25,8 +17,8 @@ class DataTest extends TestCase
      */
     protected function setUp(): void
     {
-        $objectManagerHelper = new ObjectManager($this);
-        $className = Data::class;
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $className = \Magento\Captcha\Helper\Adminhtml\Data::class;
         $arguments = $objectManagerHelper->getConstructArguments($className);
 
         $backendConfig = $arguments['backendConfig'];
@@ -41,7 +33,7 @@ class DataTest extends TestCase
         );
 
         $filesystemMock = $arguments['filesystem'];
-        $directoryMock = $this->createMock(Write::class);
+        $directoryMock = $this->createMock(\Magento\Framework\Filesystem\Directory\Write::class);
 
         $filesystemMock->expects($this->any())->method('getDirectoryWrite')->willReturn($directoryMock);
         $directoryMock->expects($this->any())->method('getAbsolutePath')->willReturnArgument(0);

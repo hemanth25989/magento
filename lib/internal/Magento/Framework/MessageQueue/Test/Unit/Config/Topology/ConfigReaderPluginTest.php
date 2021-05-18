@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\MessageQueue\Test\Unit\Config\Topology;
 
 use Magento\Framework\MessageQueue\Config\Topology\ConfigReaderPlugin as TopologyConfigReaderPlugin;
@@ -12,9 +10,8 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHe
 use Magento\Framework\MessageQueue\ConfigInterface;
 use Magento\Framework\MessageQueue\Topology\Config\CompositeReader as TopologyConfigCompositeReader;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConfigReaderPluginTest extends TestCase
+class ConfigReaderPluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var TopologyConfigReaderPlugin
@@ -36,12 +33,9 @@ class ConfigReaderPluginTest extends TestCase
      */
     private $subjectMock;
 
-    /**
-     * @inheritDoc
-     */
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigInterface::class);
+        $this->configMock = $this->getMockForAbstractClass(ConfigInterface::class);
         $this->subjectMock = $this->createMock(TopologyConfigCompositeReader::class);
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
@@ -51,12 +45,7 @@ class ConfigReaderPluginTest extends TestCase
         );
     }
 
-    /**
-     * Test get config after read
-     *
-     * @return void
-     */
-    public function testAfterRead(): void
+    public function testAfterRead()
     {
         $binding = [
             [

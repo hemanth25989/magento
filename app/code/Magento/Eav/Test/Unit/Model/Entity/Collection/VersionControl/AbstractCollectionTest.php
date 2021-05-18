@@ -3,13 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Eav\Test\Unit\Model\Entity\Collection\VersionControl;
 
-use Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Test for version control abstract collection model.
@@ -19,12 +15,12 @@ class AbstractCollectionTest extends \Magento\Eav\Test\Unit\Model\Entity\Collect
     /**
      * Subject of testing.
      *
-     * @var AbstractCollectionStub|MockObject
+     * @var AbstractCollectionStub|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $subject;
 
     /**
-     * @var Snapshot|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $entitySnapshot;
 
@@ -35,12 +31,12 @@ class AbstractCollectionTest extends \Magento\Eav\Test\Unit\Model\Entity\Collect
         $objectManager = new ObjectManager($this);
 
         $this->entitySnapshot = $this->createPartialMock(
-            Snapshot::class,
-            ['registerSnapshot', 'clear']
+            \Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot::class,
+            ['registerSnapshot']
         );
 
         $this->subject = $objectManager->getObject(
-            AbstractCollectionStub::class,
+            \Magento\Eav\Test\Unit\Model\Entity\Collection\VersionControl\AbstractCollectionStub::class,
             [
                 'entityFactory' => $this->coreEntityFactoryMock,
                 'universalFactory' => $this->validatorFactoryMock,
@@ -81,12 +77,5 @@ class AbstractCollectionTest extends \Magento\Eav\Test\Unit\Model\Entity\Collect
             [[]],
             [['attribute' => 'test']]
         ];
-    }
-
-    public function testClearSnapshot()
-    {
-        $item = $this->getMagentoObject();
-        $this->entitySnapshot->expects($this->once())->method('clear')->with($item);
-        $this->subject->clear();
     }
 }

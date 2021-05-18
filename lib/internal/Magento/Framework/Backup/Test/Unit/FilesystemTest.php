@@ -3,57 +3,50 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Backup\Test\Unit;
 
-use Magento\Framework\Backup\Filesystem;
-use Magento\Framework\Backup\Filesystem\Rollback\Fs;
-use Magento\Framework\Backup\Filesystem\Rollback\Ftp;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class FilesystemTest extends TestCase
+class FilesystemTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
-     * @var Fs|MockObject
+     * @var \Magento\Framework\Backup\Filesystem\Rollback\Fs|\PHPUnit\Framework\MockObject\MockObject
      */
     private $fsMock;
 
     /**
-     * @var Ftp|MockObject
+     * @var \Magento\Framework\Backup\Filesystem\Rollback\Ftp|\PHPUnit\Framework\MockObject\MockObject
      */
     private $ftpMock;
 
     /**
-     * @var Filesystem|MockObject
+     * @var \Magento\Framework\Backup\Filesystem|\PHPUnit\Framework\MockObject\MockObject
      */
     private $snapshotMock;
 
     /**
-     * @var Filesystem
+     * @var \Magento\Framework\Backup\Filesystem
      */
     private $filesystem;
 
     protected function setUp(): void
     {
         $this->objectManager = new ObjectManager($this);
-        $this->fsMock = $this->getMockBuilder(Fs::class)
+        $this->fsMock = $this->getMockBuilder(\Magento\Framework\Backup\Filesystem\Rollback\Fs::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->ftpMock = $this->getMockBuilder(Ftp::class)
+        $this->ftpMock = $this->getMockBuilder(\Magento\Framework\Backup\Filesystem\Rollback\Ftp::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->snapshotMock = $this->getMockBuilder(Filesystem::class)
+        $this->snapshotMock = $this->getMockBuilder(\Magento\Framework\Backup\Filesystem::class)
             ->getMock();
         $this->filesystem = $this->objectManager->getObject(
-            Filesystem::class,
+            \Magento\Framework\Backup\Filesystem::class,
             [
                 'rollBackFtp' => $this->ftpMock,
                 'rollBackFs' => $this->fsMock,

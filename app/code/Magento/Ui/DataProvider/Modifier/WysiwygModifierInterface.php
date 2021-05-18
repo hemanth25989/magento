@@ -20,7 +20,7 @@ interface WysiwygModifierInterface
     public function getEditorName();
 
     /**
-     * Modifies the meta
+     * Modifies meta
      *
      * @param array $meta
      *

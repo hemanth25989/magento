@@ -61,17 +61,14 @@ class Crosssell extends AbstractProduct
      * @var RelatedProducts
      */
     protected $_itemRelationsList;
-
     /**
      * @var CollectionFactory|null
      */
     private $productCollectionFactory;
-
     /**
      * @var ProductRepositoryInterface|null
      */
     private $productRepository;
-
     /**
      * @var Product[]
      */

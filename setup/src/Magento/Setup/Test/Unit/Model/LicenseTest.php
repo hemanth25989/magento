@@ -3,32 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Model;
 
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\Read;
-use Magento\Setup\Model\License;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Setup\Model\License;
 
-class LicenseTest extends TestCase
+class LicenseTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Read
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\Filesystem\Directory\Read
      */
     private $directoryReadMock;
 
     /**
-     * @var MockObject|Filesystem
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\Filesystem
      */
     private $filesystemMock;
 
     protected function setUp(): void
     {
-        $this->directoryReadMock = $this->createMock(Read::class);
-        $this->filesystemMock = $this->createMock(Filesystem::class);
+        $this->directoryReadMock = $this->createMock(\Magento\Framework\Filesystem\Directory\Read::class);
+        $this->filesystemMock = $this->createMock(\Magento\Framework\Filesystem::class);
         $this->filesystemMock
             ->expects($this->once())
             ->method('getDirectoryRead')

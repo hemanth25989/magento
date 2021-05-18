@@ -3,22 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\File\Test\Unit\Transfer\Adapter;
 
-use Laminas\Http\Headers;
-use Magento\Framework\App\Request\Http as RequestHttp;
-use Magento\Framework\File\Mime;
 use Magento\Framework\File\Transfer\Adapter\Http;
+use Magento\Framework\File\Mime;
 use Magento\Framework\HTTP\PhpEnvironment\Response;
+use Magento\Framework\App\Request\Http as RequestHttp;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests http transfer adapter.
  */
-class HttpTest extends TestCase
+class HttpTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var RequestHttp|MockObject
@@ -93,8 +90,7 @@ class HttpTest extends TestCase
         $file = __DIR__ . '/../../_files/javascript.js';
         $contentType = 'content/type';
 
-        $headers = $this->getMockBuilder(Headers::class)
-            ->getMock();
+        $headers = $this->getMockBuilder(\Zend\Http\Headers::class)->getMock();
         $this->response->expects($this->atLeastOnce())
             ->method('setHeader')
             ->withConsecutive(['Content-length', filesize($file)], ['Content-Type', $contentType]);
@@ -119,8 +115,9 @@ class HttpTest extends TestCase
      */
     public function testSendNoFileSpecifiedException(): void
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Filename is not set');
+
         $this->object->send([]);
     }
 
@@ -129,8 +126,9 @@ class HttpTest extends TestCase
      */
     public function testSendNoFileExistException(): void
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('File \'nonexistent.file\' does not exists');
+
         $this->object->send('nonexistent.file');
     }
 

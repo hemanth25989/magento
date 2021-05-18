@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Analytics\Test\Unit\Model;
 
 use Magento\Analytics\Model\Cryptographer;
@@ -17,43 +15,41 @@ use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\Directory\WriteInterface;
 use Magento\Framework\Filesystem\DirectoryList;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ExportDataHandlerTest extends TestCase
+class ExportDataHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Filesystem|MockObject
+     * @var Filesystem|\PHPUnit\Framework\MockObject\MockObject
      */
     private $filesystemMock;
 
     /**
-     * @var Archive|MockObject
+     * @var Archive|\PHPUnit\Framework\MockObject\MockObject
      */
     private $archiveMock;
 
     /**
-     * @var ReportWriterInterface|MockObject
+     * @var ReportWriterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $reportWriterMock;
 
     /**
-     * @var Cryptographer|MockObject
+     * @var Cryptographer|\PHPUnit\Framework\MockObject\MockObject
      */
     private $cryptographerMock;
 
     /**
-     * @var FileRecorder|MockObject
+     * @var FileRecorder|\PHPUnit\Framework\MockObject\MockObject
      */
     private $fileRecorderMock;
 
     /**
-     * @var WriteInterface|MockObject
+     * @var WriteInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $directoryMock;
 
     /**
-     * @var EncodedContext|MockObject
+     * @var EncodedContext|\PHPUnit\Framework\MockObject\MockObject
      */
     private $encodedContextMock;
 
@@ -82,19 +78,33 @@ class ExportDataHandlerTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->filesystemMock = $this->createMock(Filesystem::class);
+        $this->filesystemMock = $this->getMockBuilder(Filesystem::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->archiveMock = $this->createMock(Archive::class);
+        $this->archiveMock = $this->getMockBuilder(Archive::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->reportWriterMock = $this->getMockForAbstractClass(ReportWriterInterface::class);
+        $this->reportWriterMock = $this->getMockBuilder(ReportWriterInterface::class)
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
 
-        $this->cryptographerMock = $this->createMock(Cryptographer::class);
+        $this->cryptographerMock = $this->getMockBuilder(Cryptographer::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->fileRecorderMock = $this->createMock(FileRecorder::class);
+        $this->fileRecorderMock = $this->getMockBuilder(FileRecorder::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->directoryMock = $this->getMockForAbstractClass(WriteInterface::class);
+        $this->directoryMock = $this->getMockBuilder(WriteInterface::class)
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
 
-        $this->encodedContextMock = $this->createMock(EncodedContext::class);
+        $this->encodedContextMock = $this->getMockBuilder(EncodedContext::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
@@ -221,7 +231,8 @@ class ExportDataHandlerTest extends TestCase
      */
     public function testPrepareExportDataWithLocalizedException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
+
         $tmpFilesDirectoryPath = $this->subdirectoryPath . 'tmp/';
         $archivePath = $this->subdirectoryPath . $this->archiveName;
 

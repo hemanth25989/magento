@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Mvc\Bootstrap;
 
 use Laminas\Console\Request;
@@ -18,29 +16,14 @@ use Laminas\Mvc\Router\Http\RouteMatch;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\RequestInterface;
-use Magento\Backend\App\BackendApp;
-use Magento\Backend\App\BackendAppList;
-use Magento\Backend\Model\Auth;
-use Magento\Backend\Model\Auth\Session;
-use Magento\Backend\Model\Session\AdminConfig;
-use Magento\Backend\Model\Url;
-use Magento\Framework\App\Area;
+use \Magento\Setup\Mvc\Bootstrap\InitParamListener;
 use Magento\Framework\App\Bootstrap as AppBootstrap;
-use Magento\Framework\App\DeploymentConfig;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\State;
-use Magento\Framework\Filesystem;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Setup\Model\ObjectManagerProvider;
-use Magento\Setup\Mvc\Bootstrap\InitParamListener;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
- * Test for \Magento\Setup\Mvc\Bootstrap\InitParamListener
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class InitParamListenerTest extends TestCase
+class InitParamListenerTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -72,11 +55,9 @@ class InitParamListenerTest extends TestCase
 
     public function testOnBootstrap()
     {
-        /** @var MvcEvent|MockObject $mvcEvent */
+        /** @var MvcEvent|\PHPUnit\Framework\MockObject\MockObject $mvcEvent */
         $mvcEvent = $this->createMock(MvcEvent::class);
-        $mvcApplication = $this->getMockBuilder(Application::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mvcApplication = $this->getMockBuilder(Application::class)->disableOriginalConstructor()->getMock();
         $mvcEvent->expects($this->once())->method('getApplication')->willReturn($mvcApplication);
         $serviceManager = $this->createMock(ServiceManager::class);
         $initParams[AppBootstrap::INIT_PARAM_FILESYSTEM_DIR_PATHS][DirectoryList::ROOT] = ['path' => '/test'];
@@ -85,12 +66,12 @@ class InitParamListenerTest extends TestCase
         $serviceManager->expects($this->exactly(2))->method('setService')
             ->withConsecutive(
                 [
-                    DirectoryList::class,
-                    $this->isInstanceOf(DirectoryList::class),
+                    \Magento\Framework\App\Filesystem\DirectoryList::class,
+                    $this->isInstanceOf(\Magento\Framework\App\Filesystem\DirectoryList::class),
                 ],
                 [
-                    Filesystem::class,
-                    $this->isInstanceOf(Filesystem::class),
+                    \Magento\Framework\Filesystem::class,
+                    $this->isInstanceOf(\Magento\Framework\Filesystem::class),
                 ]
             );
         $mvcApplication->expects($this->any())->method('getServiceManager')->willReturn($serviceManager);
@@ -111,22 +92,23 @@ class InitParamListenerTest extends TestCase
         $this->assertEquals('/test/root/app', $directoryList->getPath(DirectoryList::APP));
     }
 
+    /**
+     */
     public function testCreateDirectoryListException()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Magento root directory is not specified.');
+
         $this->listener->createDirectoryList([]);
     }
 
     public function testCreateServiceNotConsole()
     {
         /**
-         * @var ServiceLocatorInterface|MockObject $serviceLocator
+         * @var ServiceLocatorInterface|\PHPUnit\Framework\MockObject\MockObject $serviceLocator
          */
         $serviceLocator = $this->getMockForAbstractClass(ServiceLocatorInterface::class);
-        $mvcApplication = $this->getMockBuilder(Application::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mvcApplication = $this->getMockBuilder(Application::class)->disableOriginalConstructor()->getMock();
         $request = $this->getMockForAbstractClass(RequestInterface::class);
         $mvcApplication->expects($this->any())->method('getRequest')->willReturn($request);
         $serviceLocator->expects($this->once())->method('get')->with('Application')
@@ -135,7 +117,7 @@ class InitParamListenerTest extends TestCase
     }
 
     /**
-     * @param array $zfAppConfig Data that comes from Laminas Framework Application config
+     * @param array $zfAppConfig Data that comes from Zend Framework Application config
      * @param array $env Config that comes from SetEnv
      * @param string $cliParam Parameter string
      * @param array $expectedArray Expected result array
@@ -149,15 +131,11 @@ class InitParamListenerTest extends TestCase
         }
         $listener = new InitParamListener();
         /**
-         * @var ServiceLocatorInterface|MockObject $serviceLocator
+         * @var ServiceLocatorInterface|\PHPUnit\Framework\MockObject\MockObject $serviceLocator
          */
         $serviceLocator = $this->getMockForAbstractClass(ServiceLocatorInterface::class);
-        $mvcApplication = $this->getMockBuilder(Application::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $request = $this->getMockBuilder(Request::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mvcApplication = $this->getMockBuilder(Application::class)->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->expects($this->any())
             ->method('getContent')
             ->willReturn(
@@ -241,12 +219,11 @@ class InitParamListenerTest extends TestCase
         $testPath = 'test/path/';
 
         /**
-         * @var DirectoryList|
+         * @var \Magento\Framework\App\Filesystem\DirectoryList|
          * \PHPUnit\Framework\MockObject\MockObject $directoryList
          */
-        $directoryList = $this->getMockBuilder(DirectoryList::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $directoryList = $this->getMockBuilder(\Magento\Framework\App\Filesystem\DirectoryList::class)
+            ->disableOriginalConstructor()->getMock();
         $directoryList->expects($this->any())->method('getPath')->willReturn($testPath);
         $filesystem = $this->listener->createFilesystem($directoryList);
 
@@ -257,13 +234,13 @@ class InitParamListenerTest extends TestCase
     /**
      * Prepare the event manager with a SharedEventManager, it will expect attach() to be called once.
      *
-     * @return MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function prepareEventManager()
     {
-        $this->callbacks[] = [$this->listener, 'onBootstrap'];
+        $this->callbacks[] =  [$this->listener, 'onBootstrap'];
 
-        /** @var EventManagerInterface|MockObject $events */
+        /** @var EventManagerInterface|\PHPUnit\Framework\MockObject\MockObject $events */
         $eventManager = $this->getMockForAbstractClass(EventManagerInterface::class);
 
         $sharedManager = $this->createMock(SharedEventManager::class);

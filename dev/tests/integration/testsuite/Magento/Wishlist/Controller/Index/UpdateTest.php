@@ -16,7 +16,7 @@ use Magento\TestFramework\Wishlist\Model\GetWishlistByCustomerId;
 /**
  * Test for update wish list item.
  *
- * @magentoDbIsolation disabled
+ * @magentoDbIsolation enabled
  * @magentoAppArea frontend
  * @magentoDataFixture Magento/Wishlist/_files/wishlist.php
  */

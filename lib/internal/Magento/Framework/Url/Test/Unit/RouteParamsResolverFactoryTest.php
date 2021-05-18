@@ -3,42 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Url\Test\Unit;
 
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\Url\RouteParamsResolverFactory;
-use Magento\Framework\Url\RouteParamsResolverInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class RouteParamsResolverFactoryTest extends TestCase
+class RouteParamsResolverFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var RouteParamsResolverFactory */
+    /** @var \Magento\Framework\Url\RouteParamsResolverFactory */
     protected $object;
 
-    /** @var ObjectManagerInterface|MockObject */
+    /** @var \Magento\Framework\ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $objectManager;
 
     protected function setUp(): void
     {
-        $this->objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
 
         $objectManager = new ObjectManager($this);
         $this->object = $objectManager->getObject(
-            RouteParamsResolverFactory::class,
+            \Magento\Framework\Url\RouteParamsResolverFactory::class,
             ['objectManager' => $this->objectManager]
         );
     }
 
     public function testCreate()
     {
-        $producedInstance = $this->getMockForAbstractClass(RouteParamsResolverInterface::class);
+        $producedInstance = $this->createMock(\Magento\Framework\Url\RouteParamsResolverInterface::class);
         $this->objectManager->expects($this->once())
             ->method('create')
-            ->with(RouteParamsResolverInterface::class)
+            ->with(\Magento\Framework\Url\RouteParamsResolverInterface::class)
             ->willReturn($producedInstance);
 
         $this->assertSame($producedInstance, $this->object->create([]));

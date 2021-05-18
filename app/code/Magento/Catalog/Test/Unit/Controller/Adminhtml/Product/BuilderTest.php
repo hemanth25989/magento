@@ -3,30 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Controller\Adminhtml\Product;
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Catalog\Controller\Adminhtml\Product\Builder;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Type as ProductTypes;
-use Magento\Catalog\Model\ProductFactory;
-use Magento\Cms\Model\Wysiwyg\Config as WysiwygConfig;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Registry;
+use \Magento\Catalog\Controller\Adminhtml\Product\Builder;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Magento\Catalog\Model\ProductFactory;
+use Magento\Framework\Registry;
+use Magento\Cms\Model\Wysiwyg\Config as WysiwygConfig;
+use Magento\Framework\App\Request\Http;
+use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Catalog\Model\Product\Type as ProductTypes;
 
 /**
+ * Class BuilderTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class BuilderTest extends TestCase
+class BuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -39,47 +36,47 @@ class BuilderTest extends TestCase
     protected $builder;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $loggerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $productFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $registryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $wysiwygConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $requestMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $productMock;
 
     /**
-     * @var StoreFactory|MockObject
+     * @var StoreFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeFactoryMock;
 
     /**
-     * @var ProductRepositoryInterface|MockObject
+     * @var ProductRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $productRepositoryMock;
 
     /**
-     * @var StoreInterface|MockObject
+     * @var StoreInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeMock;
 
@@ -89,13 +86,10 @@ class BuilderTest extends TestCase
         $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
         $this->productFactoryMock = $this->createPartialMock(ProductFactory::class, ['create']);
         $this->registryMock = $this->createMock(Registry::class);
-        $this->wysiwygConfigMock = $this->getMockBuilder(WysiwygConfig::class)
-            ->addMethods(['setStoreId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->wysiwygConfigMock = $this->createPartialMock(WysiwygConfig::class, ['setStoreId']);
         $this->requestMock = $this->createMock(Http::class);
-        $methods = ['setStoreId', 'setData', 'load', 'setAttributeSetId', 'setTypeId'];
-        $this->productMock = $this->createPartialMock(Product::class, $methods);
+        $methods = ['setStoreId', 'setData', 'load', '__wakeup', 'setAttributeSetId', 'setTypeId'];
+        $this->productMock = $this->createPartialMock(\Magento\Catalog\Model\Product::class, $methods);
         $this->storeFactoryMock = $this->getMockBuilder(StoreFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()

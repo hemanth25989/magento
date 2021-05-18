@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Magento\Framework\View\Page;
 
 use Magento\Framework\App;
@@ -27,7 +28,7 @@ class Builder extends View\Layout\Builder
     protected $pageLayoutReader;
 
     /**
-     * @var BuilderInterface|mixed
+     * @var BuilderInterface
      */
     private $pageLayoutBuilder;
 

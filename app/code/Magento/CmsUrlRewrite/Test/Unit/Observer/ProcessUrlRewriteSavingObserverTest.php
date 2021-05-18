@@ -3,25 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CmsUrlRewrite\Test\Unit\Observer;
 
-use Magento\Cms\Model\Page;
-use Magento\CmsUrlRewrite\Model\CmsPageUrlRewriteGenerator;
-use Magento\CmsUrlRewrite\Observer\ProcessUrlRewriteSavingObserver;
-use Magento\Framework\Event;
-use Magento\Framework\Event\Observer as EventObserver;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\CmsUrlRewrite\Observer\ProcessUrlRewriteSavingObserver;
 use Magento\UrlRewrite\Model\UrlPersistInterface;
+use Magento\CmsUrlRewrite\Model\CmsPageUrlRewriteGenerator;
+use Magento\Framework\Event\Observer as EventObserver;
+use Magento\Framework\Event;
+use Magento\Cms\Model\Page;
 use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ProcessUrlRewriteSavingObserverTest extends TestCase
+class ProcessUrlRewriteSavingObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -29,27 +25,27 @@ class ProcessUrlRewriteSavingObserverTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var UrlPersistInterface|MockObject
+     * @var UrlPersistInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlPersistMock;
 
     /**
-     * @var CmsPageUrlRewriteGenerator|MockObject
+     * @var CmsPageUrlRewriteGenerator|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $cmsPageUrlRewriteGeneratorMock;
 
     /**
-     * @var EventObserver|MockObject
+     * @var EventObserver|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $eventObserverMock;
 
     /**
-     * @var Page|MockObject
+     * @var Page|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $pageMock;
 
     /**
-     * @var Event|MockObject
+     * @var Event|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $eventMock;
 

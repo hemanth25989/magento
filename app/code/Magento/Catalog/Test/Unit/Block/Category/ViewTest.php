@@ -3,33 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Block\Category;
 
-use Magento\Catalog\Block\Category\View;
-use Magento\Catalog\Model\Category;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ViewTest extends TestCase
+class ViewTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var View
+     * @var \Magento\Catalog\Block\Category\View
      */
     protected $block;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $scopeConfigMock;
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
-        $this->block = $objectManager->getObject(View::class, []);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->block = $objectManager->getObject(\Magento\Catalog\Block\Category\View::class, []);
     }
 
     protected function tearDown(): void
@@ -40,7 +31,7 @@ class ViewTest extends TestCase
     public function testGetIdentities()
     {
         $categoryTag = ['catalog_category_1'];
-        $currentCategoryMock = $this->createMock(Category::class);
+        $currentCategoryMock = $this->createMock(\Magento\Catalog\Model\Category::class);
         $currentCategoryMock->expects($this->once())->method('getIdentities')->willReturn($categoryTag);
         $this->block->setCurrentCategory($currentCategoryMock);
         $this->assertEquals($categoryTag, $this->block->getIdentities());

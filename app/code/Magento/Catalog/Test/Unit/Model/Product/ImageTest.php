@@ -3,146 +3,125 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product;
 
-use Magento\Catalog\Model\Product\Image;
 use Magento\Catalog\Model\Product\Image\ParamsBuilder;
-use Magento\Catalog\Model\Product\Media\Config;
+use Magento\Catalog\Model\View\Asset\Image\ContextFactory;
 use Magento\Catalog\Model\View\Asset\ImageFactory;
 use Magento\Catalog\Model\View\Asset\PlaceholderFactory;
-use Magento\Framework\App\CacheInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\Write;
-use Magento\Framework\Filesystem\Directory\WriteInterface;
-use Magento\Framework\Image\Factory;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Asset\LocalInterface;
-use Magento\MediaStorage\Helper\File\Storage\Database;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManager;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Store\Model\Website;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.TooManyFields)
  */
-class ImageTest extends TestCase
+class ImageTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Image
+     * @var \Magento\Catalog\Model\Product\Image
      */
     private $image;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Framework\Model\Context|\PHPUnit\Framework\MockObject\MockObject
      */
     private $context;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $storeManager;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Catalog\Model\Product\Media\Config|\PHPUnit\Framework\MockObject\MockObject
      */
     private $config;
 
     /**
-     * @var Database|MockObject
+     * @var \Magento\MediaStorage\Helper\File\Storage\Database|\PHPUnit\Framework\MockObject\MockObject
      */
     private $coreFileHelper;
 
     /**
-     * @var Filesystem|MockObject
+     * @var \Magento\Framework\Filesystem|\PHPUnit\Framework\MockObject\MockObject
      */
     private $filesystem;
 
     /**
-     * @var Factory|MockObject
+     * @var \Magento\Framework\Image\Factory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $factory;
 
     /**
-     * @var WriteInterface|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\WriteInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $mediaDirectory;
 
     /**
-     * @var LocalInterface|MockObject
+     * @var \Magento\Framework\View\Asset\LocalInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $imageAsset;
 
     /**
-     * @var ImageFactory|MockObject
+     * @var ImageFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $viewAssetImageFactory;
 
     /**
-     * @var PlaceholderFactory|MockObject
+     * @var PlaceholderFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $viewAssetPlaceholderFactory;
 
     /**
-     * @var SerializerInterface|MockObject
+     * @var \Magento\Framework\Serialize\SerializerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $serializer;
 
     /**
-     * @var CacheInterface|MockObject
+     * @var \Magento\Framework\App\CacheInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $cacheManager;
 
     /**
-     * @var ParamsBuilder|MockObject
+     * @var ParamsBuilder|\PHPUnit\Framework\MockObject\MockObject
      */
     private $paramsBuilder;
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
-        $this->context = $this->createMock(Context::class);
-        $this->cacheManager = $this->getMockBuilder(CacheInterface::class)
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->context = $this->createMock(\Magento\Framework\Model\Context::class);
+        $this->cacheManager = $this->getMockBuilder(\Magento\Framework\App\CacheInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $this->context->expects($this->any())->method('getCacheManager')->willReturn($this->cacheManager);
 
-        $this->storeManager = $this->getMockBuilder(StoreManager::class)
+        $this->storeManager = $this->getMockBuilder(\Magento\Store\Model\StoreManager::class)
             ->disableOriginalConstructor()
             ->setMethods(['getStore', 'getWebsite'])->getMock();
-        $store = $this->getMockBuilder(Store::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getId', '__sleep', 'getBaseUrl'])->getMock();
+        $store = $this->getMockBuilder(\Magento\Store\Model\Store::class)->disableOriginalConstructor()
+            ->setMethods(['getId', '__sleep', '__wakeup', 'getBaseUrl'])->getMock();
         $store->expects($this->any())->method('getId')->willReturn(1);
         $store->expects($this->any())->method('getBaseUrl')->willReturn('http://magento.com/media/');
         $this->storeManager->expects($this->any())->method('getStore')->willReturn($store);
 
-        $this->config = $this->getMockBuilder(Config::class)
-            ->setMethods(['getBaseMediaPath'])->disableOriginalConstructor()
-            ->getMock();
+        $this->config = $this->getMockBuilder(\Magento\Catalog\Model\Product\Media\Config::class)
+            ->setMethods(['getBaseMediaPath'])->disableOriginalConstructor()->getMock();
         $this->config->expects($this->any())->method('getBaseMediaPath')->willReturn('catalog/product');
-        $this->coreFileHelper = $this->getMockBuilder(Database::class)
-            ->setMethods(['saveFile', 'deleteFolder'])->disableOriginalConstructor()
-            ->getMock();
+        $this->coreFileHelper = $this->getMockBuilder(\Magento\MediaStorage\Helper\File\Storage\Database::class)
+            ->setMethods(['saveFile', 'deleteFolder'])->disableOriginalConstructor()->getMock();
 
-        $this->mediaDirectory = $this->getMockBuilder(Write::class)
+        $this->mediaDirectory = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\Write::class)
             ->disableOriginalConstructor()
             ->setMethods(['create', 'isFile', 'isExist', 'getAbsolutePath'])
             ->getMock();
 
-        $this->filesystem = $this->createMock(Filesystem::class);
+        $this->filesystem = $this->createMock(\Magento\Framework\Filesystem::class);
         $this->filesystem->expects($this->once())->method('getDirectoryWrite')
             ->with(DirectoryList::MEDIA)
             ->willReturn($this->mediaDirectory);
-        $this->factory = $this->createMock(Factory::class);
+        $this->factory = $this->createMock(\Magento\Framework\Image\Factory::class);
 
         $this->viewAssetImageFactory = $this->getMockBuilder(ImageFactory::class)
             ->disableOriginalConstructor()
@@ -153,7 +132,7 @@ class ImageTest extends TestCase
             ->setMethods(['create'])
             ->getMock();
         $this->serializer = $this->getMockBuilder(
-            SerializerInterface::class
+            \Magento\Framework\Serialize\SerializerInterface::class
         )->getMockForAbstractClass();
         $this->serializer->expects($this->any())
             ->method('serialize')
@@ -174,7 +153,7 @@ class ImageTest extends TestCase
             ->getMock();
 
         $this->image = $objectManager->getObject(
-            Image::class,
+            \Magento\Catalog\Model\Product\Image::class,
             [
                 'context' => $this->context,
                 'storeManager' => $this->storeManager,
@@ -189,7 +168,7 @@ class ImageTest extends TestCase
             ]
         );
 
-        $this->imageAsset = $this->getMockBuilder(LocalInterface::class)
+        $this->imageAsset = $this->getMockBuilder(\Magento\Framework\View\Asset\LocalInterface::class)
             ->getMockForAbstractClass();
         $objectManager->setBackwardCompatibleProperty(
             $this->image,
@@ -330,9 +309,8 @@ class ImageTest extends TestCase
 
     public function testSetWatermark()
     {
-        $website = $this->getMockBuilder(Website::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getId', '__sleep'])->getMock();
+        $website = $this->getMockBuilder(\Magento\Store\Model\Website::class)->disableOriginalConstructor()
+            ->setMethods(['getId', '__sleep', '__wakeup'])->getMock();
         $website->expects($this->any())->method('getId')->willReturn(1);
         $this->storeManager->expects($this->any())->method('getWebsite')->willReturn($website);
         $this->mediaDirectory->expects($this->at(3))->method('isExist')->with('catalog/product/watermark//somefile.png')
@@ -381,8 +359,7 @@ class ImageTest extends TestCase
     {
         $imageProcessor = $this->getMockBuilder(
             \Magento\Framework\Image::class
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
         $this->image->setImageProcessor($imageProcessor);
         $this->coreFileHelper->expects($this->once())->method('saveFile')->willReturn(true);
 
@@ -393,8 +370,7 @@ class ImageTest extends TestCase
     {
         $imageProcessor = $this->getMockBuilder(
             \Magento\Framework\Image::class
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
         $this->image->setImageProcessor($imageProcessor);
         $this->assertSame($this->image, $this->image->saveFile());
     }
@@ -449,8 +425,7 @@ class ImageTest extends TestCase
     {
         $imageProcessor = $this->getMockBuilder(
             \Magento\Framework\Image::class
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
         $this->factory->expects($this->once())->method('create')->willReturn($imageProcessor);
         $this->assertSame($imageProcessor, $this->image->getImageProcessor());
     }

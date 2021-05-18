@@ -3,33 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Product\Option\Validator;
 
-use Magento\Catalog\Model\Config\Source\Product\Options\Price;
-use Magento\Catalog\Model\Product\Option;
-use Magento\Catalog\Model\Product\Option\Validator\Select;
-use Magento\Catalog\Model\ProductOptions\ConfigInterface;
-use Magento\Framework\Locale\FormatInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class SelectTest extends TestCase
+class SelectTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Select
+     * @var \Magento\Catalog\Model\Product\Option\Validator\Select
      */
     protected $validator;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $valueMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $localeFormatMock;
 
@@ -38,10 +28,10 @@ class SelectTest extends TestCase
      */
     protected function setUp(): void
     {
-        $configMock = $this->getMockForAbstractClass(ConfigInterface::class);
-        $storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $priceConfigMock = new Price($storeManagerMock);
-        $this->localeFormatMock = $this->getMockForAbstractClass(FormatInterface::class);
+        $configMock = $this->createMock(\Magento\Catalog\Model\ProductOptions\ConfigInterface::class);
+        $storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
+        $priceConfigMock = new \Magento\Catalog\Model\Config\Source\Product\Options\Price($storeManagerMock);
+        $this->localeFormatMock = $this->createMock(\Magento\Framework\Locale\FormatInterface::class);
         $config = [
             [
                 'label' => 'group label 1',
@@ -65,9 +55,9 @@ class SelectTest extends TestCase
             ],
         ];
         $configMock->expects($this->once())->method('getAll')->willReturn($config);
-        $methods = ['getTitle', 'getType', 'getPriceType', 'getPrice', 'getData'];
-        $this->valueMock = $this->createPartialMock(Option::class, $methods);
-        $this->validator = new Select(
+        $methods = ['getTitle', 'getType', 'getPriceType', 'getPrice', '__wakeup', 'getData'];
+        $this->valueMock = $this->createPartialMock(\Magento\Catalog\Model\Product\Option::class, $methods, []);
+        $this->validator = new \Magento\Catalog\Model\Product\Option\Validator\Select(
             $configMock,
             $priceConfigMock,
             $this->localeFormatMock

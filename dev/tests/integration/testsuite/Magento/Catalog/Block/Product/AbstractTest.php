@@ -71,7 +71,6 @@ class AbstractTest extends TestCase
     /**
      * @inheritdoc
      */
-
     protected function setUp(): void
     {
         if (!self::$isStubClass) {

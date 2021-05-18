@@ -3,32 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Security\Test\Unit\Model;
 
-use Magento\Backend\Model\Auth\Session;
-use Magento\Framework\App\Area;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Config\ScopeInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Security\Model\Config;
-use Magento\Security\Model\Config\Source\ResetMethod;
 use Magento\Security\Model\ConfigInterface;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\Security\Model\Config testing
  */
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ScopeConfigInterface
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $scopeConfigMock;
 
     /**
-     * @var ScopeInterface
+     * @var \Magento\Framework\Config\ScopeInterface
      */
     protected $scopeMock;
 
@@ -44,15 +34,15 @@ class ConfigTest extends TestCase
     protected function setUp(): void
     {
         $this->scopeConfigMock = $this->createPartialMock(
-            ScopeConfigInterface::class,
+            \Magento\Framework\App\Config\ScopeConfigInterface::class,
             ['getValue', 'isSetFlag']
         );
 
-        $this->scopeMock =  $this->getMockForAbstractClass(ScopeInterface::class);
+        $this->scopeMock =  $this->createMock(\Magento\Framework\Config\ScopeInterface::class);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
-            Config::class,
+            \Magento\Security\Model\Config::class,
             [
                 'scopeConfig' => $this->scopeConfigMock,
                 'scope' => $this->scopeMock
@@ -63,7 +53,7 @@ class ConfigTest extends TestCase
     public function testGetLimitationTimePeriod()
     {
         $this->assertEquals(
-            Config::LIMITATION_TIME_PERIOD,
+            \Magento\Security\Model\Config::LIMITATION_TIME_PERIOD,
             $this->model->getLimitationTimePeriod()
         );
     }
@@ -78,7 +68,7 @@ class ConfigTest extends TestCase
         $this->scopeConfigMock->expects($this->once())
             ->method('getValue')
             ->with(
-                Config::XML_PATH_EMAIL_RECIPIENT,
+                \Magento\Security\Model\Config::XML_PATH_EMAIL_RECIPIENT,
                 \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             )
             ->willReturn(
@@ -96,7 +86,7 @@ class ConfigTest extends TestCase
         $lifetime = 10;
         $this->scopeConfigMock->expects($this->once())
             ->method('getValue')
-            ->with(Session::XML_PATH_SESSION_LIFETIME)
+            ->with(\Magento\Backend\Model\Auth\Session::XML_PATH_SESSION_LIFETIME)
             ->willReturn(
                 $lifetime
             );
@@ -111,7 +101,7 @@ class ConfigTest extends TestCase
     {
         $this->scopeConfigMock->expects($this->once())
             ->method('isSetFlag')
-            ->with(Config::XML_PATH_ADMIN_ACCOUNT_SHARING)
+            ->with(\Magento\Security\Model\Config::XML_PATH_ADMIN_ACCOUNT_SHARING)
             ->willReturn(
                 $isShared
             );
@@ -137,7 +127,7 @@ class ConfigTest extends TestCase
             ->method('getValue')
             ->with(
                 $this->getXmlPathPrefix($scope)
-                . Config::XML_PATH_PASSWORD_RESET_PROTECTION_TYPE
+                . \Magento\Security\Model\Config::XML_PATH_PASSWORD_RESET_PROTECTION_TYPE
             )
             ->willReturn($resetMethod);
         $this->scopeMock->expects($this->once())
@@ -151,16 +141,16 @@ class ConfigTest extends TestCase
      */
     public function dataProviderResetMethodValues()
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $resetMethodSource = $objectManager->getObject(
-            ResetMethod::class
+            \Magento\Security\Model\Config\Source\ResetMethod::class
         );
 
         $optionKeys = array_keys($resetMethodSource->toArray());
         $data = [];
         foreach ($optionKeys as $key) {
-            $data[] = [$key, Area::AREA_ADMINHTML];
-            $data[] = [$key, Area::AREA_FRONTEND];
+            $data[] = [$key, \Magento\Framework\App\Area::AREA_ADMINHTML];
+            $data[] = [$key, \Magento\Framework\App\Area::AREA_FRONTEND];
         }
 
         return $data;
@@ -174,10 +164,10 @@ class ConfigTest extends TestCase
      */
     protected function getXmlPathPrefix($scope)
     {
-        if ($scope == Area::AREA_ADMINHTML) {
-            return Config::XML_PATH_ADMIN_AREA;
+        if ($scope == \Magento\Framework\App\Area::AREA_ADMINHTML) {
+            return \Magento\Security\Model\Config::XML_PATH_ADMIN_AREA;
         }
-        return Config::XML_PATH_FRONTEND_AREA;
+        return \Magento\Security\Model\Config::XML_PATH_FRONTEND_AREA;
     }
 
     /**
@@ -191,7 +181,7 @@ class ConfigTest extends TestCase
             ->method('getValue')
             ->with(
                 $this->getXmlPathPrefix($scope)
-                . Config::XML_PATH_MAX_NUMBER_PASSWORD_RESET_REQUESTS
+                . \Magento\Security\Model\Config::XML_PATH_MAX_NUMBER_PASSWORD_RESET_REQUESTS
             )
             ->willReturn($limitNumber);
         $this->scopeMock->expects($this->once())
@@ -211,7 +201,7 @@ class ConfigTest extends TestCase
             ->method('getValue')
             ->with(
                 $this->getXmlPathPrefix($scope)
-                . Config::XML_PATH_MIN_TIME_BETWEEN_PASSWORD_RESET_REQUESTS
+                . \Magento\Security\Model\Config::XML_PATH_MIN_TIME_BETWEEN_PASSWORD_RESET_REQUESTS
             )
             ->willReturn($limitTime);
         $this->scopeMock->expects($this->once())
@@ -226,8 +216,8 @@ class ConfigTest extends TestCase
     public function dataProviderNumberValueWithScope()
     {
         return [
-            [5, Area::AREA_ADMINHTML],
-            [5, Area::AREA_FRONTEND]
+            [5, \Magento\Framework\App\Area::AREA_ADMINHTML],
+            [5, \Magento\Framework\App\Area::AREA_FRONTEND]
         ];
     }
 }

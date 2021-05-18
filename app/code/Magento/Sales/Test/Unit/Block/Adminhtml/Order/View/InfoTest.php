@@ -3,75 +3,65 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Block\Adminhtml\Order\View;
 
-use Magento\Backend\Block\Template\Context;
-use Magento\Customer\Api\Data\GroupInterface;
-use Magento\Customer\Api\GroupRepositoryInterface;
-use Magento\Framework\AuthorizationInterface;
-use Magento\Framework\DataObject;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Block\Adminhtml\Order\View\Info;
-use Magento\Sales\Model\Order;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class InfoTest extends TestCase
+/**
+ * Class InfoTests
+ */
+class InfoTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Info
+     * @var \Magento\Sales\Block\Adminhtml\Order\View\Info
      */
     protected $block;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $authorizationMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $groupRepositoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $coreRegistryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $orderMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $groupMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $contextMock;
 
     protected function setUp(): void
     {
         $this->contextMock
-            = $this->createPartialMock(Context::class, ['getAuthorization']);
-        $this->authorizationMock = $this->getMockForAbstractClass(AuthorizationInterface::class);
+            = $this->createPartialMock(\Magento\Backend\Block\Template\Context::class, ['getAuthorization']);
+        $this->authorizationMock = $this->createMock(\Magento\Framework\AuthorizationInterface::class);
         $this->contextMock
             ->expects($this->any())->method('getAuthorization')->willReturn($this->authorizationMock);
         $this->groupRepositoryMock = $this->getMockForAbstractClass(
-            GroupRepositoryInterface::class
+            \Magento\Customer\Api\GroupRepositoryInterface::class
         );
-        $this->coreRegistryMock = $this->createMock(Registry::class);
-        $methods = ['getCustomerGroupId'];
-        $this->orderMock = $this->createPartialMock(Order::class, $methods);
+        $this->coreRegistryMock = $this->createMock(\Magento\Framework\Registry::class);
+        $methods = ['getCustomerGroupId', '__wakeUp'];
+        $this->orderMock = $this->createPartialMock(\Magento\Sales\Model\Order::class, $methods);
         $this->groupMock = $this->getMockForAbstractClass(
-            GroupInterface::class,
+            \Magento\Customer\Api\Data\GroupInterface::class,
             [],
             '',
             false
@@ -82,28 +72,28 @@ class InfoTest extends TestCase
             'registry' => $this->coreRegistryMock,
         ];
 
-        $helper = new ObjectManager($this);
-        /** @var Info $block */
-        $this->block = $helper->getObject(Info::class, $arguments);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        /** @var \Magento\Sales\Block\Adminhtml\Order\View\Info $block */
+        $this->block = $helper->getObject(\Magento\Sales\Block\Adminhtml\Order\View\Info::class, $arguments);
     }
 
     public function testGetAddressEditLink()
     {
-        $contextMock = $this->createPartialMock(Context::class, ['getAuthorization']);
-        $authorizationMock = $this->getMockForAbstractClass(AuthorizationInterface::class);
+        $contextMock = $this->createPartialMock(\Magento\Backend\Block\Template\Context::class, ['getAuthorization']);
+        $authorizationMock = $this->createMock(\Magento\Framework\AuthorizationInterface::class);
         $contextMock->expects($this->any())->method('getAuthorization')->willReturn($authorizationMock);
         $arguments = ['context' => $contextMock];
 
-        $helper = new ObjectManager($this);
-        /** @var Info $block */
-        $block = $helper->getObject(Info::class, $arguments);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        /** @var \Magento\Sales\Block\Adminhtml\Order\View\Info $block */
+        $block = $helper->getObject(\Magento\Sales\Block\Adminhtml\Order\View\Info::class, $arguments);
 
         $authorizationMock->expects($this->atLeastOnce())
             ->method('isAllowed')
             ->with('Magento_Sales::actions_edit')
             ->willReturn(false);
 
-        $address = new DataObject();
+        $address = new \Magento\Framework\DataObject();
         $this->assertEmpty($block->getAddressEditLink($address));
     }
 
@@ -120,7 +110,7 @@ class InfoTest extends TestCase
         $this->groupMock
             ->expects($this->once())
             ->method('getCode')
-            ->willThrowException(new NoSuchEntityException());
+            ->will($this->throwException(new NoSuchEntityException()));
         $this->assertEquals('', $this->block->getCustomerGroupName());
     }
 

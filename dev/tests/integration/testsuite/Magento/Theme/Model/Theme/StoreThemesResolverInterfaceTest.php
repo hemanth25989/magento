@@ -83,7 +83,7 @@ class StoreThemesResolverInterfaceTest extends TestCase
      * @param array $expected
      * @dataProvider getThemesDataProvider
      */
-    public function testGetThemes(array $config, array $expected): void
+    public function testGetThemes(array $config, array $expected)
     {
         $store = $this->storeManager->getStore();
         $registeredThemes = [];

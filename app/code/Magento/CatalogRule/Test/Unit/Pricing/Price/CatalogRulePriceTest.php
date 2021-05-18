@@ -18,12 +18,13 @@ use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Api\Data\WebsiteInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class CatalogRulePriceTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CatalogRulePriceTest extends TestCase
+class CatalogRulePriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CatalogRulePrice
@@ -182,9 +183,9 @@ class CatalogRulePriceTest extends TestCase
         $convertedPrice = 0.0;
 
         $this->saleableItemMock->expects($this->once())->method('hasData')
-            ->with('catalog_rule_price')->willReturn(true);
+                ->with('catalog_rule_price')->willReturn(true);
         $this->saleableItemMock->expects($this->once())->method('getData')
-            ->with('catalog_rule_price')->willReturn($catalogRulePrice);
+                    ->with('catalog_rule_price')->willReturn($catalogRulePrice);
 
         $this->assertEquals($convertedPrice, $this->object->getValue());
     }

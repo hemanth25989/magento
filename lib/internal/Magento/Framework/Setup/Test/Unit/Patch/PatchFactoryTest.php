@@ -3,17 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Setup\Test\Unit\Patch;
 
+use Magento\Framework\App\ResourceConnection;
+use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Setup\Patch\PatchFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Setup\Patch\PatchFactory;
+use Magento\Framework\Setup\Patch\PatchHistory;
+use Magento\Framework\Setup\Patch\PatchInterface;
 
-class PatchFactoryTest extends TestCase
+/**
+ * Class PatchFactoryTest
+ * @package Magento\Framework\Setup\Test\Unit\Patch
+ */
+class PatchFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PatchFactory
@@ -21,7 +26,7 @@ class PatchFactoryTest extends TestCase
     private $patchFactory;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $objectManagerMock;
 
@@ -37,12 +42,13 @@ class PatchFactoryTest extends TestCase
         );
     }
 
+    /**
+     */
     public function testCreateNonPatchInterface()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage(
-            'stdClass should implement Magento\Framework\Setup\Patch\PatchInterface interface'
-        );
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('stdClass should implement Magento\\Framework\\Setup\\Patch\\PatchInterface interface');
+
         $patchNonPatchInterface = $this->createMock(\stdClass::class);
         $this->objectManagerMock->expects($this->any())
             ->method('create')

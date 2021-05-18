@@ -3,37 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Fixtures;
 
-use Magento\Catalog\Api\AttributeSetRepositoryInterface;
-use Magento\Catalog\Api\ProductAttributeOptionManagementInterface;
-use Magento\Catalog\Model\Category;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\CollectionFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\ImportExport\Model\Import;
 use Magento\Setup\Fixtures\AttributeSet\AttributeSetFixture;
 use Magento\Setup\Fixtures\AttributeSet\Pattern;
 use Magento\Setup\Fixtures\ConfigurableProductsFixture;
-use Magento\Setup\Fixtures\FixtureModel;
-use Magento\Setup\Model\Complex\Generator;
-use Magento\Store\Model\StoreManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ConfigurableProductsFixtureTest extends TestCase
+class ConfigurableProductsFixtureTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|FixtureModel
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Setup\Fixtures\FixtureModel
      */
     private $fixtureModelMock;
 
     /**
-     * @var ConfigurableProductsFixture
+     * @var \Magento\Setup\Fixtures\ConfigurableProductsFixture
      */
     private $model;
 
@@ -49,7 +39,7 @@ class ConfigurableProductsFixtureTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->fixtureModelMock = $this->getMockBuilder(FixtureModel::class)
+        $this->fixtureModelMock = $this->getMockBuilder(\Magento\Setup\Fixtures\FixtureModel::class)
             ->disableOriginalConstructor()
             ->setMethods(['createAttributeSet', 'getValue', 'getObjectManager'])
             ->getMock();
@@ -74,19 +64,19 @@ class ConfigurableProductsFixtureTest extends TestCase
      */
     public function testExecute()
     {
-        $importMock = $this->getMockBuilder(Import::class)
+        $importMock = $this->getMockBuilder(\Magento\ImportExport\Model\Import::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $categoryMock = $this->getMockBuilder(Category::class)
+        $categoryMock = $this->getMockBuilder(\Magento\Catalog\Model\Category::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $storeManagerMock = $this->getMockBuilder(StoreManager::class)
+        $storeManagerMock = $this->getMockBuilder(\Magento\Store\Model\StoreManager::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $source = $this->getMockBuilder(Generator::class)
+        $source = $this->getMockBuilder(\Magento\Setup\Model\Complex\Generator::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -95,26 +85,26 @@ class ConfigurableProductsFixtureTest extends TestCase
             ->getMock();
 
         $attributeSetRepositoryMock = $this->getMockForAbstractClass(
-            AttributeSetRepositoryInterface::class
+            \Magento\Catalog\Api\AttributeSetRepositoryInterface::class
         );
 
         $productAttributeOptionManagementInterface = $this->getMockForAbstractClass(
-            ProductAttributeOptionManagementInterface::class
+            \Magento\Catalog\Api\ProductAttributeOptionManagementInterface::class
         );
 
         $objectManagerMock->expects($this->any())
             ->method('get')
             ->willReturnMap([
                 [
-                    StoreManager::class,
+                    \Magento\Store\Model\StoreManager::class,
                     $storeManagerMock
                 ],
                 [
-                    AttributeSetRepositoryInterface::class,
+                    \Magento\Catalog\Api\AttributeSetRepositoryInterface::class,
                     $attributeSetRepositoryMock
                 ],
                 [
-                    ProductAttributeOptionManagementInterface::class,
+                    \Magento\Catalog\Api\ProductAttributeOptionManagementInterface::class,
                     $productAttributeOptionManagementInterface
                 ]
             ]);
@@ -127,30 +117,32 @@ class ConfigurableProductsFixtureTest extends TestCase
         $objectManagerMock->expects($this->any())
             ->method('create')
             ->willReturnCallback(
-                function ($className) use (
-                    $attributeCollectionFactoryMock,
-                    $categoryMock,
-                    $importMock,
-                    $source
-                ) {
-                    if ($className === CollectionFactory::class) {
-                        return $attributeCollectionFactoryMock;
-                    }
+                
+                    function ($className) use (
+                        $attributeCollectionFactoryMock,
+                        $categoryMock,
+                        $importMock,
+                        $source
+                    ) {
+                        if ($className === CollectionFactory::class) {
+                            return $attributeCollectionFactoryMock;
+                        }
 
-                    if ($className === Category::class) {
-                        return $categoryMock;
-                    }
+                        if ($className === \Magento\Catalog\Model\Category::class) {
+                            return $categoryMock;
+                        }
 
-                    if ($className === Import::class) {
-                        return $importMock;
-                    }
+                        if ($className === \Magento\ImportExport\Model\Import::class) {
+                            return $importMock;
+                        }
 
-                    if ($className === Generator::class) {
-                        return $source;
-                    }
+                        if ($className === \Magento\Setup\Model\Complex\Generator::class) {
+                            return $source;
+                        }
 
-                    return null;
-                }
+                        return null;
+                    }
+                
             );
 
         $valuesMap = [
@@ -214,7 +206,7 @@ class ConfigurableProductsFixtureTest extends TestCase
 
     public function testNoFixtureConfigValue()
     {
-        $importMock = $this->getMockBuilder(Import::class)
+        $importMock = $this->getMockBuilder(\Magento\ImportExport\Model\Import::class)
             ->disableOriginalConstructor()
             ->getMock();
         $importMock->expects($this->never())->method('validateSource');
@@ -225,7 +217,7 @@ class ConfigurableProductsFixtureTest extends TestCase
             ->getMock();
         $objectManagerMock->expects($this->never())
             ->method('create')
-            ->with(Import::class)
+            ->with($this->equalTo(\Magento\ImportExport\Model\Import::class))
             ->willReturn($importMock);
 
         $this->fixtureModelMock

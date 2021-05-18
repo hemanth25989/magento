@@ -3,21 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GroupedProduct\Test\Unit\Helper\Product\Configuration\Plugin;
 
-use Magento\Catalog\Helper\Product\Configuration;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Configuration\Item\ItemInterface;
-use Magento\GroupedProduct\Helper\Product\Configuration\Plugin\Grouped;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class GroupedTest extends TestCase
+class GroupedTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Grouped
+     * @var \Magento\GroupedProduct\Helper\Product\Configuration\Plugin\Grouped
      */
     protected $groupedConfigPlugin;
 
@@ -27,30 +18,30 @@ class GroupedTest extends TestCase
     protected $closureMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $itemMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $productMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $typeInstanceMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $subjectMock;
 
     protected function setUp(): void
     {
-        $this->groupedConfigPlugin = new Grouped();
-        $this->itemMock = $this->getMockForAbstractClass(ItemInterface::class);
-        $this->productMock = $this->createMock(Product::class);
+        $this->groupedConfigPlugin = new \Magento\GroupedProduct\Helper\Product\Configuration\Plugin\Grouped();
+        $this->itemMock = $this->createMock(\Magento\Catalog\Model\Product\Configuration\Item\ItemInterface::class);
+        $this->productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
         $this->typeInstanceMock = $this->createMock(\Magento\GroupedProduct\Model\Product\Type\Grouped::class);
 
         $this->itemMock->expects($this->any())->method('getProduct')->willReturn($this->productMock);
@@ -63,7 +54,7 @@ class GroupedTest extends TestCase
             $this->typeInstanceMock
         );
 
-        $this->subjectMock = $this->createMock(Configuration::class);
+        $this->subjectMock = $this->createMock(\Magento\Catalog\Helper\Product\Configuration::class);
     }
 
     /**
@@ -74,7 +65,7 @@ class GroupedTest extends TestCase
         $associatedProductId = 'associatedId';
         $associatedProdName = 'associatedProductName';
 
-        $associatedProdMock = $this->createMock(Product::class);
+        $associatedProdMock = $this->createMock(\Magento\Catalog\Model\Product::class);
 
         $associatedProdMock->expects($this->once())->method('getId')->willReturn($associatedProductId);
 
@@ -98,10 +89,10 @@ class GroupedTest extends TestCase
             \Magento\GroupedProduct\Model\Product\Type\Grouped::TYPE_CODE
         );
 
-        $quantityItemMock = $this->getMockBuilder(ItemInterface::class)
-            ->addMethods(['getValue'])
-            ->onlyMethods(['getProduct', 'getOptionByCode', 'getFileDownloadParams'])
-            ->getMockForAbstractClass();
+        $quantityItemMock = $this->createPartialMock(
+            \Magento\Catalog\Model\Product\Configuration\Item\ItemInterface::class,
+            ['getValue', 'getProduct', 'getOptionByCode', 'getFileDownloadParams']
+        );
 
         $quantityItemMock->expects($this->any())->method('getValue')->willReturn(1);
 

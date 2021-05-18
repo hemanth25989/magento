@@ -3,16 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Export;
 
 use Magento\Config\Model\Config\Export\ExcludeList;
 use Magento\Config\Model\Config\TypePool;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \PHPUnit\Framework\MockObject\MockObject as MockObject;
 
-class TypePoolTest extends TestCase
+class TypePoolTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ExcludeList|MockObject

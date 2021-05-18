@@ -4,21 +4,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Quote\Test\Unit\Model\GuestCart;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Api\Data\AddressInterface;
-use Magento\Quote\Api\Data\ShippingMethodInterface;
-use Magento\Quote\Api\ShipmentEstimationInterface;
-use Magento\Quote\Model\GuestCart\GuestShippingMethodManagement;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 use Magento\Quote\Model\QuoteIdMask;
-use Magento\Quote\Model\ShippingMethodManagement;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Quote\Api\Data\AddressInterface;
+use Magento\Quote\Api\ShipmentEstimationInterface;
+use Magento\Quote\Api\Data\ShippingMethodInterface;
+use Magento\Quote\Model\GuestCart\GuestShippingMethodManagement;
 
-class GuestShippingMethodManagementTest extends TestCase
+class GuestShippingMethodManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var GuestShippingMethodManagement
@@ -26,12 +22,12 @@ class GuestShippingMethodManagementTest extends TestCase
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $shippingMethodManagementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $quoteIdMaskFactoryMock;
 
@@ -57,10 +53,10 @@ class GuestShippingMethodManagementTest extends TestCase
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->shippingMethodManagementMock =
-            $this->createMock(ShippingMethodManagement::class);
+            $this->createMock(\Magento\Quote\Model\ShippingMethodManagement::class);
 
         $guestCartTestHelper = new GuestCartTestHelper($this);
         list($this->quoteIdMaskFactoryMock, $this->quoteIdMask) = $guestCartTestHelper->mockQuoteIdMask(

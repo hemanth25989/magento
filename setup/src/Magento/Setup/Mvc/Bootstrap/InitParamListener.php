@@ -7,8 +7,6 @@ namespace Magento\Setup\Mvc\Bootstrap;
 
 use Magento\Framework\App\Bootstrap as AppBootstrap;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\App\Request\Http;
 use Magento\Framework\App\State;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Shell\ComplexParameter;
@@ -21,7 +19,6 @@ use Laminas\Router\Http\RouteMatch;
 use Laminas\ServiceManager\FactoryInterface;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Stdlib\RequestInterface;
-use Laminas\Uri\UriInterface;
 
 /**
  * A listener that injects relevant Magento initialization parameters and initializes filesystem
@@ -37,15 +34,16 @@ class InitParamListener implements ListenerAggregateInterface, FactoryInterface
     const BOOTSTRAP_PARAM = 'magento-init-params';
 
     /**
-     * @var \Laminas\Stdlib\CallbackHandler[]
+     * @var \Zend\Stdlib\CallbackHandler[]
      */
     private $listeners = [];
+
 
     /**
      * @inheritdoc
      *
-     * The $priority argument is added to support latest versions of Laminas Event Manager.
-     * Starting from Laminas Event Manager 3.0.0 release the ListenerAggregateInterface::attach()
+     * The $priority argument is added to support latest versions of Zend Event Manager.
+     * Starting from Zend Event Manager 3.0.0 release the ListenerAggregateInterface::attach()
      * supports the `priority` argument.
      *
      * @param EventManagerInterface $events

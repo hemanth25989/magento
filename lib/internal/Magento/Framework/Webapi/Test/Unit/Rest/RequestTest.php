@@ -5,21 +5,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Webapi\Test\Unit\Rest;
 
-use Magento\Framework\App\AreaList;
-use Magento\Framework\Config\ScopeInterface;
-use Magento\Framework\Exception\InputException;
-use Magento\Framework\Stdlib\CookieManagerInterface;
-use Magento\Framework\Stdlib\StringUtils;
-use Magento\Framework\Webapi\Rest\Request;
-use Magento\Framework\Webapi\Rest\Request\Deserializer\Json;
-use Magento\Framework\Webapi\Rest\Request\DeserializerFactory;
-use PHPUnit\Framework\TestCase;
-
-class RequestTest extends TestCase
+class RequestTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Request mock.
@@ -29,33 +17,32 @@ class RequestTest extends TestCase
     protected $_request;
 
     /**
-     * @var CookieManagerInterface
+     * @var \Magento\Framework\Stdlib\CookieManagerInterface
      */
     protected $_cookieManagerMock;
 
-    /** @var DeserializerFactory */
+    /** @var \Magento\Framework\Webapi\Rest\Request\DeserializerFactory */
     protected $_deserializerFactory;
 
     protected function setUp(): void
     {
         /** Prepare mocks for request constructor arguments. */
         $this->_deserializerFactory = $this->getMockBuilder(
-            DeserializerFactory::class
+            \Magento\Framework\Webapi\Rest\Request\DeserializerFactory::class
         )->setMethods(
             ['deserialize', 'get']
-        )->disableOriginalConstructor()
-        ->getMock();
-        $areaListMock = $this->createMock(AreaList::class);
-        $configScopeMock = $this->getMockForAbstractClass(ScopeInterface::class);
+        )->disableOriginalConstructor()->getMock();
+        $areaListMock = $this->createMock(\Magento\Framework\App\AreaList::class);
+        $configScopeMock = $this->createMock(\Magento\Framework\Config\ScopeInterface::class);
         $areaListMock->expects($this->once())->method('getFrontName')->willReturn('rest');
         /** Instantiate request. */
         // TODO: Get rid of SUT mocks.
-        $this->_cookieManagerMock = $this->getMockForAbstractClass(CookieManagerInterface::class);
-        $converterMock = $this->getMockBuilder(StringUtils::class)
+        $this->_cookieManagerMock = $this->createMock(\Magento\Framework\Stdlib\CookieManagerInterface::class);
+        $converterMock = $this->getMockBuilder(\Magento\Framework\Stdlib\StringUtils::class)
             ->disableOriginalConstructor()
             ->setMethods(['cleanString'])
             ->getMock();
-        $this->_request = $this->getMockBuilder(Request::class)
+        $this->_request = $this->getMockBuilder(\Magento\Framework\Webapi\Rest\Request::class)
             ->setMethods(['getHeader', 'getMethod', 'isGet', 'isPost', 'isPut', 'isDelete', 'getContent'])
             ->setConstructorArgs(
                 [
@@ -129,9 +116,8 @@ class RequestTest extends TestCase
             $contentType
         );
         $deserializer = $this->getMockBuilder(
-            Json::class
-        )->disableOriginalConstructor()
-        ->setMethods(
+            \Magento\Framework\Webapi\Rest\Request\Deserializer\Json::class
+        )->disableOriginalConstructor()->setMethods(
             ['deserialize']
         )->getMock();
         $deserializer->expects(
@@ -176,7 +162,7 @@ class RequestTest extends TestCase
 
         try {
             $this->assertEquals($contentType, $this->_request->getContentType());
-        } catch (InputException $e) {
+        } catch (\Magento\Framework\Exception\InputException $e) {
             if ($exceptionMessage) {
                 $this->assertEquals(
                     $exceptionMessage,

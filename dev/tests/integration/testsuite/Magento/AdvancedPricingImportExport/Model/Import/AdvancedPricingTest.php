@@ -6,6 +6,7 @@
 namespace Magento\AdvancedPricingImportExport\Model\Import;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\ImportExport\Model\Import;
 
 /**
  * @magentoAppArea adminhtml
@@ -165,11 +166,11 @@ class AdvancedPricingTest extends \PHPUnit\Framework\TestCase
         $sku,
         $index
     ) {
-        $this->assertEquals(
-            (int)$this->expectedTierPrice[$sku][$index]['percentage_value'],
-            (int)$tierPrice->getExtensionAttributes()->getPercentageValue()
-        );
-        $tierPrice->setData('percentage_value', $tierPrice->getExtensionAttributes()->getPercentageValue());
+            $this->assertEquals(
+                (int)$this->expectedTierPrice[$sku][$index]['percentage_value'],
+                (int)$tierPrice->getExtensionAttributes()->getPercentageValue()
+            );
+            $tierPrice->setData('percentage_value', $tierPrice->getExtensionAttributes()->getPercentageValue());
     }
 
     /**

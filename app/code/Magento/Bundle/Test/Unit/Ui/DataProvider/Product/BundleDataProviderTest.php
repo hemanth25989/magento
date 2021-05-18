@@ -3,21 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Bundle\Test\Unit\Ui\DataProvider\Product;
 
-use Magento\Bundle\Helper\Data;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Bundle\Ui\DataProvider\Product\BundleDataProvider;
+use Magento\Framework\App\RequestInterface;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Bundle\Helper\Data;
 
-class BundleDataProviderTest extends TestCase
+class BundleDataProviderTest extends \PHPUnit\Framework\TestCase
 {
     const ALLOWED_TYPE = 'simple';
 
@@ -27,22 +22,22 @@ class BundleDataProviderTest extends TestCase
     protected $objectManager;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $requestMock;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $collectionFactoryMock;
 
     /**
-     * @var Collection|MockObject
+     * @var Collection|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $collectionMock;
 
     /**
-     * @var Data|MockObject
+     * @var Data|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $dataHelperMock;
 
@@ -121,7 +116,7 @@ class BundleDataProviderTest extends TestCase
             ->method('addFilterByRequiredOptions');
         $this->collectionMock->expects($this->once())
             ->method('addStoreFilter')
-            ->with(Store::DEFAULT_STORE_ID);
+            ->with(\Magento\Store\Model\Store::DEFAULT_STORE_ID);
         $this->collectionMock->expects($this->once())
             ->method('toArray')
             ->willReturn($items);

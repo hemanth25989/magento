@@ -3,44 +3,39 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Mview\Test\Unit\Config\Data;
 
-use Magento\Framework\Mview\Config\Data;
-use Magento\Framework\Mview\Config\Data\Proxy;
-use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Mview\Config\Data\Proxy;
 
-class ProxyTest extends TestCase
+class ProxyTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Proxy
+     * @var \Magento\Framework\Mview\Config\Data\Proxy
      */
     protected $model;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Framework\Mview\Config\Data|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $dataMock;
 
     protected function setUp(): void
     {
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->dataMock = $this->createMock(Data::class);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->dataMock = $this->createMock(\Magento\Framework\Mview\Config\Data::class);
     }
 
     public function testMergeShared()
     {
         $this->objectManagerMock->expects($this->once())
             ->method('get')
-            ->with(Data::class)
+            ->with(\Magento\Framework\Mview\Config\Data::class)
             ->willReturn($this->dataMock);
         $this->dataMock->expects($this->once())
             ->method('merge')
@@ -48,7 +43,7 @@ class ProxyTest extends TestCase
 
         $this->model = new Proxy(
             $this->objectManagerMock,
-            Data::class,
+            \Magento\Framework\Mview\Config\Data::class,
             true
         );
 
@@ -59,7 +54,7 @@ class ProxyTest extends TestCase
     {
         $this->objectManagerMock->expects($this->once())
             ->method('create')
-            ->with(Data::class)
+            ->with(\Magento\Framework\Mview\Config\Data::class)
             ->willReturn($this->dataMock);
         $this->dataMock->expects($this->once())
             ->method('merge')
@@ -67,7 +62,7 @@ class ProxyTest extends TestCase
 
         $this->model = new Proxy(
             $this->objectManagerMock,
-            Data::class,
+            \Magento\Framework\Mview\Config\Data::class,
             false
         );
 
@@ -78,7 +73,7 @@ class ProxyTest extends TestCase
     {
         $this->objectManagerMock->expects($this->once())
             ->method('get')
-            ->with(Data::class)
+            ->with(\Magento\Framework\Mview\Config\Data::class)
             ->willReturn($this->dataMock);
         $this->dataMock->expects($this->once())
             ->method('get')
@@ -87,7 +82,7 @@ class ProxyTest extends TestCase
 
         $this->model = new Proxy(
             $this->objectManagerMock,
-            Data::class,
+            \Magento\Framework\Mview\Config\Data::class,
             true
         );
 
@@ -98,7 +93,7 @@ class ProxyTest extends TestCase
     {
         $this->objectManagerMock->expects($this->once())
             ->method('create')
-            ->with(Data::class)
+            ->with(\Magento\Framework\Mview\Config\Data::class)
             ->willReturn($this->dataMock);
         $this->dataMock->expects($this->once())
             ->method('get')
@@ -107,7 +102,7 @@ class ProxyTest extends TestCase
 
         $this->model = new Proxy(
             $this->objectManagerMock,
-            Data::class,
+            \Magento\Framework\Mview\Config\Data::class,
             false
         );
 

@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config;
 
 use Magento\Config\Model\Config\Importer;
@@ -19,7 +17,6 @@ use Magento\Framework\Flag;
 use Magento\Framework\FlagManager;
 use Magento\Framework\Stdlib\ArrayUtils;
 use PHPUnit\Framework\MockObject\MockObject as Mock;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for Importer.
@@ -27,7 +24,7 @@ use PHPUnit\Framework\TestCase;
  * @see Importer
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ImporterTest extends TestCase
+class ImporterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Importer
@@ -169,10 +166,13 @@ class ImporterTest extends TestCase
         $this->assertSame(['System config was processed'], $this->model->import($data));
     }
 
+    /**
+     */
     public function testImportWithException()
     {
-        $this->expectException('Magento\Framework\Exception\State\InvalidTransitionException');
+        $this->expectException(\Magento\Framework\Exception\State\InvalidTransitionException::class);
         $this->expectExceptionMessage('Some error');
+
         $data = [];
         $currentData = ['current' => '2'];
 

@@ -3,38 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit\Form\FormKey;
 
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\Data\Form\FormKey;
-use Magento\Framework\Data\Form\FormKey\Validator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ValidatorTest extends TestCase
+class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Validator
+     * @var \Magento\Framework\Data\Form\FormKey\Validator
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_formKeyMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_requestMock;
 
     protected function setUp(): void
     {
-        $this->_formKeyMock = $this->createPartialMock(FormKey::class, ['getFormKey']);
-        $this->_requestMock = $this->createMock(Http::class);
-        $this->_model = new Validator($this->_formKeyMock);
+        $this->_formKeyMock = $this->createPartialMock(\Magento\Framework\Data\Form\FormKey::class, ['getFormKey']);
+        $this->_requestMock = $this->createMock(\Magento\Framework\App\Request\Http::class);
+        $this->_model = new \Magento\Framework\Data\Form\FormKey\Validator($this->_formKeyMock);
     }
 
     /**

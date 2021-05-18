@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\Ups\Test\Unit\Model;
 
@@ -26,8 +24,7 @@ use Magento\Shipping\Model\Simplexml\ElementFactory;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Ups\Helper\Config;
 use Magento\Ups\Model\Carrier;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -35,7 +32,7 @@ use Psr\Log\LoggerInterface;
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CarrierTest extends TestCase
+class CarrierTest extends \PHPUnit\Framework\TestCase
 {
     const FREE_METHOD_NAME = 'free_method';
 
@@ -199,7 +196,7 @@ class CarrierTest extends TestCase
             'carriers/ups/access_license_number' => 'acn',
         ];
 
-        return $pathMap[$path] ?? null;
+        return isset($pathMap[$path]) ? $pathMap[$path] : null;
     }
 
     /**

@@ -246,10 +246,7 @@ class ConfigImportCommandTest extends \PHPUnit\Framework\TestCase
         $importCommandTester = new CommandTester($importCommand);
         $importCommandTester->execute([]);
 
-        $this->assertStringContainsString(
-            'Scopes data should have at least one not admin website, group and store.',
-            $importCommandTester->getDisplay()
-        );
+        $this->assertStringContainsString('Scopes data should have at least one not admin website, group and store.', $importCommandTester->getDisplay());
         $this->assertSame(Cli::RETURN_FAILURE, $importCommandTester->getStatusCode());
     }
 
@@ -314,20 +311,14 @@ class ConfigImportCommandTest extends \PHPUnit\Framework\TestCase
 
         $commandTester->execute([]);
 
-        $this->assertStringContainsString(
-            'Invalid Secure Base URL. Value must be a URL or one of placeholders: {{base_url}},{{unsecure_base_url}}',
-            $commandTester->getDisplay()
-        );
+        $this->assertStringContainsString('Invalid Secure Base URL. Value must be a URL or one of placeholders: {{base_url}},{{unsecure_base_url}}', $commandTester->getDisplay());
         $this->assertSame(Cli::RETURN_FAILURE, $commandTester->getStatusCode());
 
         $this->writeConfig($this->config, $wrongCurrency);
 
         $commandTester->execute([]);
 
-        $this->assertStringContainsString(
-            'Import failed: Sorry, the default display currency you selected is not available in allowed currencies.',
-            $commandTester->getDisplay()
-        );
+        $this->assertStringContainsString('Import failed: Sorry, the default display currency you selected is not available in allowed currencies.', $commandTester->getDisplay());
         $this->assertSame(Cli::RETURN_FAILURE, $commandTester->getStatusCode());
 
         $this->writeConfig(

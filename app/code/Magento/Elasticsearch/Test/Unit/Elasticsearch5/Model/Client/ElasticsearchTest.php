@@ -3,35 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Elasticsearch\Test\Unit\Elasticsearch5\Model\Client;
 
-use Elasticsearch\Client;
-use Elasticsearch\Namespaces\IndicesNamespace;
 use Magento\Elasticsearch\Elasticsearch5\Model\Client\Elasticsearch;
-use Magento\Framework\Exception\LocalizedException;
+use Magento\Elasticsearch\Model\Client\Elasticsearch as ElasticsearchClient;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
- * Test elasticsearch client methods.
+ * Class ElasticsearchTest to test Magento\Elasticsearch\Elasticsearch5\Model\Client\Elasticsearch
  */
-class ElasticsearchTest extends TestCase
+class ElasticsearchTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Elasticsearch
+     * @var ElasticsearchClient
      */
     protected $model;
 
     /**
-     * @var Client|MockObject
+     * @var \Elasticsearch\Client|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $elasticsearchClientMock;
 
     /**
-     * @var IndicesNamespace|MockObject
+     * @var \Elasticsearch\Namespaces\IndicesNamespace|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $indicesMock;
 
@@ -47,7 +42,7 @@ class ElasticsearchTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->elasticsearchClientMock = $this->getMockBuilder(Client::class)
+        $this->elasticsearchClientMock = $this->getMockBuilder(\Elasticsearch\Client::class)
             ->setMethods(
                 [
                     'indices',
@@ -61,7 +56,7 @@ class ElasticsearchTest extends TestCase
             )
             ->disableOriginalConstructor()
             ->getMock();
-        $this->indicesMock = $this->getMockBuilder(IndicesNamespace::class)
+        $this->indicesMock = $this->getMockBuilder(\Elasticsearch\Namespaces\IndicesNamespace::class)
             ->setMethods(
                 [
                     'exists',
@@ -69,7 +64,6 @@ class ElasticsearchTest extends TestCase
                     'create',
                     'delete',
                     'putMapping',
-                    'getMapping',
                     'deleteMapping',
                     'stats',
                     'updateAliases',
@@ -91,12 +85,41 @@ class ElasticsearchTest extends TestCase
 
         $this->objectManager = new ObjectManagerHelper($this);
         $this->model = $this->objectManager->getObject(
-            Elasticsearch::class,
+            \Magento\Elasticsearch\Elasticsearch5\Model\Client\Elasticsearch::class,
             [
                 'options' => $this->getOptions(),
                 'elasticsearchClient' => $this->elasticsearchClientMock
             ]
         );
+    }
+
+    /**
+     */
+    public function testConstructorOptionsException()
+    {
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
+
+        $result = $this->objectManager->getObject(
+            \Magento\Elasticsearch\Model\Client\Elasticsearch::class,
+            [
+                'options' => []
+            ]
+        );
+        $this->assertNotNull($result);
+    }
+
+    /**
+     * Test client creation from the list of options
+     */
+    public function testConstructorWithOptions()
+    {
+        $result = $this->objectManager->getObject(
+            \Magento\Elasticsearch\Model\Client\Elasticsearch::class,
+            [
+                'options' => $this->getOptions()
+            ]
+        );
+        $this->assertNotNull($result);
     }
 
     /**
@@ -123,6 +146,23 @@ class ElasticsearchTest extends TestCase
     public function testTestConnectionFalse()
     {
         $this->elasticsearchClientMock->expects($this->once())->method('ping')->willReturn(false);
+        $this->assertTrue($this->model->testConnection());
+    }
+
+    /**
+     * Test validation of connection parameters
+     */
+    public function testTestConnectionPing()
+    {
+        $this->model = $this->objectManager->getObject(
+            \Magento\Elasticsearch\Model\Client\Elasticsearch::class,
+            [
+                'options' => $this->getEmptyIndexOption(),
+                'elasticsearchClient' => $this->elasticsearchClientMock
+            ]
+        );
+
+        $this->model->ping();
         $this->assertTrue($this->model->testConnection());
     }
 
@@ -483,7 +523,7 @@ class ElasticsearchTest extends TestCase
      *
      * @param array $options
      * @param string $expectedResult
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @throws \ReflectionException
      * @dataProvider getOptionsDataProvider
      */
@@ -535,33 +575,17 @@ class ElasticsearchTest extends TestCase
     }
 
     /**
-     * Test get Elasticsearch mapping process.
-     *
-     * @return void
-     */
-    public function testGetMapping(): void
-    {
-        $params = ['index' => 'indexName'];
-        $this->indicesMock->expects($this->once())
-            ->method('getMapping')
-            ->with($params)
-            ->willReturn([]);
-
-        $this->model->getMapping($params);
-    }
-
-    /**
      * Test query() method
      * @return void
      */
     public function testQuery()
     {
-        $query = 'test phrase query';
+        $query = ['test phrase query'];
         $this->elasticsearchClientMock->expects($this->once())
             ->method('search')
-            ->with([$query])
+            ->with($query)
             ->willReturn([]);
-        $this->assertEquals([], $this->model->query([$query]));
+        $this->assertEquals([], $this->model->query($query));
     }
 
     /**

@@ -3,24 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Bundle\Test\Unit\Pricing\Price;
 
-use Magento\Bundle\Pricing\Price\SpecialPrice;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Pricing\Price\RegularPrice;
-use Magento\Framework\Pricing\Price\PriceInterface;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Framework\Pricing\PriceInfo\Base;
-use Magento\Framework\Pricing\SaleableInterface;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use \Magento\Bundle\Pricing\Price\SpecialPrice;
 use Magento\Store\Api\Data\WebsiteInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SpecialPriceTest extends TestCase
+class SpecialPriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SpecialPrice
@@ -28,43 +16,43 @@ class SpecialPriceTest extends TestCase
     protected $model;
 
     /**
-     * @var SaleableInterface|MockObject
+     * @var \Magento\Framework\Pricing\SaleableInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $saleable;
 
     /**
-     * @var Base|MockObject
+     * @var \Magento\Framework\Pricing\PriceInfo\Base |\PHPUnit\Framework\MockObject\MockObject
      */
     protected $priceInfo;
 
     /**
-     * @var TimezoneInterface|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $localeDate;
 
     /**
-     * @var PriceCurrencyInterface|MockObject
+     * @var \Magento\Framework\Pricing\PriceCurrencyInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $priceCurrencyMock;
 
     protected function setUp(): void
     {
-        $this->saleable = $this->getMockBuilder(Product::class)
+        $this->saleable = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->localeDate = $this->getMockForAbstractClass(TimezoneInterface::class);
-        $this->priceInfo = $this->createMock(Base::class);
+        $this->localeDate = $this->createMock(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class);
+        $this->priceInfo = $this->createMock(\Magento\Framework\Pricing\PriceInfo\Base::class);
 
         $this->saleable->expects($this->once())
             ->method('getPriceInfo')
             ->willReturn($this->priceInfo);
 
-        $this->priceCurrencyMock = $this->getMockForAbstractClass(PriceCurrencyInterface::class);
+        $this->priceCurrencyMock = $this->createMock(\Magento\Framework\Pricing\PriceCurrencyInterface::class);
 
-        $objectHelper = new ObjectManager($this);
+        $objectHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectHelper->getObject(
-            SpecialPrice::class,
+            \Magento\Bundle\Pricing\Price\SpecialPrice::class,
             [
                 'saleableItem' => $this->saleable,
                 'localeDate' => $this->localeDate,
@@ -106,10 +94,10 @@ class SpecialPriceTest extends TestCase
             ->method('convertAndRound');
 
         if ($isScopeDateInInterval) {
-            $price = $this->getMockForAbstractClass(PriceInterface::class);
+            $price = $this->createMock(\Magento\Framework\Pricing\Price\PriceInterface::class);
             $this->priceInfo->expects($this->once())
                 ->method('getPrice')
-                ->with(RegularPrice::PRICE_CODE)
+                ->with(\Magento\Catalog\Pricing\Price\RegularPrice::PRICE_CODE)
                 ->willReturn($price);
             $price->expects($this->once())
                 ->method('getValue')

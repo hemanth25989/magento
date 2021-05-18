@@ -3,38 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Elasticsearch\Test\Unit\SearchAdapter;
 
-use Magento\Elasticsearch\SearchAdapter\AggregationFactory;
 use Magento\Elasticsearch\SearchAdapter\DocumentFactory;
-use Magento\Framework\Api\Search\Document;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Search\EntityMetadata;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DocumentFactoryTest extends TestCase
+class DocumentFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DocumentFactory|MockObject
+     * @var DocumentFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $model;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $objectManager;
 
     /**
-     * @var AggregationFactory|MockObject
+     * @var \Magento\Elasticsearch\SearchAdapter\AggregationFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $aggregationFactory;
 
     /**
-     * @var EntityMetadata|MockObject
+     * @var \Magento\Framework\Search\EntityMetadata|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $entityMetadata;
 
@@ -52,17 +45,17 @@ class DocumentFactoryTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->entityMetadata = $this->getMockBuilder(EntityMetadata::class)
+        $this->entityMetadata = $this->getMockBuilder(\Magento\Framework\Search\EntityMetadata::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
 
-        $this->instanceName = Document::class;
+        $this->instanceName = \Magento\Framework\Api\Search\Document::class;
 
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $objectManagerHelper->getObject(
-            DocumentFactory::class,
+            \Magento\Elasticsearch\SearchAdapter\DocumentFactory::class,
             [
                 'objectManager' => $this->objectManager,
                 'entityMetadata' => $this->entityMetadata

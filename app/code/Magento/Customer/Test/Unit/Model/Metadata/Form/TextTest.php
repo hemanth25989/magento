@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * test Magento\Customer\Model\Metadata\Form\Text
  *
@@ -11,11 +11,10 @@ namespace Magento\Customer\Test\Unit\Model\Metadata\Form;
 use Magento\Customer\Api\Data\ValidationRuleInterface;
 use Magento\Customer\Model\Metadata\Form\Text;
 use Magento\Framework\Phrase;
-use Magento\Framework\Stdlib\StringUtils;
 
 class TextTest extends AbstractFormTestCase
 {
-    /** @var StringUtils */
+    /** @var \Magento\Framework\Stdlib\StringUtils */
     protected $stringHelper;
 
     /**
@@ -24,7 +23,7 @@ class TextTest extends AbstractFormTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->stringHelper = new StringUtils();
+        $this->stringHelper = new \Magento\Framework\Stdlib\StringUtils();
     }
 
     /**
@@ -35,7 +34,7 @@ class TextTest extends AbstractFormTestCase
      */
     protected function getClass($value)
     {
-        return new Text(
+        return new \Magento\Customer\Model\Metadata\Form\Text(
             $this->localeMock,
             $this->loggerMock,
             $this->attributeMetadataMock,

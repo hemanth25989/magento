@@ -16,36 +16,35 @@ use Magento\Framework\UrlInterface;
 use Magento\Newsletter\Model\Config;
 use Magento\Newsletter\Observer\PredispatchNewsletterObserver;
 use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Magento\Newsletter\Observer\PredispatchNewsletterObserver
+ * Test class for \Magento\Newsletter\Observer\PredispatchNewsletterObserver
  */
 class PredispatchNewsletterObserverTest extends TestCase
 {
     /**
-     * @var Observer|MockObject
+     * @var Observer|\PHPUnit\Framework\MockObject\MockObject
      */
-    private $mockObjectMock;
+    private $mockObject;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configMock;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var UrlInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $urlMock;
 
     /**
-     * @var RedirectInterface|MockObject
+     * @var \Magento\Framework\App\Response\RedirectInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $redirectMock;
 
     /**
-     * @var ResponseInterface|MockObject
+     * @var ResponseInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $responseMock;
 
@@ -55,7 +54,7 @@ class PredispatchNewsletterObserverTest extends TestCase
     private $objectManager;
 
     /**
-     * @var Config|MockObject
+     * @var Config
      */
     private $newsletterConfig;
 
@@ -73,7 +72,7 @@ class PredispatchNewsletterObserverTest extends TestCase
         $this->redirectMock = $this->getMockForAbstractClass(RedirectInterface::class);
         $this->newsletterConfig = $this->createMock(Config::class);
         $this->objectManager = new ObjectManager($this);
-        $this->mockObjectMock = new PredispatchNewsletterObserver(
+        $this->mockObject = new PredispatchNewsletterObserver(
             $this->configMock,
             $this->urlMock,
             $this->newsletterConfig
@@ -103,7 +102,7 @@ class PredispatchNewsletterObserverTest extends TestCase
             ->method('getResponse')
             ->willReturnSelf();
 
-        $this->assertNull($this->mockObjectMock->execute($observerMock));
+        $this->assertNull($this->mockObject->execute($observerMock));
     }
 
     /**
@@ -143,6 +142,6 @@ class PredispatchNewsletterObserverTest extends TestCase
             ->method('setRedirect')
             ->with($expectedRedirectUrl);
 
-        $this->assertNull($this->mockObjectMock->execute($observerMock));
+        $this->assertNull($this->mockObject->execute($observerMock));
     }
 }

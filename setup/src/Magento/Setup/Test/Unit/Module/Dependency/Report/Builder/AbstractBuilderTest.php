@@ -3,41 +3,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\Dependency\Report\Builder;
 
-use Magento\Setup\Module\Dependency\ParserInterface;
-use Magento\Setup\Module\Dependency\Report\Builder\AbstractBuilder;
-use Magento\Setup\Module\Dependency\Report\Data\ConfigInterface;
-use Magento\Setup\Module\Dependency\Report\WriterInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AbstractBuilderTest extends TestCase
+class AbstractBuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ParserInterface|MockObject
+     * @var \Magento\Setup\Module\Dependency\ParserInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $dependenciesParserMock;
 
     /**
-     * @var WriterInterface|MockObject
+     * @var \Magento\Setup\Module\Dependency\Report\WriterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $reportWriterMock;
 
     /**
-     * @var AbstractBuilder|MockObject
+     * @var \Magento\Setup\Module\Dependency\Report\Builder\AbstractBuilder|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $builder;
 
     protected function setUp(): void
     {
-        $this->dependenciesParserMock = $this->getMockForAbstractClass(ParserInterface::class);
-        $this->reportWriterMock = $this->getMockForAbstractClass(WriterInterface::class);
+        $this->dependenciesParserMock = $this->createMock(\Magento\Setup\Module\Dependency\ParserInterface::class);
+        $this->reportWriterMock = $this->createMock(\Magento\Setup\Module\Dependency\Report\WriterInterface::class);
 
         $this->builder = $this->getMockForAbstractClass(
-            AbstractBuilder::class,
+            \Magento\Setup\Module\Dependency\Report\Builder\AbstractBuilder::class,
             ['dependenciesParser' => $this->dependenciesParserMock, 'reportWriter' => $this->reportWriterMock]
         );
     }
@@ -48,8 +39,9 @@ class AbstractBuilderTest extends TestCase
      */
     public function testBuildWithWrongParseOptions($options)
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Passed option section "parse" is wrong.');
+
         $this->builder->build($options);
     }
 
@@ -67,8 +59,9 @@ class AbstractBuilderTest extends TestCase
      */
     public function testBuildWithWrongWriteOptions($options)
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Passed option section "write" is wrong.');
+
         $this->builder->build($options);
     }
 
@@ -88,7 +81,7 @@ class AbstractBuilderTest extends TestCase
         ];
 
         $parseResult = ['foo', 'bar', 'baz'];
-        $configMock = $this->getMockForAbstractClass(ConfigInterface::class);
+        $configMock = $this->createMock(\Magento\Setup\Module\Dependency\Report\Data\ConfigInterface::class);
 
         $this->dependenciesParserMock->expects(
             $this->once()

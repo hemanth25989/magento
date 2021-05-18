@@ -3,18 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Config\Source;
 
-use Magento\Catalog\Model\ResourceModel\Category;
-use Magento\Catalog\Model\ResourceModel\Category\Collection;
-use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 
-class CategoryTest extends TestCase
+class CategoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Catalog\Model\Config\Source\Category
@@ -22,7 +16,7 @@ class CategoryTest extends TestCase
     private $model;
 
     /**
-     * @var Collection|MockObject
+     * @var \Magento\Catalog\Model\ResourceModel\Category\Collection|MockObject
      */
     private $categoryCollection;
 
@@ -34,24 +28,24 @@ class CategoryTest extends TestCase
     protected function setUp(): void
     {
         $this->categoryCollection = $this->getMockBuilder(
-            Collection::class
+            \Magento\Catalog\Model\ResourceModel\Category\Collection::class
         )
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->category = $this->getMockBuilder(Category::class)
+        $this->category = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Category::class)
             ->setMethods(['getName', 'getId'])
             ->disableOriginalConstructor()
             ->getMock();
 
         /**
-         * @var CollectionFactory|MockObject $categoryCollectionFactory
+         * @var \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory|MockObject $categoryCollectionFactory
          */
         $categoryCollectionFactory =
-            $this->getMockBuilder(CollectionFactory::class)
-                ->setMethods(['create'])
-                ->disableOriginalConstructor()
-                ->getMock();
+            $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Category\CollectionFactory::class)
+            ->setMethods(['create'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $categoryCollectionFactory->expects($this->any())->method('create')->willReturn(
             $this->categoryCollection
         );
@@ -71,7 +65,7 @@ class CategoryTest extends TestCase
         ];
 
         $this->categoryCollection->expects($this->once())->method('addAttributeToSelect')->with(
-            'name'
+            $this->equalTo('name')
         )->willReturn($this->categoryCollection);
         $this->categoryCollection->expects($this->once())->method('addRootLevelFilter')->willReturn(
             $this->categoryCollection

@@ -3,15 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\MessageQueue\Test\Unit;
 
-use Magento\Framework\MessageQueue\ConnectionTypeResolver;
 use Magento\Framework\MessageQueue\ConnectionTypeResolverInterface;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\MessageQueue\ConnectionTypeResolver;
 
-class ConnectionTypeResolverTest extends TestCase
+class ConnectionTypeResolverTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetConnectionType()
     {
@@ -25,10 +22,13 @@ class ConnectionTypeResolverTest extends TestCase
         $this->assertEquals('some-type', $model->getConnectionType('test'));
     }
 
+    /**
+     */
     public function testGetConnectionTypeWithException()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Unknown connection name test');
+
         $resolverOne = $this->getMockForAbstractClass(ConnectionTypeResolverInterface::class);
         $resolverOne->expects($this->once())->method('getConnectionType')->with('test')->willReturn(null);
 

@@ -3,73 +3,59 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Shipping\Test\Unit\Controller\Adminhtml\Order\Shipment;
 
-use Magento\Backend\App\AbstractAction;
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\Session;
-use Magento\Framework\App\ActionFlag;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\Response\Http\FileFactory;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Stdlib\DateTime\DateTime;
-use Magento\Sales\Model\Order\Shipment;
-use Magento\Shipping\Controller\Adminhtml\Order\Shipment\PrintPackage;
-use Magento\Shipping\Controller\Adminhtml\Order\ShipmentLoader;
-use Magento\Shipping\Model\Order\Pdf\Packaging;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class PrintPackageTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PrintPackageTest extends TestCase
+class PrintPackageTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ShipmentLoader|MockObject
+     * @var \Magento\Shipping\Controller\Adminhtml\Order\ShipmentLoader|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $shipmentLoaderMock;
 
     /**
-     * @var Http|MockObject
+     * @var \Magento\Framework\App\Request\Http|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $requestMock;
 
     /**
-     * @var \Magento\Framework\App\Response\Http|MockObject
+     * @var \Magento\Framework\App\Response\Http|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $responseMock;
 
     /**
-     * @var FileFactory|MockObject
+     * @var \Magento\Framework\App\Response\Http\FileFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $fileFactoryMock;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Backend\Model\Session|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $sessionMock;
 
     /**
-     * @var ActionFlag|MockObject
+     * @var \Magento\Framework\App\ActionFlag|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $actionFlag;
 
     /**
-     * @var Shipment|MockObject
+     * @var \Magento\Sales\Model\Order\Shipment|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $shipmentMock;
 
     /**
-     * @var PrintPackage
+     * @var \Magento\Shipping\Controller\Adminhtml\Order\Shipment\PrintPackage
      */
     protected $controller;
 
@@ -80,27 +66,23 @@ class PrintPackageTest extends TestCase
         $shipment = [];
         $tracking = [];
 
-        $this->shipmentLoaderMock = $this->getMockBuilder(ShipmentLoader::class)
-            ->addMethods(['setOrderId', 'setShipmentId', 'setShipment', 'setTracking'])
-            ->onlyMethods(['load'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->requestMock = $this->createPartialMock(Http::class, ['getParam']);
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->shipmentLoaderMock = $this->createPartialMock(
+            \Magento\Shipping\Controller\Adminhtml\Order\ShipmentLoader::class,
+            ['setOrderId', 'setShipmentId', 'setShipment', 'setTracking', 'load']
+        );
+        $this->requestMock = $this->createPartialMock(\Magento\Framework\App\Request\Http::class, ['getParam']);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
         $this->responseMock = $this->createMock(\Magento\Framework\App\Response\Http::class);
-        $this->sessionMock = $this->getMockBuilder(Session::class)
-            ->addMethods(['setIsUrlNotice'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->actionFlag = $this->createPartialMock(ActionFlag::class, ['get']);
-        $this->shipmentMock = $this->createPartialMock(Shipment::class, ['__wakeup']);
+        $this->sessionMock = $this->createPartialMock(\Magento\Backend\Model\Session::class, ['setIsUrlNotice']);
+        $this->actionFlag = $this->createPartialMock(\Magento\Framework\App\ActionFlag::class, ['get']);
+        $this->shipmentMock = $this->createPartialMock(\Magento\Sales\Model\Order\Shipment::class, ['__wakeup']);
         $this->fileFactoryMock = $this->createPartialMock(
-            FileFactory::class,
+            \Magento\Framework\App\Response\Http\FileFactory::class,
             ['create']
         );
 
         $contextMock = $this->createPartialMock(
-            Context::class,
+            \Magento\Backend\App\Action\Context::class,
             ['getRequest', 'getObjectManager', 'getResponse', 'getSession', 'getActionFlag']
         );
 
@@ -141,7 +123,7 @@ class PrintPackageTest extends TestCase
             ->method('setTracking')
             ->with($tracking);
 
-        $this->controller = new PrintPackage(
+        $this->controller = new \Magento\Shipping\Controller\Adminhtml\Order\Shipment\PrintPackage(
             $contextMock,
             $this->shipmentLoaderMock,
             $this->fileFactoryMock
@@ -156,16 +138,16 @@ class PrintPackageTest extends TestCase
         $date = '9999-99-99_77-77-77';
         $content = 'PDF content';
 
-        $packagingMock = $this->createPartialMock(Packaging::class, ['getPdf']);
+        $packagingMock = $this->createPartialMock(\Magento\Shipping\Model\Order\Pdf\Packaging::class, ['getPdf']);
         $pdfMock = $this->createPartialMock(\Zend_Pdf::class, ['render']);
-        $dateTimeMock = $this->createPartialMock(DateTime::class, ['date']);
+        $dateTimeMock = $this->createPartialMock(\Magento\Framework\Stdlib\DateTime\DateTime::class, ['date']);
 
         $this->shipmentLoaderMock->expects($this->once())
             ->method('load')
             ->willReturn($this->shipmentMock);
         $this->objectManagerMock->expects($this->once())
             ->method('create')
-            ->with(Packaging::class)
+            ->with(\Magento\Shipping\Model\Order\Pdf\Packaging::class)
             ->willReturn($packagingMock);
         $packagingMock->expects($this->once())
             ->method('getPdf')
@@ -173,7 +155,7 @@ class PrintPackageTest extends TestCase
             ->willReturn($pdfMock);
         $this->objectManagerMock->expects($this->once())
             ->method('get')
-            ->with(DateTime::class)
+            ->with(\Magento\Framework\Stdlib\DateTime\DateTime::class)
             ->willReturn($dateTimeMock);
         $dateTimeMock->expects($this->once())->method('date')->with('Y-m-d_H-i-s')->willReturn($date);
         $pdfMock->expects($this->once())->method('render')->willReturn($content);
@@ -202,7 +184,7 @@ class PrintPackageTest extends TestCase
             ->willReturn(false);
         $this->actionFlag->expects($this->once())
             ->method('get')
-            ->with('', AbstractAction::FLAG_IS_URLS_CHECKED)
+            ->with('', \Magento\Backend\App\AbstractAction::FLAG_IS_URLS_CHECKED)
             ->willReturn(true);
         $this->sessionMock->expects($this->once())
             ->method('setIsUrlNotice')

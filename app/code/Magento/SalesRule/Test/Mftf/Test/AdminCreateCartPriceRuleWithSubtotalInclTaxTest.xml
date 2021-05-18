@@ -13,13 +13,13 @@
             <title value="Create Cart Price Rule with Subtotal Incl Tax"/>
             <description value="Test that cart price rule with Subtotal Incl Tax works correctly"/>
             <severity value="CRITICAL"/>
-            <useCaseId value="MC-37729"/>
-            <testCaseId value="MC-38971"/>
+            <useCaseId value="MC-38939"/>
+            <testCaseId value="MC-38983"/>
             <group value="SalesRule"/>
         </annotations>
         <before>
             <!--Login to backend-->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
             <!--Create tax rate for US-CA-*-->
             <createData entity="defaultTaxRate" stepKey="taxRate"/>
             <!--Create tax rule-->
@@ -52,19 +52,19 @@
             <deleteData createDataKey="product" stepKey="deleteProduct"/>
             <!--Delete cart price rule-->
             <deleteData createDataKey="createCartPriceRule" stepKey="deleteCartPriceRule"/>
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <actionGroup ref="logout" stepKey="logout"/>
         </after>
 
         <!--Open product -->
-        <actionGroup ref="StorefrontOpenProductEntityPageActionGroup" stepKey="openProduct2Page">
-            <argument name="product" value="$$product$$"/>
+        <actionGroup ref="StorefrontOpenProductPageActionGroup" stepKey="openProduct2Page">
+            <argument name="productUrl" value="$product.custom_attributes[url_key]$"/>
         </actionGroup>
         <!--Add to cart -->
         <actionGroup ref="StorefrontAddToTheCartActionGroup" stepKey="product2AddToCart"/>
         <!--Click on mini cart-->
         <actionGroup ref="StorefrontClickOnMiniCartActionGroup" stepKey="clickOnMiniCart"/>
         <!--Click on view and edit cart link-->
-        <actionGroup ref="ClickViewAndEditCartFromMiniCartActionGroup" stepKey="goToShoppingCartFromMinicart"/>
+        <actionGroup ref="clickViewAndEditCartFromMiniCart" stepKey="goToShoppingCartFromMinicart"/>
         <waitForPageLoad stepKey="waitForViewAndEditCartToOpen"/>
         <!--Assert that tax and discount are not applied by default-->
         <actionGroup ref="StorefrontCheckCartActionGroup" stepKey="AssertTaxAndDiscountIsNotApplied">

@@ -3,30 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Weee\Test\Unit\Model\Total\Quote;
 
-use Magento\Catalog\Model\Product;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Api\Data\ShippingAssignmentInterface;
-use Magento\Quote\Api\Data\ShippingInterface;
-use Magento\Quote\Model\Quote;
-use Magento\Quote\Model\Quote\Address;
-use Magento\Quote\Model\Quote\Address\Total;
-use Magento\Quote\Model\Quote\Item;
-use Magento\Tax\Helper\Data;
 use Magento\Tax\Model\Calculation;
 use Magento\Tax\Model\Sales\Total\Quote\CommonTaxCollector as CTC;
-use Magento\Weee\Model\Total\Quote\WeeeTax;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class WeeeTaxTest extends TestCase
+class WeeeTaxTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Constants for array keys
@@ -34,13 +19,14 @@ class WeeeTaxTest extends TestCase
     const KEY_WEEE_TOTALS = 'weee_total_excl_tax';
     const KEY_WEEE_BASE_TOTALS = 'weee_base_total_excl_tax';
     /**#@-*/
+
     /**
-     * @var WeeeTax
+     * @var \Magento\Weee\Model\Total\Quote\WeeeTax
      */
     protected $weeeCollector;
 
     /**
-     * @var MockObject|Quote
+     * @var \PHPUnit\Framework\MockObject\MockObject | \Magento\Quote\Model\Quote
      */
     protected $quoteMock;
 
@@ -51,19 +37,19 @@ class WeeeTaxTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->objectManagerHelper = new ObjectManager($this);
-        $this->quoteMock = $this->createMock(Quote::class);
+        $this->objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->quoteMock = $this->createMock(\Magento\Quote\Model\Quote::class);
     }
 
     /**
      * Setup tax helper with an array of methodName, returnValue
      *
      * @param array $taxConfig
-     * @return MockObject|\Magento\Tax\Helper\Data
+     * @return \PHPUnit\Framework\MockObject\MockObject|\Magento\Tax\Helper\Data
      */
     protected function setupTaxHelper($taxConfig)
     {
-        $taxHelper = $this->createMock(Data::class);
+        $taxHelper = $this->createMock(\Magento\Tax\Helper\Data::class);
 
         foreach ($taxConfig as $method => $value) {
             $taxHelper->expects($this->any())->method($method)->willReturn($value);
@@ -76,7 +62,7 @@ class WeeeTaxTest extends TestCase
      * Setup weee helper with an array of methodName, returnValue
      *
      * @param array $weeeConfig
-     * @return MockObject|\Magento\Weee\Helper\Data
+     * @return \PHPUnit\Framework\MockObject\MockObject|\Magento\Weee\Helper\Data
      */
     protected function setupWeeeHelper($weeeConfig)
     {
@@ -93,21 +79,19 @@ class WeeeTaxTest extends TestCase
      * Setup an item mock
      *
      * @param float $itemQty
-     * @return MockObject|Item
+     * @return \PHPUnit\Framework\MockObject\MockObject|\Magento\Quote\Model\Quote\Item
      */
     protected function setupItemMock($itemQty)
     {
-        $itemMock = $this->createPartialMock(
-            Item::class,
-            [
+        $itemMock = $this->createPartialMock(\Magento\Quote\Model\Quote\Item::class, [
                 'getProduct',
                 'getQuote',
                 'getAddress',
-                'getTotalQty'
-            ]
-        );
+                'getTotalQty',
+                '__wakeup',
+            ]);
 
-        $productMock = $this->createMock(Product::class);
+        $productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
         $itemMock->expects($this->any())->method('getProduct')->willReturn($productMock);
         $itemMock->expects($this->any())->method('getTotalQty')->willReturn($itemQty);
 
@@ -117,20 +101,21 @@ class WeeeTaxTest extends TestCase
     /**
      * Setup address mock
      *
-     * @param MockObject|Item $itemMock
+     * @param \PHPUnit\Framework\MockObject\MockObject|\Magento\Quote\Model\Quote\Item $itemMock
      * @param boolean $isWeeeTaxable
      * @param array   $itemWeeeTaxDetails
      * @param array   $addressData
-     * @return MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     protected function setupTotalMock($itemMock, $isWeeeTaxable, $itemWeeeTaxDetails, $addressData)
     {
-        $totalMock = $this->getMockBuilder(Total::class)
-            ->addMethods(
-                ['getWeeeCodeToItemMap', 'getExtraTaxableDetails', 'getWeeeTotalExclTax', 'getWeeeBaseTotalExclTax']
-            )
-            ->disableOriginalConstructor()
-            ->getMock();
+        $totalMock = $this->createPartialMock(\Magento\Quote\Model\Quote\Address\Total::class, [
+                '__wakeup',
+                'getWeeeCodeToItemMap',
+                'getExtraTaxableDetails',
+                'getWeeeTotalExclTax',
+                'getWeeeBaseTotalExclTax',
+            ]);
 
         $map = [];
         $extraDetails = [];
@@ -140,21 +125,24 @@ class WeeeTaxTest extends TestCase
         if ($isWeeeTaxable) {
             $i = 1;
             $weeeTaxDetails = [];
-            foreach ($itemWeeeTaxDetails as $data) {
-                $code = 'weee' . ($i++) . '-myWeeeCode';
+            foreach ($itemWeeeTaxDetails as $itemData) {
+                $code = 'weee' . $i++ . '-myWeeeCode';
                 $map[$code] = $itemMock;
                 $weeeTaxDetails[] = [
                     CTC::KEY_TAX_DETAILS_TYPE => 'weee',
                     CTC::KEY_TAX_DETAILS_CODE => $code,
-                    CTC::KEY_TAX_DETAILS_PRICE_EXCL_TAX => $data['weee_tax_applied_amount'],
-                    CTC::KEY_TAX_DETAILS_BASE_PRICE_EXCL_TAX => $data['base_weee_tax_applied_amount'],
-                    CTC::KEY_TAX_DETAILS_PRICE_INCL_TAX => $data['weee_tax_applied_amount_incl_tax'],
-                    CTC::KEY_TAX_DETAILS_BASE_PRICE_INCL_TAX => $data['base_weee_tax_applied_amount_incl_tax'],
-                    CTC::KEY_TAX_DETAILS_ROW_TOTAL => $data['weee_tax_applied_row_amount'],
-                    CTC::KEY_TAX_DETAILS_BASE_ROW_TOTAL => $data['base_weee_tax_applied_row_amnt'],
-                    CTC::KEY_TAX_DETAILS_ROW_TOTAL_INCL_TAX => $data['weee_tax_applied_row_amount_incl_tax'],
-                    CTC::KEY_TAX_DETAILS_BASE_ROW_TOTAL_INCL_TAX => $data['base_weee_tax_applied_row_amnt_incl_tax'],
-                ];
+                    CTC::KEY_TAX_DETAILS_PRICE_EXCL_TAX => $itemData['weee_tax_applied_amount'],
+                    CTC::KEY_TAX_DETAILS_BASE_PRICE_EXCL_TAX => $itemData['base_weee_tax_applied_amount'],
+                    CTC::KEY_TAX_DETAILS_PRICE_INCL_TAX => $itemData['weee_tax_applied_amount_incl_tax'],
+                    CTC::KEY_TAX_DETAILS_BASE_PRICE_INCL_TAX =>
+                        $itemData['base_weee_tax_applied_amount_incl_tax'],
+                    CTC::KEY_TAX_DETAILS_ROW_TOTAL => $itemData['weee_tax_applied_row_amount'],
+                    CTC::KEY_TAX_DETAILS_BASE_ROW_TOTAL => $itemData['base_weee_tax_applied_row_amnt'],
+                    CTC::KEY_TAX_DETAILS_ROW_TOTAL_INCL_TAX =>
+                        $itemData['weee_tax_applied_row_amount_incl_tax'],
+                    CTC::KEY_TAX_DETAILS_BASE_ROW_TOTAL_INCL_TAX =>
+                        $itemData['base_weee_tax_applied_row_amnt_incl_tax'],
+                    ];
             }
             $extraDetails = [
                 'weee' => [
@@ -186,15 +174,15 @@ class WeeeTaxTest extends TestCase
 
     /**
      * Setup shipping assignment mock.
-     * @param MockObject $addressMock
-     * @param MockObject $itemMock
-     * @return MockObject
+     * @param \PHPUnit\Framework\MockObject\MockObject $addressMock
+     * @param \PHPUnit\Framework\MockObject\MockObject $itemMock
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     protected function setupShippingAssignmentMock($addressMock, $itemMock)
     {
-        $shippingMock = $this->getMockForAbstractClass(ShippingInterface::class);
+        $shippingMock = $this->createMock(\Magento\Quote\Api\Data\ShippingInterface::class);
         $shippingMock->expects($this->any())->method('getAddress')->willReturn($addressMock);
-        $shippingAssignmentMock = $this->getMockForAbstractClass(ShippingAssignmentInterface::class);
+        $shippingAssignmentMock = $this->createMock(\Magento\Quote\Api\Data\ShippingAssignmentInterface::class);
         $itemMock = $itemMock ? [$itemMock] : [];
         $shippingAssignmentMock->expects($this->any())->method('getItems')->willReturn($itemMock);
         $shippingAssignmentMock->expects($this->any())->method('getShipping')->willReturn($shippingMock);
@@ -205,7 +193,7 @@ class WeeeTaxTest extends TestCase
     /**
      * Verify that correct fields of item has been set
      *
-     * @param MockObject|null $item
+     * @param \PHPUnit\Framework\MockObject\MockObject|null $item
      * @param array $itemData
      */
     public function verifyItem($item, $itemData)
@@ -221,7 +209,7 @@ class WeeeTaxTest extends TestCase
     /**
      * Verify that correct fields of address has been set
      *
-     * @param MockObject|Address $address
+     * @param \PHPUnit\Framework\MockObject\MockObject|\Magento\Quote\Model\Quote\Address $address
      * @param array $addressData
      */
     public function verifyTotals($address, $addressData)
@@ -236,17 +224,16 @@ class WeeeTaxTest extends TestCase
 
     public function testFetch()
     {
-        $serializerMock = $this->getMockBuilder(Json::class)
-            ->getMock();
+        $serializerMock = $this->getMockBuilder(\Magento\Framework\Serialize\Serializer\Json::class)->getMock();
         $weeeTotal = 17;
-        $totalMock = new Total(
+        $totalMock = new \Magento\Quote\Model\Quote\Address\Total(
             [],
             $serializerMock
         );
         $taxHelper = $this->setupTaxHelper([]);
         $weeeHelper = $this->setupWeeeHelper(['getTotalAmounts' => $weeeTotal]);
         $this->weeeCollector = $this->objectManagerHelper->getObject(
-            WeeeTax::class,
+            \Magento\Weee\Model\Total\Quote\WeeeTax::class,
             ['taxData' => $taxHelper, 'weeeData' => $weeeHelper]
         );
         $expectedResult = [
@@ -261,16 +248,15 @@ class WeeeTaxTest extends TestCase
 
     public function testFetchWithZeroAmounts()
     {
-        $serializerMock = $this->getMockBuilder(Json::class)
-            ->getMock();
-        $totalMock = new Total(
+        $serializerMock = $this->getMockBuilder(\Magento\Framework\Serialize\Serializer\Json::class)->getMock();
+        $totalMock = new \Magento\Quote\Model\Quote\Address\Total(
             [],
             $serializerMock
         );
         $taxHelper = $this->setupTaxHelper([]);
         $weeeHelper = $this->setupWeeeHelper(['getTotalAmounts' => null]);
         $this->weeeCollector = $this->objectManagerHelper->getObject(
-            WeeeTax::class,
+            \Magento\Weee\Model\Total\Quote\WeeeTax::class,
             ['taxData' => $taxHelper, 'weeeData' => $weeeHelper]
         );
 
@@ -296,7 +282,7 @@ class WeeeTaxTest extends TestCase
             $itemMock = null;
         }
         $totalMock = $this->setupTotalMock($itemMock, $weeeConfig['isTaxable'], $itemWeeeTaxDetails, $addressData);
-        $addressMock = $this->createMock(Address::class);
+        $addressMock = $this->createMock(\Magento\Quote\Model\Quote\Address::class);
         $shippingAssignmentMock = $this->setupShippingAssignmentMock($addressMock, $itemMock);
 
         $taxHelper = $this->setupTaxHelper($taxConfig);
@@ -308,7 +294,7 @@ class WeeeTaxTest extends TestCase
         ];
 
         $this->weeeCollector = $this->objectManagerHelper->getObject(
-            WeeeTax::class,
+            \Magento\Weee\Model\Total\Quote\WeeeTax::class,
             $arguments
         );
 

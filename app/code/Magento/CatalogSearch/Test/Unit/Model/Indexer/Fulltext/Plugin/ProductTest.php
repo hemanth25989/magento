@@ -3,35 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\CatalogSearch\Test\Unit\Model\Indexer\Fulltext\Plugin;
 
 use Magento\Catalog\Model\Product as ProductModel;
 use Magento\Catalog\Model\ResourceModel\Product as ProductResourceModel;
-use Magento\CatalogSearch\Model\Indexer\Fulltext;
-use Magento\CatalogSearch\Model\Indexer\Fulltext\Plugin\Product;
+use \Magento\CatalogSearch\Model\Indexer\Fulltext\Plugin\Product;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Indexer\IndexerInterface;
 use Magento\Framework\Indexer\IndexerRegistry;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ProductTest extends TestCase
+class ProductTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|IndexerInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|IndexerInterface
      */
     protected $indexerMock;
 
     /**
-     * @var MockObject|ProductResourceModel
+     * @var \PHPUnit\Framework\MockObject\MockObject|ProductResourceModel
      */
     protected $subjectMock;
 
     /**
-     * @var MockObject|ProductModel
+     * @var \PHPUnit\Framework\MockObject\MockObject|ProductModel
      */
     protected $productMock;
 
@@ -41,7 +37,7 @@ class ProductTest extends TestCase
     protected $proceed;
 
     /**
-     * @var IndexerRegistry|MockObject
+     * @var IndexerRegistry|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $indexerRegistryMock;
 
@@ -118,7 +114,7 @@ class ProductTest extends TestCase
     {
         $this->indexerRegistryMock->expects($this->once())
             ->method('get')
-            ->with(Fulltext::INDEXER_ID)
+            ->with(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)
             ->willReturn($this->indexerMock);
     }
 }

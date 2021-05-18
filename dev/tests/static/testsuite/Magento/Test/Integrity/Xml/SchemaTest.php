@@ -38,7 +38,7 @@ class SchemaTest extends \PHPUnit\Framework\TestCase
                 try {
                     $errors = \Magento\Framework\Config\Dom::validateDomDocument($dom, $schemaLocations[1]);
                 } catch (\Exception $exception) {
-                    $errors = [$exception->getMessage()];
+                    $errors = [$exception->__toString()];
                 }
                 $this->assertEmpty(
                     $errors,

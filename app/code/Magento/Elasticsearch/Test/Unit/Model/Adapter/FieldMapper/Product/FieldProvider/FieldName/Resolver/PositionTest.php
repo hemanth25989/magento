@@ -9,20 +9,18 @@ namespace Magento\Elasticsearch\Test\Unit\Model\Adapter\FieldMapper\Product\Fiel
 
 use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\AttributeAdapter;
-use Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\Position;
-use Magento\Framework\Registry;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Store\Api\Data\StoreInterface;
+use Magento\Framework\Registry;
 use Magento\Store\Model\StoreManagerInterface as StoreManager;
-use PHPUnit\Framework\TestCase;
+use Magento\Store\Api\Data\StoreInterface;
 
 /**
  * @SuppressWarnings(PHPMD)
  */
-class PositionTest extends TestCase
+class PositionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Position
+     * @var \Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\Position
      */
     private $resolver;
 
@@ -55,7 +53,7 @@ class PositionTest extends TestCase
         $objectManager = new ObjectManagerHelper($this);
 
         $this->resolver = $objectManager->getObject(
-            Position::class,
+            \Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\Position::class,
             [
                 'storeManager' => $this->storeManager,
                 'coreRegistry' => $this->coreRegistry,

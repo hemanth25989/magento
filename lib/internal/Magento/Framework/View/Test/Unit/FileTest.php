@@ -3,31 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit;
 
-use Magento\Framework\View\Design\ThemeInterface;
-use Magento\Framework\View\File;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class FileTest extends TestCase
+class FileTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var File
+     * @var \Magento\Framework\View\File
      */
     private $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $_theme;
 
     protected function setUp(): void
     {
-        $this->_theme = $this->getMockForAbstractClass(ThemeInterface::class);
-        $this->_model = new File(__FILE__, 'Fixture_TestModule', $this->_theme, true);
+        $this->_theme = $this->getMockForAbstractClass(\Magento\Framework\View\Design\ThemeInterface::class);
+        $this->_model = new \Magento\Framework\View\File(__FILE__, 'Fixture_TestModule', $this->_theme, true);
     }
 
     public function testGetFilename()

@@ -75,7 +75,7 @@ class RemoveItemFromCartTest extends GraphQlAbstract
         $maskedQuoteId = $this->getMaskedQuoteIdByReservedOrderId->execute('test_quote');
         $notExistentItemId = 999;
 
-        $this->expectExceptionMessage("The cart doesn't contain the item");
+        $this->expectExceptionMessage("Cart doesn't contain the {$notExistentItemId} item.");
 
         $query = $this->getQuery($maskedQuoteId, $notExistentItemId);
         $this->graphQlMutation($query);
@@ -96,7 +96,7 @@ class RemoveItemFromCartTest extends GraphQlAbstract
             'virtual-product'
         );
 
-        $this->expectExceptionMessage("The cart doesn't contain the item");
+        $this->expectExceptionMessage("Cart doesn't contain the {$secondQuoteItemId} item.");
 
         $query = $this->getQuery($firstQuoteMaskedId, $secondQuoteItemId);
         $this->graphQlMutation($query);
@@ -124,15 +124,17 @@ class RemoveItemFromCartTest extends GraphQlAbstract
      * @magentoApiDataFixture Magento/GraphQl/Catalog/_files/simple_product.php
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/guest/create_empty_cart.php
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/add_simple_product.php
+     *
      */
-    public function testRemoveItemWithEmptyCartId()
+    public function testWithoutRequiredCartIdParameter()
     {
-        $cartId = "";
-        $cartItemId = $this->getQuoteItemIdByReservedQuoteIdAndSku->execute('test_quote', 'simple_product');
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Required parameter "cart_id" is missing');
 
-        $this->expectExceptionMessage("Required parameter \"cart_id\" is missing.");
+        $maskedQuoteId = '';
+        $itemId = $this->getQuoteItemIdByReservedQuoteIdAndSku->execute('test_quote', 'simple_product');
 
-        $query = $this->getQuery($cartId, $cartItemId);
+        $query = $this->getQuery($maskedQuoteId, $itemId);
         $this->graphQlMutation($query);
     }
 
@@ -140,15 +142,17 @@ class RemoveItemFromCartTest extends GraphQlAbstract
      * @magentoApiDataFixture Magento/GraphQl/Catalog/_files/simple_product.php
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/guest/create_empty_cart.php
      * @magentoApiDataFixture Magento/GraphQl/Quote/_files/add_simple_product.php
+     *
      */
-    public function testRemoveItemWithZeroCartItemId()
+    public function testWithoutRequiredCartItemIdParameter()
     {
-        $cartId = $this->getMaskedQuoteIdByReservedOrderId->execute('test_quote');
-        $cartItemId = 0;
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Required parameter "cart_item_id" is missing.');
 
-        $this->expectExceptionMessage("Required parameter \"cart_item_id\" is missing.");
+        $maskedQuoteId = $this->getMaskedQuoteIdByReservedOrderId->execute('test_quote');
+        $itemId = 0;
 
-        $query = $this->getQuery($cartId, $cartItemId);
+        $query = $this->getQuery($maskedQuoteId, $itemId);
         $this->graphQlMutation($query);
     }
 

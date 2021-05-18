@@ -3,16 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Indexer\Test\Unit;
 
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\Indexer\Table\Strategy;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class StrategyTest extends TestCase
+/**
+ * Class StrategyTest
+ * @package Magento\Indexer\Test\Unit\Model\Indexer\Table
+ */
+class StrategyTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Strategy object
@@ -24,7 +21,7 @@ class StrategyTest extends TestCase
     /**
      * Resource mock
      *
-     * @var ResourceConnection|MockObject
+     * @var \Magento\Framework\App\ResourceConnection|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_resourceMock;
 
@@ -33,8 +30,8 @@ class StrategyTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->_resourceMock = $this->createMock(ResourceConnection::class);
-        $this->_model = new Strategy(
+        $this->_resourceMock = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
+        $this->_model = new \Magento\Framework\Indexer\Table\Strategy(
             $this->_resourceMock
         );
     }
@@ -78,9 +75,11 @@ class StrategyTest extends TestCase
     {
         $prefix = 'pre_';
         $this->_resourceMock->expects($this->any())->method('getTableName')->willReturnCallback(
-            function ($tableName) use ($prefix) {
-                return $prefix . $tableName;
-            }
+            
+                function ($tableName) use ($prefix) {
+                    return $prefix . $tableName;
+                }
+            
         );
         $this->assertEquals('pre_test_tmp', $this->_model->getTableName('test'));
         $this->_model->setUseIdxTable(true);

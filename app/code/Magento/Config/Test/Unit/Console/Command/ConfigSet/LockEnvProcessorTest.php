@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Console\Command\ConfigSet;
 
 use Magento\Config\Console\Command\ConfigSet\LockProcessor;
@@ -13,13 +11,11 @@ use Magento\Framework\App\Config\ConfigPathResolver;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Value;
 use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\App\DeploymentConfig\Writer;
 use Magento\Framework\Config\File\ConfigFilePool;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Stdlib\ArrayManager;
 use Magento\Store\Model\ScopeInterface;
 use PHPUnit\Framework\MockObject\MockObject as Mock;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for LockProcessor.
@@ -27,7 +23,7 @@ use PHPUnit\Framework\TestCase;
  * @see LockProcessor
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class LockEnvProcessorTest extends TestCase
+class LockEnvProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var LockProcessor
@@ -67,7 +63,7 @@ class LockEnvProcessorTest extends TestCase
         $this->preparedValueFactory = $this->getMockBuilder(PreparedValueFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->deploymentConfigWriterMock = $this->getMockBuilder(Writer::class)
+        $this->deploymentConfigWriterMock = $this->getMockBuilder(DeploymentConfig\Writer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->arrayManagerMock = $this->getMockBuilder(ArrayManager::class)
@@ -165,10 +161,13 @@ class LockEnvProcessorTest extends TestCase
         ];
     }
 
+    /**
+     */
     public function testProcessNotReadableFs()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Filesystem is not writable.');
+
         $path = 'test/test/test';
         $value = 'value';
 
@@ -192,10 +191,13 @@ class LockEnvProcessorTest extends TestCase
         $this->model->process($path, $value, ScopeConfigInterface::SCOPE_TYPE_DEFAULT, null);
     }
 
+    /**
+     */
     public function testCustomException()
     {
-        $this->expectException('Exception');
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Invalid values');
+
         $path = 'test/test/test';
         $value = 'value';
 

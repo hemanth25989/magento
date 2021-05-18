@@ -12,10 +12,9 @@ use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\Data\CartInterface;
 use Magento\Quote\Api\Data\CartInterfaceFactory;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer.php');
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/taxable_simple_product.php');
+require __DIR__ . '/../../Customer/_files/customer.php';
+require __DIR__ . '/../../../Magento/Catalog/_files/taxable_simple_product.php';
 
 $objectManager = Bootstrap::getObjectManager();
 /** @var ProductRepositoryInterface $productRepository */

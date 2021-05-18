@@ -3,23 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\DataObject\Test\Unit;
 
-use Magento\Framework\DataObject\Cache;
-use PHPUnit\Framework\TestCase;
-
-class CacheTest extends TestCase
+class CacheTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Cache
+     * @var \Magento\Framework\DataObject\Cache
      */
     protected $cache;
 
     protected function setUp(): void
     {
-        $this->cache = new Cache();
+        $this->cache = new \Magento\Framework\DataObject\Cache();
     }
 
     public function testSaveWhenArgumentIsNotObject()
@@ -27,10 +23,13 @@ class CacheTest extends TestCase
         $this->assertFalse($this->cache->save('string'));
     }
 
+    /**
+     */
     public function testSaveWhenObjectAlreadyExistsInRegistry()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Object already exists in registry (#1). Old object class: stdClass');
+
         $object = new \stdClass();
         $hash = spl_object_hash($object);
         $newIdx = 'idx' . $hash;
@@ -55,10 +54,13 @@ class CacheTest extends TestCase
         $this->assertFalse($this->cache->delete('idx' . $hash));
     }
 
+    /**
+     */
     public function testReferenceWhenReferenceAlreadyExist()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('The reference already exists: refName. New index: idx, old index: idx');
+
         $refName = ['refName', 'refName'];
         $this->cache->reference($refName, 'idx');
     }

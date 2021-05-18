@@ -3,17 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Test\Unit\DB\Query;
 
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Query\BatchRangeIterator;
 use Magento\Framework\DB\Select;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class BatchRangeIteratorTest extends TestCase
+class BatchRangeIteratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var BatchRangeIterator
@@ -21,17 +18,17 @@ class BatchRangeIteratorTest extends TestCase
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $selectMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $wrapperSelectMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $connectionMock;
 

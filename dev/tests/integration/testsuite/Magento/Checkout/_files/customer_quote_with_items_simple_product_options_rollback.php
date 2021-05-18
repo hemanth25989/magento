@@ -10,7 +10,6 @@ use Magento\Framework\Registry;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\Quote\Model\GetQuoteByReservedOrderId;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
 /** @var ObjectManagerInterface $objectManager */
 $objectManager = Bootstrap::getObjectManager();
@@ -30,5 +29,5 @@ if ($quote !== null) {
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', false);
 
-Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer_with_uk_address_rollback.php');
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_with_options_rollback.php');
+require __DIR__ . '/../../Customer/_files/customer_with_uk_address_rollback.php';
+require __DIR__ . '/../../Catalog/_files/product_with_options_rollback.php';

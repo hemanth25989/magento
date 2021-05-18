@@ -3,97 +3,83 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Checkout\Test\Unit\Block\Onepage;
 
-use Magento\Checkout\Block\Onepage\Success;
-use Magento\Checkout\Model\Session;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\UrlInterface;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Framework\View\LayoutInterface;
 use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Config;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class SuccessTest
+ * @package Magento\Checkout\Block\Onepage
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SuccessTest extends TestCase
+class SuccessTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Success
+     * @var \Magento\Checkout\Block\Onepage\Success
      */
     protected $block;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $layout;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Sales\Model\Order\Config | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $orderConfig;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Checkout\Model\Session | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $checkoutSession;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeManagerMock;
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->orderConfig = $this->createMock(Config::class);
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $this->orderConfig = $this->createMock(\Magento\Sales\Model\Order\Config::class);
+        $this->storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
 
-        $this->layout = $this->getMockBuilder(LayoutInterface::class)
+        $this->layout = $this->getMockBuilder(\Magento\Framework\View\LayoutInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->checkoutSession = $this->getMockBuilder(Session::class)
+        $this->checkoutSession = $this->getMockBuilder(\Magento\Checkout\Model\Session::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $eventManager = $this->getMockBuilder(ManagerInterface::class)
+        $eventManager = $this->getMockBuilder(\Magento\Framework\Event\ManagerInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $urlBuilder = $this->getMockBuilder(UrlInterface::class)
+        $urlBuilder = $this->getMockBuilder(\Magento\Framework\UrlInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $scopeConfig = $this->getMockBuilder(ScopeConfigInterface::class)
+        $scopeConfig = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->disableOriginalConstructor()
             ->setMethods([])
-            ->getMockForAbstractClass();
+            ->getMock();
         $scopeConfig->expects($this->any())
             ->method('getValue')
             ->with(
                 $this->stringContains(
                     'advanced/modules_disable_output/'
                 ),
-                ScopeInterface::SCOPE_STORE
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             )
             ->willReturn(false);
 
-        $context = $this->getMockBuilder(Context::class)
+        $context = $this->getMockBuilder(\Magento\Framework\View\Element\Template\Context::class)
             ->disableOriginalConstructor()
             ->setMethods(['getLayout', 'getEventManager', 'getUrlBuilder', 'getScopeConfig', 'getStoreManager'])
             ->getMock();
@@ -104,7 +90,7 @@ class SuccessTest extends TestCase
         $context->expects($this->any())->method('getStoreManager')->willReturn($this->storeManagerMock);
 
         $this->block = $objectManager->getObject(
-            Success::class,
+            \Magento\Checkout\Block\Onepage\Success::class,
             [
                 'context' => $context,
                 'orderConfig' => $this->orderConfig,
@@ -115,7 +101,7 @@ class SuccessTest extends TestCase
 
     public function testGetAdditionalInfoHtml()
     {
-        $layout = $this->getMockForAbstractClass(LayoutInterface::class);
+        $layout = $this->createMock(\Magento\Framework\View\LayoutInterface::class);
         $layout->expects(
             $this->once()
         )->method(
@@ -141,7 +127,7 @@ class SuccessTest extends TestCase
         $realOrderId = 100003332;
         $status = Order::STATE_PENDING_PAYMENT;
 
-        $order = $this->getMockBuilder(Order::class)
+        $order = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -180,7 +166,7 @@ class SuccessTest extends TestCase
 
     public function testGetContinueUrl()
     {
-        $storeMock = $this->createMock(Store::class);
+        $storeMock = $this->createMock(\Magento\Store\Model\Store::class);
         $this->storeManagerMock->expects($this->once())->method('getStore')->willReturn($storeMock);
         $storeMock->expects($this->once())->method('getBaseUrl')->willReturn('Expected Result');
 

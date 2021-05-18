@@ -3,67 +3,56 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Webapi\Test\Unit\Model\Soap;
 
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\State;
-use Magento\Framework\Locale\Resolver;
-use Magento\Framework\Webapi\Exception;
-use Magento\Webapi\Model\Soap\Fault;
-use Magento\Webapi\Model\Soap\Server;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Webapi\Model\Soap\Fault;
 
 /**
  * Test SOAP fault model.
  */
-class FaultTest extends TestCase
+class FaultTest extends \PHPUnit\Framework\TestCase
 {
     const WSDL_URL = 'http://host.com/?wsdl&services=customerV1';
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_requestMock;
 
-    /** @var Server */
+    /** @var \Magento\Webapi\Model\Soap\Server */
     protected $_soapServerMock;
 
     /** @var \Magento\Webapi\Model\Soap\Fault */
     protected $_soapFault;
 
-    /** @var MockObject */
+    /** @var \PHPUnit\Framework\MockObject\MockObject */
     protected $_localeResolverMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_appStateMock;
 
     protected function setUp(): void
     {
-        $this->_requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->_requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
         /** Initialize SUT. */
         $details = ['param1' => 'value1', 'param2' => 2];
         $code = 111;
-        $webapiException = new Exception(
+        $webapiException = new \Magento\Framework\Webapi\Exception(
             __('Soap fault reason.'),
             $code,
-            Exception::HTTP_INTERNAL_ERROR,
+            \Magento\Framework\Webapi\Exception::HTTP_INTERNAL_ERROR,
             $details
         );
         $this->_soapServerMock = $this->getMockBuilder(
-            Server::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Webapi\Model\Soap\Server::class
+        )->disableOriginalConstructor()->getMock();
         $this->_soapServerMock->expects($this->any())->method('generateUri')->willReturn(self::WSDL_URL);
 
         $this->_localeResolverMock = $this->getMockBuilder(
-            Resolver::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Framework\Locale\Resolver::class
+        )->disableOriginalConstructor()->getMock();
         $this->_localeResolverMock->expects(
             $this->any()
         )->method(
@@ -72,9 +61,9 @@ class FaultTest extends TestCase
             'en_US'
         );
 
-        $this->_appStateMock = $this->createMock(State::class);
+        $this->_appStateMock = $this->createMock(\Magento\Framework\App\State::class);
 
-        $this->_soapFault = new Fault(
+        $this->_soapFault = new \Magento\Webapi\Model\Soap\Fault(
             $this->_requestMock,
             $this->_soapServerMock,
             $webapiException,
@@ -220,13 +209,13 @@ XML;
         $message = "Soap fault reason.";
         $details = ['param1' => 'value1', 'param2' => 2];
         $code = 111;
-        $webapiException = new Exception(
+        $webapiException = new \Magento\Framework\Webapi\Exception(
             __('Soap fault reason.'),
             $code,
-            Exception::HTTP_INTERNAL_ERROR,
+            \Magento\Framework\Webapi\Exception::HTTP_INTERNAL_ERROR,
             $details
         );
-        $soapFault = new Fault(
+        $soapFault = new \Magento\Webapi\Model\Soap\Fault(
             $this->_requestMock,
             $this->_soapServerMock,
             $webapiException,
@@ -280,7 +269,7 @@ FAULT_XML;
      */
     protected function _sanitizeXML($xmlString)
     {
-        $dom = new \DOMDocument('1.0');
+        $dom = new \DOMDocument(1.0);
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = false;
         // Only useful for "pretty" output with saveXML()

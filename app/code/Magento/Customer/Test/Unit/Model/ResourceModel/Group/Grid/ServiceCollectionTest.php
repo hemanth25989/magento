@@ -3,42 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Model\ResourceModel\Group\Grid;
 
-use Magento\Customer\Api\Data\GroupSearchResultsInterface;
-use Magento\Customer\Api\GroupRepositoryInterface;
-use Magento\Customer\Model\ResourceModel\Group\Grid\ServiceCollection;
-use Magento\Framework\Api\FilterBuilder;
-use Magento\Framework\Api\Search\FilterGroupBuilder;
 use Magento\Framework\Api\SearchCriteria;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Api\SearchResultsInterface;
+use Magento\Customer\Model\ResourceModel\Group\Grid\ServiceCollection;
 use Magento\Framework\Api\SortOrder;
-use Magento\Framework\Api\SortOrderBuilder;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for \Magento\Customer\Model\ResourceModel\Group\Grid\ServiceCollection
  */
-class ServiceCollectionTest extends TestCase
+class ServiceCollectionTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ObjectManager */
+    /** @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager  */
     protected $objectManager;
 
-    /** @var FilterBuilder */
+    /** @var \Magento\Framework\Api\FilterBuilder */
     protected $filterBuilder;
 
-    /** @var SearchCriteriaBuilder */
+    /** @var \Magento\Framework\Api\SearchCriteriaBuilder */
     protected $searchCriteriaBuilder;
 
-    /** @var SortOrderBuilder */
+    /** @var \Magento\Framework\Api\SortOrderBuilder */
     protected $sortOrderBuilder;
 
-    /** @var GroupSearchResultsInterface */
+    /** @var \Magento\Customer\Api\Data\GroupSearchResultsInterface */
     protected $searchResults;
 
     /** @var \PHPUnit\Framework\MockObject\MockObject| */
@@ -49,22 +38,24 @@ class ServiceCollectionTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->objectManager = new ObjectManager($this);
-        $this->filterBuilder = $this->objectManager->getObject(FilterBuilder::class);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->filterBuilder = $this->objectManager->getObject(\Magento\Framework\Api\FilterBuilder::class);
         $filterGroupBuilder = $this->objectManager
-            ->getObject(FilterGroupBuilder::class);
-        /** @var SearchCriteriaBuilder $searchBuilder */
+            ->getObject(\Magento\Framework\Api\Search\FilterGroupBuilder::class);
+        /** @var \Magento\Framework\Api\SearchCriteriaBuilder $searchBuilder */
         $this->searchCriteriaBuilder = $this->objectManager->getObject(
-            SearchCriteriaBuilder::class,
+            \Magento\Framework\Api\SearchCriteriaBuilder::class,
             ['filterGroupBuilder' => $filterGroupBuilder]
         );
         $this->sortOrderBuilder = $this->objectManager->getObject(
-            SortOrderBuilder::class
+            \Magento\Framework\Api\SortOrderBuilder::class
         );
-        $this->groupRepositoryMock = $this->getMockBuilder(GroupRepositoryInterface::class)
+        $this->groupRepositoryMock = $this->getMockBuilder(\Magento\Customer\Api\GroupRepositoryInterface::class)
             ->getMock();
 
-        $this->searchResults = $this->getMockForAbstractClass(SearchResultsInterface::class);
+        $this->searchResults = $this->createMock(
+            \Magento\Framework\Api\SearchResultsInterface::class
+        );
 
         $this->searchResults
             ->expects($this->any())
@@ -76,7 +67,7 @@ class ServiceCollectionTest extends TestCase
 
         $this->serviceCollection = $this->objectManager
             ->getObject(
-                ServiceCollection::class,
+                \Magento\Customer\Model\ResourceModel\Group\Grid\ServiceCollection::class,
                 [
                     'filterBuilder' => $this->filterBuilder,
                     'searchCriteriaBuilder' => $this->searchCriteriaBuilder,
@@ -230,10 +221,8 @@ class ServiceCollectionTest extends TestCase
      */
     public function testAddFieldToFilterInconsistentArrays($fields, $conditions)
     {
-        $this->expectException(LocalizedException::class);
-        $this->expectExceptionMessage(
-            'The field array failed to pass. The array must have a matching condition array.'
-        );
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
+        $this->expectExceptionMessage('The field array failed to pass. The array must have a matching condition array.');
 
         $this->serviceCollection->addFieldToFilter($fields, $conditions);
     }
@@ -260,7 +249,7 @@ class ServiceCollectionTest extends TestCase
      */
     public function testAddFieldToFilterEmptyArrays()
     {
-        $this->expectException(LocalizedException::class);
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('The array of fields failed to pass. The array must include at one field.');
 
         $this->serviceCollection->addFieldToFilter([], []);

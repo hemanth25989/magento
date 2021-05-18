@@ -3,43 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\ResourceModel;
 
-use Magento\Catalog\Model\ResourceModel\Config;
-use Magento\Eav\Model\Entity\Type;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for Magento\Catalog\Model\ResourceModel\Config
  */
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config
+     * @var \Magento\Catalog\Model\ResourceModel\Config
      */
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $resource;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $storeManager;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $eavConfig;
 
@@ -47,12 +37,12 @@ class ConfigTest extends TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->resource = $this->createMock(ResourceConnection::class);
-        $this->storeManager = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $this->resource = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
+        $this->storeManager = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
         $this->eavConfig = $this->createMock(\Magento\Eav\Model\Config::class);
 
         $this->model = $objectManager->getObject(
-            Config::class,
+            \Magento\Catalog\Model\ResourceModel\Config::class,
             [
                 'resource' => $this->resource,
                 'storeManager' => $this->storeManager,
@@ -69,10 +59,10 @@ class ConfigTest extends TestCase
         $storeId = 1;
         $entityTypeId = 4;
 
-        $connectionMock = $this->getMockForAbstractClass(AdapterInterface::class);
-        $selectMock = $this->createMock(Select::class);
-        $storeMock = $this->getMockForAbstractClass(StoreInterface::class);
-        $entityTypeMock = $this->createMock(Type::class);
+        $connectionMock = $this->createMock(\Magento\Framework\DB\Adapter\AdapterInterface::class);
+        $selectMock = $this->createMock(\Magento\Framework\DB\Select::class);
+        $storeMock = $this->createMock(\Magento\Store\Api\Data\StoreInterface::class);
+        $entityTypeMock = $this->createMock(\Magento\Eav\Model\Entity\Type::class);
 
         $this->resource->expects($this->atLeastOnce())->method('getConnection')->willReturn($connectionMock);
 

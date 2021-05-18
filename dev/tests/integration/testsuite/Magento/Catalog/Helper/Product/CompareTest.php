@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\Catalog\Helper\Product;
 
 class CompareTest extends \PHPUnit\Framework\TestCase
@@ -67,10 +66,7 @@ class CompareTest extends \PHPUnit\Framework\TestCase
 
     public function testGetClearListUrl()
     {
-        $this->assertStringContainsString(
-            '\/catalog\/product_compare\/clear\/',
-            $this->_helper->getPostDataClearList()
-        );
+        $this->assertStringContainsString('\/catalog\/product_compare\/clear\/', $this->_helper->getPostDataClearList());
     }
 
     /**
@@ -88,7 +84,6 @@ class CompareTest extends \PHPUnit\Framework\TestCase
      * calculate()
      * getItemCount()
      * hasItems()
-     *
      * @magentoDataFixture Magento/Catalog/_files/multiple_products.php
      * @magentoDbIsolation disabled
      */

@@ -3,50 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Pdf\Config;
 
-use Magento\Framework\Config\FileResolverInterface;
-use Magento\Framework\Config\ValidationStateInterface;
-use Magento\Sales\Model\Order\Pdf\Config\Converter;
-use Magento\Sales\Model\Order\Pdf\Config\Reader;
-use Magento\Sales\Model\Order\Pdf\Config\SchemaLocator;
-use PHPUnit\Framework\Assert;
-use PHPUnit\Framework\AssertionFailedError;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ReaderTest extends TestCase
+class ReaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Reader
+     * @var \Magento\Sales\Model\Order\Pdf\Config\Reader
      */
     protected $_model;
 
     /**
-     * @var FileResolverInterface|MockObject
+     * @var \Magento\Framework\Config\FileResolverInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_fileResolverMock;
 
     /**
-     * @var Converter|MockObject
+     * @var \Magento\Sales\Model\Order\Pdf\Config\Converter|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_converter;
 
     /**
-     * @var SchemaLocator
+     * @var \Magento\Sales\Model\Order\Pdf\Config\SchemaLocator
      */
     protected $_schemaLocator;
 
     /**
-     * @var ValidationStateInterface|MockObject
+     * @var \Magento\Framework\Config\ValidationStateInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_validationState;
 
     protected function setUp(): void
     {
-        $this->_fileResolverMock = $this->getMockForAbstractClass(FileResolverInterface::class);
+        $this->_fileResolverMock = $this->createMock(\Magento\Framework\Config\FileResolverInterface::class);
         $this->_fileResolverMock->expects(
             $this->once()
         )->method(
@@ -55,14 +43,16 @@ class ReaderTest extends TestCase
             'pdf.xml',
             'scope'
         )->willReturn(
-            [
-                file_get_contents(__DIR__ . '/_files/pdf_one.xml'),
-                file_get_contents(__DIR__ . '/_files/pdf_two.xml'),
-            ]
+            
+                [
+                    file_get_contents(__DIR__ . '/_files/pdf_one.xml'),
+                    file_get_contents(__DIR__ . '/_files/pdf_two.xml'),
+                ]
+            
         );
 
         $this->_converter = $this->createPartialMock(
-            Converter::class,
+            \Magento\Sales\Model\Order\Pdf\Config\Converter::class,
             ['convert']
         );
 
@@ -79,13 +69,13 @@ class ReaderTest extends TestCase
             'stub'
         );
 
-        $this->_schemaLocator = new SchemaLocator($moduleReader);
-        $this->_validationState = $this->getMockForAbstractClass(ValidationStateInterface::class);
+        $this->_schemaLocator = new \Magento\Sales\Model\Order\Pdf\Config\SchemaLocator($moduleReader);
+        $this->_validationState = $this->createMock(\Magento\Framework\Config\ValidationStateInterface::class);
         $this->_validationState->expects($this->any())
             ->method('isValidationRequired')
             ->willReturn(false);
 
-        $this->_model = new Reader(
+        $this->_model = new \Magento\Sales\Model\Order\Pdf\Config\Reader(
             $this->_fileResolverMock,
             $this->_converter,
             $this->_schemaLocator,
@@ -100,9 +90,9 @@ class ReaderTest extends TestCase
         $constraint = function (\DOMDocument $actual) {
             try {
                 $expected = __DIR__ . '/_files/pdf_merged.xml';
-                Assert::assertXmlStringEqualsXmlFile($expected, $actual->saveXML());
+                \PHPUnit\Framework\Assert::assertXmlStringEqualsXmlFile($expected, $actual->saveXML());
                 return true;
-            } catch (AssertionFailedError $e) {
+            } catch (\PHPUnit\Framework\AssertionFailedError $e) {
                 return false;
             }
         };

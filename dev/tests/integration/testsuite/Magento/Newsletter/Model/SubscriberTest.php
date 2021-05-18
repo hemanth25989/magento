@@ -7,10 +7,10 @@ declare(strict_types=1);
 
 namespace Magento\Newsletter\Model;
 
+use Laminas\Mail\Headers;
 use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Framework\Mail\EmailMessage;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Customer\Api\Data\CustomerInterfaceFactory;
+use Magento\Customer\Api\AccountManagementInterface;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\Mail\Template\TransportBuilderMock;
@@ -23,16 +23,13 @@ use PHPUnit\Framework\TestCase;
  */
 class SubscriberTest extends TestCase
 {
-    private const CONFIRMATION_SUBSCRIBE = 'You have been successfully subscribed to our newsletter.';
-    private const CONFIRMATION_UNSUBSCRIBE = 'You have been unsubscribed from the newsletter.';
-
-    /** @var ObjectManagerInterface */
+    /** @var ObjectManagerInterface  */
     private $objectManager;
 
     /** @var SubscriberFactory */
     private $subscriberFactory;
 
-    /** @var TransportBuilderMock */
+    /** @var TransportBuilderMock  */
     private $transportBuilder;
 
     /** @var CustomerRepositoryInterface */
@@ -47,6 +44,37 @@ class SubscriberTest extends TestCase
         $this->subscriberFactory = $this->objectManager->get(SubscriberFactory::class);
         $this->transportBuilder = $this->objectManager->get(TransportBuilderMock::class);
         $this->customerRepository = $this->objectManager->get(CustomerRepositoryInterface::class);
+    }
+
+    /**
+     * Tests that confirmation code does NOT change after creating Customer account with subscription.
+     *
+     * @magentoDataFixture Magento/Newsletter/_files/subscribers.php
+     * @return void
+     */
+    public function testConfirmationCodeDoesNotChangeWhenCustomerEmailHasSubscription(): void
+    {
+        /** @var Subscriber $subscriber */
+        $subscriber = $this->subscriberFactory->create()
+            ->loadByEmail('customer_confirm@example.com');
+        $confirmCode = $subscriber->getCode();
+
+        /** @var CustomerInterfaceFactory $customerFactory */
+        $customerFactory = $this->objectManager->get(CustomerInterfaceFactory::class);
+        $customerDataObject = $customerFactory->create()
+            ->setFirstname('Firstname')
+            ->setLastname('Lastname')
+            ->setEmail('customer_confirm@example.com');
+
+        /** @var AccountManagementInterface $accountManagement */
+        $accountManagement = $this->objectManager->get(AccountManagementInterface::class);
+        $createdCustomer = $this->customerRepository->save(
+            $customerDataObject,
+            $accountManagement->getPasswordHash('password')
+        );
+
+        $subscriber->loadByCustomerId((int)$createdCustomer->getId());
+        $this->assertEquals($confirmCode, $subscriber->getCode());
     }
 
     /**
@@ -93,20 +121,27 @@ class SubscriberTest extends TestCase
         $subscriber = $this->subscriberFactory->create();
         $this->assertSame($subscriber, $subscriber->loadByCustomerId(1));
         $this->assertEquals($subscriber, $subscriber->unsubscribe());
-        $this->assertConfirmationParagraphExists(
-            self::CONFIRMATION_UNSUBSCRIBE,
-            $this->transportBuilder->getSentMessage()
+        $this->assertStringContainsString(
+            'You have been unsubscribed from the newsletter.',
+            $this->getFilteredRawMessage($this->transportBuilder)
         );
-
         $this->assertEquals(Subscriber::STATUS_UNSUBSCRIBED, $subscriber->getSubscriberStatus());
         // Subscribe and verify
         $this->assertEquals(Subscriber::STATUS_SUBSCRIBED, $subscriber->subscribe('customer@example.com'));
         $this->assertEquals(Subscriber::STATUS_SUBSCRIBED, $subscriber->getSubscriberStatus());
-
-        $this->assertConfirmationParagraphExists(
-            self::CONFIRMATION_SUBSCRIBE,
-            $this->transportBuilder->getSentMessage()
+        $this->assertStringContainsString(
+            'You have been successfully subscribed to our newsletter.',
+            $this->getFilteredRawMessage($this->transportBuilder)
         );
+    }
+
+    /**
+     * @param TransportBuilderMock $transportBuilderMock
+     * @return string
+     */
+    private function getFilteredRawMessage(TransportBuilderMock $transportBuilderMock): string
+    {
+        return str_replace('=' . Headers::EOL, '', $transportBuilderMock->getSentMessage()->getRawMessage());
     }
 
     /**
@@ -122,17 +157,16 @@ class SubscriberTest extends TestCase
         // Unsubscribe and verify
         $this->assertSame($subscriber, $subscriber->unsubscribeCustomerById(1));
         $this->assertEquals(Subscriber::STATUS_UNSUBSCRIBED, $subscriber->getSubscriberStatus());
-        $this->assertConfirmationParagraphExists(
-            self::CONFIRMATION_UNSUBSCRIBE,
-            $this->transportBuilder->getSentMessage()
+        $this->assertStringContainsString(
+            'You have been unsubscribed from the newsletter.',
+            $this->getFilteredRawMessage($this->transportBuilder)
         );
-
         // Subscribe and verify
         $this->assertSame($subscriber, $subscriber->subscribeCustomerById(1));
         $this->assertEquals(Subscriber::STATUS_SUBSCRIBED, $subscriber->getSubscriberStatus());
-        $this->assertConfirmationParagraphExists(
-            self::CONFIRMATION_SUBSCRIBE,
-            $this->transportBuilder->getSentMessage()
+        $this->assertStringContainsString(
+            'You have been successfully subscribed to our newsletter.',
+            $this->getFilteredRawMessage($this->transportBuilder)
         );
     }
 
@@ -150,10 +184,9 @@ class SubscriberTest extends TestCase
         $subscriber->subscribe($customerEmail);
         $subscriber->loadByEmail($customerEmail);
         $subscriber->confirm($subscriber->getSubscriberConfirmCode());
-
-        $this->assertConfirmationParagraphExists(
-            self::CONFIRMATION_SUBSCRIBE,
-            $this->transportBuilder->getSentMessage()
+        $this->assertStringContainsString(
+            'You have been successfully subscribed to our newsletter.',
+            $this->getFilteredRawMessage($this->transportBuilder)
         );
     }
 
@@ -162,8 +195,6 @@ class SubscriberTest extends TestCase
      * @magentoDataFixture Magento/Newsletter/_files/newsletter_unconfirmed_customer.php
      *
      * @return void
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
      */
     public function testSubscribeUnconfirmedCustomerWithSubscription(): void
     {
@@ -178,8 +209,8 @@ class SubscriberTest extends TestCase
      * @magentoDataFixture Magento/Customer/_files/unconfirmed_customer.php
      *
      * @return void
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function testSubscribeUnconfirmedCustomerWithoutSubscription(): void
     {
@@ -187,36 +218,5 @@ class SubscriberTest extends TestCase
         $subscriber = $this->subscriberFactory->create();
         $subscriber->subscribeCustomerById($customer->getId());
         $this->assertEquals(Subscriber::STATUS_UNCONFIRMED, $subscriber->getStatus());
-    }
-
-    /**
-     * Verifies if Paragraph with specified message is in e-mail
-     *
-     * @param string $expectedMessage
-     * @param EmailMessage $message
-     */
-    private function assertConfirmationParagraphExists(string $expectedMessage, EmailMessage $message): void
-    {
-        $messageContent = $this->getMessageRawContent($message);
-
-        $emailDom = new \DOMDocument();
-        $emailDom->loadHTML($messageContent);
-
-        $emailXpath = new \DOMXPath($emailDom);
-        $greeting = $emailXpath->query("//p[contains(text(), '$expectedMessage')]");
-
-        $this->assertSame(1, $greeting->length, "Cannot find the confirmation paragraph in e-mail contents");
-    }
-
-    /**
-     * Returns raw content of provided message
-     *
-     * @param EmailMessage $message
-     * @return string
-     */
-    private function getMessageRawContent(EmailMessage $message): string
-    {
-        $emailParts = $message->getBody()->getParts();
-        return current($emailParts)->getRawContent();
     }
 }

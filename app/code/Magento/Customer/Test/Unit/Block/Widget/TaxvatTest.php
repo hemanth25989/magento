@@ -3,20 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Block\Widget;
 
-use Magento\Customer\Api\CustomerMetadataInterface;
-use Magento\Customer\Api\Data\AttributeMetadataInterface;
-use Magento\Customer\Block\Widget\Taxvat;
-use Magento\Customer\Helper\Address;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\View\Element\Template\Context;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Customer\Block\Widget\Taxvat;
 
-class TaxvatTest extends TestCase
+class TaxvatTest extends \PHPUnit\Framework\TestCase
 {
     /** Constants used in the unit tests */
     const CUSTOMER_ENTITY_TYPE = 'customer';
@@ -24,11 +17,11 @@ class TaxvatTest extends TestCase
     const TAXVAT_ATTRIBUTE_CODE = 'taxvat';
 
     /**
-     * @var MockObject|CustomerMetadataInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Customer\Api\CustomerMetadataInterface
      */
     private $customerMetadata;
 
-    /** @var MockObject|AttributeMetadataInterface */
+    /** @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Customer\Api\Data\AttributeMetadataInterface */
     private $attribute;
 
     /** @var Taxvat */
@@ -36,9 +29,9 @@ class TaxvatTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->attribute = $this->getMockBuilder(AttributeMetadataInterface::class)
+        $this->attribute = $this->getMockBuilder(\Magento\Customer\Api\Data\AttributeMetadataInterface::class)
             ->getMockForAbstractClass();
-        $this->customerMetadata = $this->getMockBuilder(CustomerMetadataInterface::class)
+        $this->customerMetadata = $this->getMockBuilder(\Magento\Customer\Api\CustomerMetadataInterface::class)
             ->getMockForAbstractClass();
         $this->customerMetadata->expects(
             $this->any()
@@ -50,9 +43,9 @@ class TaxvatTest extends TestCase
             $this->attribute
         );
 
-        $this->_block = new Taxvat(
-            $this->createMock(Context::class),
-            $this->createMock(Address::class),
+        $this->_block = new \Magento\Customer\Block\Widget\Taxvat(
+            $this->createMock(\Magento\Framework\View\Element\Template\Context::class),
+            $this->createMock(\Magento\Customer\Helper\Address::class),
             $this->customerMetadata
         );
     }
@@ -84,13 +77,13 @@ class TaxvatTest extends TestCase
             $this->any()
         )->method(
             'getAttributeMetadata'
-        )->willThrowException(
-            new NoSuchEntityException(
+        )->will(
+            $this->throwException(new NoSuchEntityException(
                 __(
                     'No such entity with %fieldName = %fieldValue',
                     ['fieldName' => 'field', 'fieldValue' => 'value']
                 )
-            )
+            ))
         );
         $this->assertFalse($this->_block->isEnabled());
     }
@@ -122,13 +115,13 @@ class TaxvatTest extends TestCase
             $this->any()
         )->method(
             'getAttributeMetadata'
-        )->willThrowException(
-            new NoSuchEntityException(
+        )->will(
+            $this->throwException(new NoSuchEntityException(
                 __(
                     'No such entity with %fieldName = %fieldValue',
                     ['fieldName' => 'field', 'fieldValue' => 'value']
                 )
-            )
+            ))
         );
         $this->assertFalse($this->_block->isRequired());
     }

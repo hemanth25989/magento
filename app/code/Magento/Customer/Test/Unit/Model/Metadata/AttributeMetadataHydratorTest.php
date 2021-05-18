@@ -1,11 +1,8 @@
 <?php
-
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Model\Metadata;
 
 use Magento\Customer\Api\Data\AttributeMetadataInterface;
@@ -20,41 +17,39 @@ use Magento\Customer\Model\Data\ValidationRule;
 use Magento\Customer\Model\Metadata\AttributeMetadataHydrator;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AttributeMetadataHydratorTest extends TestCase
+class AttributeMetadataHydratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AttributeMetadataInterfaceFactory|MockObject
+     * @var AttributeMetadataInterfaceFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $attributeMetadataFactoryMock;
 
     /**
-     * @var OptionInterfaceFactory|MockObject
+     * @var OptionInterfaceFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $optionFactoryMock;
 
     /**
-     * @var ValidationRuleInterfaceFactory|MockObject
+     * @var ValidationRuleInterfaceFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $validationRuleFactoryMock;
 
     /**
-     * @var AttributeMetadataInterface|MockObject
+     * @var AttributeMetadataInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $attributeMetadataMock;
 
     /**
-     * @var DataObjectProcessor|MockObject
+     * @var DataObjectProcessor|\PHPUnit\Framework\MockObject\MockObject
      */
     private $dataObjectProcessorMock;
 
     /**
-     * @var AttributeMetadataHydrator|MockObject
+     * @var AttributeMetadataHydrator|\PHPUnit\Framework\MockObject\MockObject
      */
     private $attributeMetadataHydrator;
 
@@ -165,7 +160,9 @@ class AttributeMetadataHydratorTest extends TestCase
             $attributeMetadataData['attribute_code'],
             $attributeMetadata->getAttributeCode()
         );
-        $this->assertIsArray($attributeMetadata->getOptions());
+        $this->assertIsArray(
+            $attributeMetadata->getOptions()
+        );
         $this->assertArrayHasKey(
             0,
             $attributeMetadata->getOptions()
@@ -178,14 +175,18 @@ class AttributeMetadataHydratorTest extends TestCase
         $this->assertArrayHasKey(1, $attributeMetadata->getOptions());
         $this->assertInstanceOf(OptionInterface::class, $attributeMetadata->getOptions()[1]);
 
-        $this->assertIsArray($attributeMetadata->getOptions()[1]->getOptions());
+        $this->assertIsArray(
+            $attributeMetadata->getOptions()[1]->getOptions()
+        );
         $this->assertArrayHasKey(0, $attributeMetadata->getOptions()[1]->getOptions());
         $this->assertInstanceOf(OptionInterface::class, $attributeMetadata->getOptions()[1]->getOptions()[0]);
         $this->assertEquals(
             $optionThreeData['label'],
             $attributeMetadata->getOptions()[1]->getOptions()[0]->getLabel()
         );
-        $this->assertIsArray($attributeMetadata->getValidationRules());
+        $this->assertIsArray(
+            $attributeMetadata->getValidationRules()
+        );
         $this->assertArrayHasKey(0, $attributeMetadata->getValidationRules());
         $this->assertInstanceOf(ValidationRuleInterface::class, $attributeMetadata->getValidationRules()[0]);
         $this->assertEquals(

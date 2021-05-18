@@ -3,17 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Widget\Test\Unit\Model\Config;
 
-use Magento\Widget\Model\Config\Converter;
-use PHPUnit\Framework\TestCase;
-
-class ConverterTest extends TestCase
+class ConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Converter
+     * @var \Magento\Widget\Model\Config\Converter
      */
     protected $_model;
 
@@ -22,7 +17,7 @@ class ConverterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->_model = new Converter();
+        $this->_model = new \Magento\Widget\Model\Config\Converter();
     }
 
     public function testConvert()
@@ -33,6 +28,6 @@ class ConverterTest extends TestCase
 
         $convertedFile = __DIR__ . '/../_files/widget_config.php';
         $expectedResult = include $convertedFile;
-        $this->assertEquals($expectedResult, $this->_model->convert($dom), '');
+        $this->assertEquals($expectedResult, $this->_model->convert($dom), '', 0, 20);
     }
 }

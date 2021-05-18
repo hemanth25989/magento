@@ -3,27 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Block\Adminhtml\Order\View;
 
-use Magento\Framework\DataObject;
-use Magento\Sales\Block\Adminhtml\Order\View\Giftmessage;
-use PHPUnit\Framework\TestCase;
-
-class GiftmessageTest extends TestCase
+class GiftmessageTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetSaveButtonHtml()
     {
-        $item = new DataObject();
+        $item = new \Magento\Framework\DataObject();
         $expectedHtml = 'some_value';
 
-        /** @var Giftmessage $block */
+        /** @var $block \Magento\Sales\Block\Adminhtml\Order\View\Giftmessage */
         $block = $this->createPartialMock(
-            Giftmessage::class,
+            \Magento\Sales\Block\Adminhtml\Order\View\Giftmessage::class,
             ['getChildBlock', 'getChildHtml']
         );
-        $block->setEntity(new DataObject());
+        $block->setEntity(new \Magento\Framework\DataObject());
         $block->expects($this->once())->method('getChildBlock')->with('save_button')->willReturn($item);
         $block->expects(
             $this->once()

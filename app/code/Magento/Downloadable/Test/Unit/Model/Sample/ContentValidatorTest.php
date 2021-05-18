@@ -3,23 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Downloadable\Test\Unit\Model\Sample;
 
-use Magento\Downloadable\Api\Data\File\ContentInterface;
-use Magento\Downloadable\Api\Data\SampleInterface;
-use Magento\Downloadable\Helper\File;
 use Magento\Downloadable\Model\Sample\ContentValidator;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\Url\Validator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Downloadable\Helper\File;
 
 /**
  * Unit tests for Magento\Downloadable\Model\Sample\ContentValidator.
  */
-class ContentValidatorTest extends TestCase
+class ContentValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ContentValidator
@@ -27,27 +19,27 @@ class ContentValidatorTest extends TestCase
     protected $validator;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $fileValidatorMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlValidatorMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $linkFileMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $sampleFileMock;
 
     /**
-     * @var File|MockObject
+     * @var File|\PHPUnit\Framework\MockObject\MockObject
      */
     private $fileMock;
 
@@ -56,11 +48,11 @@ class ContentValidatorTest extends TestCase
      */
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->fileValidatorMock = $this->createMock(\Magento\Downloadable\Model\File\ContentValidator::class);
-        $this->urlValidatorMock = $this->createMock(Validator::class);
-        $this->sampleFileMock = $this->getMockForAbstractClass(ContentInterface::class);
+        $this->urlValidatorMock = $this->createMock(\Magento\Framework\Url\Validator::class);
+        $this->sampleFileMock = $this->createMock(\Magento\Downloadable\Api\Data\File\ContentInterface::class);
         $this->fileMock = $this->createMock(File::class);
 
         $this->validator = $objectManager->getObject(
@@ -75,7 +67,7 @@ class ContentValidatorTest extends TestCase
 
     public function testIsValid()
     {
-        $sampleFileContentMock = $this->getMockForAbstractClass(ContentInterface::class);
+        $sampleFileContentMock = $this->createMock(\Magento\Downloadable\Api\Data\File\ContentInterface::class);
         $sampleContentData = [
             'title' => 'Title',
             'sort_order' => 1,
@@ -94,8 +86,9 @@ class ContentValidatorTest extends TestCase
      */
     public function testIsValidThrowsExceptionIfSortOrderIsInvalid($sortOrder)
     {
-        $this->expectException('Magento\Framework\Exception\InputException');
+        $this->expectException(\Magento\Framework\Exception\InputException::class);
         $this->expectExceptionMessage('Sort order must be a positive integer.');
+
         $sampleContentData = [
             'title' => 'Title',
             'sort_order' => $sortOrder,
@@ -120,11 +113,11 @@ class ContentValidatorTest extends TestCase
 
     /**
      * @param array $sampleContentData
-     * @return MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     protected function getSampleContentMock(array $sampleContentData)
     {
-        $contentMock = $this->getMockForAbstractClass(SampleInterface::class);
+        $contentMock = $this->createMock(\Magento\Downloadable\Api\Data\SampleInterface::class);
         $contentMock->expects($this->any())->method('getTitle')->willReturn(
             $sampleContentData['title']
         );

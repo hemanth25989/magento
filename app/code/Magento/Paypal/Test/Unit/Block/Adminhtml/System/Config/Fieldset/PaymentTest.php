@@ -3,19 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Block\Adminhtml\System\Config\Fieldset;
 
-use Magento\Config\Model\Config;
-use Magento\Config\Model\Config\Structure\Element\Group;
-use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Paypal\Block\Adminhtml\System\Config\Fieldset\Payment;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class PaymentTest extends TestCase
+class PaymentTest extends \PHPUnit\Framework\TestCase
 {
     /**#@+
      * Activity config path
@@ -30,26 +20,26 @@ class PaymentTest extends TestCase
     protected $_model;
 
     /**
-     * @var AbstractElement
+     * @var \Magento\Framework\Data\Form\Element\AbstractElement
      */
     protected $_element;
 
     /**
-     * @var Group|MockObject
+     * @var \Magento\Config\Model\Config\Structure\Element\Group|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_group;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Config\Model\Config|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_backendConfig;
 
     protected function setUp(): void
     {
-        $helper = new ObjectManager($this);
-        $this->_group = $this->createMock(Group::class);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->_group = $this->createMock(\Magento\Config\Model\Config\Structure\Element\Group::class);
         $this->_element = $this->getMockForAbstractClass(
-            AbstractElement::class,
+            \Magento\Framework\Data\Form\Element\AbstractElement::class,
             [],
             '',
             false,
@@ -72,9 +62,9 @@ class PaymentTest extends TestCase
         $this->_element->expects($this->any())
             ->method('getId')
             ->willReturn('id');
-        $this->_backendConfig = $this->createMock(Config::class);
+        $this->_backendConfig = $this->createMock(\Magento\Config\Model\Config::class);
         $this->_model = $helper->getObject(
-            Payment::class,
+            \Magento\Paypal\Block\Adminhtml\System\Config\Fieldset\Payment::class,
             ['backendConfig' => $this->_backendConfig]
         );
         $this->_model->setGroup($this->_group);

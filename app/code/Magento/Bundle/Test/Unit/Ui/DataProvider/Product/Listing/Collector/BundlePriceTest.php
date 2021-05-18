@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Bundle\Test\Unit\Ui\DataProvider\Product\Listing\Collector;
 
 use Magento\Bundle\Ui\DataProvider\Product\Listing\Collector\BundlePrice;
@@ -16,10 +14,8 @@ use Magento\Catalog\Model\ProductRender\FormattedPriceInfoBuilder;
 use Magento\Catalog\Pricing\Price\FinalPrice;
 use Magento\Framework\Pricing\Amount\AmountInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class BundlePriceTest extends TestCase
+class BundlePriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var BundlePrice
@@ -27,17 +23,17 @@ class BundlePriceTest extends TestCase
     private $model;
 
     /**
-     * @var PriceCurrencyInterface|MockObject
+     * @var PriceCurrencyInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $priceCurrencyMock;
 
     /**
-     * @var PriceInfoInterfaceFactory|MockObject
+     * @var PriceInfoInterfaceFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $priceInfoFactory;
 
     /**
-     * @var FormattedPriceInfoBuilder|MockObject
+     * @var FormattedPriceInfoBuilder|\PHPUnit\Framework\MockObject\MockObject
      */
     private $formattedPriceInfoBuilder;
 

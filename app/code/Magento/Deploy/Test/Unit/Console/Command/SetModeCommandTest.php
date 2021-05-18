@@ -3,22 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Deploy\Test\Unit\Console\Command;
 
 use Magento\Deploy\Console\Command\SetModeCommand;
-use Magento\Deploy\Model\Mode;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class SetModeCommandTest extends TestCase
+/**
+ * Class SetModeCommandTest
+ * Test for SetModeCommandTest
+ */
+class SetModeCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Mode|MockObject
+     * @var \Magento\Deploy\Model\Mode|\PHPUnit\Framework\MockObject\MockObject
      */
     private $modeMock;
 
@@ -28,18 +26,18 @@ class SetModeCommandTest extends TestCase
     private $command;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $objectManagerMock;
 
     protected function setUp(): void
     {
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->modeMock = $this->createMock(Mode::class);
+        $this->objectManagerMock = $this->getMockForAbstractClass(\Magento\Framework\ObjectManagerInterface::class);
+        $this->modeMock = $this->createMock(\Magento\Deploy\Model\Mode::class);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->command = $objectManager->getObject(
-            SetModeCommand::class,
+            \Magento\Deploy\Console\Command\SetModeCommand::class,
             ['objectManager' => $this->objectManagerMock]
         );
 
@@ -52,10 +50,7 @@ class SetModeCommandTest extends TestCase
 
         $tester = new CommandTester($this->command);
         $tester->execute(['mode' => 'production']);
-        $this->assertStringContainsString(
-            "production mode",
-            $tester->getDisplay()
-        );
+        $this->assertStringContainsString("production mode", $tester->getDisplay());
     }
 
     public function testSetDeveloperMode()
@@ -64,10 +59,7 @@ class SetModeCommandTest extends TestCase
 
         $tester = new CommandTester($this->command);
         $tester->execute(['mode' => 'developer']);
-        $this->assertStringContainsString(
-            "developer mode",
-            $tester->getDisplay()
-        );
+        $this->assertStringContainsString("developer mode", $tester->getDisplay());
     }
 
     public function testSetDefaultMode()
@@ -76,10 +68,7 @@ class SetModeCommandTest extends TestCase
 
         $tester = new CommandTester($this->command);
         $tester->execute(['mode' => 'default']);
-        $this->assertStringContainsString(
-            "default mode",
-            $tester->getDisplay()
-        );
+        $this->assertStringContainsString("default mode", $tester->getDisplay());
     }
 
     public function testSetProductionSkipCompilation()
@@ -88,19 +77,13 @@ class SetModeCommandTest extends TestCase
 
         $tester = new CommandTester($this->command);
         $tester->execute(['mode' => 'production', '--skip-compilation' => true]);
-        $this->assertStringContainsString(
-            "production mode",
-            $tester->getDisplay()
-        );
+        $this->assertStringContainsString("production mode", $tester->getDisplay());
     }
 
     public function testSetInvalidMode()
     {
         $tester = new CommandTester($this->command);
         $tester->execute(['mode' => 'invalid-mode']);
-        $this->assertStringContainsString(
-            'The mode can\'t be switched to "invalid-mode".',
-            $tester->getDisplay()
-        );
+        $this->assertStringContainsString('The mode can\'t be switched to "invalid-mode".', $tester->getDisplay());
     }
 }

@@ -3,22 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Weee\Test\Unit\Observer;
 
-use Magento\Bundle\Model\Product\Type;
-use Magento\Framework\DataObject;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\Registry;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Tax\Model\Config as TaxConfig;
-use Magento\Weee\Helper\Data;
 use Magento\Weee\Model\Tax as WeeeDisplayConfig;
-use Magento\Weee\Observer\UpdateProductOptionsObserver;
-use PHPUnit\Framework\TestCase;
+use Magento\Tax\Model\Config as TaxConfig;
 
-class UpdateProductOptionsObserverTest extends TestCase
+class UpdateProductOptionsObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests the methods that rely on the ScopeConfigInterface object to provide their return values
@@ -33,27 +25,27 @@ class UpdateProductOptionsObserverTest extends TestCase
      */
     public function testUpdateProductOptions($initialArray, $weeeEnabled, $weeeDisplay, $priceDisplay, $expectedArray)
     {
-        $configObj = new DataObject(
+        $configObj = new \Magento\Framework\DataObject(
             [
                 'additional_options' => $initialArray,
             ]
         );
 
-        $weeeObject1 = new DataObject(
+        $weeeObject1 = new \Magento\Framework\DataObject(
             [
                 'code' => 'fpt1',
                 'amount' => '15.0000',
             ]
         );
 
-        $weeeObject2 = new DataObject(
+        $weeeObject2 = new \Magento\Framework\DataObject(
             [
                 'code' => 'fpt2',
                 'amount' => '7.0000',
             ]
         );
 
-        $weeeHelper=$this->createMock(Data::class);
+        $weeeHelper=$this->createMock(\Magento\Weee\Helper\Data::class);
         $weeeHelper->expects($this->any())
             ->method('isEnabled')
             ->willReturn($weeeEnabled);
@@ -78,23 +70,17 @@ class UpdateProductOptionsObserverTest extends TestCase
             ->method('priceIncludesTax')
             ->willReturn(true);
 
-        $responseObject=$this->getMockBuilder(Observer::class)
-            ->addMethods(['getResponseObject'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $responseObject=$this->createPartialMock(\Magento\Framework\Event\Observer::class, ['getResponseObject']);
         $responseObject->expects($this->any())
             ->method('getResponseObject')
             ->willReturn($configObj);
 
-        $observerObject=$this->createPartialMock(Observer::class, ['getEvent']);
+        $observerObject=$this->createPartialMock(\Magento\Framework\Event\Observer::class, ['getEvent']);
         $observerObject->expects($this->any())
             ->method('getEvent')
             ->willReturn($responseObject);
 
-        $product = $this->getMockBuilder(Type::class)
-            ->addMethods(['getTypeId', 'getStoreId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $product = $this->createPartialMock(\Magento\Bundle\Model\Product\Type::class, ['getTypeId', 'getStoreId']);
         $product->expects($this->any())
             ->method('getStoreId')
             ->willReturn(1);
@@ -102,16 +88,16 @@ class UpdateProductOptionsObserverTest extends TestCase
             ->method('getTypeId')
             ->willReturn('bundle');
 
-        $registry=$this->createMock(Registry::class);
+        $registry=$this->createMock(\Magento\Framework\Registry::class);
         $registry->expects($this->any())
             ->method('registry')
             ->with('current_product')
             ->willReturn($product);
 
         $objectManager = new ObjectManager($this);
-        /** @var UpdateProductOptionsObserver $weeeObserverObject */
+        /** @var \Magento\Weee\Observer\UpdateProductOptionsObserver $weeeObserverObject */
         $weeeObserverObject = $objectManager->getObject(
-            UpdateProductOptionsObserver::class,
+            \Magento\Weee\Observer\UpdateProductOptionsObserver::class,
             [
                 'weeeData' => $weeeHelper,
                 'taxData' => $taxHelper,

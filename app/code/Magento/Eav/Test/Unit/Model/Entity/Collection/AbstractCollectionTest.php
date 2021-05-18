@@ -3,112 +3,88 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Eav\Test\Unit\Model\Entity\Collection;
-
-use Magento\Eav\Model\Attribute;
-use Magento\Eav\Model\Config;
-use Magento\Eav\Model\Entity\AbstractEntity;
-use Magento\Eav\Model\ResourceModel\Helper;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
-use Magento\Framework\Data\Collection\EntityFactory;
-use Magento\Framework\DataObject;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
-use Magento\Framework\DB\Statement\Pdo\Mysql;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Validator\UniversalFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * AbstractCollection test
  *
- * Test for AbstractCollection class
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AbstractCollectionTest extends TestCase
+class AbstractCollectionTest extends \PHPUnit\Framework\TestCase
 {
-    const ATTRIBUTE_CODE = 'any_attribute';
-    const ATTRIBUTE_ID_STRING = '15';
-    const ATTRIBUTE_ID_INT = 15;
-
     /**
-     * @var AbstractCollectionStub|MockObject
+     * @var AbstractCollectionStub|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $model;
 
     /**
-     * @var EntityFactory|MockObject
+     * @var \Magento\Framework\Data\Collection\EntityFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $coreEntityFactoryMock;
 
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $loggerMock;
 
     /**
-     * @var FetchStrategyInterface|MockObject
+     * @var \Magento\Framework\Data\Collection\Db\FetchStrategyInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $fetchStrategyMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Event\ManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $eventManagerMock;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Eav\Model\Config|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $configMock;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var \Magento\Framework\App\ResourceConnection|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $coreResourceMock;
 
     /**
-     * @var \Magento\Eav\Model\EntityFactory|MockObject
+     * @var \Magento\Eav\Model\EntityFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $entityFactoryMock;
 
     /**
-     * @var Helper|MockObject
+     * @var \Magento\Eav\Model\ResourceModel\Helper|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resourceHelperMock;
 
     /**
-     * @var UniversalFactory|MockObject
+     * @var \Magento\Framework\Validator\UniversalFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $validatorFactoryMock;
 
     /**
-     * @var Mysql|MockObject
+     * @var \Magento\Framework\DB\Statement\Pdo\Mysql|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $statementMock;
 
     protected function setUp(): void
     {
-        $this->coreEntityFactoryMock = $this->createMock(EntityFactory::class);
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->coreEntityFactoryMock = $this->createMock(\Magento\Framework\Data\Collection\EntityFactory::class);
+        $this->loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
         $this->fetchStrategyMock = $this->createMock(
-            FetchStrategyInterface::class
+            \Magento\Framework\Data\Collection\Db\FetchStrategyInterface::class
         );
-        $this->eventManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
-        $this->configMock = $this->createMock(Config::class);
-        $this->coreResourceMock = $this->createMock(ResourceConnection::class);
-        $this->resourceHelperMock = $this->createMock(Helper::class);
-        $this->validatorFactoryMock = $this->createMock(UniversalFactory::class);
+        $this->eventManagerMock = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
+        $this->configMock = $this->createMock(\Magento\Eav\Model\Config::class);
+        $this->coreResourceMock = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
+        $this->resourceHelperMock = $this->createMock(\Magento\Eav\Model\ResourceModel\Helper::class);
+        $this->validatorFactoryMock = $this->createMock(\Magento\Framework\Validator\UniversalFactory::class);
         $this->entityFactoryMock = $this->createMock(\Magento\Eav\Model\EntityFactory::class);
-        /** @var AdapterInterface|MockObject */
+        /** @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit\Framework\MockObject\MockObject */
         $connectionMock = $this->createMock(\Magento\Framework\DB\Adapter\Pdo\Mysql::class);
-        $this->statementMock = $this->createPartialMock(Mysql::class, ['fetch']);
-        /** @var Select|MockObject $selectMock */
-        $selectMock = $this->createMock(Select::class);
+        $this->statementMock = $this->createPartialMock(\Magento\Framework\DB\Statement\Pdo\Mysql::class, ['fetch']);
+        /** @var $selectMock \Magento\Framework\DB\Select|\PHPUnit\Framework\MockObject\MockObject */
+        $selectMock = $this->createMock(\Magento\Framework\DB\Select::class);
         $this->coreEntityFactoryMock->expects(
             $this->any()
         )->method(
@@ -126,29 +102,9 @@ class AbstractCollectionTest extends TestCase
         )->willReturn(
             $connectionMock
         );
-        $entityMock = $this->createMock(AbstractEntity::class);
+        $entityMock = $this->createMock(\Magento\Eav\Model\Entity\AbstractEntity::class);
         $entityMock->expects($this->any())->method('getConnection')->willReturn($connectionMock);
         $entityMock->expects($this->any())->method('getDefaultAttributes')->willReturn([]);
-        $entityMock->expects($this->any())->method('getLinkField')->willReturn('entity_id');
-
-        $attributeMock = $this->createMock(Attribute::class);
-        $attributeMock->expects($this->any())->method('isStatic')->willReturn(false);
-        $attributeMock->expects($this->any())->method('getAttributeCode')->willReturn(self::ATTRIBUTE_CODE);
-        $attributeMock->expects($this->any())->method('getBackendTable')->willReturn('eav_entity_int');
-        $attributeMock->expects($this->any())->method('getBackendType')->willReturn('int');
-        $attributeMock->expects($this->any())->method('getId')->willReturn(self::ATTRIBUTE_ID_STRING);
-
-        $entityMock
-            ->expects($this->any())
-            ->method('getAttribute')
-            ->with(self::ATTRIBUTE_CODE)
-            ->willReturn($attributeMock);
-
-        $this->configMock
-            ->expects($this->any())
-            ->method('getAttribute')
-            ->with(null, self::ATTRIBUTE_CODE)
-            ->willReturn($attributeMock);
 
         $this->validatorFactoryMock->expects(
             $this->any()
@@ -238,35 +194,6 @@ class AbstractCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider getItemsDataProvider
-     */
-    public function testAttributeIdIsInt($values)
-    {
-        $this->markTestSkipped('Skipped in #27500 due to testing protected/private methods and properties');
-        $this->resourceHelperMock->expects($this->any())->method('getLoadAttributesSelectGroups')->willReturn([]);
-        $this->fetchStrategyMock->expects($this->any())->method('fetchAll')->willReturn($values);
-        $selectMock = $this->coreResourceMock->getConnection()->select();
-        $selectMock->expects($this->any())->method('from')->willReturn($selectMock);
-        $selectMock->expects($this->any())->method('join')->willReturn($selectMock);
-        $selectMock->expects($this->any())->method('where')->willReturn($selectMock);
-        $selectMock->expects($this->any())->method('columns')->willReturn($selectMock);
-
-        $this->model
-            ->addAttributeToSelect(self::ATTRIBUTE_CODE)
-            ->_loadEntities()
-            ->_loadAttributes();
-
-        $_selectAttributesActualValue = $this->readAttribute($this->model, '_selectAttributes');
-
-        $this->assertAttributeEquals(
-            [self::ATTRIBUTE_CODE => self::ATTRIBUTE_ID_STRING],
-            '_selectAttributes',
-            $this->model
-        );
-        $this->assertSame($_selectAttributesActualValue[self::ATTRIBUTE_CODE], self::ATTRIBUTE_ID_INT);
-    }
-
-    /**
      * @return array
      */
     public function getItemsDataProvider()
@@ -279,10 +206,10 @@ class AbstractCollectionTest extends TestCase
     }
 
     /**
-     * @return DataObject
+     * @return \Magento\Framework\DataObject
      */
     public function getMagentoObject()
     {
-        return new DataObject();
+        return new \Magento\Framework\DataObject();
     }
 }

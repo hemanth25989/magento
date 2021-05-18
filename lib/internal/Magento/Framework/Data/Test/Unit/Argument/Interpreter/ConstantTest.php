@@ -3,14 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit\Argument\Interpreter;
 
-use Magento\Framework\Data\Argument\Interpreter\Constant;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Data\Argument\Interpreter\Constant;
 
-class ConstantTest extends TestCase
+class ConstantTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Constant
@@ -33,8 +30,9 @@ class ConstantTest extends TestCase
      */
     public function testEvaluateBadValue($value)
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Constant name is expected.');
+
         $this->object->evaluate($value);
     }
 

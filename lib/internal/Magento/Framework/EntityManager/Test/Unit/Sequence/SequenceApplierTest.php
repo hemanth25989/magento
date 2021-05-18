@@ -3,68 +3,63 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\EntityManager\Test\Unit\Sequence;
 
-use Magento\Framework\DataObject;
-use Magento\Framework\DB\Sequence\SequenceInterface;
-use Magento\Framework\EntityManager\EntityMetadataInterface;
-use Magento\Framework\EntityManager\HydratorInterface;
 use Magento\Framework\EntityManager\HydratorPool;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\EntityManager\Sequence\SequenceApplier;
 use Magento\Framework\EntityManager\Sequence\SequenceManager;
 use Magento\Framework\EntityManager\Sequence\SequenceRegistry;
 use Magento\Framework\EntityManager\TypeResolver;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\DataObject;
+use Magento\Framework\EntityManager\HydratorInterface;
+use Magento\Framework\EntityManager\EntityMetadataInterface;
+use Magento\Framework\DB\Sequence\SequenceInterface;
 
-class SequenceApplierTest extends TestCase
+class SequenceApplierTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MetadataPool|MockObject
+     * @var MetadataPool|\PHPUnit\Framework\MockObject\MockObject
      */
     private $metadataPoolMock;
 
     /**
-     * @var TypeResolver|MockObject
+     * @var TypeResolver|\PHPUnit\Framework\MockObject\MockObject
      */
     private $typeResolverMock;
 
     /**
-     * @var SequenceManager|MockObject
+     * @var SequenceManager|\PHPUnit\Framework\MockObject\MockObject
      */
     private $sequenceManagerMock;
 
     /**
-     * @var SequenceRegistry|MockObject
+     * @var SequenceRegistry|\PHPUnit\Framework\MockObject\MockObject
      */
     private $sequenceRegistryMock;
 
     /**
-     * @var HydratorPool|MockObject
+     * @var HydratorPool|\PHPUnit\Framework\MockObject\MockObject
      */
     private $hydratorPoolMock;
 
     /**
-     * @var DataObject|MockObject
+     * @var DataObject|\PHPUnit\Framework\MockObject\MockObject
      */
     private $entityMock;
 
     /**
-     * @var HydratorInterface|MockObject
+     * @var HydratorInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $hydratorMock;
 
     /**
-     * @var EntityMetadataInterface|MockObject
+     * @var EntityMetadataInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $metadataMock;
 
     /**
-     * @var SequenceInterface|MockObject
+     * @var SequenceInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $sequenceMock;
 
@@ -75,7 +70,7 @@ class SequenceApplierTest extends TestCase
 
     protected function setUp(): void
     {
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->metadataPoolMock = $this->getMockBuilder(MetadataPool::class)
             ->disableOriginalConstructor()

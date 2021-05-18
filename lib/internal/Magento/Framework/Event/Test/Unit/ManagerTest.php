@@ -3,46 +3,47 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Event\Test\Unit;
 
-use Magento\Framework\Event\ConfigInterface;
-use Magento\Framework\Event\InvokerInterface;
-use Magento\Framework\Event\Manager as EventManager;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Event\InvokerInterface;
+use Magento\Framework\Event\ConfigInterface;
+use Magento\Framework\Event\Manager as EventManager;
 
-class ManagerTest extends TestCase
+/**
+ * Class ManagerTest
+ *
+ * @package Magento\Framework\Event
+ */
+class ManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $invokerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $eventFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $event;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $wrapperFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $observer;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $eventConfigMock;
 

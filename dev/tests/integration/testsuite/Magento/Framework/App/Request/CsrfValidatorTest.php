@@ -19,7 +19,7 @@ use Magento\Framework\Phrase;
 use PHPUnit\Framework\TestCase;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\Framework\App\Request\Http as HttpRequest;
-use Laminas\Stdlib\Parameters;
+use Zend\Stdlib\Parameters;
 use Magento\Framework\App\Response\Http as HttpResponse;
 use Magento\Framework\App\Response\HttpFactory as HttpResponseFactory;
 
@@ -201,12 +201,12 @@ class CsrfValidatorTest extends TestCase
     }
 
     /**
+     *
      * @magentoAppArea adminhtml
      */
     public function testValidateWithInvalidKey()
     {
         $this->expectException(\Magento\Framework\App\Request\InvalidRequestException::class);
-
         $this->request->setPost(
             new Parameters(['form_key' => $this->formKey->getFormKey() .'1'])
         );

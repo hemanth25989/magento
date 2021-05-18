@@ -37,13 +37,10 @@ class DeleteTest extends \PHPUnit\Framework\TestCase
     {
         $integration = $this->getFixtureIntegration();
         $buttonHtml = $this->deleteButtonBlock->render($integration);
-        self::assertStringContainsString('title="Remove"', $buttonHtml);
-        self::assertStringContainsString(
-            'this.setAttribute(\'data-url\', '
-            . '\'http://localhost/index.php/backend/admin/integration/delete/id/'
-            . $integration->getId(),
-            $buttonHtml
-        );
+        $this->assertStringContainsString('title="Remove"', $buttonHtml);
+        $this->assertStringContainsString('onclick="this.setAttribute(&#039;data-url&#039;, '
+            . '&#039;http://localhost/index.php/backend/admin/integration/delete/id/'
+            . $integration->getId(), $buttonHtml);
         $this->assertStringNotContainsString('disabled', $buttonHtml);
     }
 
@@ -52,18 +49,11 @@ class DeleteTest extends \PHPUnit\Framework\TestCase
         $integration = $this->getFixtureIntegration();
         $integration->setSetupType(Integration::TYPE_CONFIG);
         $buttonHtml = $this->deleteButtonBlock->render($integration);
-        self::assertStringContainsString(
-            'title="' .$this->deleteButtonBlock->escapeHtmlAttr('Uninstall the extension to remove this integration')
-            .'"',
-            $buttonHtml
-        );
-        self::assertStringContainsString(
-            'this.setAttribute(\'data-url\', '
-            . '\'http://localhost/index.php/backend/admin/integration/delete/id/'
-            . $integration->getId(),
-            $buttonHtml
-        );
-        self::assertStringContainsString('disabled="disabled"', $buttonHtml);
+        $this->assertStringContainsString('title="Uninstall the extension to remove this integration"', $buttonHtml);
+        $this->assertStringContainsString('onclick="this.setAttribute(&#039;data-url&#039;, '
+            . '&#039;http://localhost/index.php/backend/admin/integration/delete/id/'
+            . $integration->getId(), $buttonHtml);
+        $this->assertStringContainsString('disabled="disabled"', $buttonHtml);
     }
 
     /**

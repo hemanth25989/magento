@@ -3,20 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GroupedProduct\Test\Unit\Ui\DataProvider\Product;
 
-use Magento\Catalog\Model\ProductTypes\ConfigInterface;
-use Magento\Catalog\Model\ResourceModel\Product\Collection;
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
-use Magento\Framework\App\RequestInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\GroupedProduct\Ui\DataProvider\Product\GroupedProductDataProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\App\RequestInterface;
+use Magento\Catalog\Model\ResourceModel\Product\Collection;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
+use Magento\Catalog\Model\ProductTypes\ConfigInterface;
 
-class GroupedProductDataProviderTest extends TestCase
+class GroupedProductDataProviderTest extends \PHPUnit\Framework\TestCase
 {
     const ALLOWED_TYPE = 'simple';
 
@@ -26,22 +22,22 @@ class GroupedProductDataProviderTest extends TestCase
     protected $objectManager;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $requestMock;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $collectionFactoryMock;
 
     /**
-     * @var Collection|MockObject
+     * @var Collection|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $collectionMock;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var ConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $configMock;
 

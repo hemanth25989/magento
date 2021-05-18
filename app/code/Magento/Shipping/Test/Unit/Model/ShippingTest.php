@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Shipping\Test\Unit\Model;
 
@@ -12,22 +11,21 @@ use Magento\Catalog\Model\Product\Type as ProductType;
 use Magento\CatalogInventory\Model\Stock\Item as StockItem;
 use Magento\CatalogInventory\Model\StockRegistry;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Quote\Model\Quote\Address\RateRequest;
 use Magento\Quote\Model\Quote\Item as QuoteItem;
 use Magento\Shipping\Model\Carrier\AbstractCarrierInterface;
 use Magento\Shipping\Model\CarrierFactory;
 use Magento\Shipping\Model\Shipping;
+use Magento\Quote\Model\Quote\Address\RateRequest;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 
 /**
  * Unit tests for \Magento\Shipping\Model\Shipping class.
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ShippingTest extends TestCase
+class ShippingTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test identification number of product.

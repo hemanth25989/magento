@@ -3,18 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Module\Test\Unit;
 
 use Magento\Framework\Module\DbVersionInfo;
-use Magento\Framework\Module\ModuleListInterface;
-use Magento\Framework\Module\Output\ConfigInterface;
-use Magento\Framework\Module\ResourceInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DbVersionInfoTest extends TestCase
+class DbVersionInfoTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DbVersionInfo
@@ -22,36 +15,36 @@ class DbVersionInfoTest extends TestCase
     private $dbVersionInfo;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $moduleList;
 
     /**
-     * @var ResourceInterface|MockObject
+     * @var \Magento\Framework\Module\ResourceInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $moduleResource;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var \Magento\Framework\Module\Output\ConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $_outputConfig;
 
     protected function setUp(): void
     {
-        $this->moduleList = $this->getMockForAbstractClass(ModuleListInterface::class);
+        $this->moduleList = $this->getMockForAbstractClass(\Magento\Framework\Module\ModuleListInterface::class);
         $this->moduleList->expects($this->any())
             ->method('getOne')
             ->willReturnMap([
-                ['Module_One', ['name' => 'Module_One', 'setup_version' => '1']],
-                ['Module_Two', ['name' => 'Module_Two', 'setup_version' => '2']],
-                ['Module_No_Schema', []],
-            ]);
+                        ['Module_One', ['name' => 'Module_One', 'setup_version' => '1']],
+                        ['Module_Two', ['name' => 'Module_Two', 'setup_version' => '2']],
+                        ['Module_No_Schema', []],
+                    ]);
         $this->moduleList->expects($this->any())
             ->method('getNames')
             ->willReturn(['Module_One', 'Module_Two']);
 
-        $this->_outputConfig = $this->getMockForAbstractClass(ConfigInterface::class);
-        $this->moduleResource = $this->getMockForAbstractClass(ResourceInterface::class);
+        $this->_outputConfig = $this->getMockForAbstractClass(\Magento\Framework\Module\Output\ConfigInterface::class);
+        $this->moduleResource = $this->getMockForAbstractClass(\Magento\Framework\Module\ResourceInterface::class);
 
         $this->dbVersionInfo = new DbVersionInfo(
             $this->moduleList,

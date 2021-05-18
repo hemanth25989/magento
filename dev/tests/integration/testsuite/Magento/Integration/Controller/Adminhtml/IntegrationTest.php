@@ -4,11 +4,10 @@
  * See COPYING.txt for license details.
  *
  */
-
 namespace Magento\Integration\Controller\Adminhtml;
 
-use Magento\Framework\App\Request\Http as HttpRequest;
 use Magento\TestFramework\Bootstrap;
+use Magento\Framework\App\Request\Http as HttpRequest;
 
 /**
  * \Magento\Integration\Controller\Adminhtml\Integration
@@ -19,7 +18,7 @@ use Magento\TestFramework\Bootstrap;
  */
 class IntegrationTest extends \Magento\TestFramework\TestCase\AbstractBackendController
 {
-    /** @var \Magento\Integration\Model\Integration */
+    /** @var \Magento\Integration\Model\Integration  */
     private $_integration;
 
     /**
@@ -84,10 +83,7 @@ class IntegrationTest extends \Magento\TestFramework\TestCase\AbstractBackendCon
         $saveLink = 'integration/save/';
 
         $this->assertStringContainsString('entry-edit form-inline', $response);
-        $this->assertStringContainsString(
-            'Edit &quot;' . $this->_integration->getName() . '&quot; Integration',
-            $response
-        );
+        $this->assertStringContainsString('Edit &quot;' . $this->_integration->getName() . '&quot; Integration', $response);
         $this->assertStringContainsString($saveLink, $response);
         $this->assertEquals(
             1,
@@ -138,7 +134,6 @@ class IntegrationTest extends \Magento\TestFramework\TestCase\AbstractBackendCon
     public function testSaveActionNewIntegration()
     {
         $url = 'http://magento.ll/endpoint_url';
-        // phpcs:ignore Magento2.Security.InsecureFunction
         $integrationName = md5(rand());
         $this->getRequest()->setMethod(HttpRequest::METHOD_POST);
         $this->getRequest()->setPostValue(

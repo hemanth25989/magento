@@ -3,25 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Tax\Test\Unit\Model\System\Message\Notification;
 
+use Magento\Tax\Model\Config as TaxConfig;
+use Magento\Tax\Model\System\Message\Notification\RoundingErrors as RoundingErrorsNotification;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Api\Data\WebsiteInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Tax\Model\Calculation;
-use Magento\Tax\Model\Config as TaxConfig;
-use Magento\Tax\Model\System\Message\Notification\RoundingErrors as RoundingErrorsNotification;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for @see \Magento\Tax\Model\System\Message\Notification\RoundingErrors
  */
-class RoundingErrorsTest extends TestCase
+class RoundingErrorsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var RoundingErrorsNotification
@@ -29,17 +24,17 @@ class RoundingErrorsTest extends TestCase
     private $roundingErrorsNotification;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface | \PHPUnit\Framework\MockObject\MockObject
      */
     private $storeManagerMock;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var UrlInterface | \PHPUnit\Framework\MockObject\MockObject
      */
     private $urlBuilderMock;
 
     /**
-     * @var TaxConfig|MockObject
+     * @var TaxConfig | \PHPUnit\Framework\MockObject\MockObject
      */
     private $taxConfigMock;
 
@@ -80,7 +75,7 @@ class RoundingErrorsTest extends TestCase
         $this->taxConfigMock->expects($this->any())->method('isWrongDisplaySettingsIgnored')->willReturn(false);
 
         $this->taxConfigMock->expects($this->any())
-            ->method('getAlgorithm')->willReturn(Calculation::CALC_UNIT_BASE);
+            ->method('getAlgorithm')->willReturn(\Magento\Tax\Model\Calculation::CALC_UNIT_BASE);
 
         $this->taxConfigMock->expects($this->any())
             ->method('getPriceDisplayType')->willReturn(\Magento\Tax\Model\Config::DISPLAY_TYPE_EXCLUDING_TAX);
@@ -103,7 +98,7 @@ class RoundingErrorsTest extends TestCase
         $this->taxConfigMock->expects($this->any())->method('isWrongDisplaySettingsIgnored')->willReturn(false);
 
         $this->taxConfigMock->expects($this->any())
-            ->method('getAlgorithm')->willReturn(Calculation::CALC_ROW_BASE);
+            ->method('getAlgorithm')->willReturn(\Magento\Tax\Model\Calculation::CALC_ROW_BASE);
 
         $this->taxConfigMock->expects($this->any())
             ->method('getPriceDisplayType')->willReturn(\Magento\Tax\Model\Config::DISPLAY_TYPE_EXCLUDING_TAX);

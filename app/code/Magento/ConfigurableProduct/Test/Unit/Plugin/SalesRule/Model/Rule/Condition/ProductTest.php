@@ -1,9 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\ConfigurableProduct\Test\Unit\Plugin\SalesRule\Model\Rule\Condition;
 
@@ -22,21 +21,18 @@ use Magento\Framework\App\ScopeResolverInterface;
 use Magento\Framework\Locale\Format;
 use Magento\Framework\Locale\FormatInterface;
 use Magento\Framework\Locale\ResolverInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Quote\Model\Quote\Item\AbstractItem;
 use Magento\Rule\Model\Condition\Context;
 use Magento\SalesRule\Model\Rule\Condition\Product as SalesRuleProduct;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.LongVariable)
  */
-class ProductTest extends TestCase
+class ProductTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
@@ -52,7 +48,7 @@ class ProductTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->validator = $this->createValidator();
         $this->validatorPlugin = $this->objectManager->getObject(ValidatorPlugin::class);
     }
@@ -62,23 +58,23 @@ class ProductTest extends TestCase
      */
     private function createValidator(): SalesRuleProduct
     {
-        /** @var Context|MockObject $contextMock */
+        /** @var Context|\PHPUnit\Framework\MockObject\MockObject $contextMock */
         $contextMock = $this->getMockBuilder(Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        /** @var Data|MockObject $backendHelperMock */
+        /** @var Data|\PHPUnit\Framework\MockObject\MockObject $backendHelperMock */
         $backendHelperMock = $this->getMockBuilder(Data::class)
             ->disableOriginalConstructor()
             ->getMock();
-        /** @var Config|MockObject $configMock */
+        /** @var Config|\PHPUnit\Framework\MockObject\MockObject $configMock */
         $configMock = $this->getMockBuilder(Config::class)
             ->disableOriginalConstructor()
             ->getMock();
-        /** @var ProductFactory|MockObject $productFactoryMock */
+        /** @var ProductFactory|\PHPUnit\Framework\MockObject\MockObject $productFactoryMock */
         $productFactoryMock = $this->getMockBuilder(ProductFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        /** @var ProductRepositoryInterface|MockObject $productRepositoryMock */
+        /** @var ProductRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject $productRepositoryMock */
         $productRepositoryMock = $this->getMockBuilder(ProductRepositoryInterface::class)
             ->getMockForAbstractClass();
         $attributeLoaderInterfaceMock = $this->getMockBuilder(AbstractEntity::class)
@@ -89,29 +85,23 @@ class ProductTest extends TestCase
             ->expects($this->any())
             ->method('getAttributesByCode')
             ->willReturn([]);
-        /** @var Product|MockObject $productMock */
+        /** @var Product|\PHPUnit\Framework\MockObject\MockObject $productMock */
         $productMock = $this->getMockBuilder(Product::class)
             ->disableOriginalConstructor()
             ->setMethods(['loadAllAttributes', 'getConnection', 'getTable'])
             ->getMock();
         $productMock->expects($this->any())
-            ->method('loadAllAttributes')
-            ->willReturn($attributeLoaderInterfaceMock);
-        /** @var Collection|MockObject $collectionMock */
+        ->method('loadAllAttributes')
+        ->willReturn($attributeLoaderInterfaceMock);
+        /** @var Collection|\PHPUnit\Framework\MockObject\MockObject $collectionMock */
         $collectionMock = $this->getMockBuilder(Collection::class)
             ->disableOriginalConstructor()
             ->getMock();
-        /** @var FormatInterface|MockObject $formatMock */
+        /** @var FormatInterface|\PHPUnit\Framework\MockObject\MockObject $formatMock */
         $formatMock = new Format(
-            $this->getMockBuilder(ScopeResolverInterface::class)
-                ->disableOriginalConstructor()
-                ->getMockForAbstractClass(),
-            $this->getMockBuilder(ResolverInterface::class)
-                ->disableOriginalConstructor()
-                ->getMockForAbstractClass(),
-            $this->getMockBuilder(CurrencyFactory::class)
-                ->disableOriginalConstructor()
-                ->getMock()
+            $this->getMockBuilder(ScopeResolverInterface::class)->disableOriginalConstructor()->getMockForAbstractClass(),
+            $this->getMockBuilder(ResolverInterface::class)->disableOriginalConstructor()->getMockForAbstractClass(),
+            $this->getMockBuilder(CurrencyFactory::class)->disableOriginalConstructor()->getMock()
         );
 
         return new SalesRuleProduct(
@@ -136,10 +126,10 @@ class ProductTest extends TestCase
         $configurableProductMock
             ->expects($this->any())
             ->method('hasData')
-            ->with('special_price')
+            ->with($this->equalTo('special_price'))
             ->willReturn(false);
 
-        /* @var AbstractItem|MockObject $item */
+        /* @var AbstractItem|\PHPUnit\Framework\MockObject\MockObject $item */
         $item = $this->getMockBuilder(AbstractItem::class)
             ->disableOriginalConstructor()
             ->setMethods(['setProduct', 'getProduct', 'getChildren'])
@@ -156,7 +146,7 @@ class ProductTest extends TestCase
         $simpleProductMock
             ->expects($this->any())
             ->method('hasData')
-            ->with('special_price')
+            ->with($this->equalTo('special_price'))
             ->willReturn(true);
 
         $childItem = $this->getMockBuilder(AbstractItem::class)
@@ -180,9 +170,9 @@ class ProductTest extends TestCase
     }
 
     /**
-     * @return Product|MockObject
+     * @return Product|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function createProductMock(): MockObject
+    private function createProductMock(): \PHPUnit\Framework\MockObject\MockObject
     {
         $productMock = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
@@ -219,10 +209,10 @@ class ProductTest extends TestCase
         $simpleProductMock
             ->expects($this->any())
             ->method('hasData')
-            ->with('special_price')
+            ->with($this->equalTo('special_price'))
             ->willReturn(true);
 
-        /* @var AbstractItem|MockObject $item */
+        /* @var AbstractItem|\PHPUnit\Framework\MockObject\MockObject $item */
         $item = $this->getMockBuilder(AbstractItem::class)
             ->disableOriginalConstructor()
             ->setMethods(['setProduct', 'getProduct'])
@@ -250,10 +240,10 @@ class ProductTest extends TestCase
         $configurableProductMock
             ->expects($this->any())
             ->method('hasData')
-            ->with('special_price')
+            ->with($this->equalTo('special_price'))
             ->willReturn(false);
 
-        /* @var AbstractItem|MockObject $item */
+        /* @var AbstractItem|\PHPUnit\Framework\MockObject\MockObject $item */
         $item = $this->getMockBuilder(AbstractItem::class)
             ->disableOriginalConstructor()
             ->setMethods(['setProduct', 'getProduct', 'getChildren'])

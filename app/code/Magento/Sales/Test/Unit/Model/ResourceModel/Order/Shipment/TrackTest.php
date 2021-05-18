@@ -3,51 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\ResourceModel\Order\Shipment;
 
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\Model\ResourceModel\Db\Context;
-use Magento\Framework\Model\ResourceModel\Db\ObjectRelationProcessor;
-use Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\Order\Shipment\Track\Validator;
-use Magento\Sales\Model\ResourceModel\Order\Shipment\Track;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class TrackTest extends TestCase
+/**
+ * Class TrackTest
+ */
+class TrackTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Track
+     * @var \Magento\Sales\Model\ResourceModel\Order\Shipment\Track
      */
     protected $trackResource;
 
     /**
-     * @var \Magento\Sales\Model\Order\Shipment\Track|MockObject
+     * @var \Magento\Sales\Model\Order\Shipment\Track|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $trackModelMock;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var \Magento\Framework\App\ResourceConnection|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $appResourceMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $connectionMock;
 
     /**
-     * @var Validator|MockObject
+     * @var \Magento\Sales\Model\Order\Shipment\Track\Validator|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $validatorMock;
 
     /**
-     * @var Snapshot|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $entitySnapshotMock;
 
@@ -57,11 +46,11 @@ class TrackTest extends TestCase
     protected function setUp(): void
     {
         $this->trackModelMock = $this->createMock(\Magento\Sales\Model\Order\Shipment\Track::class);
-        $this->appResourceMock = $this->createMock(ResourceConnection::class);
-        $this->connectionMock = $this->createMock(Mysql::class);
-        $this->validatorMock = $this->createMock(Validator::class);
+        $this->appResourceMock = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
+        $this->connectionMock = $this->createMock(\Magento\Framework\DB\Adapter\Pdo\Mysql::class);
+        $this->validatorMock = $this->createMock(\Magento\Sales\Model\Order\Shipment\Track\Validator::class);
         $this->entitySnapshotMock = $this->createMock(
-            Snapshot::class
+            \Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot::class
         );
         $this->appResourceMock->expects($this->any())
             ->method('getConnection')
@@ -77,16 +66,16 @@ class TrackTest extends TestCase
         $this->trackModelMock->expects($this->any())->method('isSaveAllowed')->willReturn(true);
 
         $relationProcessorMock = $this->createMock(
-            ObjectRelationProcessor::class
+            \Magento\Framework\Model\ResourceModel\Db\ObjectRelationProcessor::class
         );
 
-        $contextMock = $this->createMock(Context::class);
+        $contextMock = $this->createMock(\Magento\Framework\Model\ResourceModel\Db\Context::class);
         $contextMock->expects($this->once())->method('getResources')->willReturn($this->appResourceMock);
         $contextMock->expects($this->once())->method('getObjectRelationProcessor')->willReturn($relationProcessorMock);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->trackResource = $objectManager->getObject(
-            Track::class,
+            \Magento\Sales\Model\ResourceModel\Order\Shipment\Track::class,
             [
                 'context' => $contextMock,
                 'validator' => $this->validatorMock,
@@ -106,7 +95,7 @@ class TrackTest extends TestCase
             ->willReturn(true);
         $this->validatorMock->expects($this->once())
             ->method('validate')
-            ->with($this->trackModelMock)
+            ->with($this->equalTo($this->trackModelMock))
             ->willReturn([]);
         $this->trackModelMock->expects($this->any())->method('getData')->willReturn([]);
         $this->trackResource->save($this->trackModelMock);
@@ -115,18 +104,20 @@ class TrackTest extends TestCase
 
     /**
      * Test _beforeSaveMethod via save() with failed validation
+     *
      */
     public function testSaveValidationFailed()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Cannot save track:');
+
         $this->entitySnapshotMock->expects($this->once())
             ->method('isModified')
             ->with($this->trackModelMock)
             ->willReturn(true);
         $this->validatorMock->expects($this->once())
             ->method('validate')
-            ->with($this->trackModelMock)
+            ->with($this->equalTo($this->trackModelMock))
             ->willReturn(['warning message']);
         $this->trackModelMock->expects($this->any())->method('getData')->willReturn([]);
         $this->trackResource->save($this->trackModelMock);

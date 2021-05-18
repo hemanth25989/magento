@@ -9,9 +9,7 @@ namespace Magento\Sales\Controller\Adminhtml\Order\Invoice;
 
 use Magento\Framework\Escaper;
 use Magento\Sales\Api\Data\InvoiceInterface;
-use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Model\Order;
-use Magento\Sales\Model\ResourceModel\Order\Item;
 use PHPUnit\Framework\Constraint\StringContains;
 
 /**
@@ -30,9 +28,6 @@ class SaveTest extends AbstractInvoiceControllerTest
     /** @var Escaper */
     private $escaper;
 
-    /** @var Item */
-    private $orderItemResource;
-
     /**
      * @inheritdoc
      */
@@ -41,7 +36,6 @@ class SaveTest extends AbstractInvoiceControllerTest
         parent::setUp();
 
         $this->escaper = $this->_objectManager->get(Escaper::class);
-        $this->orderItemResource = $this->_objectManager->get(Item::class);
     }
 
     /**
@@ -55,7 +49,7 @@ class SaveTest extends AbstractInvoiceControllerTest
         $itemId = $order->getItemsCollection()->getFirstItem()->getId();
         $post = $this->hydratePost([$itemId => 2]);
         $this->prepareRequest($post, ['order_id' => $order->getEntityId()]);
-        $this->dispatch('backend/sales/order_invoice/save');
+        $this->dispatch($this->uri);
         $invoice = $this->getInvoiceByOrder($order);
         $this->checkSuccess($invoice, 2);
         $message = $this->transportBuilder->getSentMessage();
@@ -87,7 +81,7 @@ class SaveTest extends AbstractInvoiceControllerTest
         $order = $this->getOrder('100000001');
         $post = $this->hydratePost([$order->getItemsCollection()->getFirstItem()->getId() => 2]);
         $this->prepareRequest($post, ['order_id' => $order->getEntityId()]);
-        $this->dispatch('backend/sales/order_invoice/save');
+        $this->dispatch($this->uri);
         $this->checkSuccess($this->getInvoiceByOrder($order), 2);
         $this->assertNull($this->transportBuilder->getSentMessage());
     }
@@ -114,7 +108,7 @@ class SaveTest extends AbstractInvoiceControllerTest
             $doShipment
         );
         $this->prepareRequest($post, ['order_id' => $order->getEntityId()]);
-        $this->dispatch('backend/sales/order_invoice/save');
+        $this->dispatch($this->uri);
         $this->checkSuccess($this->getInvoiceByOrder($order), $invoicedItemsQty, $commentMessage, $doShipment);
     }
 
@@ -146,7 +140,7 @@ class SaveTest extends AbstractInvoiceControllerTest
     {
         $expectedMessage = (string)__('The order no longer exists.');
         $this->prepareRequest(['order_id' => 899989]);
-        $this->dispatch('backend/sales/order_invoice/save');
+        $this->dispatch($this->uri);
         $this->assertErrorResponse($expectedMessage);
     }
 
@@ -160,7 +154,7 @@ class SaveTest extends AbstractInvoiceControllerTest
         $expectedMessage = (string)__('The order does not allow an invoice to be created.');
         $order = $this->getOrder('100000001');
         $this->prepareRequest([], ['order_id' => $order->getEntityId()]);
-        $this->dispatch('backend/sales/order_invoice/save');
+        $this->dispatch($this->uri);
         $this->assertErrorResponse($expectedMessage);
     }
 
@@ -175,42 +169,8 @@ class SaveTest extends AbstractInvoiceControllerTest
         $order = $this->getOrder('100000001');
         $post = $this->hydratePost([$order->getItemsCollection()->getFirstItem()->getId() => '0']);
         $this->prepareRequest($post, ['order_id' => $order->getEntityId()]);
-        $this->dispatch('backend/sales/order_invoice/save');
-        $this->assertErrorResponse($this->escaper->escapeHtml($expectedMessage));
-    }
-
-    /**
-     * @magentoDataFixture Magento/Sales/_files/order_configurable_product.php
-     *
-     * @return void
-     */
-    public function testPartialInvoiceWitConfigurableProduct(): void
-    {
-        $order = $this->getOrder('100000001');
-        $post = $this->hydratePost([$order->getItemsCollection()->getFirstItem()->getId() => '1']);
-        $this->prepareRequest($post, ['order_id' => $order->getEntityId()]);
         $this->dispatch($this->uri);
-        $this->assertSessionMessages($this->containsEqual((string)__('The invoice has been created.')));
-        $orderItems = $this->getOrderItemsQtyInvoiced((int)$order->getEntityId());
-        $this->assertCount(2, $orderItems);
-        $this->assertEquals(1, (int)$orderItems[0]);
-        $this->assertEquals($orderItems[0], $orderItems[1]);
-    }
-
-    /**
-     * Get order items qty invoiced
-     *
-     * @param int $orderId
-     * @return array
-     */
-    private function getOrderItemsQtyInvoiced(int $orderId): array
-    {
-        $connection = $this->orderItemResource->getConnection();
-        $select = $connection->select()
-            ->from($this->orderItemResource->getMainTable(), OrderItemInterface::QTY_INVOICED)
-            ->where(OrderItemInterface::ORDER_ID . ' = ?', $orderId);
-
-        return $connection->fetchCol($select);
+        $this->assertErrorResponse($this->escaper->escapeHtml($expectedMessage));
     }
 
     /**
@@ -231,24 +191,6 @@ class SaveTest extends AbstractInvoiceControllerTest
         $this->prepareRequest();
 
         parent::testAclNoAccess();
-    }
-
-    /**
-     * Checks that order protect code is not changing after invoice submitting
-     *
-     * @magentoDataFixture Magento/Sales/_files/order.php
-     *
-     * @return void
-     */
-    public function testOrderProtectCodePreserveAfterInvoiceSave(): void
-    {
-        $order = $this->getOrder('100000001');
-        $this->prepareRequest([], ['order_id' => $order->getEntityId()]);
-        $protectCode = $order->getProtectCode();
-        $this->dispatch($this->uri);
-        $invoicedOrder = $this->getOrder('100000001');
-
-        $this->assertEquals($protectCode, $invoicedOrder->getProtectCode());
     }
 
     /**

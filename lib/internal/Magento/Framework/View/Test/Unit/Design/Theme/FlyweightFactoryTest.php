@@ -3,20 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Design\Theme;
 
-use Magento\Framework\View\Design\Theme\FlyweightFactory;
-use Magento\Framework\View\Design\Theme\ThemeProviderInterface;
-use Magento\Theme\Model\Theme;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\View\Design\Theme\FlyweightFactory;
 
-class FlyweightFactoryTest extends TestCase
+class FlyweightFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|ThemeProviderInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\View\Design\Theme\ThemeProviderInterface
      */
     protected $themeProviderMock;
 
@@ -28,7 +22,7 @@ class FlyweightFactoryTest extends TestCase
     protected function setUp(): void
     {
         $this->themeProviderMock =
-            $this->getMockForAbstractClass(ThemeProviderInterface::class);
+            $this->createMock(\Magento\Framework\View\Design\Theme\ThemeProviderInterface::class);
         $this->factory = new FlyweightFactory($this->themeProviderMock);
     }
 
@@ -40,7 +34,7 @@ class FlyweightFactoryTest extends TestCase
      */
     public function testCreateById($path, $expectedId)
     {
-        $theme = $this->createMock(Theme::class);
+        $theme = $this->createMock(\Magento\Theme\Model\Theme::class);
         $theme->expects($this->exactly(2))->method('getId')->willReturn($expectedId);
 
         $theme->expects($this->once())->method('getFullPath')->willReturn(null);
@@ -76,7 +70,7 @@ class FlyweightFactoryTest extends TestCase
     {
         $path = 'frontend/Magento/luma';
         $themeId = 7;
-        $theme = $this->createMock(Theme::class);
+        $theme = $this->createMock(\Magento\Theme\Model\Theme::class);
         $theme->expects($this->exactly(2))->method('getId')->willReturn($themeId);
 
         $theme->expects($this->once())->method('getFullPath')->willReturn($path);
@@ -94,12 +88,15 @@ class FlyweightFactoryTest extends TestCase
         $this->assertSame($theme, $this->factory->create($path));
     }
 
+    /**
+     */
     public function testCreateDummy()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Unable to load theme by specified key: \'0\'');
+
         $themeId = 0;
-        $theme = $this->createMock(Theme::class);
+        $theme = $this->createMock(\Magento\Theme\Model\Theme::class);
 
         $this->themeProviderMock->expects(
             $this->once()
@@ -114,10 +111,13 @@ class FlyweightFactoryTest extends TestCase
         $this->assertNull($this->factory->create($themeId));
     }
 
+    /**
+     */
     public function testNegativeCreate()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Incorrect theme identification key');
+
         $this->factory->create(null);
     }
 }

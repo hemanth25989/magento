@@ -3,19 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit\Argument\Interpreter;
 
-use Magento\Framework\Data\Argument\Interpreter\ArrayType;
-use Magento\Framework\Data\Argument\InterpreterInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Data\Argument\Interpreter\ArrayType;
 
-class ArrayTypeTest extends TestCase
+class ArrayTypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|InterpreterInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\Data\Argument\InterpreterInterface
      */
     protected $_itemInterpreter;
 
@@ -27,7 +22,7 @@ class ArrayTypeTest extends TestCase
     protected function setUp(): void
     {
         $this->_itemInterpreter = $this->getMockForAbstractClass(
-            InterpreterInterface::class
+            \Magento\Framework\Data\Argument\InterpreterInterface::class
         );
         $this->_model = new ArrayType($this->_itemInterpreter);
     }
@@ -38,8 +33,9 @@ class ArrayTypeTest extends TestCase
      */
     public function testEvaluateException($inputData)
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Array items are expected');
+
         $this->_model->evaluate($inputData);
     }
 

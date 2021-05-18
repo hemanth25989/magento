@@ -3,17 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Design\Theme;
 
-use Magento\Framework\Phrase;
 use Magento\Framework\View\Design\Theme\Label;
 use Magento\Framework\View\Design\Theme\Label\ListInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class LabelTest extends TestCase
+class LabelTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Label
@@ -21,13 +16,13 @@ class LabelTest extends TestCase
     protected $model;
 
     /**
-     * @var ListInterface|MockObject
+     * @var ListInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $labelList;
 
     protected function setUp(): void
     {
-        $this->labelList = $this->getMockBuilder(ListInterface::class)
+        $this->labelList = $this->getMockBuilder(\Magento\Framework\View\Design\Theme\Label\ListInterface::class)
             ->getMockForAbstractClass();
 
         $this->model = new Label(
@@ -37,7 +32,7 @@ class LabelTest extends TestCase
 
     public function testToOptionArray()
     {
-        $defaultLabel = (string)new Phrase('-- No Theme --');
+        $defaultLabel = (string)new \Magento\Framework\Phrase('-- No Theme --');
         $data = [
             'value' => '1',
             'label' => 'Label1',
@@ -56,7 +51,7 @@ class LabelTest extends TestCase
 
     public function testGetLabelsCollectionForSystemConfiguration()
     {
-        $defaultLabel = (string)new Phrase('-- No Theme --');
+        $defaultLabel = (string)new \Magento\Framework\Phrase('-- No Theme --');
         $data = [
             'value' => '1',
             'label' => 'Label1',

@@ -161,9 +161,9 @@ class SendFriend extends \Magento\Framework\Model\AbstractModel
         $this->remoteAddress = $remoteAddress;
         $this->cookieManager = $cookieManager;
         $this->inlineTranslation = $inlineTranslation;
-        $this->cookieMetadataFactory = $cookieMetadataFactory  ?? ObjectManager::getInstance()->get(
-               CookieMetadataFactory::class
-            );
+        $this->cookieMetadataFactory = $cookieMetadataFactory ?? ObjectManager::getInstance()->get(
+            CookieMetadataFactory::class
+        );
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
 

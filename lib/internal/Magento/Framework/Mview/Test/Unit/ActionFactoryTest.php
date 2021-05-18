@@ -3,40 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Mview\Test\Unit;
 
-use Magento\Framework\Mview\ActionFactory;
-use Magento\Framework\Mview\ActionInterface;
-use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ActionFactoryTest extends TestCase
+class ActionFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ActionFactory|MockObject
+     * @var \Magento\Framework\Mview\ActionFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $model;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $objectManagerMock;
 
     protected function setUp(): void
     {
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->model = new ActionFactory($this->objectManagerMock);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->model = new \Magento\Framework\Mview\ActionFactory($this->objectManagerMock);
     }
 
+    /**
+     */
     public function testGetWithException()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('NotAction doesn\'t implement \Magento\Framework\Mview\ActionInterface');
-        $notActionInterfaceMock = $this->getMockBuilder('Action')
-            ->getMock();
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('NotAction doesn\'t implement \\Magento\\Framework\\Mview\\ActionInterface');
+
+        $notActionInterfaceMock = $this->getMockBuilder('Action')->getMock();
         $this->objectManagerMock->expects(
             $this->once()
         )->method(
@@ -52,7 +46,7 @@ class ActionFactoryTest extends TestCase
     public function testGet()
     {
         $actionInterfaceMock = $this->getMockForAbstractClass(
-            ActionInterface::class,
+            \Magento\Framework\Mview\ActionInterface::class,
             [],
             '',
             false
@@ -62,11 +56,11 @@ class ActionFactoryTest extends TestCase
         )->method(
             'get'
         )->with(
-            ActionInterface::class
+            \Magento\Framework\Mview\ActionInterface::class
         )->willReturn(
             $actionInterfaceMock
         );
-        $this->model->get(ActionInterface::class);
-        $this->assertInstanceOf(ActionInterface::class, $actionInterfaceMock);
+        $this->model->get(\Magento\Framework\Mview\ActionInterface::class);
+        $this->assertInstanceOf(\Magento\Framework\Mview\ActionInterface::class, $actionInterfaceMock);
     }
 }

@@ -7,25 +7,23 @@ declare(strict_types=1);
 
 namespace Magento\Elasticsearch\Test\Unit\Elasticsearch5\SearchAdapter\Aggregation;
 
-use Magento\Customer\Model\Session as CustomerSession;
-use Magento\Elasticsearch\Elasticsearch5\Model\Client\Elasticsearch as ElasticsearchClient;
 use Magento\Elasticsearch\Elasticsearch5\SearchAdapter\Aggregation\Interval;
-use Magento\Elasticsearch\Model\Adapter\FieldMapperInterface;
-use Magento\Elasticsearch\Model\Config;
-use Magento\Elasticsearch\SearchAdapter\ConnectionManager;
-use Magento\Elasticsearch\SearchAdapter\SearchIndexNameResolver;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Store\Api\Data\StoreInterface;
+use Magento\Elasticsearch\SearchAdapter\ConnectionManager;
+use Magento\Elasticsearch\Model\Adapter\FieldMapperInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Elasticsearch\Model\Config;
+use Magento\Elasticsearch\Elasticsearch5\Model\Client\Elasticsearch as ElasticsearchClient;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Elasticsearch\SearchAdapter\SearchIndexNameResolver;
 
 /**
  * Test for Magento\Elasticsearch\Elasticsearch5\SearchAdapter\Aggregation\Interval class.
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class IntervalTest extends TestCase
+class IntervalTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Interval
@@ -33,42 +31,42 @@ class IntervalTest extends TestCase
     private $model;
 
     /**
-     * @var ConnectionManager|MockObject
+     * @var ConnectionManager|\PHPUnit\Framework\MockObject\MockObject
      */
     private $connectionManager;
 
     /**
-     * @var FieldMapperInterface|MockObject
+     * @var FieldMapperInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $fieldMapper;
 
     /**
-     * @var Config|MockObject
+     * @var Config|\PHPUnit\Framework\MockObject\MockObject
      */
     private $clientConfig;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $storeManager;
 
     /**
-     * @var CustomerSession|MockObject
+     * @var CustomerSession|\PHPUnit\Framework\MockObject\MockObject
      */
     private $customerSession;
 
     /**
-     * @var ElasticsearchClient|MockObject
+     * @var ElasticsearchClient|\PHPUnit\Framework\MockObject\MockObject
      */
     private $clientMock;
 
     /**
-     * @var StoreInterface|MockObject
+     * @var StoreInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $storeMock;
 
     /**
-     * @var SearchIndexNameResolver|MockObject
+     * @var SearchIndexNameResolver|\PHPUnit\Framework\MockObject\MockObject
      */
     private $searchIndexNameResolver;
 

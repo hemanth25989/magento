@@ -8,24 +8,23 @@ declare(strict_types=1);
 
 namespace Magento\Captcha\Test\Unit\CustomerData;
 
-use Magento\Captcha\CustomerData\Captcha;
 use Magento\Captcha\Helper\Data as CaptchaHelper;
+use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Captcha\CustomerData\Captcha;
 use Magento\Captcha\Model\DefaultModel;
 use Magento\Customer\Api\Data\CustomerInterface as CustomerData;
-use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class CaptchaTest extends TestCase
 {
     /**
-     * @var CaptchaHelper|MockObject
+     * @var CaptchaHelper|\PHPUnit\Framework\MockObject\MockObject
      */
     private $helperMock;
 
     /**
-     * @var CustomerSession|MockObject
+     * @var CustomerSession|\PHPUnit\Framework\MockObject\MockObject
      */
     private $customerSessionMock;
 

@@ -3,20 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Quote\Test\Unit\Model\Quote\Address;
 
-use Magento\Directory\Model\Country;
-use Magento\Directory\Model\CountryFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Quote\Model\Quote\Address;
+
 use Magento\Quote\Model\Quote\Address\Validator;
-use PHPUnit\Framework\MockObject\MockObject;
 
-use PHPUnit\Framework\TestCase;
-
-class ValidatorTest extends TestCase
+class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Validator
@@ -24,27 +18,27 @@ class ValidatorTest extends TestCase
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $countryFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $itemMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $countryMock;
 
     protected function setUp(): void
     {
         $objectManager = new ObjectManager($this);
-        $this->countryFactoryMock = $this->createMock(CountryFactory::class);
-        $this->countryMock = $this->createMock(Country::class);
+        $this->countryFactoryMock = $this->createMock(\Magento\Directory\Model\CountryFactory::class);
+        $this->countryMock = $this->createMock(\Magento\Directory\Model\Country::class);
         $this->itemMock = $this->createPartialMock(
-            Address::class,
+            \Magento\Quote\Model\Quote\Address::class,
             ['getCountryId', 'getEmail']
         );
         $this->countryFactoryMock
@@ -52,7 +46,7 @@ class ValidatorTest extends TestCase
             ->method('create')
             ->willReturn($this->countryMock);
         $this->model = $objectManager->getObject(
-            Validator::class,
+            \Magento\Quote\Model\Quote\Address\Validator::class,
             [
                 'countryFactory' => $this->countryFactoryMock,
             ]

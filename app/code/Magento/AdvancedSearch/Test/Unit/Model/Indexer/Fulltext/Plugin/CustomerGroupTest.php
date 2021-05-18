@@ -3,60 +3,52 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\AdvancedSearch\Test\Unit\Model\Indexer\Fulltext\Plugin;
 
-use Magento\AdvancedSearch\Model\Client\ClientOptionsInterface;
-use Magento\AdvancedSearch\Model\Indexer\Fulltext\Plugin\CustomerGroup as CustomerGroupPlugin;
-use Magento\CatalogSearch\Model\Indexer\Fulltext as FulltextIndexer;
-use Magento\Customer\Model\Group as CustomerGroupModel;
-use Magento\Customer\Model\ResourceModel\Group as CustomerGroupResourceModel;
-use Magento\Framework\Indexer\IndexerInterface;
-use Magento\Framework\Indexer\IndexerRegistry;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\MockObject\MockObject;
+use Magento\AdvancedSearch\Model\Indexer\Fulltext\Plugin\CustomerGroup;
+use Magento\Framework\Search\EngineResolverInterface;
 
-/**
- * @covers \Magento\AdvancedSearch\Model\Indexer\Fulltext\Plugin\CustomerGroup
- */
-class CustomerGroupTest extends TestCase
+class CustomerGroupTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Testable Object
-     *
-     * @var CustomerGroupPlugin
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\Indexer\IndexerInterface
      */
-    private $model;
+    protected $indexerMock;
 
     /**
-     * @var IndexerInterface|MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Customer\Model\ResourceModel\Group
      */
-    private $indexerMock;
+    protected $subjectMock;
 
     /**
-     * @var CustomerGroupResourceModel|MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\AdvancedSearch\Model\Client\ClientOptionsInterface
      */
-    private $subjectMock;
+    protected $customerOptionsMock;
 
     /**
-     * @var ClientOptionsInterface|MockObject
+     * @var \Magento\Framework\Indexer\IndexerRegistry|\PHPUnit\Framework\MockObject\MockObject
      */
-    private $customerOptionsMock;
+    protected $indexerRegistryMock;
 
     /**
-     * @var IndexerRegistry|MockObject
+     * @var EngineResolverInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    private $indexerRegistryMock;
+    protected $engineResolverMock;
+
+    /**
+     * @var CustomerGroup
+     */
+    protected $model;
 
     protected function setUp(): void
     {
-        $this->subjectMock = $this->createMock(CustomerGroupResourceModel::class);
+        $this->subjectMock = $this->createMock(\Magento\Customer\Model\ResourceModel\Group::class);
         $this->customerOptionsMock = $this->createMock(
-            ClientOptionsInterface::class
+            \Magento\AdvancedSearch\Model\Client\ClientOptionsInterface::class
         );
         $this->indexerMock = $this->getMockForAbstractClass(
-            IndexerInterface::class,
+            \Magento\Framework\Indexer\IndexerInterface::class,
             [],
             '',
             false,
@@ -65,29 +57,36 @@ class CustomerGroupTest extends TestCase
             ['getId', 'getState', '__wakeup']
         );
         $this->indexerRegistryMock = $this->createPartialMock(
-            IndexerRegistry::class,
+            \Magento\Framework\Indexer\IndexerRegistry::class,
             ['get']
         );
-        $this->model = new CustomerGroupPlugin(
+        $this->engineResolverMock = $this->createPartialMock(
+            \Magento\Search\Model\EngineResolver::class,
+            ['getCurrentSearchEngine']
+        );
+        $this->model = new CustomerGroup(
             $this->indexerRegistryMock,
-            $this->customerOptionsMock
+            $this->customerOptionsMock,
+            $this->engineResolverMock
         );
     }
 
     /**
+     * @param string $searchEngine
      * @param bool $isObjectNew
      * @param bool $isTaxClassIdChanged
      * @param int $invalidateCounter
      * @return void
      * @dataProvider aroundSaveDataProvider
      */
-    public function testAroundSave(
-        bool $isObjectNew,
-        bool $isTaxClassIdChanged,
-        int $invalidateCounter
-    ): void {
+    public function testAroundSave($searchEngine, $isObjectNew, $isTaxClassIdChanged, $invalidateCounter)
+    {
+        $this->engineResolverMock->expects($this->once())
+            ->method('getCurrentSearchEngine')
+            ->willReturn($searchEngine);
+
         $groupMock = $this->createPartialMock(
-            CustomerGroupModel::class,
+            \Magento\Customer\Model\Group::class,
             ['dataHasChangedFor', 'isObjectNew', '__wakeup']
         );
         $groupMock->expects($this->any())->method('isObjectNew')->willReturn($isObjectNew);
@@ -96,7 +95,7 @@ class CustomerGroupTest extends TestCase
             ->with('tax_class_id')
             ->willReturn($isTaxClassIdChanged);
 
-        $closureMock = function (CustomerGroupModel $object) use ($groupMock) {
+        $closureMock = function (\Magento\Customer\Model\Group $object) use ($groupMock) {
             $this->assertEquals($object, $groupMock);
             return $this->subjectMock;
         };
@@ -104,7 +103,7 @@ class CustomerGroupTest extends TestCase
         $this->indexerMock->expects($this->exactly($invalidateCounter))->method('invalidate');
         $this->indexerRegistryMock->expects($this->exactly($invalidateCounter))
             ->method('get')
-            ->with(FulltextIndexer::INDEXER_ID)
+            ->with(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)
             ->willReturn($this->indexerMock);
 
         $this->assertEquals(
@@ -114,17 +113,19 @@ class CustomerGroupTest extends TestCase
     }
 
     /**
-     * Data Provider for testAroundSave
-     *
      * @return array
      */
-    public function aroundSaveDataProvider(): array
+    public function aroundSaveDataProvider()
     {
         return [
-            [false, false, 0],
-            [false, true, 1],
-            [true, false, 1],
-            [true, true, 1],
+            ['mysql', false, false, 0],
+            ['mysql', false, true, 0],
+            ['mysql', true, false, 0],
+            ['mysql', true, true, 0],
+            ['custom', false, false, 0],
+            ['custom', false, true, 1],
+            ['custom', true, false, 1],
+            ['custom', true, true, 1],
         ];
     }
 }

@@ -3,14 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit\Argument\Interpreter;
 
-use Magento\Framework\Data\Argument\Interpreter\Number;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Data\Argument\Interpreter\Number;
 
-class NumberTest extends TestCase
+class NumberTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Number
@@ -28,8 +25,9 @@ class NumberTest extends TestCase
      */
     public function testEvaluateException($input)
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Numeric value is expected');
+
         $this->_model->evaluate($input);
     }
 

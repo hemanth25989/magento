@@ -15,11 +15,10 @@ use Magento\Quote\Api\Data\AddressInterfaceFactory;
 use Magento\Quote\Api\Data\CartInterface;
 use Magento\Quote\Api\Data\CartInterfaceFactory;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer.php');
-Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer_address.php');
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_simple_duplicated.php');
+require __DIR__ . '/../../Customer/_files/customer.php';
+require __DIR__ . '/../../Customer/_files/customer_address.php';
+require __DIR__ . '/../../../Magento/Catalog/_files/product_simple_duplicated.php';
 
 $objectManager = Bootstrap::getObjectManager();
 /** @var ProductRepositoryInterface $productRepository */

@@ -3,24 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Block\Category\Rss;
 
-use Magento\Catalog\Block\Category\Rss\Link;
-use Magento\Catalog\Model\Category;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\Rss\UrlBuilderInterface;
-use Magento\Framework\Registry;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class LinkTest extends TestCase
+/**
+ * Class LinkTest
+ * @package Magento\Catalog\Block\Category\Rss
+ */
+class LinkTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Link
+     * @var \Magento\Catalog\Block\Category\Rss\Link
      */
     protected $link;
 
@@ -30,35 +24,35 @@ class LinkTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var UrlBuilderInterface|MockObject
+     * @var \Magento\Framework\App\Rss\UrlBuilderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlBuilderInterface;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $scopeConfigInterface;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeManagerInterface;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $registry;
 
     protected function setUp(): void
     {
-        $this->urlBuilderInterface = $this->getMockForAbstractClass(UrlBuilderInterface::class);
-        $this->scopeConfigInterface = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $this->storeManagerInterface = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $this->registry = $this->createMock(Registry::class);
+        $this->urlBuilderInterface = $this->createMock(\Magento\Framework\App\Rss\UrlBuilderInterface::class);
+        $this->scopeConfigInterface = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->storeManagerInterface = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
+        $this->registry = $this->createMock(\Magento\Framework\Registry::class);
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->link = $this->objectManagerHelper->getObject(
-            Link::class,
+            \Magento\Catalog\Block\Category\Rss\Link::class,
             [
                 'rssUrlBuilder' => $this->urlBuilderInterface,
                 'registry' => $this->registry,
@@ -101,7 +95,7 @@ class LinkTest extends TestCase
      */
     public function testIsTopCategory($isTop, $categoryLevel)
     {
-        $categoryModel = $this->createPartialMock(Category::class, [ 'getLevel']);
+        $categoryModel = $this->createPartialMock(\Magento\Catalog\Model\Category::class, ['__wakeup', 'getLevel']);
         $this->registry->expects($this->once())->method('registry')->willReturn($categoryModel);
         $categoryModel->expects($this->any())->method('getLevel')->willReturn($categoryLevel);
         $this->assertEquals($isTop, $this->link->isTopCategory());
@@ -123,11 +117,11 @@ class LinkTest extends TestCase
         $rssUrl = 'http://rss.magento.com';
         $this->urlBuilderInterface->expects($this->once())->method('getUrl')->willReturn($rssUrl);
 
-        $categoryModel = $this->createPartialMock(Category::class, [ 'getId']);
+        $categoryModel = $this->createPartialMock(\Magento\Catalog\Model\Category::class, ['__wakeup', 'getId']);
         $this->registry->expects($this->once())->method('registry')->willReturn($categoryModel);
         $categoryModel->expects($this->any())->method('getId')->willReturn('1');
 
-        $storeModel = $this->createPartialMock(Category::class, [ 'getId']);
+        $storeModel = $this->createPartialMock(\Magento\Catalog\Model\Category::class, ['__wakeup', 'getId']);
         $this->storeManagerInterface->expects($this->any())->method('getStore')->willReturn($storeModel);
         $storeModel->expects($this->any())->method('getId')->willReturn('1');
 

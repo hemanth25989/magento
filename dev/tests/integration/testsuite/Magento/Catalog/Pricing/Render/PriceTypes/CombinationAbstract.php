@@ -164,7 +164,7 @@ abstract class CombinationAbstract extends TestCase
                 'regular_price' => 10,
                 'tier_data' => [
                     'prices' => [['customer_group_id' => Group::CUST_GROUP_ALL, 'qty' => 2, 'percent_value' => 70]],
-                    'message_config' => ['qty' => 2, 'price' => 3.00, 'percent' => 50],
+                    'message_config' => ['qty' => 2, 'price' => 3.00, 'percent' => 70],
                 ],
             ],
             'fixed_tier_price_with_qty_1_is_lower_than_special' => [
@@ -245,7 +245,7 @@ abstract class CombinationAbstract extends TestCase
                 ],
                 'tier_data' => [
                     'prices' => [['customer_group_id' => Group::CUST_GROUP_ALL, 'qty' => 2, 'percent_value' => 70]],
-                    'message_config' => ['qty' => 2, 'price' => 3.00, 'percent' => 25],
+                    'message_config' => ['qty' => 2, 'price' => 3.00, 'percent' => 70],
                 ],
             ],
             'fixed_catalog_rule_price_lower_than_tier_price' => [

@@ -6,7 +6,6 @@
 namespace Magento\Catalog\Model\ResourceModel\Eav;
 
 use Magento\Eav\Api\AttributeRepositoryInterface;
-use Magento\Eav\Api\Data\AttributeInterface;
 use Magento\Eav\Model\Config;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -60,7 +59,7 @@ class AttributeTest extends \PHPUnit\Framework\TestCase
             ->setEntityTypeId($this->catalogProductEntityType)
             ->setFrontendLabel('test')
             ->setIsUserDefined(1);
-        $crud = new \Magento\TestFramework\Entity($this->model, [AttributeInterface::FRONTEND_LABEL => uniqid()]);
+        $crud = new \Magento\TestFramework\Entity($this->model, ['frontend_label' => uniqid()]);
         $crud->testCrud();
     }
 
@@ -71,11 +70,8 @@ class AttributeTest extends \PHPUnit\Framework\TestCase
      */
     public function testAttributeSaveWithChangedEntityType(): void
     {
-        $this->expectException(
-            \Magento\Framework\Exception\LocalizedException::class
-        );
-        $this->expectExceptionMessage('Do not change entity type.');
-
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
+        $this->expectExceptionMessage("Do not change entity type.");
         $attribute = $this->attributeRepository->get($this->catalogProductEntityType, 'test_attribute_code_333');
         $attribute->setEntityTypeId(1);
         $attribute->save();

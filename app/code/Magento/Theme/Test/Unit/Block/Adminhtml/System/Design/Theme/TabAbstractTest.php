@@ -3,34 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Block\Adminhtml\System\Design\Theme;
 
-use Magento\Backend\Block\Template\Context;
-use Magento\Framework\Data\FormFactory;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Registry;
-use Magento\Theme\Block\Adminhtml\System\Design\Theme\Edit\AbstractTab;
-use Magento\Theme\Model\Theme;
-use PHPUnit\Framework\TestCase;
-
-class TabAbstractTest extends TestCase
+class TabAbstractTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AbstractTab
+     * @var \Magento\Theme\Block\Adminhtml\System\Design\Theme\Edit\AbstractTab
      */
     protected $_model;
 
     protected function setUp(): void
     {
         $this->_model = $this->getMockForAbstractClass(
-            AbstractTab::class,
+            \Magento\Theme\Block\Adminhtml\System\Design\Theme\Edit\AbstractTab::class,
             [
-                $this->createMock(Context::class),
-                $this->createMock(Registry::class),
-                $this->createMock(FormFactory::class),
-                $this->getMockForAbstractClass(ObjectManagerInterface::class),
+                $this->createMock(\Magento\Backend\Block\Template\Context::class),
+                $this->createMock(\Magento\Framework\Registry::class),
+                $this->createMock(\Magento\Framework\Data\FormFactory::class),
+                $this->createMock(\Magento\Framework\ObjectManagerInterface::class),
             ],
             '',
             true,
@@ -60,7 +50,7 @@ class TabAbstractTest extends TestCase
      */
     public function testCanShowTab($isVirtual, $themeId, $result)
     {
-        $themeMock = $this->createPartialMock(Theme::class, ['isVirtual', 'getId', '__wakeup']);
+        $themeMock = $this->createPartialMock(\Magento\Theme\Model\Theme::class, ['isVirtual', 'getId', '__wakeup']);
         $themeMock->expects($this->any())->method('isVirtual')->willReturn($isVirtual);
 
         $themeMock->expects($this->any())->method('getId')->willReturn($themeId);

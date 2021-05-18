@@ -3,23 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Block\Adminhtml\Rss;
 
-use Magento\Backend\Block\Context;
-use Magento\Catalog\Block\Adminhtml\Rss\NotifyStock;
-use Magento\Catalog\Model\Product;
-use Magento\Framework\App\Rss\UrlBuilderInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\UrlInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class NotifyStockTest extends TestCase
+/**
+ * Class NotifyStockTest
+ * @package Magento\Catalog\Block\Adminhtml\Rss
+ */
+class NotifyStockTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var NotifyStock
+     * @var \Magento\Catalog\Block\Adminhtml\Rss\NotifyStock
      */
     protected $block;
 
@@ -29,22 +24,22 @@ class NotifyStockTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Backend\Block\Context|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $context;
 
     /**
-     * @var \Magento\Catalog\Model\Rss\Product\NotifyStock|MockObject
+     * @var \Magento\Catalog\Model\Rss\Product\NotifyStock|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $rssModel;
 
     /**
-     * @var UrlBuilderInterface|MockObject
+     * @var \Magento\Framework\App\Rss\UrlBuilderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $rssUrlBuilder;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var \Magento\Framework\UrlInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlBuilder;
 
@@ -69,14 +64,13 @@ class NotifyStockTest extends TestCase
     protected function setUp(): void
     {
         $this->rssModel = $this->getMockBuilder(\Magento\Catalog\Model\Rss\Product\NotifyStock::class)
-            ->setMethods(['getProductsCollection'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->rssUrlBuilder = $this->getMockForAbstractClass(UrlBuilderInterface::class);
-        $this->urlBuilder = $this->getMockForAbstractClass(UrlInterface::class);
+            ->setMethods(['getProductsCollection', '__wakeup'])
+            ->disableOriginalConstructor()->getMock();
+        $this->rssUrlBuilder = $this->createMock(\Magento\Framework\App\Rss\UrlBuilderInterface::class);
+        $this->urlBuilder = $this->createMock(\Magento\Framework\UrlInterface::class);
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->block = $this->objectManagerHelper->getObject(
-            NotifyStock::class,
+            \Magento\Catalog\Block\Adminhtml\Rss\NotifyStock::class,
             [
                 'urlBuilder' => $this->urlBuilder,
                 'rssModel' => $this->rssModel,
@@ -89,8 +83,8 @@ class NotifyStockTest extends TestCase
     {
         $this->rssUrlBuilder->expects($this->once())->method('getUrl')
             ->willReturn('http://magento.com/rss/feeds/index/type/notifystock');
-        $item = $this->getMockBuilder(Product::class)
-            ->setMethods(['__sleep', 'getId', 'getQty', 'getName'])
+        $item = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
+            ->setMethods(['__sleep', '__wakeup', 'getId', 'getQty', 'getName'])
             ->disableOriginalConstructor()
             ->getMock();
         $item->expects($this->once())->method('getId')->willReturn(1);

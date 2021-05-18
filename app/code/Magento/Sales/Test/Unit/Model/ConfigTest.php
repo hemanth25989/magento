@@ -3,48 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model;
 
-use Magento\Framework\App\State;
-use Magento\Sales\Model\Config;
-use Magento\Sales\Model\Config\Data;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config
+     * @var \Magento\Sales\Model\Config
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $configDataMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $stateMock;
 
     protected function setUp(): void
     {
-        $this->configDataMock = $this->getMockBuilder(Data::class)
+        $this->configDataMock = $this->getMockBuilder(\Magento\Sales\Model\Config\Data::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->stateMock = $this->getMockBuilder(State::class)
+        $this->stateMock = $this->getMockBuilder(\Magento\Framework\App\State::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->model = new Config($this->configDataMock, $this->stateMock);
+        $this->model = new \Magento\Sales\Model\Config($this->configDataMock, $this->stateMock);
     }
 
     public function testInstanceOf()
     {
-        $model = new Config($this->configDataMock, $this->stateMock);
-        $this->assertInstanceOf(Config::class, $model);
+        $model = new \Magento\Sales\Model\Config($this->configDataMock, $this->stateMock);
+        $this->assertInstanceOf(\Magento\Sales\Model\Config::class, $model);
     }
 
     public function testGetTotalsRenderer()
@@ -61,7 +53,7 @@ class ConfigTest extends TestCase
             ->willReturn($areaCode);
         $this->configDataMock->expects($this->once())
             ->method('get')
-            ->with($path)
+            ->with($this->equalTo($path))
             ->willReturn($expected);
 
         $result = $this->model->getTotalsRenderer($section, $group, $code);
@@ -77,7 +69,7 @@ class ConfigTest extends TestCase
 
         $this->configDataMock->expects($this->once())
             ->method('get')
-            ->with($path)
+            ->with($this->equalTo($path))
             ->willReturn($expected);
 
         $result = $this->model->getGroupTotals($section, $group);
@@ -90,7 +82,7 @@ class ConfigTest extends TestCase
 
         $this->configDataMock->expects($this->once())
             ->method('get')
-            ->with('order/available_product_types')
+            ->with($this->equalTo('order/available_product_types'))
             ->willReturn($productTypes);
         $result = $this->model->getAvailableProductTypes();
         $this->assertEquals($productTypes, $result);

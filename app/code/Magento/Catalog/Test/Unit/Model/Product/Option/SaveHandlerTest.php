@@ -3,36 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Product\Option;
 
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Option;
-use Magento\Catalog\Model\Product\Option\Repository;
-use Magento\Catalog\Model\Product\Option\SaveHandler;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Catalog\Model\Product\Option\Repository;
+use \Magento\Catalog\Model\Product\Option\SaveHandler;
 
-class SaveHandlerTest extends TestCase
+class SaveHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SaveHandler|MockObject
+     * @var SaveHandler|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $model;
 
     /**
-     * @var Product|MockObject
+     * @var Product|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $entity;
 
     /**
-     * @var Option|MockObject
+     * @var Option|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $optionMock;
 
     /**
-     * @var Repository|MockObject
+     * @var Repository|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $optionRepository;
 

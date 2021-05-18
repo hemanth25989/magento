@@ -3,19 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Pricing\Test\Unit\Adjustment;
 
-use Magento\Framework\Pricing\Adjustment\Factory;
-use Magento\Framework\Pricing\Adjustment\Pool;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Pricing\Adjustment\Pool;
 
-class PoolTest extends TestCase
+class PoolTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Pool
+     * @var \Magento\Framework\Pricing\Adjustment\Pool
      */
     public $model;
 
@@ -29,15 +24,17 @@ class PoolTest extends TestCase
             'adj5' => ['className' => 'adj5_class'],
         ];
 
-        /** @var Factory|MockObject $adjustmentFactory */
-        $adjustmentFactory = $this->getMockBuilder(Factory::class)
+        /** @var Factory|\PHPUnit\Framework\MockObject\MockObject $adjustmentFactory */
+        $adjustmentFactory = $this->getMockBuilder(\Magento\Framework\Pricing\Adjustment\Factory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
         $adjustmentFactory->expects($this->any())->method('create')->willReturnCallback(
-            function ($className, $data) {
-                return $className . '|' . $data['sortOrder'];
-            }
+            
+                function ($className, $data) {
+                    return $className . '|' . $data['sortOrder'];
+                }
+            
         );
 
         $this->model = new Pool($adjustmentFactory, $adjustmentsData);
@@ -49,8 +46,8 @@ class PoolTest extends TestCase
             'adj1' => 'adj1_class|10',
             'adj2' => 'adj2_class|20',
             'adj3' => 'adj3_class|5',
-            'adj4' => 'adj4_class|' . Pool::DEFAULT_SORT_ORDER,
-            'adj5' => 'adj5_class|' . Pool::DEFAULT_SORT_ORDER,
+            'adj4' => 'adj4_class|' . \Magento\Framework\Pricing\Adjustment\Pool::DEFAULT_SORT_ORDER,
+            'adj5' => 'adj5_class|' . \Magento\Framework\Pricing\Adjustment\Pool::DEFAULT_SORT_ORDER,
         ];
 
         $result = $this->model->getAdjustments();
@@ -77,14 +74,17 @@ class PoolTest extends TestCase
             ['adj1', 'adj1_class|10'],
             ['adj2', 'adj2_class|20'],
             ['adj3', 'adj3_class|5'],
-            ['adj4', 'adj4_class|' . Pool::DEFAULT_SORT_ORDER],
-            ['adj5', 'adj5_class|' . Pool::DEFAULT_SORT_ORDER],
+            ['adj4', 'adj4_class|' . \Magento\Framework\Pricing\Adjustment\Pool::DEFAULT_SORT_ORDER],
+            ['adj5', 'adj5_class|' . \Magento\Framework\Pricing\Adjustment\Pool::DEFAULT_SORT_ORDER],
         ];
     }
 
+    /**
+     */
     public function testGetAdjustmentByNotExistingCode()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->model->getAdjustmentByCode('not_existing_code');
     }
 }

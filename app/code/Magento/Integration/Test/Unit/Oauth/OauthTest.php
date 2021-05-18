@@ -3,45 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Integration\Test\Unit\Oauth;
-
-use Magento\Framework\DataObject;
-use Magento\Framework\Math\Random;
-use Magento\Framework\Oauth\Helper\Oauth;
-use Magento\Framework\Oauth\OauthInputException;
-use Magento\Framework\Oauth\OauthInterface;
-use Magento\Framework\Stdlib\DateTime\DateTime;
-use Magento\Integration\Model\Oauth\Consumer;
-use Magento\Integration\Model\Oauth\ConsumerFactory;
-use Magento\Integration\Model\Oauth\Nonce;
-use Magento\Integration\Model\Oauth\Nonce\Generator;
-use Magento\Integration\Model\Oauth\NonceFactory;
-use Magento\Integration\Model\Oauth\Token;
-use Magento\Integration\Model\Oauth\Token\Provider;
-use Magento\Integration\Model\Oauth\TokenFactory;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class OauthTest extends TestCase
+class OauthTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ConsumerFactory */
+    /** @var \Magento\Integration\Model\Oauth\ConsumerFactory */
     private $_consumerFactory;
 
-    /** @var NonceFactory */
+    /** @var \Magento\Integration\Model\Oauth\NonceFactory */
     private $_nonceFactory;
 
-    /** @var TokenFactory */
+    /** @var \Magento\Integration\Model\Oauth\TokenFactory */
     private $_tokenFactory;
 
-    /** @var Consumer */
+    /** @var \Magento\Integration\Model\Oauth\Consumer */
     private $_consumerMock;
 
-    /** @var Token */
+    /** @var \Magento\Integration\Model\Oauth\Token */
     private $_tokenMock;
 
     /** @var \Magento\Framework\Oauth\Helper\Oauth */
@@ -53,11 +35,11 @@ class OauthTest extends TestCase
     /** @var  \Zend_Oauth_Http_Utility */
     private $_httpUtilityMock;
 
-    /** @var DateTime */
+    /** @var \Magento\Framework\Stdlib\DateTime\DateTime */
     private $_dateMock;
 
     /**
-     * @var LoggerInterface
+     * @var \Psr\Log\LoggerInterface
      */
     private $_loggerMock;
 
@@ -73,13 +55,12 @@ class OauthTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->_consumerFactory = $this->getMockBuilder(ConsumerFactory::class)
+        $this->_consumerFactory = $this->getMockBuilder(\Magento\Integration\Model\Oauth\ConsumerFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->_consumerMock = $this->getMockBuilder(Consumer::class)
-            ->disableOriginalConstructor()
-            ->setMethods(
+        $this->_consumerMock = $this->getMockBuilder(\Magento\Integration\Model\Oauth\Consumer::class)
+            ->disableOriginalConstructor()->setMethods(
                 [
                     'getCreatedAt',
                     'loadByKey',
@@ -97,15 +78,14 @@ class OauthTest extends TestCase
         $this->_consumerFactory->expects($this->any())
             ->method('create')
             ->willReturn($this->_consumerMock);
-        $this->_nonceFactory = $this->getMockBuilder(NonceFactory::class)
+        $this->_nonceFactory = $this->getMockBuilder(\Magento\Integration\Model\Oauth\NonceFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
         $this->_tokenFactory = $this->getMockBuilder(
-            TokenFactory::class
-        )->disableOriginalConstructor()
-            ->setMethods(['create'])->getMock();
-        $this->_tokenMock = $this->getMockBuilder(Token::class)
+            \Magento\Integration\Model\Oauth\TokenFactory::class
+        )->disableOriginalConstructor()->setMethods(['create'])->getMock();
+        $this->_tokenMock = $this->getMockBuilder(\Magento\Integration\Model\Oauth\Token::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -127,25 +107,25 @@ class OauthTest extends TestCase
             )
             ->getMock();
         $this->_tokenFactory->expects($this->any())->method('create')->willReturn($this->_tokenMock);
-        $this->_oauthHelperMock = $this->getMockBuilder(Oauth::class)
-            ->setConstructorArgs([new Random()])
+        $this->_oauthHelperMock = $this->getMockBuilder(\Magento\Framework\Oauth\Helper\Oauth::class)
+            ->setConstructorArgs([new \Magento\Framework\Math\Random()])
             ->getMock();
         $this->_httpUtilityMock = $this->getMockBuilder(\Zend_Oauth_Http_Utility::class)
             ->setMethods(['sign'])
             ->getMock();
-        $this->_dateMock = $this->getMockBuilder(DateTime::class)
+        $this->_dateMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\DateTime::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->_loggerMock = $this->getMockBuilder(LoggerInterface::class)
+        $this->_loggerMock = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $nonceGenerator = new Generator(
+        $nonceGenerator = new \Magento\Integration\Model\Oauth\Nonce\Generator(
             $this->_oauthHelperMock,
             $this->_nonceFactory,
             $this->_dateMock
         );
-        $tokenProvider = new Provider(
+        $tokenProvider = new \Magento\Integration\Model\Oauth\Token\Provider(
             $this->_consumerFactory,
             $this->_tokenFactory,
             $this->_loggerMock
@@ -156,10 +136,10 @@ class OauthTest extends TestCase
             $tokenProvider,
             $this->_httpUtilityMock
         );
-        $this->_oauthToken = $this->_generateRandomString(Oauth::LENGTH_TOKEN);
-        $this->_oauthSecret = $this->_generateRandomString(Oauth::LENGTH_TOKEN_SECRET);
+        $this->_oauthToken = $this->_generateRandomString(\Magento\Framework\Oauth\Helper\Oauth::LENGTH_TOKEN);
+        $this->_oauthSecret = $this->_generateRandomString(\Magento\Framework\Oauth\Helper\Oauth::LENGTH_TOKEN_SECRET);
         $this->_oauthVerifier = $this->_generateRandomString(
-            Oauth::LENGTH_TOKEN_VERIFIER
+            \Magento\Framework\Oauth\Helper\Oauth::LENGTH_TOKEN_VERIFIER
         );
     }
 
@@ -183,11 +163,11 @@ class OauthTest extends TestCase
         $requiredParams = [
             'oauth_version' => '1.0',
             'oauth_consumer_key' => $this->_generateRandomString(
-                Oauth::LENGTH_CONSUMER_KEY
+                \Magento\Framework\Oauth\Helper\Oauth::LENGTH_CONSUMER_KEY
             ),
             'oauth_nonce' => '',
             'oauth_timestamp' => time(),
-            'oauth_signature_method' => OauthInterface::SIGNATURE_SHA1,
+            'oauth_signature_method' => \Magento\Framework\Oauth\OauthInterface::SIGNATURE_SHA1,
             'oauth_signature' => 'invalid_signature',
         ];
 
@@ -196,10 +176,12 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_VERSION_REJECTED
+     *
      */
     public function testGetRequestTokenVersionRejected()
     {
-        $this->expectException('Magento\Framework\Oauth\OauthInputException');
+        $this->expectException(\Magento\Framework\Oauth\OauthInputException::class);
+
         $this->_oauth->getRequestToken(
             $this->_getRequestTokenParams(['oauth_version' => '2.0']),
             self::REQUEST_URL
@@ -208,10 +190,12 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_CONSUMER_KEY_REJECTED
+     *
      */
     public function testGetRequestTokenConsumerKeyRejected()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_oauth->getRequestToken(
             $this->_getRequestTokenParams(['oauth_consumer_key' => 'wrong_key_length']),
             self::REQUEST_URL
@@ -220,16 +204,18 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_CONSUMER_KEY_REJECTED
+     *
      */
     public function testGetRequestTokenConsumerKeyNotFound()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_consumerMock->expects(
             $this->once()
         )->method(
             'loadByKey'
         )->willReturn(
-            new DataObject()
+            new \Magento\Framework\DataObject()
         );
 
         $this->_oauth->getRequestToken($this->_getRequestTokenParams(), self::REQUEST_URL);
@@ -237,10 +223,12 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_CONSUMER_KEY_INVALID
+     *
      */
     public function testGetRequestTokenOutdatedConsumerKey()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_setupConsumer();
         $this->_setupNonce();
         $this->_consumerMock
@@ -274,7 +262,7 @@ class OauthTest extends TestCase
             )->method(
                 'load'
             )->willReturn(
-                new DataObject()
+                new \Magento\Framework\DataObject()
             );
         }
 
@@ -304,7 +292,8 @@ class OauthTest extends TestCase
      */
     public function testGetRequestTokenOauthTimestampRefused($timestamp)
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_setupConsumer();
         $this->_makeValidExpirationPeriod();
 
@@ -322,7 +311,7 @@ class OauthTest extends TestCase
         return [
             [0],
             //Adding one day deviation
-            [time() + Generator::TIME_DEVIATION + 86400]
+            [time() + \Magento\Integration\Model\Oauth\Nonce\Generator::TIME_DEVIATION + 86400]
         ];
     }
 
@@ -333,20 +322,19 @@ class OauthTest extends TestCase
     protected function _setupNonce($isUsed = false, $timestamp = 0)
     {
         $nonceMock = $this->getMockBuilder(
-            Nonce::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                [
-                    'loadByCompositeKey',
-                    'getNonce',
-                    'getTimestamp',
-                    'setNonce',
-                    'setConsumerId',
-                    'setTimestamp',
-                    'save',
-                    '__wakeup',
-                ]
-            )->getMock();
+            \Magento\Integration\Model\Oauth\Nonce::class
+        )->disableOriginalConstructor()->setMethods(
+            [
+                'loadByCompositeKey',
+                'getNonce',
+                'getTimestamp',
+                'setNonce',
+                'setConsumerId',
+                'setTimestamp',
+                'save',
+                '__wakeup',
+            ]
+        )->getMock();
 
         $nonceMock->expects($this->any())->method('getNonce')->willReturn($isUsed);
         $nonceMock->expects($this->any())->method('loadByCompositeKey')->willReturnSelf();
@@ -360,10 +348,12 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_NONCE_USED
+     *
      */
     public function testGetRequestTokenNonceAlreadyUsed()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_setupConsumer();
         $this->_makeValidExpirationPeriod();
         $this->_setupNonce(true);
@@ -373,16 +363,18 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_CONSUMER_KEY_REJECTED
+     *
      */
     public function testGetRequestTokenNoConsumer()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_consumerMock->expects(
             $this->any()
         )->method(
             'loadByKey'
         )->willReturn(
-            new DataObject()
+            new \Magento\Framework\DataObject()
         );
 
         $this->_oauth->getRequestToken($this->_getRequestTokenParams(), self::REQUEST_URL);
@@ -397,7 +389,7 @@ class OauthTest extends TestCase
      */
     protected function _setupToken(
         $doesExist = true,
-        $type = Token::TYPE_VERIFIER,
+        $type = \Magento\Integration\Model\Oauth\Token::TYPE_VERIFIER,
         $consumerId = self::CONSUMER_ID,
         $verifier = null,
         $isRevoked = false
@@ -426,10 +418,12 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_TOKEN_REJECTED
+     *
      */
     public function testGetRequestTokenTokenRejected()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_setupConsumer();
         $this->_makeValidExpirationPeriod();
         $this->_setupNonce();
@@ -446,14 +440,16 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_TOKEN_REJECTED
+     *
      */
     public function testGetRequestTokenTokenRejectedByType()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_setupConsumer();
         $this->_makeValidExpirationPeriod();
         $this->_setupNonce();
-        $this->_setupToken(true, Token::TYPE_REQUEST);
+        $this->_setupToken(true, \Magento\Integration\Model\Oauth\Token::TYPE_REQUEST);
         // wrong type
 
         $signature = 'valid_signature';
@@ -467,10 +463,12 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_SIGNATURE_METHOD_REJECTED
+     *
      */
     public function testGetRequestTokenSignatureMethodRejected()
     {
-        $this->expectException('Magento\Framework\Oauth\OauthInputException');
+        $this->expectException(\Magento\Framework\Oauth\OauthInputException::class);
+
         $this->_setupConsumer();
         $this->_makeValidExpirationPeriod();
         $this->_setupNonce();
@@ -484,10 +482,12 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_SIGNATURE_INVALID
+     *
      */
     public function testGetRequestTokenInvalidSignature()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_setupConsumer();
         $this->_makeValidExpirationPeriod();
         $this->_setupNonce();
@@ -522,10 +522,12 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_VERSION_REJECTED
+     *
      */
     public function testGetAccessTokenVersionRejected()
     {
-        $this->expectException('Magento\Framework\Oauth\OauthInputException');
+        $this->expectException(\Magento\Framework\Oauth\OauthInputException::class);
+
         $this->_oauth->getAccessToken(
             $this->_getAccessTokenRequiredParams(['oauth_version' => '0.0']),
             self::REQUEST_URL
@@ -534,11 +536,13 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_PARAMETER_ABSENT
+     *
      */
     public function testGetAccessTokenParameterAbsent()
     {
-        $this->expectException('Magento\Framework\Oauth\OauthInputException');
+        $this->expectException(\Magento\Framework\Oauth\OauthInputException::class);
         $this->expectExceptionMessage('"oauth_verifier" is required. Enter and try again.');
+
         $this->_oauth->getAccessToken(
             [
                 'oauth_version' => '1.0',
@@ -556,10 +560,12 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_TOKEN_REJECTED
+     *
      */
     public function testGetAccessTokenTokenRejected()
     {
-        $this->expectException('Magento\Framework\Oauth\OauthInputException');
+        $this->expectException(\Magento\Framework\Oauth\OauthInputException::class);
+
         $this->_oauth->getAccessToken(
             $this->_getAccessTokenRequiredParams(['oauth_token' => 'invalid_token']),
             self::REQUEST_URL
@@ -568,10 +574,12 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_SIGNATURE_METHOD_REJECTED
+     *
      */
     public function testGetAccessTokenSignatureMethodRejected()
     {
-        $this->expectException('Magento\Framework\Oauth\OauthInputException');
+        $this->expectException(\Magento\Framework\Oauth\OauthInputException::class);
+
         $this->_oauth->getAccessToken(
             $this->_getAccessTokenRequiredParams(['oauth_signature_method' => 'invalid_method']),
             self::REQUEST_URL
@@ -580,13 +588,15 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_TOKEN_USED
+     *
      */
     public function testGetAccessTokenTokenUsed()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_setupConsumer();
         $this->_setupNonce();
-        $this->_setupToken(true, Token::TYPE_VERIFIER);
+        $this->_setupToken(true, \Magento\Integration\Model\Oauth\Token::TYPE_VERIFIER);
         // Wrong type
 
         $this->_oauth->getAccessToken($this->_getAccessTokenRequiredParams(), self::REQUEST_URL);
@@ -594,13 +604,15 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_TOKEN_REJECTED
+     *
      */
     public function testGetAccessTokenConsumerIdDoesntMatch()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_setupConsumer();
         $this->_setupNonce();
-        $this->_setupToken(true, Token::TYPE_REQUEST, null);
+        $this->_setupToken(true, \Magento\Integration\Model\Oauth\Token::TYPE_REQUEST, null);
 
         $this->_oauth->getAccessToken($this->_getAccessTokenRequiredParams(), self::REQUEST_URL);
     }
@@ -612,12 +624,13 @@ class OauthTest extends TestCase
      */
     public function testGetAccessTokenVerifierInvalid($verifier, $verifierFromToken)
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_setupConsumer();
         $this->_setupNonce();
         $this->_setupToken(
             true,
-            Token::TYPE_REQUEST,
+            \Magento\Integration\Model\Oauth\Token::TYPE_REQUEST,
             self::CONSUMER_ID,
             $verifierFromToken
         );
@@ -641,7 +654,7 @@ class OauthTest extends TestCase
     {
         $this->_setupConsumer();
         $this->_setupNonce();
-        $this->_setupToken(true, Token::TYPE_REQUEST);
+        $this->_setupToken(true, \Magento\Integration\Model\Oauth\Token::TYPE_REQUEST);
 
         $token = $this->_oauth->getAccessToken($this->_getAccessTokenRequiredParams(), self::REQUEST_URL);
         $this->assertEquals(
@@ -652,41 +665,47 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_TOKEN_REJECTED
+     *
      */
     public function testValidateAccessTokenRequestTokenRejected()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_setupConsumer();
         $this->_setupNonce();
-        $this->_setupToken(true, Token::TYPE_ACCESS, null);
+        $this->_setupToken(true, \Magento\Integration\Model\Oauth\Token::TYPE_ACCESS, null);
 
         $this->_oauth->validateAccessTokenRequest($this->_getAccessTokenRequiredParams(), self::REQUEST_URL);
     }
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_TOKEN_REJECTED
+     *
      */
     public function testValidateAccessTokenRequestTokenRejectedByType()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_setupConsumer();
         $this->_setupNonce();
-        $this->_setupToken(true, Token::TYPE_REQUEST);
+        $this->_setupToken(true, \Magento\Integration\Model\Oauth\Token::TYPE_REQUEST);
 
         $this->_oauth->validateAccessTokenRequest($this->_getAccessTokenRequiredParams(), self::REQUEST_URL);
     }
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_TOKEN_REVOKED
+     *
      */
     public function testValidateAccessTokenRequestTokenRevoked()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_setupConsumer();
         $this->_setupNonce();
         $this->_setupToken(
             true,
-            Token::TYPE_ACCESS,
+            \Magento\Integration\Model\Oauth\Token::TYPE_ACCESS,
             self::CONSUMER_ID,
             $this->_oauthVerifier,
             true
@@ -699,7 +718,7 @@ class OauthTest extends TestCase
     {
         $this->_setupConsumer();
         $this->_setupNonce();
-        $this->_setupToken(true, Token::TYPE_ACCESS);
+        $this->_setupToken(true, \Magento\Integration\Model\Oauth\Token::TYPE_ACCESS);
         $requiredParams = $this->_getAccessTokenRequiredParams();
         $this->assertEquals(
             1,
@@ -710,26 +729,30 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_TOKEN_REJECTED
+     *
      */
     public function testValidateAccessTokenRejectedByType()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_setupConsumer();
-        $this->_setupToken(true, Token::TYPE_REQUEST);
+        $this->_setupToken(true, \Magento\Integration\Model\Oauth\Token::TYPE_REQUEST);
 
         $this->_oauth->validateAccessToken($this->_oauthToken);
     }
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_TOKEN_REVOKED
+     *
      */
     public function testValidateAccessTokenRevoked()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_setupConsumer();
         $this->_setupToken(
             true,
-            Token::TYPE_ACCESS,
+            \Magento\Integration\Model\Oauth\Token::TYPE_ACCESS,
             self::CONSUMER_ID,
             $this->_oauthVerifier,
             true
@@ -740,12 +763,14 @@ class OauthTest extends TestCase
 
     /**
      * \Magento\Framework\Oauth\OauthInterface::ERR_TOKEN_REJECTED
+     *
      */
     public function testValidateAccessTokenNoConsumer()
     {
-        $this->expectException('Magento\Framework\Oauth\Exception');
+        $this->expectException(\Magento\Framework\Oauth\Exception::class);
+
         $this->_setupConsumer(false);
-        $this->_setupToken(true, Token::TYPE_ACCESS);
+        $this->_setupToken(true, \Magento\Integration\Model\Oauth\Token::TYPE_ACCESS);
 
         $this->_oauth->validateAccessToken($this->_oauthToken);
     }
@@ -753,7 +778,7 @@ class OauthTest extends TestCase
     public function testValidateAccessToken()
     {
         $this->_setupConsumer();
-        $this->_setupToken(true, Token::TYPE_ACCESS);
+        $this->_setupToken(true, \Magento\Integration\Model\Oauth\Token::TYPE_ACCESS);
 
         $this->assertEquals(1, $this->_oauth->validateAccessToken($this->_oauthToken), "Consumer ID is invalid.");
     }
@@ -800,7 +825,7 @@ class OauthTest extends TestCase
      */
     public function testMissingParamForBuildAuthorizationHeader($expectedMessage, $request)
     {
-        $this->expectException(OauthInputException::class);
+        $this->expectException(\Magento\Framework\Oauth\OauthInputException::class);
         $this->expectExceptionMessage($expectedMessage);
         $this->expectExceptionCode(0);
 
@@ -868,13 +893,13 @@ class OauthTest extends TestCase
     {
         $requiredParams = [
             'oauth_consumer_key' => $this->_generateRandomString(
-                Oauth::LENGTH_CONSUMER_KEY
+                \Magento\Framework\Oauth\Helper\Oauth::LENGTH_CONSUMER_KEY
             ),
             'oauth_signature' => '',
-            'oauth_signature_method' => OauthInterface::SIGNATURE_SHA1,
+            'oauth_signature_method' => \Magento\Framework\Oauth\OauthInterface::SIGNATURE_SHA1,
             'oauth_nonce' => '',
             'oauth_timestamp' => (string)time(),
-            'oauth_token' => $this->_generateRandomString(Oauth::LENGTH_TOKEN),
+            'oauth_token' => $this->_generateRandomString(\Magento\Framework\Oauth\Helper\Oauth::LENGTH_TOKEN),
             'oauth_verifier' => $this->_oauthVerifier,
         ];
 

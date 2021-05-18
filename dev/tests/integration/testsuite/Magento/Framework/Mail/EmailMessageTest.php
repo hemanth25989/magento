@@ -13,6 +13,7 @@ use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * Class EmailMessageTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class EmailMessageTest extends TestCase
@@ -70,7 +71,7 @@ class EmailMessageTest extends TestCase
     /**
      * @var string
      */
-    private $subject = 'Test=20subject';
+    private $subject = 'Test subject';
 
     /**
      * @var string
@@ -200,10 +201,10 @@ class EmailMessageTest extends TestCase
             . str_replace(' ', '=20', $this->description)
             . '?=';
         $this->assertStringContainsString($contentDescription, $message->toString());
-        $this->assertStringContainsString(
-            'Subject: =?UTF-8?Q?' . $this->subject,
-            quoted_printable_decode($message->toString())
-        );
+        $subject = 'Subject: =?UTF-8?Q?'
+            . str_replace(' ', '=20', $this->subject)
+            . '?=';
+        $this->assertStringContainsString($subject, $message->toString());
         $this->assertStringContainsString($content, $message->toString());
         //tests address factory
         $this->assertInstanceOf(Address::class, $message->getTo()[0]);

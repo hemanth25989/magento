@@ -3,46 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\App\Router;
 
-use Magento\Backend\App\Router\NoRouteHandler;
-use Magento\Backend\Helper\Data;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\Route\ConfigInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class NoRouteHandlerTest extends TestCase
+class NoRouteHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_helperMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_requestMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_routeConfigMock;
 
     /**
-     * @var NoRouteHandler
+     * @var \Magento\Backend\App\Router\NoRouteHandler
      */
     protected $_model;
 
     protected function setUp(): void
     {
-        $this->_requestMock = $this->createMock(Http::class);
-        $this->_routeConfigMock = $this->getMockForAbstractClass(ConfigInterface::class);
-        $this->_helperMock = $this->createMock(Data::class);
+        $this->_requestMock = $this->createMock(\Magento\Framework\App\Request\Http::class);
+        $this->_routeConfigMock = $this->createMock(\Magento\Framework\App\Route\ConfigInterface::class);
+        $this->_helperMock = $this->createMock(\Magento\Backend\Helper\Data::class);
         $this->_helperMock->expects($this->any())->method('getAreaFrontName')->willReturn('backend');
-        $this->_model = new NoRouteHandler($this->_helperMock, $this->_routeConfigMock);
+        $this->_model = new \Magento\Backend\App\Router\NoRouteHandler($this->_helperMock, $this->_routeConfigMock);
     }
 
     /**

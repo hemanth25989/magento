@@ -47,11 +47,9 @@ class GraphQlReaderTest extends \PHPUnit\Framework\TestCase
         $fileResolverMock = $this->getMockBuilder(
             \Magento\Framework\Config\FileResolverInterface::class
         )->disableOriginalConstructor()->getMock();
-        $filePath1 = __DIR__ . '/../_files/schemaA.graphqls';
-        $filePath2 = __DIR__ . '/../_files/schemaB.graphqls';
         $fileList = [
-            $filePath1 => file_get_contents($filePath1),
-            $filePath2 => file_get_contents($filePath2)
+            file_get_contents(__DIR__ . '/../_files/schemaA.graphqls'),
+            file_get_contents(__DIR__ . '/../_files/schemaB.graphqls')
         ];
         $fileResolverMock->expects($this->any())->method('get')->willReturn($fileList);
         $graphQlReader = $this->objectManager->create(
@@ -59,12 +57,10 @@ class GraphQlReaderTest extends \PHPUnit\Framework\TestCase
             ['fileResolver' => $fileResolverMock]
         );
         $reader = $this->objectManager->create(
-            // phpstan:ignore
             \Magento\Framework\GraphQlSchemaStitching\Reader::class,
             ['readers' => ['graphql_reader' => $graphQlReader]]
         );
         $data = $this->objectManager->create(
-            // phpstan:ignore
             \Magento\Framework\GraphQl\Config\Data ::class,
             ['reader' => $reader]
         );
@@ -187,7 +183,7 @@ QUERY;
         $request->setPathInfo('/graphql');
         $request->setMethod('POST');
         $request->setContent(json_encode($postData));
-        $headers = $this->objectManager->create(\Laminas\Http\Headers::class)
+        $headers = $this->objectManager->create(\Zend\Http\Headers::class)
             ->addHeaders(['Content-Type' => 'application/json']);
         $request->setHeaders($headers);
 
@@ -221,25 +217,31 @@ QUERY;
         }
         //Checks to make sure that the given description exists in the expectedOutput array
         $this->assertArrayHasKey(
-            array_search(
-                'Comment for empty PhysicalProductInterface',
-                array_column($expectedOutput, 'description')
-            ),
-            $expectedOutput
+            
+                array_search(
+                    'Comment for empty PhysicalProductInterface',
+                    array_column($expectedOutput, 'description')
+                ),
+                $expectedOutput
+            
         );
         $this->assertArrayHasKey(
-            array_search(
-                'Comment for empty Enum',
-                array_column($expectedOutput, 'description')
-            ),
-            $expectedOutput
+            
+                array_search(
+                    'Comment for empty Enum',
+                    array_column($expectedOutput, 'description')
+                ),
+                $expectedOutput
+            
         );
         $this->assertArrayHasKey(
-            array_search(
-                'Comment for SearchResultPageInfo',
-                array_column($expectedOutput, 'description')
-            ),
-            $expectedOutput
+            
+                array_search(
+                    'Comment for SearchResultPageInfo',
+                    array_column($expectedOutput, 'description')
+                ),
+                $expectedOutput
+            
         );
     }
 }

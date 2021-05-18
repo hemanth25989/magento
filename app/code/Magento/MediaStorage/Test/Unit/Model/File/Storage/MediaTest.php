@@ -3,36 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\MediaStorage\Test\Unit\Model\File\Storage;
 
-use Magento\Framework\Stdlib\DateTime\DateTime;
-use Magento\MediaStorage\Helper\File\Media;
-use Magento\MediaStorage\Helper\File\Storage\Database;
-use Magento\MediaStorage\Model\File\Storage\File;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
-
-class MediaTest extends TestCase
+/**
+ * Class MediaTest
+ */
+class MediaTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var File
+     * @var \Magento\MediaStorage\Model\File\Storage\File
      */
     protected $_model;
 
     /**
-     * @var Media
+     * @var \Magento\MediaStorage\Helper\File\Media
      */
     protected $_loggerMock;
 
     /**
-     * @var Database
+     * @var \Magento\MediaStorage\Helper\File\Storage\Database
      */
     protected $_storageHelperMock;
 
     /**
-     * @var DateTime
+     * @var \Magento\Framework\Stdlib\DateTime\DateTime
      */
     protected $_mediaHelperMock;
 
@@ -43,12 +37,12 @@ class MediaTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->_loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
-        $this->_storageHelperMock = $this->createMock(Database::class);
-        $this->_mediaHelperMock = $this->createMock(Media::class);
+        $this->_loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $this->_storageHelperMock = $this->createMock(\Magento\MediaStorage\Helper\File\Storage\Database::class);
+        $this->_mediaHelperMock = $this->createMock(\Magento\MediaStorage\Helper\File\Media::class);
         $this->_fileUtilityMock = $this->createMock(\Magento\MediaStorage\Model\ResourceModel\File\Storage\File::class);
 
-        $this->_model = new File(
+        $this->_model = new \Magento\MediaStorage\Model\File\Storage\File(
             $this->_loggerMock,
             $this->_storageHelperMock,
             $this->_mediaHelperMock,

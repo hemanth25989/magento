@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Test class for \Magento\Catalog\Block\Product\View
  *
@@ -8,28 +8,23 @@
 
 namespace Magento\Catalog\Test\Unit\Block\Product;
 
-use Magento\Catalog\Block\Product\View;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\ProductTypes\ConfigInterface;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ViewTest extends TestCase
+/**
+ * Class ViewTest
+ */
+class ViewTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var View
+     * @var \Magento\Catalog\Block\Product\View
      */
     protected $view;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $productTypeConfig;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $registryMock;
 
@@ -38,11 +33,11 @@ class ViewTest extends TestCase
      */
     protected function setUp(): void
     {
-        $helper = new ObjectManager($this);
-        $this->productTypeConfig = $this->getMockForAbstractClass(ConfigInterface::class);
-        $this->registryMock = $this->createMock(Registry::class);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->productTypeConfig = $this->createMock(\Magento\Catalog\Model\ProductTypes\ConfigInterface::class);
+        $this->registryMock = $this->createMock(\Magento\Framework\Registry::class);
         $this->view = $helper->getObject(
-            View::class,
+            \Magento\Catalog\Block\Product\View::class,
             ['productTypeConfig' => $this->productTypeConfig, 'registry' => $this->registryMock]
         );
     }
@@ -52,7 +47,7 @@ class ViewTest extends TestCase
      */
     public function testShouldRenderQuantity()
     {
-        $productMock = $this->createMock(Product::class);
+        $productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
         $this->registryMock->expects(
             $this->any()
         )->method(
@@ -81,7 +76,7 @@ class ViewTest extends TestCase
     public function testGetIdentities()
     {
         $productTags = ['cat_p_1'];
-        $product = $this->createMock(Product::class);
+        $product = $this->createMock(\Magento\Catalog\Model\Product::class);
 
         $product->expects($this->once())
             ->method('getIdentities')
@@ -89,9 +84,11 @@ class ViewTest extends TestCase
         $this->registryMock->expects($this->any())
             ->method('registry')
             ->willReturnMap(
-                [
-                    ['product', $product],
-                ]
+                
+                    [
+                        ['product', $product],
+                    ]
+                
             );
         $this->assertEquals($productTags, $this->view->getIdentities());
     }

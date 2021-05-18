@@ -3,62 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit\Form\Element;
 
-use Magento\Framework\Data\Form\Element\Editablemultiselect;
-use Magento\Framework\Data\Form\Element\Multiselect;
-use Magento\Framework\DataObject;
 use Magento\Framework\Escaper;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-use Magento\Framework\Math\Random;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
-/**
- * Test for the widget.
- *
- * @SuppressWarnings(PHPMD.UnusedFormalParameter)
- */
-class MultiselectTest extends TestCase
+class MultiselectTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Multiselect
+     * @var \Magento\Framework\Data\Form\Element\Multiselect
      */
     protected $_model;
 
     protected function setUp(): void
     {
-        $testHelper = new ObjectManager($this);
-
-        $randomMock = $this->createMock(Random::class);
-        $randomMock->method('getRandomString')->willReturn('some-rando-string');
-        $secureRendererMock = $this->createMock(SecureHtmlRenderer::class);
-        $secureRendererMock->method('renderEventListenerAsTag')
-            ->willReturnCallback(
-                function (string $event, string $listener, string $selector): string {
-                    return "<script>document.querySelector('{$selector}').{$event} = () => { {$listener} };</script>";
-                }
-            );
-        $secureRendererMock->method('renderTag')
-            ->willReturnCallback(
-                function (string $tag, array $attrs, ?string $content): string {
-                    $attrs = new DataObject($attrs);
-
-                    return "<$tag {$attrs->serialize()}>$content</$tag>";
-                }
-            );
+        $testHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $escaper = new Escaper();
         $this->_model = $testHelper->getObject(
-            Editablemultiselect::class,
+            \Magento\Framework\Data\Form\Element\Editablemultiselect::class,
             [
-                '_escaper' => $escaper,
-                'random' => $randomMock,
-                'secureRenderer' => $secureRendererMock
+                '_escaper' => $escaper
             ]
         );
-        $this->_model->setForm(new DataObject());
+        $this->_model->setForm(new \Magento\Framework\DataObject());
     }
 
     /**

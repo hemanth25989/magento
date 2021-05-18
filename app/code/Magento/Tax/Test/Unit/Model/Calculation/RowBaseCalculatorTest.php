@@ -3,17 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Tax\Test\Unit\Model\Calculation;
 
-use Magento\Tax\Api\TaxClassManagementInterface;
-use Magento\Tax\Model\Calculation\RowBaseCalculator;
-use PHPUnit\Framework\MockObject\MockObject;
+use \Magento\Tax\Model\Calculation\RowBaseCalculator;
 
+/**
+ * Class RowBaseCalculatorTest
+ *
+ */
 class RowBaseCalculatorTest extends RowBaseAndTotalBaseCalculatorTestCase
 {
-    /** @var RowBaseCalculator|MockObject */
+    /** @var RowBaseCalculator | \PHPUnit\Framework\MockObject\MockObject */
     protected $rowBaseCalculator;
 
     public function testCalculateWithTaxInPrice()
@@ -51,8 +52,8 @@ class RowBaseCalculatorTest extends RowBaseAndTotalBaseCalculatorTestCase
 
     private function initRowBaseCalculator()
     {
-        $taxClassService = $this->getMockForAbstractClass(TaxClassManagementInterface::class);
-        $this->rowBaseCalculator = $this->getMockBuilder(RowBaseCalculator::class)
+        $taxClassService = $this->createMock(\Magento\Tax\Api\TaxClassManagementInterface::class);
+        $this->rowBaseCalculator = $this->getMockBuilder(\Magento\Tax\Model\Calculation\RowBaseCalculator::class)
             ->setMethods(['deltaRound'])
             ->setConstructorArgs(
                 [

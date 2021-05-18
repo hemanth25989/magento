@@ -77,15 +77,15 @@ class LayoutTest extends \PHPUnit\Framework\TestCase
             $this->once()
         )->method(
             'asSimplexml'
-        )->willReturn(
-            
+        )->will(
+            $this->returnValue(
                 simplexml_load_string(
                     '<layout><container name="container1"></container></layout>',
                     \Magento\Framework\View\Layout\Element::class
                 )
-            
+            )
         );
-        $layout->expects($this->once())->method('getUpdate')->willReturn($merge);
+        $layout->expects($this->once())->method('getUpdate')->will($this->returnValue($merge));
         $this->assertEmpty($layout->getXpath('/layout/container[@name="container1"]'));
         $layout->generateXml();
         $this->assertNotEmpty($layout->getXpath('/layout/container[@name="container1"]'));
@@ -205,11 +205,11 @@ class LayoutTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider blockNotExistsDataProvider
+     *
      */
     public function testCreateBlockNotExists($name)
     {
         $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
-
         $this->_layout->createBlock($name);
     }
 
@@ -254,28 +254,17 @@ class LayoutTest extends \PHPUnit\Framework\TestCase
     public function addContainerDataProvider()
     {
         return [
-            ['aside'],
             ['dd'],
             ['div'],
             ['dl'],
             ['fieldset'],
-            ['main'],
-            ['nav'],
             ['header'],
-            ['footer'],
             ['ol'],
             ['p'],
             ['section'],
             ['table'],
             ['tfoot'],
-            ['ul'],
-            ['article'],
-            ['h1'],
-            ['h2'],
-            ['h3'],
-            ['h4'],
-            ['h5'],
-            ['h6'],
+            ['ul']
         ];
     }
 
@@ -286,7 +275,7 @@ class LayoutTest extends \PHPUnit\Framework\TestCase
     {
         $msg = 'Html tag "span" is forbidden for usage in containers. ' .
             'Consider to use one of the allowed: aside, dd, div, dl, fieldset, main, nav, ' .
-            'header, footer, ol, p, section, table, tfoot, ul, article, h1, h2, h3, h4, h5, h6.';
+            'header, footer, ol, p, section, table, tfoot, ul.';
         $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage($msg);
         $this->_layout->addContainer('container', 'Container', ['htmlTag' => 'span']);
@@ -372,12 +361,9 @@ class LayoutTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['block1' => $block1, 'block2' => $block2], $this->_layout->getChildBlocks('parent'));
     }
 
-    /**
-     */
     public function testAddBlockInvalidType()
     {
         $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
-
         $this->_layout->addBlock('invalid_name', 'child');
     }
 

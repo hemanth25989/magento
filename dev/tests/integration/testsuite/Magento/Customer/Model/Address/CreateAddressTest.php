@@ -17,6 +17,7 @@ use Magento\Customer\Model\ResourceModel\Address;
 use Magento\Customer\Model\Vat;
 use Magento\Customer\Observer\AfterAddressSaveObserver;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\DataObject;
 use Magento\Framework\DataObjectFactory;
 use Magento\Framework\Exception\InputException;
 use Magento\TestFramework\Directory\Model\GetRegionIdByName;
@@ -422,23 +423,6 @@ class CreateAddressTest extends TestCase
         $customer = $this->customerRepository->get('customer5@example.com');
         $this->createAddress((int)$customer->getId(), $addressData, false, true);
         $this->assertEquals(2, $this->getCustomerGroupId('customer5@example.com'));
-    }
-
-    /**
-     * @magentoDataFixture Magento/Customer/_files/customer_no_address.php
-     * @magentoDataFixture Magento/Store/_files/second_website_with_store_group_and_store.php
-     * @magentoConfigFixture default_store general/country/allow BD,BB,AF
-     * @magentoConfigFixture fixture_second_store_store general/country/allow AS,BM
-     *
-     * @return void
-     */
-    public function testCreateAvailableAddress(): void
-    {
-        $countryId = 'BB';
-        $addressData = array_merge(self::STATIC_CUSTOMER_ADDRESS_DATA, [AddressInterface::COUNTRY_ID => $countryId]);
-        $customer = $this->customerRepository->get('customer5@example.com');
-        $address = $this->createAddress((int)$customer->getId(), $addressData);
-        $this->assertSame($countryId, $address->getCountryId());
     }
 
     /**

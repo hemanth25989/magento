@@ -10,16 +10,14 @@ namespace Magento\Multishipping\Test\Unit\Model\Checkout\Type\Multishipping;
 use Magento\Multishipping\Model\Checkout\Type\Multishipping\PlaceOrderDefault;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderManagementInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests Magento\Multishipping\Model\Checkout\Type\Multishipping\PlaceOrderDefault.
  */
-class PlaceOrderDefaultTest extends TestCase
+class PlaceOrderDefaultTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var OrderManagementInterface|MockObject
+     * @var OrderManagementInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $orderManagement;
 

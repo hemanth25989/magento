@@ -3,124 +3,103 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Shipping\Test\Unit\Controller\Adminhtml\Order\Shipment;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\ViewInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Json\Helper\Data;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\View\Result\Layout;
-use Magento\Framework\View\Result\LayoutFactory;
-use Magento\Framework\View\Result\Page;
-use Magento\Sales\Model\Order\Email\Sender\ShipmentCommentSender;
-use Magento\Sales\Model\Order\Shipment;
-use Magento\Shipping\Block\Adminhtml\View\Comments;
-use Magento\Shipping\Controller\Adminhtml\Order\Shipment\AddComment;
-use Magento\Shipping\Controller\Adminhtml\Order\ShipmentLoader;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
 /**
+ * Class AddCommentTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AddCommentTest extends TestCase
+class AddCommentTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ShipmentLoader|MockObject
+     * @var \Magento\Shipping\Controller\Adminhtml\Order\ShipmentLoader|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $shipmentLoaderMock;
 
     /**
-     * @var ShipmentCommentSender|MockObject
+     * @var \Magento\Sales\Model\Order\Email\Sender\ShipmentCommentSender|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $shipmentCommentSenderMock;
 
     /**
-     * @var Http|MockObject
+     * @var \Magento\Framework\App\Request\Http|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $requestMock;
 
     /**
-     * @var \Magento\Framework\App\Response\Http|MockObject
+     * @var \Magento\Framework\App\Response\Http|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $responseMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $resultPageMock;
 
     /**
-     * @var Shipment|MockObject
+     * @var \Magento\Sales\Model\Order\Shipment|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $shipmentMock;
 
     /**
-     * @var ViewInterface|MockObject
+     * @var \Magento\Framework\App\ViewInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $viewInterfaceMock;
 
     /**
-     * @var LayoutFactory|MockObject
+     * @var \Magento\Framework\View\Result\LayoutFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resultLayoutFactoryMock;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var AddComment
+     * @var \Magento\Shipping\Controller\Adminhtml\Order\Shipment\AddComment
      */
     protected $controller;
 
     protected function setUp(): void
     {
-        $this->shipmentLoaderMock = $this->getMockBuilder(ShipmentLoader::class)
-            ->addMethods(['setOrderId', 'setShipmentId', 'setShipment', 'setTracking', '__wakeup'])
-            ->onlyMethods(['load'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->shipmentCommentSenderMock = $this->getMockBuilder(ShipmentCommentSender::class)
-            ->addMethods(['__wakeup'])
-            ->onlyMethods(['send'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->requestMock = $this->getMockBuilder(Http::class)
-            ->addMethods(['__wakeup'])
-            ->onlyMethods(['getParam', 'getPost', 'setParam'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->shipmentLoaderMock = $this->createPartialMock(
+            \Magento\Shipping\Controller\Adminhtml\Order\ShipmentLoader::class,
+            ['setOrderId', 'setShipmentId', 'setShipment', 'setTracking', 'load', '__wakeup']
+        );
+        $this->shipmentCommentSenderMock = $this->createPartialMock(
+            \Magento\Sales\Model\Order\Email\Sender\ShipmentCommentSender::class,
+            ['send', '__wakeup']
+        );
+        $this->requestMock = $this->createPartialMock(
+            \Magento\Framework\App\Request\Http::class,
+            ['getParam', 'getPost', 'setParam', '__wakeup']
+        );
         $this->responseMock = $this->createPartialMock(
             \Magento\Framework\App\Response\Http::class,
             ['setBody', 'representJson', '__wakeup']
         );
         $this->resultLayoutFactoryMock = $this->createPartialMock(
-            LayoutFactory::class,
+            \Magento\Framework\View\Result\LayoutFactory::class,
             ['create']
         );
 
-        $this->resultPageMock = $this->getMockBuilder(Page::class)
+        $this->resultPageMock = $this->getMockBuilder(\Magento\Framework\View\Result\Page::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->shipmentMock = $this->createPartialMock(
-            Shipment::class,
+            \Magento\Sales\Model\Order\Shipment::class,
             ['save', 'addComment', '__wakeup']
         );
-        $this->viewInterfaceMock = $this->getMockForAbstractClass(ViewInterface::class);
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->viewInterfaceMock = $this->createMock(\Magento\Framework\App\ViewInterface::class);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
 
-        $contextMock = $this->getMockBuilder(Context::class)
-            ->addMethods(['getTitle', '__wakeup'])
-            ->onlyMethods(['getRequest', 'getResponse', 'getView', 'getObjectManager'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $contextMock = $this->createPartialMock(
+            \Magento\Backend\App\Action\Context::class,
+            ['getRequest', 'getResponse', 'getTitle', 'getView', 'getObjectManager', '__wakeup']
+        );
         $this->viewInterfaceMock->expects($this->any())->method('getPage')->willReturn(
             $this->resultPageMock
         );
@@ -132,7 +111,7 @@ class AddCommentTest extends TestCase
             ->method('getObjectManager')
             ->willReturn($this->objectManagerMock);
 
-        $this->controller = new AddComment(
+        $this->controller = new \Magento\Shipping\Controller\Adminhtml\Order\Shipment\AddComment(
             $contextMock,
             $this->shipmentLoaderMock,
             $this->shipmentCommentSenderMock,
@@ -147,7 +126,7 @@ class AddCommentTest extends TestCase
      */
     protected function exceptionResponse()
     {
-        $dataMock = $this->createPartialMock(Data::class, ['jsonEncode']);
+        $dataMock = $this->createPartialMock(\Magento\Framework\Json\Helper\Data::class, ['jsonEncode']);
 
         $this->objectManagerMock->expects($this->once())->method('get')->willReturn($dataMock);
         $dataMock->expects($this->once())->method('jsonEncode')->willReturn('{json-data}');
@@ -166,11 +145,10 @@ class AddCommentTest extends TestCase
         $shipment = [];
         $tracking = [];
 
-        $resultLayoutMock = $this->getMockBuilder(Layout::class)
-            ->addMethods(['getBlock'])
-            ->onlyMethods(['getDefaultLayoutHandle', 'addDefaultHandle', 'getLayout'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $resultLayoutMock = $this->createPartialMock(
+            \Magento\Framework\View\Result\Layout::class,
+            ['getBlock', 'getDefaultLayoutHandle', 'addDefaultHandle', 'getLayout']
+        );
 
         $this->requestMock->expects($this->once())->method('setParam')->with('shipment_id', $shipmentId);
         $this->requestMock->expects($this->once())
@@ -180,13 +158,15 @@ class AddCommentTest extends TestCase
         $this->requestMock->expects($this->any())
             ->method('getParam')
             ->willReturnMap(
-                [
-                    ['id', null, $shipmentId],
-                    ['order_id', null, $orderId],
-                    ['shipment_id', null, $shipmentId],
-                    ['shipment', null, $shipment],
-                    ['tracking', null, $tracking],
-                ]
+                
+                    [
+                        ['id', null, $shipmentId],
+                        ['order_id', null, $orderId],
+                        ['shipment_id', null, $shipmentId],
+                        ['shipment', null, $shipment],
+                        ['tracking', null, $tracking],
+                    ]
+                
             );
         $this->shipmentLoaderMock->expects($this->once())->method('setOrderId')->with($orderId);
         $this->shipmentLoaderMock->expects($this->once())->method('setShipmentId')->with($shipmentId);
@@ -199,7 +179,7 @@ class AddCommentTest extends TestCase
         $this->shipmentCommentSenderMock->expects($this->once())->method('send');
         $this->shipmentMock->expects($this->once())->method('save');
         $layoutMock = $this->createPartialMock(\Magento\Framework\View\Layout::class, ['getBlock']);
-        $blockMock = $this->createPartialMock(Comments::class, ['toHtml']);
+        $blockMock = $this->createPartialMock(\Magento\Shipping\Block\Adminhtml\View\Comments::class, ['toHtml']);
         $blockMock->expects($this->once())->method('toHtml')->willReturn($result);
         $layoutMock->expects($this->once())->method('getBlock')
             ->with('shipment_comments')->willReturn($blockMock);
@@ -226,13 +206,15 @@ class AddCommentTest extends TestCase
         $this->requestMock->expects($this->any())
             ->method('getParam')
             ->willReturnMap(
-                [
-                    ['id', null, $shipmentId],
-                    ['order_id', null, $orderId],
-                    ['shipment_id', null, $shipmentId],
-                    ['shipment', null, $shipment],
-                    ['tracking', null, $tracking],
-                ]
+                
+                    [
+                        ['id', null, $shipmentId],
+                        ['order_id', null, $orderId],
+                        ['shipment_id', null, $shipmentId],
+                        ['shipment', null, $shipment],
+                        ['tracking', null, $tracking],
+                    ]
+                
             );
         $this->requestMock->expects($this->once())->method('setParam')->with('shipment_id', $shipmentId);
         $this->requestMock->expects($this->once())->method('getPost')->with('comment')->willReturn($data);
@@ -242,7 +224,7 @@ class AddCommentTest extends TestCase
         $this->shipmentLoaderMock->expects($this->once())->method('setTracking')->with($tracking);
         $this->shipmentLoaderMock->expects($this->once())
             ->method('load')
-            ->willThrowException(new LocalizedException(__('message')));
+            ->willThrowException(new \Magento\Framework\Exception\LocalizedException(__('message')));
         $this->exceptionResponse();
 
         $this->assertNull($this->controller->execute());
@@ -284,13 +266,15 @@ class AddCommentTest extends TestCase
         $this->requestMock->expects($this->any())
             ->method('getParam')
             ->willReturnMap(
-                [
-                    ['id', null, $shipmentId],
-                    ['order_id', null, $orderId],
-                    ['shipment_id', null, $shipmentId],
-                    ['shipment', null, $shipment],
-                    ['tracking', null, $tracking],
-                ]
+                
+                    [
+                        ['id', null, $shipmentId],
+                        ['order_id', null, $orderId],
+                        ['shipment_id', null, $shipmentId],
+                        ['shipment', null, $shipment],
+                        ['tracking', null, $tracking],
+                    ]
+                
             );
         $this->shipmentLoaderMock->expects($this->once())->method('setOrderId')->with($orderId);
         $this->shipmentLoaderMock->expects($this->once())->method('setShipmentId')->with($shipmentId);
@@ -301,7 +285,7 @@ class AddCommentTest extends TestCase
             ->willReturn($this->shipmentMock);
         $this->shipmentMock->expects($this->once())->method('addComment');
         $this->shipmentCommentSenderMock->expects($this->once())->method('send');
-        $this->shipmentMock->expects($this->once())->method('save')->willThrowException(new \Exception());
+        $this->shipmentMock->expects($this->once())->method('save')->will($this->throwException(new \Exception()));
         $this->exceptionResponse();
 
         $this->assertNull($this->controller->execute());

@@ -3,17 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Email\Test\Unit\Model\Template\Css;
 
 use Magento\Email\Model\Template\Css\Processor;
 use Magento\Framework\View\Asset\File\FallbackContext;
 use Magento\Framework\View\Asset\Repository;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ProcessorTest extends TestCase
+class ProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Processor
@@ -21,12 +17,12 @@ class ProcessorTest extends TestCase
     protected $processor;
 
     /**
-     * @var Repository|MockObject
+     * @var Repository|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $assetRepository;
 
     /**
-     * @var FallbackContext|MockObject
+     * @var FallbackContext|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $fallbackContext;
 
@@ -44,7 +40,7 @@ class ProcessorTest extends TestCase
 
     public function testProcess()
     {
-        $url = 'http://magento.local/static/';
+        $url = 'http://magento.local/pub/static/';
         $locale = 'en_US';
         $css = '@import url("{{base_url_path}}frontend/_view/{{locale}}/css/email.css");';
         $expectedCss = '@import url("' . $url . 'frontend/_view/' . $locale . '/css/email.css");';

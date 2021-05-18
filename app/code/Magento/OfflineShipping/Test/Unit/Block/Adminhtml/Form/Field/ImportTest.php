@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Custom import CSV file field for shipping table rates
@@ -12,43 +11,31 @@ declare(strict_types=1);
  */
 namespace Magento\OfflineShipping\Test\Unit\Block\Adminhtml\Form\Field;
 
-use Magento\Framework\Data\Form;
-use Magento\Framework\Escaper;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\OfflineShipping\Block\Adminhtml\Form\Field\Import;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Magento\Framework\Math\Random;
-
-class ImportTest extends TestCase
+class ImportTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Import
+     * @var \Magento\OfflineShipping\Block\Adminhtml\Form\Field\Import
      */
     protected $_object;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_formMock;
 
     protected function setUp(): void
     {
-        $this->_formMock = $this->getMockBuilder(Form::class)
-            ->addMethods(['getFieldNameSuffix', 'getHtmlIdPrefix', 'getHtmlIdSuffix'])
-            ->onlyMethods(['addSuffixToName'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $randomMock = $this->getMockBuilder(Random::class)->disableOriginalConstructor()->getMock();
-        $randomMock->method('getRandomString')->willReturn('123456abcdefg');
+        $this->_formMock = $this->createPartialMock(
+            \Magento\Framework\Data\Form::class,
+            ['getFieldNameSuffix', 'addSuffixToName', 'getHtmlIdPrefix', 'getHtmlIdSuffix']
+        );
         $testData = ['name' => 'test_name', 'html_id' => 'test_html_id'];
-        $testHelper = new ObjectManager($this);
+        $testHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_object = $testHelper->getObject(
-            Import::class,
+            \Magento\OfflineShipping\Block\Adminhtml\Form\Field\Import::class,
             [
                 'data' => $testData,
-                '_escaper' => $testHelper->getObject(Escaper::class),
-                'random' => $randomMock
+                '_escaper' => $testHelper->getObject(\Magento\Framework\Escaper::class)
             ]
         );
         $this->_object->setForm($this->_formMock);
@@ -91,9 +78,9 @@ class ImportTest extends TestCase
             '<input id="time_condition" type="hidden" name="test_name" value="',
             $testString
         );
-        $this->assertStringContainsString(
+        $this->assertStringEndsWith(
             '<input id="test_name_prefixtest_html_idtest_name_suffix" ' .
-            'name="test_name"  data-ui-id="form-element-test_name" value="" type="file"',
+            'name="test_name"  data-ui-id="form-element-test_name" value="" type="file"/>',
             $testString
         );
     }

@@ -3,21 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Integration\Test\Unit\Model;
 
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Integration\Model\Cache\TypeIntegration;
-use Magento\Integration\Model\Config\Integration\Reader;
 use Magento\Integration\Model\IntegrationConfig;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Integration\Model\Cache\TypeIntegration;
 
 /**
  * Unit test for \Magento\Integration\Model\IntegrationConfig
  */
-class IntegrationConfigTest extends TestCase
+class IntegrationConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var IntegrationConfig
@@ -25,26 +20,26 @@ class IntegrationConfigTest extends TestCase
     private $integrationConfigModel;
 
     /**
-     * @var TypeIntegration|MockObject
+     * @var TypeIntegration|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configCacheTypeMock;
 
     /**
-     * @var  Reader|MockObject
+     * @var  \Magento\Integration\Model\Config\Integration\Reader|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configReaderMock;
 
     /**
-     * @var SerializerInterface|MockObject
+     * @var SerializerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $serializer;
 
     protected function setUp(): void
     {
-        $this->configCacheTypeMock = $this->getMockBuilder(TypeIntegration::class)
+        $this->configCacheTypeMock = $this->getMockBuilder(\Magento\Integration\Model\Cache\TypeIntegration::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->configReaderMock = $this->getMockBuilder(Reader::class)
+        $this->configReaderMock = $this->getMockBuilder(\Magento\Integration\Model\Config\Integration\Reader::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->serializer = $this->getMockBuilder(SerializerInterface::class)

@@ -8,19 +8,11 @@ declare(strict_types=1);
 
 namespace Magento\Theme\Test\Unit\Model\Design\Backend;
 
-use Magento\Config\Model\Config\Backend\File\RequestData\RequestDataInterface;
-use Magento\Framework\App\Cache\TypeListInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Data\Collection\AbstractDb;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Io\File;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\Registry;
-use Magento\Framework\UrlInterface;
-use Magento\MediaStorage\Helper\File\Storage\Database;
-use Magento\MediaStorage\Model\File\UploaderFactory;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Filesystem\Io\File as IoFile;
 use Magento\Theme\Model\Design\Backend\Image;
+use Magento\Framework\Filesystem\Directory\ReadFactory;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -30,41 +22,26 @@ class ImageTest extends \PHPUnit\Framework\TestCase
     /** @var Image */
     private $imageBackend;
 
-    /** @var File */
+    /** @var IoFile */
     private $ioFileSystem;
+
+    /**
+     * @var ReadFactory||\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $tmpDirectory;
 
     /**
      * @inheritdoc
      */
     public function setUp(): void
     {
-        $context = $this->getMockObject(Context::class);
-        $registry = $this->getMockObject(Registry::class);
-        $config = $this->getMockObject(ScopeConfigInterface::class);
-        $cacheTypeList = $this->getMockObject(TypeListInterface::class);
-        $uploaderFactory = $this->getMockObject(UploaderFactory::class);
-        $requestData = $this->getMockObject(RequestDataInterface::class);
-        $filesystem = $this->getMockObject(Filesystem::class);
-        $urlBuilder = $this->getMockObject(UrlInterface::class);
-        $databaseHelper = $this->getMockObject(Database::class);
-        $abstractResource = $this->getMockObject(AbstractResource::class);
-        $abstractDb = $this->getMockObject(AbstractDb::class);
-        $this->ioFileSystem = $this->getMockObject(File::class);
-        $this->imageBackend = new Image(
-            $context,
-            $registry,
-            $config,
-            $cacheTypeList,
-            $uploaderFactory,
-            $requestData,
-            $filesystem,
-            $urlBuilder,
-            $abstractResource,
-            $abstractDb,
-            [],
-            $databaseHelper,
-            $this->ioFileSystem
-        );
+        $this->ioFileSystem = $this->getMockObject(IoFile::class);
+        $this->tmpDirectory = $this->getMockObject(ReadFactory::class);
+
+        $objectManagerHelper = new ObjectManager($this);
+        $this->imageBackend = $objectManagerHelper->getObject(Image::class, [
+            'ioFileSystem' => $this->ioFileSystem,
+        ]);
     }
 
     /**
@@ -78,9 +55,9 @@ class ImageTest extends \PHPUnit\Framework\TestCase
     /**
      * @param string $class
      * @param array $methods
-     * @return \PHPUnit\Framework\MockObject\MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function getMockObject(string $class, array $methods = []): \PHPUnit\Framework\MockObject\MockObject
+    protected function getMockObject($class, $methods = [])
     {
         $builder =  $this->getMockBuilder($class)
             ->disableOriginalConstructor();
@@ -95,12 +72,8 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      */
     public function testBeforeSaveWithInvalidExtensionFile()
     {
-        $this->expectException(
-            \Magento\Framework\Exception\LocalizedException::class
-        );
-        $this->expectExceptionMessage(
-            'Something is wrong with the file upload settings.'
-        );
+        $this->expectException(LocalizedException::class);
+        $this->expectExceptionMessage('Invalid file provided.');
 
         $invalidFileName = 'fileName.invalidExtension';
         $this->imageBackend->setData(

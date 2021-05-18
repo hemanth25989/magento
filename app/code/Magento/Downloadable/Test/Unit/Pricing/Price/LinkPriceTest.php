@@ -3,64 +3,60 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Downloadable\Test\Unit\Pricing\Price;
 
-use Magento\Catalog\Model\Product;
-use Magento\Downloadable\Model\ResourceModel\Link as LinkResourceModel;
-use Magento\Downloadable\Pricing\Price\LinkPrice;
-use Magento\Framework\Pricing\Adjustment\Calculator;
-use Magento\Framework\Pricing\Amount\Base;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class LinkPriceTest extends TestCase
+/**
+ * Class LinkPriceTest
+ */
+class LinkPriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var LinkPrice
+     * @var \Magento\Downloadable\Pricing\Price\LinkPrice
      */
     protected $linkPrice;
 
     /**
-     * @var Base|MockObject
+     * @var \Magento\Framework\Pricing\Amount\Base|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $amountMock;
 
     /**
-     * @var Product|MockObject
+     * @var \Magento\Catalog\Model\Product|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $saleableItemMock;
 
     /**
-     * @var Calculator|MockObject
+     * @var \Magento\Framework\Pricing\Adjustment\Calculator|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $calculatorMock;
 
     /**
-     * @var LinkResourceModel|MockObject
+     * @var \Magento\Downloadable\Model\ResourceModel\Link|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $linkMock;
 
     /**
-     * @var PriceCurrencyInterface|MockObject
+     * @var \Magento\Framework\Pricing\PriceCurrencyInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $priceCurrencyMock;
 
+    /**
+     * Test setUp
+     */
     protected function setUp(): void
     {
-        $this->saleableItemMock = $this->createMock(Product::class);
-        $this->amountMock = $this->createMock(Base::class);
-        $this->calculatorMock = $this->createMock(Calculator::class);
-        $this->linkMock = $this->getMockBuilder(\Magento\Downloadable\Model\Link::class)->addMethods(['getProduct'])
-            ->onlyMethods(['getPrice', '__wakeup'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->saleableItemMock = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $this->amountMock = $this->createMock(\Magento\Framework\Pricing\Amount\Base::class);
+        $this->calculatorMock = $this->createMock(\Magento\Framework\Pricing\Adjustment\Calculator::class);
+        $this->linkMock = $this->createPartialMock(
+            \Magento\Downloadable\Model\Link::class,
+            ['getPrice', 'getProduct', '__wakeup']
+        );
 
-        $this->priceCurrencyMock = $this->getMockForAbstractClass(PriceCurrencyInterface::class);
+        $this->priceCurrencyMock = $this->createMock(\Magento\Framework\Pricing\PriceCurrencyInterface::class);
 
-        $this->linkPrice = new LinkPrice(
+        $this->linkPrice = new \Magento\Downloadable\Pricing\Price\LinkPrice(
             $this->saleableItemMock,
             1,
             $this->calculatorMock,
@@ -85,7 +81,7 @@ class LinkPriceTest extends TestCase
             ->willReturn($convertedAmount);
         $this->calculatorMock->expects($this->once())
             ->method('getAmount')
-            ->with($convertedAmount, $this->saleableItemMock)
+            ->with($convertedAmount, $this->equalTo($this->saleableItemMock))
             ->willReturn($convertedAmount);
 
         $result = $this->linkPrice->getLinkAmount($this->linkMock);

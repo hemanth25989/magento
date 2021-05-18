@@ -28,8 +28,6 @@ use PHPUnit\Framework\TestCase;
  */
 class MysqlTest extends TestCase
 {
-    const CUSTOM_ERROR_HANDLER_MESSAGE = 'Custom error handler message';
-
     /**
      * @var SelectFactory|MockObject
      */
@@ -148,15 +146,19 @@ class MysqlTest extends TestCase
      */
     public function testCheckDdlTransaction($ddlQuery)
     {
-        $this->expectException('Exception');
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage('DDL statements are not allowed in transactions');
+
         $this->getMysqlPdoAdapterMockForDdlQueryTest()->query($ddlQuery);
     }
 
+    /**
+     */
     public function testMultipleQueryException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Multiple queries can\'t be executed. Run a single query and try again.');
+
         $sql = "SELECT COUNT(*) AS _num FROM test; ";
         $sql .= "INSERT INTO test(id) VALUES (1); ";
         $sql .= "SELECT COUNT(*) AS _num FROM test; ";
@@ -323,7 +325,7 @@ class MysqlTest extends TestCase
             $adapter->rollBack();
             $adapter->commit();
             throw new \Exception('Test Failed!');
-        } catch (\Exception $e) {
+        } catch (\Exception $e) {//phpcs:ignore
             $this->assertEquals(
                 AdapterInterface::ERROR_ROLLBACK_INCOMPLETE_MESSAGE,
                 $e->getMessage()
@@ -347,7 +349,7 @@ class MysqlTest extends TestCase
             $adapter->rollBack();
             $adapter->beginTransaction();
             throw new \Exception('Test Failed!');
-        } catch (\Exception $e) {
+        } catch (\Exception $e) {//phpcs:ignore
             $this->assertEquals(
                 AdapterInterface::ERROR_ROLLBACK_INCOMPLETE_MESSAGE,
                 $e->getMessage()
@@ -490,12 +492,15 @@ class MysqlTest extends TestCase
         $this->assertInstanceOf(Mysql::class, $subject);
     }
 
+    /**
+     */
     public function testConfigValidationByPortWithException()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
             'Port must be configured within host (like \'localhost:33390\') parameter, not within port'
         );
+
         (new ObjectManager($this))->getObject(
             Mysql::class,
             ['config' => ['host' => 'localhost', 'port' => '33390']]

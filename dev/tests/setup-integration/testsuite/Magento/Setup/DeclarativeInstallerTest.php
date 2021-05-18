@@ -380,10 +380,7 @@ class DeclarativeInstallerTest extends SetupTestCase
         $tableStatements = $this->describeTable->describeShard('default');
         $tableSql = $tableStatements['dependent'];
         $this->assertMatchesRegularExpression('/CONSTRAINT\s`DEPENDENT_PAGE_ID_ON_TEST_TABLE_PAGE_ID`/', $tableSql);
-        $this->assertMatchesRegularExpression(
-            '/CONSTRAINT\s`DEPENDENT_SCOPE_ID_ON_TEST_SCOPE_TABLE_SCOPE_ID`/',
-            $tableSql
-        );
+        $this->assertMatchesRegularExpression('/CONSTRAINT\s`DEPENDENT_SCOPE_ID_ON_TEST_SCOPE_TABLE_SCOPE_ID`/', $tableSql);
     }
 
     /**

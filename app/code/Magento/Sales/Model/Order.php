@@ -43,17 +43,17 @@ use Magento\Store\Model\ScopeInterface;
  *
  * @api
  * @method int getGiftMessageId()
- * @method Order setGiftMessageId(int $value)
+ * @method \Magento\Sales\Model\Order setGiftMessageId(int $value)
  * @method bool hasBillingAddressId()
- * @method Order unsBillingAddressId()
+ * @method \Magento\Sales\Model\Order unsBillingAddressId()
  * @method bool hasShippingAddressId()
- * @method Order unsShippingAddressId()
+ * @method \Magento\Sales\Model\Order unsShippingAddressId()
  * @method int getShippigAddressId()
  * @method bool hasCustomerNoteNotify()
  * @method bool hasForcedCanCreditmemo()
  * @method bool getIsInProcess()
- * @method \Magento\Customer\Model\Customer|null getCustomer()
- * @method Order setSendEmail(bool $value)
+ * @method \Magento\Customer\Model\Customer getCustomer()
+ * @method \Magento\Sales\Model\Order setSendEmail(bool $value)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
@@ -509,7 +509,7 @@ class Order extends AbstractModel implements EntityInterface, OrderInterface
      * Load order by system increment identifier
      *
      * @param string $incrementId
-     * @return Order
+     * @return \Magento\Sales\Model\Order
      */
     public function loadByIncrementId($incrementId)
     {
@@ -521,7 +521,7 @@ class Order extends AbstractModel implements EntityInterface, OrderInterface
      *
      * @param string $incrementId
      * @param string $storeId
-     * @return Order
+     * @return \Magento\Sales\Model\Order
      */
     public function loadByIncrementIdAndStoreId($incrementId, $storeId)
     {
@@ -731,7 +731,7 @@ class Order extends AbstractModel implements EntityInterface, OrderInterface
         $hasDueAmount = $this->canInvoice() && ($checkAmtTotalPaid);
         //case when paid amount is refunded and order has creditmemo created
         $creditmemos = ($this->getCreditmemosCollection() === false) ?
-             true : ($this->_memoCollectionFactory->create()->setOrderFilter($this)->getTotalCount() > 0);
+             true : (count($this->getCreditmemosCollection()) > 0);
         $paidAmtIsRefunded = $this->getTotalRefunded() == $totalPaid && $creditmemos;
         if (($hasDueAmount || $paidAmtIsRefunded) ||
             (!$checkAmtTotalPaid &&
@@ -873,7 +873,7 @@ class Order extends AbstractModel implements EntityInterface, OrderInterface
      */
     public function canReorder()
     {
-        return $this->_canReorder();
+        return $this->_canReorder(false);
     }
 
     /**
@@ -1343,7 +1343,8 @@ class Order extends AbstractModel implements EntityInterface, OrderInterface
      */
     public function getShippingMethod($asObject = false)
     {
-        $shippingMethod = $this->getData('shipping_method');
+        // phpstan:ignore "Call to an undefined static method"
+        $shippingMethod = parent::getShippingMethod();
         if (!$asObject || !$shippingMethod) {
             return $shippingMethod;
         } else {
@@ -2079,7 +2080,7 @@ class Order extends AbstractModel implements EntityInterface, OrderInterface
     {
         $storeId = $this->getStoreId();
         if ($storeId === null) {
-            return $this->getStoreName();
+            return $this->getStoreName(1);
         }
         return $this->getStore()->getGroup()->getName();
     }

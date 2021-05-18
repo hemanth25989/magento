@@ -3,70 +3,59 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\I18n\Dictionary;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Setup\Module\I18n\Dictionary\Generator;
-use Magento\Setup\Module\I18n\Dictionary\Options\Resolver;
-use Magento\Setup\Module\I18n\Dictionary\Options\ResolverFactory;
-use Magento\Setup\Module\I18n\Dictionary\Phrase;
-use Magento\Setup\Module\I18n\Dictionary\WriterInterface;
-use Magento\Setup\Module\I18n\Factory;
-use Magento\Setup\Module\I18n\Parser\Contextual;
-use Magento\Setup\Module\I18n\Parser\Parser;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class GeneratorTest extends TestCase
+/**
+ * Generator test
+ */
+class GeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Parser|MockObject
+     * @var \Magento\Setup\Module\I18n\Parser\Parser|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $parserMock;
 
     /**
-     * @var Contextual|MockObject
+     * @var \Magento\Setup\Module\I18n\Parser\Contextual|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $contextualParserMock;
 
     /**
-     * @var Factory|MockObject
+     * @var \Magento\Setup\Module\I18n\Factory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $factoryMock;
 
     /**
-     * @var WriterInterface|MockObject
+     * @var \Magento\Setup\Module\I18n\Dictionary\WriterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $writerMock;
 
     /**
-     * @var Generator
+     * @var \Magento\Setup\Module\I18n\Dictionary\Generator
      */
     protected $generator;
 
     /**
-     * @var ResolverFactory|MockObject
+     * @var \Magento\Setup\Module\I18n\Dictionary\Options\ResolverFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $optionsResolverFactory;
 
     protected function setUp(): void
     {
-        $this->parserMock = $this->createMock(Parser::class);
-        $this->contextualParserMock = $this->createMock(Contextual::class);
-        $this->writerMock = $this->getMockForAbstractClass(WriterInterface::class);
-        $this->factoryMock = $this->createMock(Factory::class);
+        $this->parserMock = $this->createMock(\Magento\Setup\Module\I18n\Parser\Parser::class);
+        $this->contextualParserMock = $this->createMock(\Magento\Setup\Module\I18n\Parser\Contextual::class);
+        $this->writerMock = $this->createMock(\Magento\Setup\Module\I18n\Dictionary\WriterInterface::class);
+        $this->factoryMock = $this->createMock(\Magento\Setup\Module\I18n\Factory::class);
         $this->factoryMock->expects($this->any())
             ->method('createDictionaryWriter')
             ->willReturn($this->writerMock);
 
         $this->optionsResolverFactory =
-            $this->createMock(ResolverFactory::class);
+            $this->createMock(\Magento\Setup\Module\I18n\Dictionary\Options\ResolverFactory::class);
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->generator = $objectManagerHelper->getObject(
-            Generator::class,
+            \Magento\Setup\Module\I18n\Dictionary\Generator::class,
             [
                 'parser' => $this->parserMock,
                 'contextualParser' => $this->contextualParserMock,
@@ -80,19 +69,20 @@ class GeneratorTest extends TestCase
     {
         $outputFilename = 'test';
 
-        $phrase = $this->createMock(Phrase::class);
+        $phrase = $this->createMock(\Magento\Setup\Module\I18n\Dictionary\Phrase::class);
         $this->factoryMock->expects($this->once())
             ->method('createDictionaryWriter')
-            ->with($outputFilename)->willReturnSelf();
+            ->with($outputFilename)
+            ->willReturnSelf();
         $this->parserMock->expects($this->any())->method('getPhrases')->willReturn([$phrase]);
         $options = [];
-        $optionResolver = $this->createMock(Resolver::class);
+        $optionResolver = $this->createMock(\Magento\Setup\Module\I18n\Dictionary\Options\Resolver::class);
         $optionResolver->expects($this->once())
             ->method('getOptions')
             ->willReturn($options);
         $this->optionsResolverFactory->expects($this->once())
             ->method('create')
-            ->with('', false)
+            ->with($this->equalTo(''), $this->equalTo(false))
             ->willReturn($optionResolver);
         $this->generator->generate('', $outputFilename);
         $property = new \ReflectionProperty($this->generator, 'writer');
@@ -106,21 +96,22 @@ class GeneratorTest extends TestCase
         $outputFilename = 'file.csv';
         $filesOptions = ['file1', 'file2'];
         $optionResolver =
-            $this->createMock(Resolver::class);
+            $this->createMock(\Magento\Setup\Module\I18n\Dictionary\Options\Resolver::class);
         $optionResolver->expects($this->once())
             ->method('getOptions')
             ->willReturn($filesOptions);
 
         $this->factoryMock->expects($this->once())
             ->method('createDictionaryWriter')
-            ->with($outputFilename)->willReturnSelf();
+            ->with($outputFilename)
+            ->willReturnSelf();
 
         $this->optionsResolverFactory->expects($this->once())
             ->method('create')
-            ->with($baseDir, false)
+            ->with($this->equalTo($baseDir), $this->equalTo(false))
             ->willReturn($optionResolver);
         $this->parserMock->expects($this->once())->method('parse')->with($filesOptions);
-        $phrase = $this->createMock(Phrase::class);
+        $phrase = $this->createMock(\Magento\Setup\Module\I18n\Dictionary\Phrase::class);
         $this->parserMock->expects($this->once())->method('getPhrases')->willReturn([$phrase]);
         $this->generator->generate($baseDir, $outputFilename);
     }
@@ -131,22 +122,23 @@ class GeneratorTest extends TestCase
         $outputFilename = 'file.csv';
         $filesOptions = ['file1', 'file2'];
         $optionResolver =
-            $this->createMock(Resolver::class);
+            $this->createMock(\Magento\Setup\Module\I18n\Dictionary\Options\Resolver::class);
         $optionResolver->expects($this->once())
             ->method('getOptions')
             ->willReturn($filesOptions);
         $this->optionsResolverFactory->expects($this->once())
             ->method('create')
-            ->with($baseDir, true)
+            ->with($this->equalTo($baseDir), $this->equalTo(true))
             ->willReturn($optionResolver);
 
         $this->contextualParserMock->expects($this->once())->method('parse')->with($filesOptions);
-        $phrase = $this->createMock(Phrase::class);
+        $phrase = $this->createMock(\Magento\Setup\Module\I18n\Dictionary\Phrase::class);
         $this->contextualParserMock->expects($this->once())->method('getPhrases')->willReturn([$phrase]);
 
         $this->factoryMock->expects($this->once())
             ->method('createDictionaryWriter')
-            ->with($outputFilename)->willReturnSelf();
+            ->with($outputFilename)
+            ->willReturnSelf();
 
         $this->generator->generate($baseDir, $outputFilename, true);
     }
@@ -156,18 +148,18 @@ class GeneratorTest extends TestCase
         $baseDir = 'WritingPhrases';
         $filesOptions = ['file1', 'file2'];
         $optionResolver =
-            $this->createMock(Resolver::class);
+            $this->createMock(\Magento\Setup\Module\I18n\Dictionary\Options\Resolver::class);
         $optionResolver->expects($this->once())
             ->method('getOptions')
             ->willReturn($filesOptions);
         $this->optionsResolverFactory->expects($this->once())
             ->method('create')
-            ->with($baseDir, false)
+            ->with($this->equalTo($baseDir), $this->equalTo(false))
             ->willReturn($optionResolver);
 
         $phrases = [
-            $this->createMock(Phrase::class),
-            $this->createMock(Phrase::class),
+            $this->createMock(\Magento\Setup\Module\I18n\Dictionary\Phrase::class),
+            $this->createMock(\Magento\Setup\Module\I18n\Dictionary\Phrase::class),
         ];
 
         $this->parserMock->expects($this->once())->method('getPhrases')->willReturn($phrases);
@@ -177,21 +169,24 @@ class GeneratorTest extends TestCase
         $this->generator->generate($baseDir, 'file.csv');
     }
 
+    /**
+     */
     public function testGenerateWithNoPhrases()
     {
-        $this->expectException('UnexpectedValueException');
+        $this->expectException(\UnexpectedValueException::class);
         $this->expectExceptionMessage('No phrases found in the specified dictionary file.');
+
         $baseDir = 'no_phrases';
         $outputFilename = 'no_file.csv';
         $filesOptions = ['file1', 'file2'];
         $optionResolver =
-            $this->createMock(Resolver::class);
+            $this->createMock(\Magento\Setup\Module\I18n\Dictionary\Options\Resolver::class);
         $optionResolver->expects($this->once())
             ->method('getOptions')
             ->willReturn($filesOptions);
         $this->optionsResolverFactory->expects($this->once())
             ->method('create')
-            ->with($baseDir, true)
+            ->with($this->equalTo($baseDir), $this->equalTo(true))
             ->willReturn($optionResolver);
 
         $this->contextualParserMock->expects($this->once())->method('parse')->with($filesOptions);

@@ -9,10 +9,8 @@ namespace Magento\Sales\Controller\Guest;
 
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Customer\Model\Session;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Message\MessageInterface;
 use Magento\Framework\Stdlib\CookieManagerInterface;
-use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Sales\Api\Data\OrderInterfaceFactory;
 use Magento\Sales\Helper\Guest;
 use Magento\TestFramework\Request;
@@ -39,9 +37,6 @@ class ReorderTest extends AbstractController
     /** @var Session */
     private $customerSession;
 
-    /** @var CartRepositoryInterface */
-    private $quoteRepository;
-
     /**
      * @inheritdoc
      */
@@ -53,7 +48,6 @@ class ReorderTest extends AbstractController
         $this->orderFactory = $this->_objectManager->get(OrderInterfaceFactory::class);
         $this->cookieManager = $this->_objectManager->get(CookieManagerInterface::class);
         $this->customerSession = $this->_objectManager->get(Session::class);
-        $this->quoteRepository = $this->_objectManager->get(CartRepositoryInterface::class);
     }
 
     /**
@@ -61,24 +55,12 @@ class ReorderTest extends AbstractController
      */
     protected function tearDown(): void
     {
-        $createdQuoteId = $this->checkoutSession->getQuoteId();
-
-        if ($createdQuoteId !== null) {
-            try {
-                $this->quoteRepository->delete($this->quoteRepository->get($createdQuoteId));
-            } catch (NoSuchEntityException $e) {
-                //already deleted
-            }
-        }
-
         $this->customerSession->setCustomerId(null);
 
         parent::tearDown();
     }
 
     /**
-     * @magentoDbIsolation disabled
-     *
      * @magentoDataFixture Magento/Sales/_files/order_by_guest_with_simple_product.php
      *
      * @return void
@@ -91,9 +73,7 @@ class ReorderTest extends AbstractController
         $this->cookieManager->setPublicCookie(Guest::COOKIE_NAME, $cookieValue);
         $this->dispatchReorderRequest();
         $this->assertRedirect($this->stringContains('checkout/cart'));
-        $quoteId = $this->checkoutSession->getQuoteId();
-        $this->assertNotNull($quoteId);
-        $quoteItemsCollection = $this->quoteRepository->get((int)$quoteId)->getItemsCollection();
+        $quoteItemsCollection = $this->checkoutSession->getQuote()->getItemsCollection();
         $this->assertCount(1, $quoteItemsCollection);
         $this->assertEquals(
             $order->getItemsCollection()->getFirstItem()->getSku(),

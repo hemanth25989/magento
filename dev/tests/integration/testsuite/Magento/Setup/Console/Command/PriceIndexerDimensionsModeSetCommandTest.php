@@ -13,8 +13,6 @@ use Magento\TestFramework\Helper\Bootstrap;
 
 /**
  * Test command that sets indexer mode for catalog_product_price indexer
- *
- * @magentoDbIsolation disabled
  */
 class PriceIndexerDimensionsModeSetCommandTest extends \Magento\TestFramework\Indexer\TestCase
 {
@@ -30,7 +28,7 @@ class PriceIndexerDimensionsModeSetCommandTest extends \Magento\TestFramework\In
     /**
      * setUp
      */
-    protected function setUp(): void
+    public function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
 
@@ -154,7 +152,6 @@ class PriceIndexerDimensionsModeSetCommandTest extends \Magento\TestFramework\In
     public function testSwitchModeWithInvalidArgument()
     {
         $this->expectException(\InvalidArgumentException::class);
-
         $this->commandTester->execute(
             [
                 'indexer' => 'indexer_not_valid'

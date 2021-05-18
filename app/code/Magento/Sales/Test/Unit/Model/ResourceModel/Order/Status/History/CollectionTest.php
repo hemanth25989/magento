@@ -3,101 +3,84 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\ResourceModel\Order\Status\History;
-
-use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
-use Magento\Framework\Data\Collection\EntityFactory;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\DB\Select;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Status\History;
-use Magento\Sales\Model\ResourceModel\EntityAbstract;
-use Magento\Sales\Model\ResourceModel\Order\Status\History\Collection;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CollectionTest extends TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Collection
+     * @var \Magento\Sales\Model\ResourceModel\Order\Status\History\Collection
      */
     protected $collection;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $connectionMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Event\ManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $eventManagerMock;
 
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $selectMock;
 
     /**
-     * @var History|MockObject
+     * @var \Magento\Sales\Model\Order\Status\History|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $historyItemMock;
 
     /**
-     * @var AbstractDb|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\Db\AbstractDb|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resourceMock;
 
     /**
-     * @var FetchStrategyInterface|MockObject
+     * @var \Magento\Framework\Data\Collection\Db\FetchStrategyInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $fetchStrategyMock;
 
     /**
-     * @var EntityFactory|MockObject
+     * @var \Magento\Framework\Data\Collection\EntityFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $entityFactoryMock;
 
     /**
-     * @var Snapshot|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $entitySnapshotMock;
 
     protected function setUp(): void
     {
-        $this->eventManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
-        $this->connectionMock = $this->createMock(Mysql::class);
-        $this->selectMock = $this->createMock(Select::class);
+        $this->eventManagerMock = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
+        $this->connectionMock = $this->createMock(\Magento\Framework\DB\Adapter\Pdo\Mysql::class);
+        $this->selectMock = $this->createMock(\Magento\Framework\DB\Select::class);
         $this->historyItemMock = $this->createPartialMock(
-            History::class,
-            ['addData']
+            \Magento\Sales\Model\Order\Status\History::class,
+            ['__wakeup', 'addData']
         );
         $this->resourceMock = $this->getMockForAbstractClass(
-            EntityAbstract::class,
+            \Magento\Sales\Model\ResourceModel\EntityAbstract::class,
             [],
             '',
             false,
             true,
             true,
-            ['getConnection', 'getMainTable', 'getTable']
+            ['getConnection', 'getMainTable', 'getTable', '__wakeup']
         );
         $this->entitySnapshotMock = $this->createMock(
-            Snapshot::class
+            \Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot::class
         );
         $this->fetchStrategyMock = $this->getMockForAbstractClass(
-            FetchStrategyInterface::class
+            \Magento\Framework\Data\Collection\Db\FetchStrategyInterface::class
         );
-        $this->entityFactoryMock = $this->createMock(EntityFactory::class);
+        $this->entityFactoryMock = $this->createMock(\Magento\Framework\Data\Collection\EntityFactory::class);
 
         $this->resourceMock->expects($this->any())->method('getConnection')->willReturn(
             $this->connectionMock
@@ -112,7 +95,7 @@ class CollectionTest extends TestCase
         $data = [['data']];
         $this->historyItemMock->expects($this->once())
             ->method('addData')
-            ->with($data[0])
+            ->with($this->equalTo($data[0]))
             ->willReturn($this->historyItemMock);
 
         $this->fetchStrategyMock->expects($this->once())
@@ -123,8 +106,8 @@ class CollectionTest extends TestCase
             ->method('create')
             ->willReturn($this->historyItemMock);
 
-        $logger = $this->getMockForAbstractClass(LoggerInterface::class);
-        $this->collection = new Collection(
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $this->collection = new \Magento\Sales\Model\ResourceModel\Order\Status\History\Collection(
             $this->entityFactoryMock,
             $logger,
             $this->fetchStrategyMock,
@@ -140,7 +123,9 @@ class CollectionTest extends TestCase
         $orderId = 100000512;
         $entityType = 'order';
 
-        $order = $this->createPartialMock(Order::class, ['getEntityType', 'getId']);
+        $order = $this->createPartialMock(\Magento\Sales\Model\Order::class, ['__wakeup',
+            'getEntityType',
+            'getId']);
         $order->expects($this->once())
             ->method('getEntityType')
             ->willReturn($entityType);

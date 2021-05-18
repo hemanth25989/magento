@@ -3,20 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Indexer\Product\Eav\Plugin;
 
-use Magento\Catalog\Model\Indexer\Product\Eav\Plugin\AttributeSet;
 use Magento\Catalog\Model\Indexer\Product\Eav\Plugin\AttributeSet\IndexableAttributeFilter;
-use Magento\Catalog\Model\Indexer\Product\Eav\Processor;
 use Magento\Eav\Model\Entity\Attribute\Set as EavAttributeSet;
 use Magento\Eav\Model\Entity\Attribute\SetFactory;
+use Magento\Catalog\Model\Indexer\Product\Eav\Processor;
+use Magento\Catalog\Model\Indexer\Product\Eav\Plugin\AttributeSet;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AttributeSetTest extends TestCase
+class AttributeSetTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -29,27 +25,27 @@ class AttributeSetTest extends TestCase
     private $model;
 
     /**
-     * @var Processor|MockObject
+     * @var Processor|\PHPUnit\Framework\MockObject\MockObject
      */
     private $eavProcessorMock;
 
     /**
-     * @var IndexableAttributeFilter|MockObject
+     * @var IndexableAttributeFilter|\PHPUnit\Framework\MockObject\MockObject
      */
     private $filterMock;
 
     /**
-     * @var EavAttributeSet|MockObject
+     * @var EavAttributeSet|\PHPUnit\Framework\MockObject\MockObject
      */
     private $subjectMock;
 
     /**
-     * @var SetFactory|MockObject
+     * @var SetFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $setFactoryMock;
 
     /**
-     * @var EavAttributeSet|MockObject
+     * @var EavAttributeSet|\PHPUnit\Framework\MockObject\MockObject
      */
     private $originalSetMock;
 

@@ -3,26 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Design\Fallback\Rule;
 
 use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Component\ComponentRegistrarInterface;
-use Magento\Framework\View\Design\Fallback\Rule\Module;
+use \Magento\Framework\View\Design\Fallback\Rule\Module;
 use Magento\Framework\View\Design\Fallback\Rule\RuleInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ModuleTest extends TestCase
+class ModuleTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RuleInterface|MockObject
+     * @var RuleInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $rule;
 
     /**
-     * @var ComponentRegistrarInterface|MockObject
+     * @var ComponentRegistrarInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $componentRegistrar;
 
@@ -33,17 +29,20 @@ class ModuleTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->rule = $this->getMockForAbstractClass(RuleInterface::class);
+        $this->rule = $this->getMockForAbstractClass(\Magento\Framework\View\Design\Fallback\Rule\RuleInterface::class);
         $this->componentRegistrar = $this->getMockForAbstractClass(
-            ComponentRegistrarInterface::class
+            \Magento\Framework\Component\ComponentRegistrarInterface::class
         );
         $this->model = new Module($this->rule, $this->componentRegistrar);
     }
 
+    /**
+     */
     public function testGetPatternDirsException()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Required parameter "module_name" is not specified');
+
         $this->model->getPatternDirs([]);
     }
 

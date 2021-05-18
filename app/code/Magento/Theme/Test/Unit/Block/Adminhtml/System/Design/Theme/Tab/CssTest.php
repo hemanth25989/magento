@@ -3,68 +3,53 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Theme\Test\Unit\Block\Adminhtml\System\Design\Theme\Tab;
-
-use Magento\Backend\Model\Url;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Data\FormFactory;
-use Magento\Framework\Encryption\UrlCoder;
-use Magento\Framework\File\Size;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Theme\Block\Adminhtml\System\Design\Theme\Edit\Form\Element\File;
-use Magento\Theme\Block\Adminhtml\System\Design\Theme\Edit\Form\Element\Links;
-use Magento\Theme\Block\Adminhtml\System\Design\Theme\Edit\Tab\Css;
-use Magento\Theme\Model\Uploader\Service;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CssTest extends TestCase
+class CssTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Css
+     * @var \Magento\Theme\Block\Adminhtml\System\Design\Theme\Edit\Tab\Css
      */
     protected $_model;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_objectManager;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlBuilder;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlCoder;
 
     protected function setUp(): void
     {
-        $this->_objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
-        $this->urlBuilder = $this->createMock(Url::class);
-        $this->urlCoder = $this->createMock(UrlCoder::class);
+        $this->_objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
+        $this->urlBuilder = $this->createMock(\Magento\Backend\Model\Url::class);
+        $this->urlCoder = $this->createMock(\Magento\Framework\Encryption\UrlCoder::class);
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $constructArguments = $objectManagerHelper->getConstructArguments(
-            Css::class,
+            \Magento\Theme\Block\Adminhtml\System\Design\Theme\Edit\Tab\Css::class,
             [
-                'formFactory' => $this->createMock(FormFactory::class),
+                'formFactory' => $this->createMock(\Magento\Framework\Data\FormFactory::class),
                 'objectManager' => $this->_objectManager,
-                'uploaderService' => $this->createMock(Service::class),
+                'uploaderService' => $this->createMock(\Magento\Theme\Model\Uploader\Service::class),
                 'urlBuilder' => $this->urlBuilder,
                 'urlCoder' => $this->urlCoder
             ]
         );
 
-        $this->_model = $this->getMockBuilder(Css::class)
+        $this->_model = $this->getMockBuilder(\Magento\Theme\Block\Adminhtml\System\Design\Theme\Edit\Tab\Css::class)
             ->setMethods(['_getCurrentTheme'])
             ->setConstructorArgs($constructArguments)
             ->getMock();
@@ -74,7 +59,7 @@ class CssTest extends TestCase
     {
         $method = self::getMethod('_getUploadCssFileNote');
         /** @var $sizeModel \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\File\Size  */
-        $sizeModel = $this->createMock(Size::class);
+        $sizeModel = $this->createMock(\Magento\Framework\File\Size::class);
         $sizeModel->expects($this->any())->method('getMaxFileSizeInMb')->willReturn('2M');
 
         $this->_objectManager->expects(
@@ -82,7 +67,7 @@ class CssTest extends TestCase
         )->method(
             'get'
         )->with(
-            Size::class
+            \Magento\Framework\File\Size::class
         )->willReturn(
             $sizeModel
         );
@@ -98,23 +83,23 @@ class CssTest extends TestCase
     {
         $method = self::getMethod('_getAdditionalElementTypes');
 
-        /** @var ScopeConfigInterface $configModel */
-        $configModel = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        /** @var $configModel \Magento\Framework\App\Config\ScopeConfigInterface */
+        $configModel = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
 
         $this->_objectManager->expects(
             $this->any()
         )->method(
             'get'
         )->with(
-            ScopeConfigInterface::class
+            \Magento\Framework\App\Config\ScopeConfigInterface::class
         )->willReturn(
             $configModel
         );
 
         $result = $method->invokeArgs($this->_model, []);
         $expectedResult = [
-            'links' => Links::class,
-            'css_file' => File::class,
+            'links' => \Magento\Theme\Block\Adminhtml\System\Design\Theme\Edit\Form\Element\Links::class,
+            'css_file' => \Magento\Theme\Block\Adminhtml\System\Design\Theme\Edit\Form\Element\File::class,
         ];
         $this->assertEquals($expectedResult, $result);
     }
@@ -130,7 +115,7 @@ class CssTest extends TestCase
      */
     protected static function getMethod($name)
     {
-        $class = new \ReflectionClass(Css::class);
+        $class = new \ReflectionClass(\Magento\Theme\Block\Adminhtml\System\Design\Theme\Edit\Tab\Css::class);
         $method = $class->getMethod($name);
         $method->setAccessible(true);
         return $method;

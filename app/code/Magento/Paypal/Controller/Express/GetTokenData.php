@@ -9,6 +9,7 @@ namespace Magento\Paypal\Controller\Express;
 
 use Magento\Authorization\Model\UserContextInterface;
 use Magento\Framework\App\Action\HttpGetActionInterface as HttpGetActionInterface;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
@@ -75,7 +76,7 @@ class GetTokenData extends AbstractExpress implements HttpGetActionInterface
     private $guestCartRepository;
 
     /**
-     * @var UserContextInterface
+     * @var UserContextInterface|null
      */
     private $userContext;
 
@@ -108,7 +109,7 @@ class GetTokenData extends AbstractExpress implements HttpGetActionInterface
         CustomerRepository $customerRepository,
         CartRepositoryInterface $cartRepository,
         GuestCartRepositoryInterface $guestCartRepository,
-        UserContextInterface $userContext
+        UserContextInterface $userContext = null
     ) {
         parent::__construct(
             $context,
@@ -125,7 +126,7 @@ class GetTokenData extends AbstractExpress implements HttpGetActionInterface
         $this->customerRepository = $customerRepository;
         $this->cartRepository = $cartRepository;
         $this->guestCartRepository = $guestCartRepository;
-        $this->userContext = $userContext;
+        $this->userContext = $userContext ?? ObjectManager::getInstance()->get(UserContextInterface::class);
     }
 
     /**

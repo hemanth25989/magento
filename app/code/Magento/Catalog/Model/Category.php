@@ -314,22 +314,18 @@ class Category extends \Magento\Catalog\Model\AbstractModel implements
         return $this->customAttributesCodes;
     }
 
-    // phpcs:disable Generic.CodeAnalysis.UselessOverridingMethod
     /**
      * Returns model resource
      *
      * @throws \Magento\Framework\Exception\LocalizedException
      * @return \Magento\Catalog\Model\ResourceModel\Category
      * @deprecated 102.0.6 because resource models should be used directly
-     * phpcs:disable Generic.CodeAnalysis.UselessOverridingMethod
      * @since 102.0.6
      */
-    protected function _getResource()
+    protected function _getResource() //phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod
     {
-        //phpcs:enable Generic.CodeAnalysis.UselessOverridingMethod
         return parent::_getResource();
     }
-    // phpcs:enable
 
     /**
      * Get flat resource model flag

@@ -3,24 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Tax\Test\Unit\Model\System\Message\Notification;
 
+use Magento\Tax\Model\Config as TaxConfig;
+use Magento\Tax\Model\System\Message\Notification\DiscountErrors as DiscountErrorsNotification;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Api\Data\WebsiteInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Tax\Model\Config as TaxConfig;
-use Magento\Tax\Model\System\Message\Notification\DiscountErrors as DiscountErrorsNotification;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for @see \Magento\Tax\Model\System\Message\Notification\DiscountErrors
  */
-class DiscountErrorsTest extends TestCase
+class DiscountErrorsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DiscountErrorsNotification
@@ -28,17 +24,17 @@ class DiscountErrorsTest extends TestCase
     private $discountErrorsNotification;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface | \PHPUnit\Framework\MockObject\MockObject
      */
     private $storeManagerMock;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var UrlInterface | \PHPUnit\Framework\MockObject\MockObject
      */
     private $urlBuilderMock;
 
     /**
-     * @var TaxConfig|MockObject
+     * @var TaxConfig | \PHPUnit\Framework\MockObject\MockObject
      */
     private $taxConfigMock;
 

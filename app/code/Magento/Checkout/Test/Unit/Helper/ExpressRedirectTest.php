@@ -3,73 +3,58 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Checkout\Test\Unit\Helper;
 
-use Magento\Checkout\Controller\Express\RedirectLoginInterface;
-use Magento\Checkout\Helper\ExpressRedirect;
-use Magento\Customer\Model\Session;
-use Magento\Framework\App\ActionFlag;
-use Magento\Framework\App\Helper\Context;
-use Magento\Framework\App\Response\Http;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Url\Helper\Data;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ExpressRedirectTest extends TestCase
+class ExpressRedirectTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_actionFlag;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_objectManager;
 
     /**
      * Customer session
      *
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_customerSession;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_context;
 
     /**
-     * @var ExpressRedirect
+     * @var \Magento\Checkout\Helper\ExpressRedirect
      */
     protected $_helper;
 
     protected function setUp(): void
     {
         $this->_actionFlag = $this->getMockBuilder(
-            ActionFlag::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['set']
-            )->getMock();
+            \Magento\Framework\App\ActionFlag::class
+        )->disableOriginalConstructor()->setMethods(
+            ['set']
+        )->getMock();
 
-        $this->_objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->_objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
 
         $this->_customerSession = $this->getMockBuilder(
-            Session::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['setBeforeAuthUrl']
-            )->getMock();
+            \Magento\Customer\Model\Session::class
+        )->disableOriginalConstructor()->setMethods(
+            ['setBeforeAuthUrl']
+        )->getMock();
 
-        $this->_context = $this->getMockBuilder(Context::class)
+        $this->_context = $this->getMockBuilder(\Magento\Framework\App\Helper\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->_helper = new ExpressRedirect(
+        $this->_helper = new \Magento\Checkout\Helper\ExpressRedirect(
             $this->_actionFlag,
             $this->_objectManager,
             $this->_customerSession,
@@ -86,17 +71,16 @@ class ExpressRedirectTest extends TestCase
     public function testRedirectLogin($actionFlagList, $customerBeforeAuthUrl, $customerBeforeAuthUrlDefault)
     {
         $expressRedirectMock = $this->getMockBuilder(
-            RedirectLoginInterface::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                [
-                    'getActionFlagList',
-                    'getResponse',
-                    'getCustomerBeforeAuthUrl',
-                    'getLoginUrl',
-                    'getRedirectActionName',
-                ]
-            )->getMock();
+            \Magento\Checkout\Controller\Express\RedirectLoginInterface::class
+        )->disableOriginalConstructor()->setMethods(
+            [
+                'getActionFlagList',
+                'getResponse',
+                'getCustomerBeforeAuthUrl',
+                'getLoginUrl',
+                'getRedirectActionName',
+            ]
+        )->getMock();
         $expressRedirectMock->expects(
             $this->any()
         )->method(
@@ -122,11 +106,10 @@ class ExpressRedirectTest extends TestCase
         );
 
         $urlMock = $this->getMockBuilder(
-            Data::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['addRequestParam']
-            )->getMock();
+            \Magento\Framework\Url\Helper\Data::class
+        )->disableOriginalConstructor()->setMethods(
+            ['addRequestParam']
+        )->getMock();
         $urlMock->expects(
             $this->once()
         )->method(
@@ -143,17 +126,16 @@ class ExpressRedirectTest extends TestCase
         )->method(
             'get'
         )->with(
-            Data::class
+            \Magento\Framework\Url\Helper\Data::class
         )->willReturn(
             $urlMock
         );
 
         $responseMock = $this->getMockBuilder(
-            Http::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['setRedirect']
-            )->getMock();
+            \Magento\Framework\App\Response\Http::class
+        )->disableOriginalConstructor()->setMethods(
+            ['setRedirect', '__wakeup']
+        )->getMock();
         $responseMock->expects($this->once())->method('setRedirect')->with($expectedLoginUrl);
 
         $expressRedirectMock->expects($this->once())->method('getResponse')->willReturn($responseMock);

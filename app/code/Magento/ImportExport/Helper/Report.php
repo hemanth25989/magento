@@ -47,7 +47,7 @@ class Report extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Framework\Filesystem $filesystem
     ) {
         $this->timeZone = $timeZone;
-        $this->varDirectory = $filesystem->getDirectoryWrite(DirectoryList::VAR_IMPORT_EXPORT);
+        $this->varDirectory = $filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
         $importHistoryPath = $this->varDirectory->getAbsolutePath('import_history');
         $this->importHistoryDirectory = $filesystem->getDirectoryReadByPath($importHistoryPath);
         parent::__construct($context);
@@ -120,7 +120,7 @@ class Report extends \Magento\Framework\App\Helper\AbstractHelper
      * Retrieve report file size
      *
      * @param string $filename
-     * @return int|null
+     * @return int|mixed
      */
     public function getReportSize($filename)
     {

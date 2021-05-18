@@ -3,74 +3,60 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Analytics\Test\Unit\ReportXml;
-
-use Magento\Analytics\ReportXml\ConnectionFactory;
-use Magento\Analytics\ReportXml\IteratorFactory;
-use Magento\Analytics\ReportXml\Query;
-use Magento\Analytics\ReportXml\QueryFactory;
-use Magento\Analytics\ReportXml\ReportProvider;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
-use Magento\Framework\DB\Statement\Pdo\Mysql;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * A unit test for testing of the reports provider.
  */
-class ReportProviderTest extends TestCase
+class ReportProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ReportProvider
+     * @var \Magento\Analytics\ReportXml\ReportProvider
      */
     private $subject;
 
     /**
-     * @var Query|MockObject
+     * @var \Magento\Analytics\ReportXml\Query|\PHPUnit\Framework\MockObject\MockObject
      */
     private $queryMock;
 
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select|\PHPUnit\Framework\MockObject\MockObject
      */
     private $selectMock;
 
     /**
-     * @var \IteratorIterator|MockObject
+     * @var \IteratorIterator|\PHPUnit\Framework\MockObject\MockObject
      */
     private $iteratorMock;
 
     /**
-     * @var Mysql|MockObject
+     * @var \Magento\Framework\DB\Statement\Pdo\Mysql|\PHPUnit\Framework\MockObject\MockObject
      */
     private $statementMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $connectionMock;
 
     /**
-     * @var QueryFactory|MockObject
+     * @var \Magento\Analytics\ReportXml\QueryFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $queryFactoryMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManagerHelper;
 
     /**
-     * @var ConnectionFactory|MockObject
+     * @var \Magento\Analytics\ReportXml\ConnectionFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $connectionFactoryMock;
 
     /**
-     * @var IteratorFactory|MockObject
+     * @var \Magento\Analytics\ReportXml\IteratorFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $iteratorFactoryMock;
 
@@ -79,33 +65,69 @@ class ReportProviderTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->selectMock = $this->createMock(Select::class);
+        $this->selectMock = $this->getMockBuilder(
+            \Magento\Framework\DB\Select::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        $this->queryMock = $this->createMock(Query::class);
-        $this->queryMock
+        $this->queryMock = $this->getMockBuilder(
+            \Magento\Analytics\ReportXml\Query::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
+        $this->queryMock->expects($this->any())
             ->method('getSelect')
             ->willReturn($this->selectMock);
 
-        $this->iteratorMock = $this->createMock(\IteratorIterator::class);
+        $this->iteratorMock = $this->getMockBuilder(
+            \IteratorIterator::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        $this->statementMock = $this->createMock(Mysql::class);
-        $this->statementMock
+        $this->statementMock = $this->getMockBuilder(
+            \Magento\Framework\DB\Statement\Pdo\Mysql::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
+        $this->statementMock->expects($this->any())
             ->method('getIterator')
             ->willReturn($this->iteratorMock);
 
-        $this->connectionMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        $this->connectionMock = $this->getMockBuilder(
+            \Magento\Framework\DB\Adapter\AdapterInterface::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        $this->queryFactoryMock = $this->createMock(QueryFactory::class);
+        $this->queryFactoryMock = $this->getMockBuilder(
+            \Magento\Analytics\ReportXml\QueryFactory::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
-        $this->iteratorFactoryMock = $this->createMock(IteratorFactory::class);
-        $this->iteratorMock = $this->createMock(\IteratorIterator::class);
+        $this->iteratorFactoryMock = $this->getMockBuilder(
+            \Magento\Analytics\ReportXml\IteratorFactory::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
+        $this->iteratorMock = $this->getMockBuilder(
+            \IteratorIterator::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
         $this->objectManagerHelper =
-            new ObjectManager($this);
+            new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->connectionFactoryMock = $this->createMock(ConnectionFactory::class);
+        $this->connectionFactoryMock = $this->getMockBuilder(
+            \Magento\Analytics\ReportXml\ConnectionFactory::class
+        )
+        ->disableOriginalConstructor()
+        ->getMock();
 
         $this->subject = $this->objectManagerHelper->getObject(
-            ReportProvider::class,
+            \Magento\Analytics\ReportXml\ReportProvider::class,
             [
                 'queryFactory' => $this->queryFactoryMock,
                 'connectionFactory' => $this->connectionFactoryMock,

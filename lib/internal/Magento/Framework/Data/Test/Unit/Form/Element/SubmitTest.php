@@ -3,44 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Tests for \Magento\Framework\Data\Form\Element\Submit
  */
 namespace Magento\Framework\Data\Test\Unit\Form\Element;
 
-use Magento\Framework\Data\Form\Element\CollectionFactory;
-use Magento\Framework\Data\Form\Element\Factory;
-use Magento\Framework\Data\Form\Element\Submit;
-use Magento\Framework\DataObject;
-use Magento\Framework\Escaper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class SubmitTest extends TestCase
+class SubmitTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_objectManagerMock;
 
     /**
-     * @var Submit
+     * @var \Magento\Framework\Data\Form\Element\Submit
      */
     protected $_model;
 
     protected function setUp(): void
     {
-        $factoryMock = $this->createMock(Factory::class);
-        $collectionFactoryMock = $this->createMock(CollectionFactory::class);
-        $escaperMock = $this->createMock(Escaper::class);
-        $this->_model = new Submit(
+        $factoryMock = $this->createMock(\Magento\Framework\Data\Form\Element\Factory::class);
+        $collectionFactoryMock = $this->createMock(\Magento\Framework\Data\Form\Element\CollectionFactory::class);
+        $escaperMock = $this->createMock(\Magento\Framework\Escaper::class);
+        $this->_model = new \Magento\Framework\Data\Form\Element\Submit(
             $factoryMock,
             $collectionFactoryMock,
             $escaperMock
         );
-        $formMock = new DataObject();
+        $formMock = new \Magento\Framework\DataObject();
         $formMock->getHtmlIdPrefix('id_prefix');
         $formMock->getHtmlIdPrefix('id_suffix');
         $this->_model->setForm($formMock);
@@ -62,6 +53,6 @@ class SubmitTest extends TestCase
     {
         $html = $this->_model->getHtml();
         $this->assertStringContainsString('type="submit"', $html);
-        $this->assertGreaterThan(0, preg_match('/class=\".*submit.*\"/i', $html));
+        $this->assertTrue(preg_match('/class=\".*submit.*\"/i', $html) > 0);
     }
 }

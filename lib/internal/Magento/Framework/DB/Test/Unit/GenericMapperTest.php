@@ -3,34 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\DB\Test\Unit;
 
-use Magento\Framework\Api\CriteriaInterface;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\GenericMapper;
-use Magento\Framework\DB\MapperFactory;
-use Magento\Framework\DB\MapperInterface;
-use Magento\Framework\DB\Select;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class GenericMapperTest extends TestCase
+/**
+ * Class GenericMapperTest
+ */
+class GenericMapperTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $selectMock;
 
     /**
-     * @var MapperFactory|MockObject
+     * @var \Magento\Framework\DB\MapperFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $mapperFactoryMock;
 
     /**
-     * @var GenericMapper
+     * @var \Magento\Framework\DB\GenericMapper
      */
     protected $geneticMapper;
 
@@ -41,16 +32,16 @@ class GenericMapperTest extends TestCase
      */
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->selectMock = $this->createPartialMock(
-            Select::class,
+            \Magento\Framework\DB\Select::class,
             ['orWhere', 'where', 'setPart', 'getPart']
         );
-        $this->mapperFactoryMock = $this->createPartialMock(MapperFactory::class, ['create']);
+        $this->mapperFactoryMock = $this->createPartialMock(\Magento\Framework\DB\MapperFactory::class, ['create']);
 
         $this->geneticMapper = $objectManager->getObject(
-            GenericMapper::class,
+            \Magento\Framework\DB\GenericMapper::class,
             [
                 'select' => $this->selectMock,
                 'mapperFactory' => $this->mapperFactoryMock,
@@ -66,7 +57,7 @@ class GenericMapperTest extends TestCase
     public function testMapCriteriaList()
     {
         $criteriaMock = $this->getMockForAbstractClass(
-            CriteriaInterface::class,
+            \Magento\Framework\Api\CriteriaInterface::class,
             [],
             '',
             false,
@@ -75,7 +66,7 @@ class GenericMapperTest extends TestCase
             ['getMapperInterfaceName']
         );
         $mapperInstanceMock = $this->getMockForAbstractClass(
-            MapperInterface::class,
+            \Magento\Framework\DB\MapperInterface::class,
             [],
             '',
             false,
@@ -129,7 +120,7 @@ class GenericMapperTest extends TestCase
         ];
 
         $connectionMock = $this->getMockForAbstractClass(
-            AdapterInterface::class,
+            \Magento\Framework\DB\Adapter\AdapterInterface::class,
             [],
             '',
             false,
@@ -138,9 +129,9 @@ class GenericMapperTest extends TestCase
             ['quoteInto', 'prepareSqlCondition']
         );
 
-        /** @var GenericMapper|MockObject $geneticMapper */
+        /** @var \Magento\Framework\DB\GenericMapper|\PHPUnit\Framework\MockObject\MockObject $geneticMapper */
         $geneticMapper =
-            $this->createPartialMock(GenericMapper::class, ['getConnection', 'getSelect']);
+            $this->createPartialMock(\Magento\Framework\DB\GenericMapper::class, ['getConnection', 'getSelect']);
 
         $geneticMapper->expects($this->any())
             ->method('getConnection')
@@ -191,19 +182,19 @@ class GenericMapperTest extends TestCase
             ],
         ];
 
-        /** @var GenericMapper|MockObject $geneticMapper */
-        $geneticMapper = $this->createPartialMock(GenericMapper::class, ['getSelect']);
+        /** @var \Magento\Framework\DB\GenericMapper|\PHPUnit\Framework\MockObject\MockObject $geneticMapper */
+        $geneticMapper = $this->createPartialMock(\Magento\Framework\DB\GenericMapper::class, ['getSelect']);
 
         $geneticMapper->expects($this->any())
             ->method('getSelect')
             ->willReturn($this->selectMock);
         $this->selectMock->expects($this->once())
             ->method('getPart')
-            ->with(Select::COLUMNS)
+            ->with(\Magento\Framework\DB\Select::COLUMNS)
             ->willReturn([]);
         $this->selectMock->expects($this->once())
             ->method('setPart')
-            ->with(Select::COLUMNS, $fields);
+            ->with(\Magento\Framework\DB\Select::COLUMNS, $this->equalTo($fields));
 
         $geneticMapper->mapFields($fields);
     }

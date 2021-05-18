@@ -3,20 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableProduct\Test\Unit\Model\Product\CartConfiguration\Plugin;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\CartConfiguration;
-use Magento\ConfigurableProduct\Model\Product\CartConfiguration\Plugin\Configurable;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ConfigurableTest extends TestCase
+class ConfigurableTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Configurable
+     * @var \Magento\ConfigurableProduct\Model\Product\CartConfiguration\Plugin\Configurable
      */
     protected $model;
 
@@ -26,12 +18,12 @@ class ConfigurableTest extends TestCase
     protected $closureMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_invFramework_MockObject_MockObject
      */
     protected $productMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $subjectMock;
 
@@ -40,9 +32,9 @@ class ConfigurableTest extends TestCase
         $this->closureMock = function () {
             return 'Expected';
         };
-        $this->productMock = $this->createMock(Product::class);
-        $this->subjectMock = $this->createMock(CartConfiguration::class);
-        $this->model = new Configurable();
+        $this->productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $this->subjectMock = $this->createMock(\Magento\Catalog\Model\Product\CartConfiguration::class);
+        $this->model = new \Magento\ConfigurableProduct\Model\Product\CartConfiguration\Plugin\Configurable();
     }
 
     public function testAroundIsProductConfiguredChecksThatSuperAttributeIsSetWhenProductIsConfigurable()

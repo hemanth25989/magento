@@ -3,18 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model\Payflow;
 
 use Magento\Paypal\Model\Config;
 use Magento\Paypal\Model\Info;
 use Magento\Paypal\Model\Payflow\CvvEmsCodeMapper;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 
-class CvvEmsCodeMapperTest extends TestCase
+class CvvEmsCodeMapperTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CvvEmsCodeMapper
@@ -62,8 +59,9 @@ class CvvEmsCodeMapperTest extends TestCase
      */
     public function testGetCodeWithException()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The "some_payment" does not supported by Payflow CVV mapper.');
+
         /** @var OrderPaymentInterface|MockObject $orderPayment */
         $orderPayment = $this->getMockBuilder(OrderPaymentInterface::class)
             ->disableOriginalConstructor()

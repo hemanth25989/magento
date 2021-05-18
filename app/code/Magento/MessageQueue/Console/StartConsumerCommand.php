@@ -88,6 +88,7 @@ class StartConsumerCommand extends Command
 
         $consumer = $this->consumerFactory->get($consumerName, $batchSize);
         $consumer->process($numberOfMessages);
+
         if ($singleThread) {
             $this->lockManager->unlock(md5($consumerName)); //phpcs:ignore
         }

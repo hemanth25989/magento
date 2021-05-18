@@ -3,32 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\DeploymentConfig;
 
 use Magento\Framework\App\DeploymentConfig\CommentParser;
+use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Config\File\ConfigFilePool;
-use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\Directory\ReadInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CommentParserTest extends TestCase
+class CommentParserTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Filesystem|MockObject
+     * @var Filesystem|\PHPUnit\Framework\MockObject\MockObject
      */
     private $filesystemMock;
 
     /**
-     * @var ConfigFilePool|MockObject
+     * @var ConfigFilePool|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configFilePoolMock;
 
     /**
-     * @var ReadInterface|MockObject
+     * @var ReadInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $readDirectoryMock;
 

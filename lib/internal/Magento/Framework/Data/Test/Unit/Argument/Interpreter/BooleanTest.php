@@ -3,16 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit\Argument\Interpreter;
 
-use Magento\Framework\Data\Argument\Interpreter\Boolean;
-use Magento\Framework\Stdlib\BooleanUtils;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Data\Argument\Interpreter\Boolean;
 
-class BooleanTest extends TestCase
+class BooleanTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Boolean
@@ -20,20 +15,23 @@ class BooleanTest extends TestCase
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_booleanUtils;
 
     protected function setUp(): void
     {
-        $this->_booleanUtils = $this->createMock(BooleanUtils::class);
+        $this->_booleanUtils = $this->createMock(\Magento\Framework\Stdlib\BooleanUtils::class);
         $this->_model = new Boolean($this->_booleanUtils);
     }
 
+    /**
+     */
     public function testEvaluateException()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Boolean value is missing');
+
         $this->_model->evaluate([]);
     }
 

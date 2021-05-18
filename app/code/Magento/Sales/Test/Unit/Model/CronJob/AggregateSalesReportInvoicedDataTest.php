@@ -3,58 +3,50 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\CronJob;
 
-use Magento\Framework\Locale\ResolverInterface;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
-use Magento\Sales\Model\CronJob\AggregateSalesReportInvoicedData;
-use Magento\Sales\Model\ResourceModel\Report\Invoiced;
-use Magento\Sales\Model\ResourceModel\Report\InvoicedFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Sales\Model\CronJob\AggregateSalesReportInvoicedData;
 
 /**
  * Tests Magento\Sales\Model\CronJob\AggregateSalesReportInvoicedDataTest
  */
-class AggregateSalesReportInvoicedDataTest extends TestCase
+class AggregateSalesReportInvoicedDataTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ResolverInterface|MockObject
+     * @var \Magento\Framework\Locale\ResolverInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $localeResolverMock;
 
     /**
-     * @var TimezoneInterface|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $localeDateMock;
 
     /**
-     * @var InvoicedFactory|MockObject
+     * @var \Magento\Sales\Model\ResourceModel\Report\InvoicedFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $invoicedFactoryMock;
 
     /**
-     * @var AggregateSalesReportInvoicedData
+     * @var \Magento\Sales\Model\CronJob\AggregateSalesReportInvoicedData
      */
     protected $observer;
 
     protected function setUp(): void
     {
-        $this->localeResolverMock = $this->getMockBuilder(ResolverInterface::class)
+        $this->localeResolverMock = $this->getMockBuilder(\Magento\Framework\Locale\ResolverInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->invoicedFactoryMock = $this->getMockBuilder(
-            InvoicedFactory::class
+            \Magento\Sales\Model\ResourceModel\Report\InvoicedFactory::class
         )
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->localeDateMock = $this->getMockBuilder(TimezoneInterface::class)
+        $this->localeDateMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->observer = new AggregateSalesReportInvoicedData(
             $this->localeResolverMock,
@@ -66,7 +58,7 @@ class AggregateSalesReportInvoicedDataTest extends TestCase
     public function testExecute()
     {
         $date = $this->setupAggregate();
-        $invoicedMock = $this->getMockBuilder(Invoiced::class)
+        $invoicedMock = $this->getMockBuilder(\Magento\Sales\Model\ResourceModel\Report\Invoiced::class)
             ->disableOriginalConstructor()
             ->getMock();
         $invoicedMock->expects($this->once())

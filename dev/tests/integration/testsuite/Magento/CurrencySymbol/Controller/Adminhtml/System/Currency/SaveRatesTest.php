@@ -36,6 +36,15 @@ class SaveRatesTest extends \Magento\TestFramework\TestCase\AbstractBackendContr
     }
 
     /**
+     * Tear down
+     */
+    protected function tearDown(): void
+    {
+        $this->_model = null;
+        parent::tearDown();
+    }
+
+    /**
      * Test save action
      *
      * @magentoDbIsolation enabled

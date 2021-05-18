@@ -67,10 +67,7 @@ class SaveGoogleExperimentScriptObserverTest extends TestCase
         )->willReturn(
             $this->_storeId
         );
-        $event = $this->getMockBuilder(Event::class)
-            ->addMethods(['getProduct'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $event = $this->createPartialMock(Event::class, ['getProduct']);
         $event->expects($this->once())->method('getProduct')->willReturn($this->_productMock);
         $this->_eventObserverMock = $this->createMock(Observer::class);
         $this->_eventObserverMock->expects($this->once())->method('getEvent')->willReturn($event);
@@ -250,10 +247,13 @@ class SaveGoogleExperimentScriptObserverTest extends TestCase
         $this->_modelObserver->execute($this->_eventObserverMock);
     }
 
+    /**
+     */
     public function testEditingCodeIfCodeModelIsNotFound()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Code does not exist');
+
         $experimentScript = 'some string';
         $codeId = 5;
 

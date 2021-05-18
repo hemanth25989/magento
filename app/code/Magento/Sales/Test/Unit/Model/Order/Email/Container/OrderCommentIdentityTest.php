@@ -3,37 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Email\Container;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Sales\Model\Order\Email\Container\OrderCommentIdentity;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Sales\Model\Order\Email\Container\OrderCommentIdentity;
 
-class OrderCommentIdentityTest extends TestCase
+class OrderCommentIdentityTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var OrderCommentIdentity
+     * @var \Magento\Sales\Model\Order\Email\Container\OrderCommentIdentity
      */
     protected $identity;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $scopeConfigInterfaceMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeMock;
 
@@ -42,14 +34,11 @@ class OrderCommentIdentityTest extends TestCase
     protected function setUp(): void
     {
         $this->scopeConfigInterfaceMock = $this->getMockForAbstractClass(
-            ScopeConfigInterface::class
+            \Magento\Framework\App\Config\ScopeConfigInterface::class
         );
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $this->storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
 
-        $this->storeMock = $this->getMockBuilder(Store::class)
-            ->addMethods(['getStoreId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->storeMock = $this->createPartialMock(\Magento\Store\Model\Store::class, ['getStoreId', '__wakeup']);
 
         $this->storeId = 999999999999;
         $this->storeMock->expects($this->any())
@@ -64,9 +53,9 @@ class OrderCommentIdentityTest extends TestCase
         $this->scopeConfigInterfaceMock->expects($this->once())
             ->method('isSetFlag')
             ->with(
-                OrderCommentIdentity::XML_PATH_EMAIL_ENABLED,
-                ScopeInterface::SCOPE_STORE,
-                $this->storeId
+                $this->equalTo(OrderCommentIdentity::XML_PATH_EMAIL_ENABLED),
+                $this->equalTo(\Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                $this->equalTo($this->storeId)
             )
             ->willReturn(true);
         $this->identity->setStore($this->storeMock);
@@ -79,9 +68,9 @@ class OrderCommentIdentityTest extends TestCase
         $this->scopeConfigInterfaceMock->expects($this->once())
             ->method('getValue')
             ->with(
-                OrderCommentIdentity::XML_PATH_EMAIL_COPY_TO,
-                ScopeInterface::SCOPE_STORE,
-                $this->storeId
+                $this->equalTo(OrderCommentIdentity::XML_PATH_EMAIL_COPY_TO),
+                $this->equalTo(\Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                $this->equalTo($this->storeId)
             )
             ->willReturn('test_value,test_value2');
         $this->identity->setStore($this->storeMock);
@@ -94,9 +83,9 @@ class OrderCommentIdentityTest extends TestCase
         $this->scopeConfigInterfaceMock->expects($this->once())
             ->method('getValue')
             ->with(
-                OrderCommentIdentity::XML_PATH_EMAIL_COPY_TO,
-                ScopeInterface::SCOPE_STORE,
-                $this->storeId
+                $this->equalTo(OrderCommentIdentity::XML_PATH_EMAIL_COPY_TO),
+                $this->equalTo(\Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                $this->equalTo($this->storeId)
             )
             ->willReturn('test_value, test_value2');
         $this->identity->setStore($this->storeMock);
@@ -109,9 +98,9 @@ class OrderCommentIdentityTest extends TestCase
         $this->scopeConfigInterfaceMock->expects($this->once())
             ->method('getValue')
             ->with(
-                OrderCommentIdentity::XML_PATH_EMAIL_COPY_TO,
-                ScopeInterface::SCOPE_STORE,
-                $this->storeId
+                $this->equalTo(OrderCommentIdentity::XML_PATH_EMAIL_COPY_TO),
+                $this->equalTo(\Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                $this->equalTo($this->storeId)
             )
             ->willReturn(null);
         $this->identity->setStore($this->storeMock);
@@ -124,9 +113,9 @@ class OrderCommentIdentityTest extends TestCase
         $this->scopeConfigInterfaceMock->expects($this->once())
             ->method('getValue')
             ->with(
-                OrderCommentIdentity::XML_PATH_EMAIL_COPY_METHOD,
-                ScopeInterface::SCOPE_STORE,
-                $this->storeId
+                $this->equalTo(OrderCommentIdentity::XML_PATH_EMAIL_COPY_METHOD),
+                $this->equalTo(\Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                $this->equalTo($this->storeId)
             )
             ->willReturn('copy_method');
 
@@ -140,9 +129,9 @@ class OrderCommentIdentityTest extends TestCase
         $this->scopeConfigInterfaceMock->expects($this->once())
             ->method('getValue')
             ->with(
-                OrderCommentIdentity::XML_PATH_EMAIL_GUEST_TEMPLATE,
-                ScopeInterface::SCOPE_STORE,
-                $this->storeId
+                $this->equalTo(OrderCommentIdentity::XML_PATH_EMAIL_GUEST_TEMPLATE),
+                $this->equalTo(\Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                $this->equalTo($this->storeId)
             )
             ->willReturn('template_id');
 
@@ -156,9 +145,9 @@ class OrderCommentIdentityTest extends TestCase
         $this->scopeConfigInterfaceMock->expects($this->once())
             ->method('getValue')
             ->with(
-                OrderCommentIdentity::XML_PATH_EMAIL_TEMPLATE,
-                ScopeInterface::SCOPE_STORE,
-                $this->storeId
+                $this->equalTo(OrderCommentIdentity::XML_PATH_EMAIL_TEMPLATE),
+                $this->equalTo(\Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                $this->equalTo($this->storeId)
             )
             ->willReturn('template_id');
 
@@ -203,9 +192,9 @@ class OrderCommentIdentityTest extends TestCase
         $this->scopeConfigInterfaceMock->expects($this->once())
             ->method('getValue')
             ->with(
-                OrderCommentIdentity::XML_PATH_EMAIL_IDENTITY,
-                ScopeInterface::SCOPE_STORE,
-                $this->storeId
+                $this->equalTo(OrderCommentIdentity::XML_PATH_EMAIL_IDENTITY),
+                $this->equalTo(\Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+                $this->equalTo($this->storeId)
             )
             ->willReturn($emailIdentity);
 

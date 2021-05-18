@@ -3,37 +3,27 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GroupedProduct\Test\Unit\Block\Adminhtml\Order\Create;
 
-use Magento\Catalog\Model\Product;
-use Magento\Framework\DataObject;
-use Magento\GroupedProduct\Block\Adminhtml\Order\Create\Sidebar;
-use Magento\GroupedProduct\Model\Product\Type\Grouped;
-use Magento\Sales\Block\Adminhtml\Order\Create\Sidebar\AbstractSidebar;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class SidebarTest extends TestCase
+class SidebarTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Sidebar
+     * @var \Magento\GroupedProduct\Block\Adminhtml\Order\Create\Sidebar
      */
     protected $sidebarMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $itemMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $productMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $subjectMock;
 
@@ -44,18 +34,15 @@ class SidebarTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->itemMock = $this->getMockBuilder(DataObject::class)
-            ->addMethods(['getProduct'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->productMock = $this->createMock(Product::class);
+        $this->itemMock = $this->createPartialMock(\Magento\Framework\DataObject::class, ['getProduct']);
+        $this->productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
         $this->subjectMock = $this->createMock(
-            AbstractSidebar::class
+            \Magento\Sales\Block\Adminhtml\Order\Create\Sidebar\AbstractSidebar::class
         );
         $this->closureMock = function () {
             return 'Expected';
         };
-        $this->sidebarMock = new Sidebar();
+        $this->sidebarMock = new \Magento\GroupedProduct\Block\Adminhtml\Order\Create\Sidebar();
     }
 
     public function testAroundGetItemQtyWhenProductGrouped()
@@ -66,7 +53,7 @@ class SidebarTest extends TestCase
         )->method(
             'getTypeId'
         )->willReturn(
-            Grouped::TYPE_CODE
+            \Magento\GroupedProduct\Model\Product\Type\Grouped::TYPE_CODE
         );
         $this->assertEquals(
             '',
@@ -87,7 +74,7 @@ class SidebarTest extends TestCase
             $this->sidebarMock->aroundIsConfigurationRequired(
                 $this->subjectMock,
                 $this->closureMock,
-                Grouped::TYPE_CODE
+                \Magento\GroupedProduct\Model\Product\Type\Grouped::TYPE_CODE
             )
         );
     }

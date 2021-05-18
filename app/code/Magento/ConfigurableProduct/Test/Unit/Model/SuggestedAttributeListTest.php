@@ -3,43 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\ConfigurableProduct\Test\Unit\Model;
 
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\Catalog\Model\ResourceModel\Helper;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection;
-use Magento\ConfigurableProduct\Model\ConfigurableAttributeHandler;
-use Magento\ConfigurableProduct\Model\SuggestedAttributeList;
-use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class SuggestedAttributeListTest extends TestCase
+class SuggestedAttributeListTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SuggestedAttributeList
+     * @var \Magento\ConfigurableProduct\Model\SuggestedAttributeList
      */
     protected $suggestedListModel;
 
     /**
-     * @var ConfigurableAttributeHandler|MockObject
+     * @var \Magento\ConfigurableProduct\Model\ConfigurableAttributeHandler|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $configurableAttributeHandler;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $resourceHelperMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $collectionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $attributeMock;
 
@@ -51,11 +41,11 @@ class SuggestedAttributeListTest extends TestCase
     protected function setUp(): void
     {
         $this->configurableAttributeHandler = $this->createMock(
-            ConfigurableAttributeHandler::class
+            \Magento\ConfigurableProduct\Model\ConfigurableAttributeHandler::class
         );
-        $this->resourceHelperMock = $this->createMock(Helper::class);
+        $this->resourceHelperMock = $this->createMock(\Magento\Catalog\Model\ResourceModel\Helper::class);
         $this->collectionMock = $this->createMock(
-            Collection::class
+            \Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection::class
         );
         $this->resourceHelperMock->expects(
             $this->once()
@@ -84,11 +74,10 @@ class SuggestedAttributeListTest extends TestCase
         )->willReturnMap(
             $valueMap
         );
-        $this->attributeMock = $this->getMockBuilder(Attribute::class)
-            ->addMethods(['getFrontendLabel'])
-            ->onlyMethods(['getId', 'getAttributeCode', 'getSource'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->attributeMock = $this->createPartialMock(
+            \Magento\Catalog\Model\ResourceModel\Eav\Attribute::class,
+            ['getId', 'getFrontendLabel', 'getAttributeCode', 'getSource']
+        );
         $this->collectionMock->expects(
             $this->once()
         )->method(
@@ -96,7 +85,7 @@ class SuggestedAttributeListTest extends TestCase
         )->willReturn(
             ['id' => $this->attributeMock]
         );
-        $this->suggestedListModel = new SuggestedAttributeList(
+        $this->suggestedListModel = new \Magento\ConfigurableProduct\Model\SuggestedAttributeList(
             $this->configurableAttributeHandler,
             $this->resourceHelperMock
         );
@@ -104,7 +93,7 @@ class SuggestedAttributeListTest extends TestCase
 
     public function testGetSuggestedAttributesIfTheyApplicable()
     {
-        $source = $this->createMock(AbstractSource::class);
+        $source = $this->createMock(\Magento\Eav\Model\Entity\Attribute\Source\AbstractSource::class);
         $result['id'] = ['id' => 'id', 'label' => 'label', 'code' => 'code', 'options' => 'options'];
         $this->attributeMock->expects($this->once())->method('getId')->willReturn('id');
         $this->attributeMock->expects($this->once())->method('getFrontendLabel')->willReturn('label');

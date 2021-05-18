@@ -3,21 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Config\Test\Unit\Dom;
 
 use Magento\Framework\Config\Dom\NodeMergingConfig;
 use Magento\Framework\Config\Dom\NodePathMatcher;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for
  *
  * @see NodeMergingConfig
  */
-class NodeMergingConfigTest extends TestCase
+class NodeMergingConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var NodeMergingConfig
@@ -25,7 +21,7 @@ class NodeMergingConfigTest extends TestCase
     protected $object;
 
     /**
-     * @var NodePathMatcher|MockObject
+     * @var NodePathMatcher|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $nodePathMatcher;
 

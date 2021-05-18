@@ -21,9 +21,6 @@ use Laminas\Code\Reflection\ParameterReflection;
  */
 class Repository extends \Magento\Framework\Code\Generator\EntityAbstract
 {
-    /**
-     * Entity type repository
-     */
     const ENTITY_TYPE = 'repository';
 
     /**
@@ -533,9 +530,9 @@ class Repository extends \Magento\Framework\Code\Generator\EntityAbstract
     protected function _getGetListMethod()
     {
         $body = "\$collection = \$this->" . $this->_getSourceCollectionFactoryPropertyName() . "->create();\n"
-        . "\$this->extensionAttributesJoinProcessor->process(\$collection);\n"
-        . "\$this->getCollectionProcessor()->process(\$searchCriteria, \$collection);\n"
-        . "return \$collection;\n";
+            . "\$this->extensionAttributesJoinProcessor->process(\$collection);\n"
+            . "\$this->getCollectionProcessor()->process(\$searchCriteria, \$collection);\n"
+            . "return \$collection;\n";
         return [
             'name' => 'getList',
             'parameters' => [
@@ -620,7 +617,7 @@ class Repository extends \Magento\Framework\Code\Generator\EntityAbstract
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     protected function _validateData()
     {

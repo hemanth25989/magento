@@ -3,43 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\Order\Creditmemo\Total;
 
-use Magento\Directory\Model\Currency;
-use Magento\Framework\DataObject;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\Order\Creditmemo;
-use Magento\Sales\Model\Order\Creditmemo\Total\Shipping;
-use Magento\Tax\Model\Config;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ShippingTest extends TestCase
+class ShippingTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $creditmemoMock;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Tax\Model\Config|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $taxConfig;
 
     /**
-     * @var Shipping
+     * @var \Magento\Sales\Model\Order\Creditmemo\Total\Shipping
      */
     protected $shippingCollector;
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->creditmemoMock = $this->getMockBuilder(Creditmemo::class)
+        $this->creditmemoMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Creditmemo::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -57,7 +45,7 @@ class ShippingTest extends TestCase
                 ]
             )->getMock();
 
-        $priceCurrencyMock = $this->getMockForAbstractClass(PriceCurrencyInterface::class);
+        $priceCurrencyMock = $this->createMock(\Magento\Framework\Pricing\PriceCurrencyInterface::class);
         $priceCurrencyMock->expects($this->any())
             ->method('round')
             ->willReturnCallback(
@@ -66,10 +54,10 @@ class ShippingTest extends TestCase
                 }
             );
 
-        $this->taxConfig = $this->createMock(Config::class);
+        $this->taxConfig = $this->createMock(\Magento\Tax\Model\Config::class);
 
         $this->shippingCollector = $objectManager->getObject(
-            Shipping::class,
+            \Magento\Sales\Model\Order\Creditmemo\Total\Shipping::class,
             [
                 'priceCurrency' => $priceCurrencyMock,
             ]
@@ -84,11 +72,13 @@ class ShippingTest extends TestCase
 
     /**
      * situation: The admin user specified a desired shipping refund that is greater than the amount allowed
+     *
      */
     public function testCollectException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Maximum shipping amount allowed to refund is: 5');
+
         $orderShippingAmount = 10;
         $orderShippingRefunded = 5;
         $allowedShippingAmount = $orderShippingAmount - $orderShippingRefunded;
@@ -96,7 +86,7 @@ class ShippingTest extends TestCase
 
         $this->taxConfig->expects($this->any())->method('displaySalesShippingInclTax')->willReturn(false);
 
-        $currencyMock = $this->getMockBuilder(Currency::class)
+        $currencyMock = $this->getMockBuilder(\Magento\Directory\Model\Currency::class)
             ->disableOriginalConstructor()
             ->getMock();
         $currencyMock->expects($this->once())
@@ -104,7 +94,7 @@ class ShippingTest extends TestCase
             ->with($allowedShippingAmount, null, false)
             ->willReturn($allowedShippingAmount);
 
-        $order = new DataObject(
+        $order = new \Magento\Framework\DataObject(
             [
                 'base_shipping_amount' => $orderShippingAmount,
                 'base_shipping_refunded' => $orderShippingRefunded,
@@ -129,7 +119,7 @@ class ShippingTest extends TestCase
     /**
      * situation: The admin user did *not* specify any desired refund amount
      *
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function testCollectNoSpecifiedShippingAmount()
     {
@@ -154,7 +144,7 @@ class ShippingTest extends TestCase
 
         $this->taxConfig->expects($this->any())->method('displaySalesShippingInclTax')->willReturn(false);
 
-        $order = new DataObject(
+        $order = new \Magento\Framework\DataObject(
             [
                 'shipping_amount' => $orderShippingAmount,
                 'shipping_refunded' => $orderShippingRefunded,
@@ -241,7 +231,7 @@ class ShippingTest extends TestCase
 
         $this->taxConfig->expects($this->any())->method('displaySalesShippingInclTax')->willReturn(false);
 
-        $order = new DataObject(
+        $order = new \Magento\Framework\DataObject(
             [
                 'shipping_amount' => $orderShippingAmount,
                 'shipping_refunded' => $orderShippingAmountRefunded,
@@ -311,7 +301,7 @@ class ShippingTest extends TestCase
     /**
      * situation: The admin user specified the desired refund amount that has taxes embedded within it
      *
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function testCollectUsingTaxInclShippingAmount()
     {
@@ -346,7 +336,7 @@ class ShippingTest extends TestCase
         $expectedGrandTotal = $grandTotalBefore + $expectedShippingAmount;
         $expectedBaseGrandTtoal = $baseGrandTotalBefore + $expectedBaseShippingAmount;
 
-        $order = new DataObject(
+        $order = new \Magento\Framework\DataObject(
             [
                 'shipping_amount' => $orderShippingAmount,
                 'base_shipping_amount' => $baseOrderShippingAmount,

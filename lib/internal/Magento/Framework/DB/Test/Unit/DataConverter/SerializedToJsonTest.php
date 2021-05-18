@@ -3,16 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\DB\Test\Unit\DataConverter;
 
-use Magento\Framework\DB\DataConverter\SerializedToJson;
-use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\Serialize\Serializer\Serialize;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Framework\DB\DataConverter\SerializedToJson;
 
-class SerializedToJsonTest extends TestCase
+class SerializedToJsonTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SerializedToJson

@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\SalesInventory\Test\Unit\Model\Order;
 
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -13,28 +11,29 @@ use Magento\Sales\Api\Data\CreditmemoItemInterface;
 use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Api\OrderItemRepositoryInterface;
 use Magento\SalesInventory\Model\Order\ReturnValidator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ReturnValidatorTest extends TestCase
+/**
+ * Class ReturnValidatorTest
+ */
+class ReturnValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|OrderItemRepositoryInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|OrderItemRepositoryInterface
      */
     private $orderItemRepositoryMock;
 
     /**
-     * @var MockObject|CreditmemoInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|CreditmemoInterface
      */
     private $creditMemoMock;
 
     /**
-     * @var MockObject|CreditmemoItemInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|CreditmemoItemInterface
      */
     private $creditMemoItemMock;
 
     /**
-     * @var MockObject|OrderItemInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|OrderItemInterface
      */
     private $orderItemMock;
 

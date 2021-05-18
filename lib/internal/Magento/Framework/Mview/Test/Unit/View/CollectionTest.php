@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Mview\Test\Unit\View;
 
@@ -17,10 +16,8 @@ use Magento\Framework\Mview\View\State\CollectionInterface as StateCollectionInt
 use Magento\Framework\Mview\View\StateInterface;
 use Magento\Framework\Mview\ViewInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CollectionTest extends TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -28,22 +25,22 @@ class CollectionTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var IndexerConfigInterface|MockObject
+     * @var IndexerConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $indexerConfigMock;
 
     /**
-     * @var EntityFactoryInterface|MockObject
+     * @var EntityFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $entityFactoryMock;
 
     /**
-     * @var MviewConfigInterface|MockObject
+     * @var MviewConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $mviewConfigMock;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $statesFactoryMock;
 
@@ -143,15 +140,6 @@ class CollectionTest extends TestCase
                 $indexers
             ));
 
-        $this->mviewConfigMock
-            ->method('getView')
-            ->willReturnMap(array_map(
-                function ($elem) {
-                    return [$elem, ['view_id' => $elem]];
-                },
-                $views
-            ));
-
         $this->entityFactoryMock
             ->method('create')
             ->willReturnMap([
@@ -174,11 +162,13 @@ class CollectionTest extends TestCase
             ->method('create')
             ->willReturn($states);
 
-        $this->assertInstanceOf(Collection::class, $this->collection->loadData());
+        $this->assertInstanceOf(\Magento\Framework\Mview\View\Collection::class, $this->collection->loadData());
 
         $views = $this->collection->getViewsByStateMode(StateInterface::MODE_DISABLED);
         $this->assertCount($numDisabledViews, $views);
-        $this->assertContainsOnlyInstancesOf(ViewInterface::class, $views);
+        foreach ($views as $view) {
+            $this->assertInstanceOf(ViewInterface::class, $view);
+        }
 
         $views = $this->collection->getViewsByStateMode(StateInterface::MODE_ENABLED);
         $this->assertCount($numEnabledViews, $views);
@@ -187,7 +177,7 @@ class CollectionTest extends TestCase
     /**
      * @param array $methods
      * @param array $data
-     * @return StateInterface|MockObject
+     * @return StateInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private function getStateMock(array $methods = [], array $data = [])
     {
@@ -202,7 +192,7 @@ class CollectionTest extends TestCase
 
     /**
      * @param array $methods
-     * @return ViewInterface|MockObject
+     * @return ViewInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private function getViewMock(array $methods = [])
     {
@@ -216,11 +206,11 @@ class CollectionTest extends TestCase
     /**
      * @param array $methods
      * @param array $data
-     * @return MockObject|IndexerInterface
+     * @return \PHPUnit\Framework\MockObject\MockObject|IndexerInterface
      */
     private function getIndexerMock(array $methods = [], array $data = [])
     {
-        /** @var MockObject|IndexerInterface $indexer */
+        /** @var \PHPUnit\Framework\MockObject\MockObject|IndexerInterface $indexer */
         $indexer = $this->getMockBuilder(IndexerInterface::class)
             ->setMethods(array_merge($methods, ['getId', 'getViewId']))
             ->disableOriginalConstructor()

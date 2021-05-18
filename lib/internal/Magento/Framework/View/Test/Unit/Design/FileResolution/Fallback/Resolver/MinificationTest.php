@@ -3,32 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit\Design\FileResolution\Fallback\Resolver;
 
 use Magento\Framework\View\Design\FileResolution\Fallback\Resolver\Minification;
 use Magento\Framework\View\Design\FileResolution\Fallback\ResolverInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for Magento\Framework\View\Design\FileResolution\Fallback\Resolver\Minification
  */
-class MinificationTest extends TestCase
+class MinificationTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Minification
+     * @var \Magento\Framework\View\Design\FileResolution\Fallback\Resolver\Minification
      */
     protected $minification;
 
     /**
-     * @var ResolverInterface|MockObject
+     * @var ResolverInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resolverMock;
 
     /**
-     * @var \Magento\Framework\View\Asset\Minification|MockObject
+     * @var \Magento\Framework\View\Asset\Minification|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $assetMinificationMock;
 
@@ -38,9 +35,9 @@ class MinificationTest extends TestCase
     protected function setUp(): void
     {
         $this->resolverMock = $this
-            ->getMockBuilder(ResolverInterface::class)
+            ->getMockBuilder(\Magento\Framework\View\Design\FileResolution\Fallback\ResolverInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->assetMinificationMock = $this->getMockBuilder(\Magento\Framework\View\Asset\Minification::class)
             ->disableOriginalConstructor()

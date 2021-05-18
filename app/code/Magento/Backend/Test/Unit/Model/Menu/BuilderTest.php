@@ -3,49 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\Model\Menu;
 
-use Magento\Backend\Model\Menu;
-use Magento\Backend\Model\Menu\Builder;
-use Magento\Backend\Model\Menu\Builder\Command\Add;
-use Magento\Backend\Model\Menu\Builder\Command\Remove;
-use Magento\Backend\Model\Menu\Builder\Command\Update;
-use Magento\Backend\Model\Menu\Item;
-use Magento\Backend\Model\Menu\Item\Factory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class BuilderTest extends TestCase
+class BuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Builder
+     * @var \Magento\Backend\Model\Menu\Builder
      */
     private $model;
 
     /**
-     * @var Menu|MockObject
+     * @var \Magento\Backend\Model\Menu|\PHPUnit\Framework\MockObject\MockObject
      */
     private $menuMock;
 
     /**
-     * @var Factory|MockObject
+     * @var \Magento\Backend\Model\Menu\Item\Factory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $factoryMock;
 
     protected function setUp(): void
     {
-        $this->factoryMock = $this->createMock(Factory::class);
-        $this->menuMock = $this->getMockBuilder(Menu::class)
-            ->addMethods(['addChild'])
-            ->onlyMethods(['add'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->factoryMock = $this->createMock(\Magento\Backend\Model\Menu\Item\Factory::class);
+        $this->menuMock = $this->createPartialMock(\Magento\Backend\Model\Menu::class, ['addChild', 'add']);
 
         $this->model = (new ObjectManager($this))->getObject(
-            Builder::class,
+            \Magento\Backend\Model\Menu\Builder::class,
             [
                 'menuItemFactory' => $this->factoryMock
             ]
@@ -54,22 +39,22 @@ class BuilderTest extends TestCase
 
     public function testProcessCommand()
     {
-        $command = $this->createMock(Add::class);
+        $command = $this->createMock(\Magento\Backend\Model\Menu\Builder\Command\Add::class);
         $command->expects($this->any())->method('getId')->willReturn(1);
-        $command2 = $this->createMock(Update::class);
+        $command2 = $this->createMock(\Magento\Backend\Model\Menu\Builder\Command\Update::class);
         $command2->expects($this->any())->method('getId')->willReturn(1);
-        $command->expects($this->once())->method('chain')->with($command2);
+        $command->expects($this->once())->method('chain')->with($this->equalTo($command2));
         $this->model->processCommand($command);
         $this->model->processCommand($command2);
     }
 
     public function testGetResultBuildsTreeStructure()
     {
-        $item1 = $this->createMock(Item::class);
+        $item1 = $this->createMock(\Magento\Backend\Model\Menu\Item::class);
         $item1->expects($this->once())->method('getChildren')->willReturn($this->menuMock);
         $this->factoryMock->expects($this->any())->method('create')->willReturn($item1);
 
-        $item2 = $this->createMock(Item::class);
+        $item2 = $this->createMock(\Magento\Backend\Model\Menu\Item::class);
         $this->factoryMock->expects($this->at(1))->method('create')->willReturn($item2);
 
         $this->menuMock->expects(
@@ -77,9 +62,9 @@ class BuilderTest extends TestCase
         )->method(
             'add'
         )->with(
-            $this->isInstanceOf(Item::class),
-            null,
-            2
+            $this->isInstanceOf(\Magento\Backend\Model\Menu\Item::class),
+            $this->equalTo(null),
+            $this->equalTo(2)
         );
 
         $this->menuMock->expects(
@@ -87,13 +72,13 @@ class BuilderTest extends TestCase
         )->method(
             'add'
         )->with(
-            $this->isInstanceOf(Item::class),
-            null,
-            4
+            $this->isInstanceOf(\Magento\Backend\Model\Menu\Item::class),
+            $this->equalTo(null),
+            $this->equalTo(4)
         );
 
         $this->model->processCommand(
-            new Add(
+            new \Magento\Backend\Model\Menu\Builder\Command\Add(
                 [
                     'id' => 'item1',
                     'title' => 'Item 1',
@@ -104,7 +89,7 @@ class BuilderTest extends TestCase
             )
         );
         $this->model->processCommand(
-            new Add(
+            new \Magento\Backend\Model\Menu\Builder\Command\Add(
                 [
                     'id' => 'item2',
                     'parent' => 'item1',
@@ -122,7 +107,7 @@ class BuilderTest extends TestCase
     public function testGetResultSkipsRemovedItems()
     {
         $this->model->processCommand(
-            new Add(
+            new \Magento\Backend\Model\Menu\Builder\Command\Add(
                 [
                     'id' => 1,
                     'title' => 'Item 1',
@@ -131,21 +116,24 @@ class BuilderTest extends TestCase
                 ]
             )
         );
-        $this->model->processCommand(new Remove(['id' => 1]));
+        $this->model->processCommand(new \Magento\Backend\Model\Menu\Builder\Command\Remove(['id' => 1]));
 
         $this->menuMock->expects($this->never())->method('addChild');
 
         $this->model->getResult($this->menuMock);
     }
 
+    /**
+     */
     public function testGetResultSkipItemsWithInvalidParent()
     {
-        $this->expectException('OutOfRangeException');
-        $item1 = $this->createMock(Item::class);
+        $this->expectException(\OutOfRangeException::class);
+
+        $item1 = $this->createMock(\Magento\Backend\Model\Menu\Item::class);
         $this->factoryMock->expects($this->any())->method('create')->willReturn($item1);
 
         $this->model->processCommand(
-            new Add(
+            new \Magento\Backend\Model\Menu\Builder\Command\Add(
                 [
                     'id' => 'item1',
                     'parent' => 'not_exists',

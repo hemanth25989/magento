@@ -3,49 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Theme\Test\Unit\Block\Adminhtml\Wysiwyg\Files;
 
-use Magento\Backend\Model\Url;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Theme\Block\Adminhtml\Wysiwyg\Files\Content;
 use Magento\Theme\Model\Wysiwyg\Storage;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ContentTest extends TestCase
+class ContentTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Url|MockObject
+     * @var \Magento\Backend\Model\Url|PHPUnit\Framework\MockObject\MockObject
      */
     protected $_urlBuilder;
 
     /**
-     * @var \Magento\Theme\Helper\Storage|MockObject
+     * @var \Magento\Theme\Helper\Storage|PHPUnit\Framework\MockObject\MockObject
      */
     protected $_helperStorage;
 
     /**
-     * @var Content|MockObject
+     * @var \Magento\Theme\Block\Adminhtml\Wysiwyg\Files\Content|PHPUnit\Framework\MockObject\MockObject
      */
     protected $_filesContent;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|PHPUnit\Framework\MockObject\MockObject
      */
     protected $_request;
 
     protected function setUp(): void
     {
         $this->_helperStorage = $this->createMock(\Magento\Theme\Helper\Storage::class);
-        $this->_urlBuilder = $this->createMock(Url::class);
-        $this->_request = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->_urlBuilder = $this->createMock(\Magento\Backend\Model\Url::class);
+        $this->_request = $this->createMock(\Magento\Framework\App\RequestInterface::class);
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $constructArguments = $objectManagerHelper->getConstructArguments(
-            Content::class,
+            \Magento\Theme\Block\Adminhtml\Wysiwyg\Files\Content::class,
             [
                 'urlBuilder' => $this->_urlBuilder,
                 'request' => $this->_request,
@@ -53,7 +45,7 @@ class ContentTest extends TestCase
             ]
         );
         $this->_filesContent = $objectManagerHelper->getObject(
-            Content::class,
+            \Magento\Theme\Block\Adminhtml\Wysiwyg\Files\Content::class,
             $constructArguments
         );
     }

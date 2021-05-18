@@ -3,23 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Cache\Test\Unit\Backend;
 
-use Magento\Framework\Cache\Backend\MongoDb;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class MongoDbTest extends TestCase
+class MongoDbTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MongoDb|null
+     * @var \Magento\Framework\Cache\Backend\MongoDb|null
      */
     protected $_model = null;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_collection = null;
 
@@ -28,7 +22,7 @@ class MongoDbTest extends TestCase
         $this->_collection = $this->getMockBuilder('MongoCollection')
             ->setMethods(['find', 'findOne', 'distinct', 'save', 'update', 'remove', 'drop'])
             ->getMock();
-        $this->_model = $this->createPartialMock(MongoDb::class, ['_getCollection']);
+        $this->_model = $this->createPartialMock(\Magento\Framework\Cache\Backend\MongoDb::class, ['_getCollection']);
         $this->_model->expects($this->any())->method('_getCollection')->willReturn($this->_collection);
     }
 
@@ -417,10 +411,13 @@ class MongoDbTest extends TestCase
         }
     }
 
+    /**
+     */
     public function testCleanInvalidMode()
     {
-        $this->expectException('Zend_Cache_Exception');
+        $this->expectException(\Zend_Cache_Exception::class);
         $this->expectExceptionMessage('Unsupported cleaning mode: invalid_mode');
+
         $this->_model->clean('invalid_mode');
     }
 }

@@ -3,17 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Reflection\Test\Unit;
 
 use Magento\Framework\Reflection\TypeCaster;
-use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Serialize\Serializer\Json;
+use \PHPUnit\Framework\MockObject\MockObject as MockObject;
 
-class TypeCasterTest extends TestCase
+/**
+ * Type caster Test
+ */
+class TypeCasterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var TypeCaster

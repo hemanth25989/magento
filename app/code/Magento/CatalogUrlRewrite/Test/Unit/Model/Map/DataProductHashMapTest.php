@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogUrlRewrite\Test\Unit\Model\Map;
 
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
@@ -15,28 +13,29 @@ use Magento\CatalogUrlRewrite\Model\Map\HashMapPool;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Select;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DataProductHashMapTest extends TestCase
+/**
+ * Class DataProductHashMapTest
+ */
+class DataProductHashMapTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var HashMapPool|MockObject */
+    /** @var HashMapPool|\PHPUnit\Framework\MockObject\MockObject */
     private $hashMapPoolMock;
 
-    /** @var DataCategoryHashMap|MockObject */
+    /** @var DataCategoryHashMap|\PHPUnit\Framework\MockObject\MockObject */
     private $dataCategoryMapMock;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $collectionFactoryMock;
 
     /**
-     * @var ProductCollection|MockObject
+     * @var ProductCollection|\PHPUnit\Framework\MockObject\MockObject
      */
     private $productCollectionMock;
 
-    /** @var DataProductHashMap|MockObject */
+    /** @var DataProductHashMap|\PHPUnit\Framework\MockObject\MockObject */
     private $model;
 
     protected function setUp(): void

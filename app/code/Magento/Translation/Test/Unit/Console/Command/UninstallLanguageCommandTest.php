@@ -3,45 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Translation\Test\Unit\Console\Command;
 
-use Magento\Framework\App\Cache;
-use Magento\Framework\Composer\ComposerInformation;
 use Magento\Framework\Composer\DependencyChecker;
 use Magento\Framework\Composer\Remove;
-use Magento\Framework\Setup\BackupRollback;
-use Magento\Framework\Setup\BackupRollbackFactory;
-use Magento\Translation\Console\Command\UninstallLanguageCommand;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Composer\ComposerInformation;
+use Magento\Framework\App\Cache;
 use Symfony\Component\Console\Tester\CommandTester;
+use Magento\Translation\Console\Command\UninstallLanguageCommand;
+use Magento\Framework\Setup\BackupRollbackFactory;
 
-class UninstallLanguageCommandTest extends TestCase
+class UninstallLanguageCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DependencyChecker|MockObject
+     * @var DependencyChecker|\PHPUnit\Framework\MockObject\MockObject
      */
     private $dependencyChecker;
 
     /**
-     * @var Remove|MockObject
+     * @var Remove|\PHPUnit\Framework\MockObject\MockObject
      */
     private $remove;
 
     /**
-     * @var ComposerInformation|MockObject
+     * @var ComposerInformation|\PHPUnit\Framework\MockObject\MockObject
      */
     private $composerInfo;
 
     /**
-     * @var Cache|MockObject
+     * @var Cache|\PHPUnit\Framework\MockObject\MockObject
      */
     private $cache;
 
     /**
-     * @var BackupRollbackFactory|MockObject
+     * @var BackupRollbackFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $backupRollbackFactory;
 
@@ -57,11 +53,11 @@ class UninstallLanguageCommandTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->dependencyChecker = $this->createMock(DependencyChecker::class);
-        $this->remove = $this->createMock(Remove::class);
-        $this->composerInfo = $this->createMock(ComposerInformation::class);
-        $this->cache = $this->createMock(Cache::class);
-        $this->backupRollbackFactory = $this->createMock(BackupRollbackFactory::class);
+        $this->dependencyChecker = $this->createMock(\Magento\Framework\Composer\DependencyChecker::class);
+        $this->remove = $this->createMock(\Magento\Framework\Composer\Remove::class);
+        $this->composerInfo = $this->createMock(\Magento\Framework\Composer\ComposerInformation::class);
+        $this->cache = $this->createMock(\Magento\Framework\App\Cache::class);
+        $this->backupRollbackFactory = $this->createMock(\Magento\Framework\Setup\BackupRollbackFactory::class);
 
         $this->command = new UninstallLanguageCommand(
             $this->dependencyChecker,
@@ -91,7 +87,7 @@ class UninstallLanguageCommandTest extends TestCase
                 ]
             );
 
-        $backupRollback = $this->createMock(BackupRollback::class);
+        $backupRollback = $this->createMock(\Magento\Framework\Setup\BackupRollback::class);
         $backupRollback->expects($this->once())->method('codeBackup');
 
         $this->backupRollbackFactory->expects($this->once())

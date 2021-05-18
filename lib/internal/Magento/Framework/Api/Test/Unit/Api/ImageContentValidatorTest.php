@@ -3,45 +3,42 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Api\Test\Unit\Api;
-
-use Magento\Framework\Api\Data\ImageContentInterface;
-use Magento\Framework\Api\ImageContentValidator;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test class for \Magento\Framework\Api\ImageContentValidator
  */
-class ImageContentValidatorTest extends TestCase
+class ImageContentValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ImageContentValidator
+     * @var \Magento\Framework\Api\ImageContentValidator
      */
     protected $imageContentValidator;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     protected function setUp(): void
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->imageContentValidator = $this->objectManager->getObject(
-            ImageContentValidator::class
+            \Magento\Framework\Api\ImageContentValidator::class
         );
     }
 
+    /**
+     */
     public function testIsValidEmptyContent()
     {
-        $this->expectException('Magento\Framework\Exception\InputException');
+        $this->expectException(\Magento\Framework\Exception\InputException::class);
         $this->expectExceptionMessage('The image content must be valid base64 encoded data.');
-        $imageContent = $this->getMockBuilder(ImageContentInterface::class)
+
+        $imageContent = $this->getMockBuilder(\Magento\Framework\Api\Data\ImageContentInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $imageContent->expects($this->any())
             ->method('getBase64EncodedData')
             ->willReturn('');
@@ -49,13 +46,16 @@ class ImageContentValidatorTest extends TestCase
         $this->imageContentValidator->isValid($imageContent);
     }
 
+    /**
+     */
     public function testIsValidEmptyProperties()
     {
-        $this->expectException('Magento\Framework\Exception\InputException');
+        $this->expectException(\Magento\Framework\Exception\InputException::class);
         $this->expectExceptionMessage('The image content must be valid base64 encoded data.');
-        $imageContent = $this->getMockBuilder(ImageContentInterface::class)
+
+        $imageContent = $this->getMockBuilder(\Magento\Framework\Api\Data\ImageContentInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $imageContent->expects($this->any())
             ->method('getBase64EncodedData')
             ->willReturn('testImageData');
@@ -63,16 +63,19 @@ class ImageContentValidatorTest extends TestCase
         $this->imageContentValidator->isValid($imageContent);
     }
 
+    /**
+     */
     public function testIsValidInvalidMIMEType()
     {
-        $this->expectException('Magento\Framework\Exception\InputException');
+        $this->expectException(\Magento\Framework\Exception\InputException::class);
         $this->expectExceptionMessage('The image MIME type is not valid or not supported.');
+
         $pathToImageFile = __DIR__ . '/_files/image.jpg';
         $encodedData = @base64_encode(file_get_contents($pathToImageFile));
 
-        $imageContent = $this->getMockBuilder(ImageContentInterface::class)
+        $imageContent = $this->getMockBuilder(\Magento\Framework\Api\Data\ImageContentInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $imageContent->expects($this->any())
             ->method('getBase64EncodedData')
             ->willReturn($encodedData);
@@ -83,16 +86,19 @@ class ImageContentValidatorTest extends TestCase
         $this->imageContentValidator->isValid($imageContent);
     }
 
+    /**
+     */
     public function testIsValidInvalidName()
     {
-        $this->expectException('Magento\Framework\Exception\InputException');
+        $this->expectException(\Magento\Framework\Exception\InputException::class);
         $this->expectExceptionMessage('Provided image name contains forbidden characters.');
+
         $pathToImageFile = __DIR__ . '/_files/image.jpg';
         $encodedData = @base64_encode(file_get_contents($pathToImageFile));
 
-        $imageContent = $this->getMockBuilder(ImageContentInterface::class)
+        $imageContent = $this->getMockBuilder(\Magento\Framework\Api\Data\ImageContentInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $imageContent->expects($this->any())
             ->method('getBase64EncodedData')
             ->willReturn($encodedData);
@@ -111,9 +117,9 @@ class ImageContentValidatorTest extends TestCase
         $pathToImageFile = __DIR__ . '/_files/image.jpg';
         $encodedData = @base64_encode(file_get_contents($pathToImageFile));
 
-        $imageContent = $this->getMockBuilder(ImageContentInterface::class)
+        $imageContent = $this->getMockBuilder(\Magento\Framework\Api\Data\ImageContentInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $imageContent->expects($this->any())
             ->method('getBase64EncodedData')
             ->willReturn($encodedData);

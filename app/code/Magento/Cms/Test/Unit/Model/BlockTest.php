@@ -13,13 +13,11 @@ use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\Context;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Magento\Cms\Model\Block
  */
-class BlockTest extends TestCase
+class BlockTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Testable Object
@@ -36,17 +34,17 @@ class BlockTest extends TestCase
     private $objectManager;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var ManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $eventManagerMock;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit\Framework\MockObject\MockObject
      */
     private $contextMock;
 
     /**
-     * @var BlockResource|MockObject
+     * @var BlockResource|\PHPUnit\Framework\MockObject\MockObject
      */
     private $resourceMock;
 
@@ -116,7 +114,7 @@ class BlockTest extends TestCase
     public function testGetIdentities()
     {
         $result = $this->blockModel->getIdentities();
-        $this->assertIsArray($result);
+        self::assertIsArray($result);
     }
 
     /**
@@ -334,6 +332,6 @@ class BlockTest extends TestCase
     public function testGetAvailableStatuses()
     {
         $result = $this->blockModel->getAvailableStatuses();
-        $this->assertIsArray($result);
+        self::assertIsArray($result);
     }
 }

@@ -3,47 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Tax\Test\Unit\Block\Item\Price;
 
-use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Pricing\Render;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Invoice\Item as InvoiceItem;
-use Magento\Sales\Model\Order\Item;
-use Magento\Store\Model\Store;
-use Magento\Tax\Block\Item\Price\Renderer;
-use Magento\Tax\Helper\Data;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class RendererTest extends TestCase
+class RendererTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Renderer
+     * @var \Magento\Tax\Block\Item\Price\Renderer
      */
     protected $renderer;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Tax\Helper\Data|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $taxHelper;
 
     /**
-     * @var PriceCurrencyInterface|MockObject
+     * @var \Magento\Framework\Pricing\PriceCurrencyInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $priceCurrency;
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->priceCurrency = $this->getMockBuilder(
-            PriceCurrencyInterface::class
+            \Magento\Framework\Pricing\PriceCurrencyInterface::class
         )->getMock();
-        $this->taxHelper = $this->getMockBuilder(Data::class)
+        $this->taxHelper = $this->getMockBuilder(\Magento\Tax\Helper\Data::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'displayCartPriceExclTax',
@@ -56,7 +44,7 @@ class RendererTest extends TestCase
             ->getMock();
 
         $this->renderer = $objectManager->getObject(
-            Renderer::class,
+            \Magento\Tax\Block\Item\Price\Renderer::class,
             [
                 'taxHelper' => $this->taxHelper,
                 'priceCurrency' => $this->priceCurrency,
@@ -69,11 +57,11 @@ class RendererTest extends TestCase
 
     /**
      * @param $storeId
-     * @return MockObject|Item
+     * @return \PHPUnit\Framework\MockObject\MockObject|\Magento\Sales\Model\Order\Item
      */
     protected function getItemMockWithStoreId($storeId)
     {
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(['getStoreId', '__wakeup'])
             ->getMock();
@@ -240,7 +228,7 @@ class RendererTest extends TestCase
         $price = 3.554;
         $formattedPrice = "$3.55";
 
-        $storeMock = $this->getMockBuilder(Store::class)
+        $storeMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
             ->setMethods(['formatPrice', '__wakeup'])
             ->getMock();
@@ -268,7 +256,7 @@ class RendererTest extends TestCase
         $price = 3.554;
         $formattedPrice = "$3.55";
 
-        $orderMock = $this->getMockBuilder(Order::class)
+        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -277,7 +265,7 @@ class RendererTest extends TestCase
             ->with($price, false)
             ->willReturn($formattedPrice);
 
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(['getOrder', '__wakeup'])
             ->getMock();
@@ -295,7 +283,7 @@ class RendererTest extends TestCase
         $price = 3.554;
         $formattedPrice = "$3.55";
 
-        $orderMock = $this->getMockBuilder(Order::class)
+        $orderMock = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->setMethods(['formatPrice', '__wakeup'])
             ->getMock();
@@ -305,7 +293,7 @@ class RendererTest extends TestCase
             ->with($price, false)
             ->willReturn($formattedPrice);
 
-        $orderItemMock = $this->getMockBuilder(Item::class)
+        $orderItemMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(['getOrder', '__wakeup'])
             ->getMock();
@@ -314,7 +302,7 @@ class RendererTest extends TestCase
             ->method('getOrder')
             ->willReturn($orderMock);
 
-        $invoiceItemMock = $this->getMockBuilder(InvoiceItem::class)
+        $invoiceItemMock = $this->getMockBuilder(\Magento\Sales\Model\Invoice\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(['getOrderItem', '__wakeup', 'getStoreId'])
             ->getMock();
@@ -353,7 +341,7 @@ class RendererTest extends TestCase
     {
         $price = 10;
 
-        /** @var \Magento\Quote\Model\Quote\Item|MockObject $quoteItemMock */
+        /** @var \Magento\Quote\Model\Quote\Item|\PHPUnit\Framework\MockObject\MockObject $quoteItemMock */
         $quoteItemMock = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(['getCalculationPrice', '__wakeup'])
@@ -371,8 +359,8 @@ class RendererTest extends TestCase
     {
         $price = 10;
 
-        /** @var Item|MockObject $orderItemMock */
-        $orderItemMock = $this->getMockBuilder(Item::class)
+        /** @var \Magento\Sales\Model\Order\Item|\PHPUnit\Framework\MockObject\MockObject $orderItemMock */
+        $orderItemMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(['getPrice', '__wakeup'])
             ->getMock();
@@ -394,15 +382,15 @@ class RendererTest extends TestCase
 
         $expectedValue = $rowTotal + $taxAmount + $discountTaxCompensationAmount - $discountAmount;
 
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
-                    'getRowTotal',
-                    'getTaxAmount',
-                    'getDiscountTaxCompensationAmount',
-                    'getDiscountAmount',
-                    '__wakeup'
+                'getRowTotal',
+                'getTaxAmount',
+                'getDiscountTaxCompensationAmount',
+                'getDiscountAmount',
+                '__wakeup'
                 ]
             )
             ->getMock();
@@ -435,7 +423,7 @@ class RendererTest extends TestCase
 
         $expectedValue = 92;
 
-        $itemMock = $this->getMockBuilder(Item::class)
+        $itemMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Item::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [

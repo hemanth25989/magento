@@ -3,27 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\ResourceModel\Category;
 
-use Magento\Catalog\Model\ResourceModel\Category\Flat;
-use Magento\Catalog\Model\ResourceModel\Category\Flat\Collection;
 use Magento\Catalog\Model\ResourceModel\Category\Flat\CollectionFactory;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface as Adapter;
-use Magento\Framework\DB\Select;
-use Magento\Framework\Model\ResourceModel\Db\Context;
+use Magento\Catalog\Model\ResourceModel\Category\Flat\Collection;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Catalog\Model\ResourceModel\Category\Flat;
+use Magento\Framework\DB\Select;
+use Magento\Framework\DB\Adapter\AdapterInterface as Adapter;
+use Magento\Framework\App\ResourceConnection;
+use Magento\Framework\Model\ResourceModel\Db\Context;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Category flat model test
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class FlatTest extends TestCase
+class FlatTest extends \PHPUnit\Framework\TestCase
 {
     const STORE_ID = 1;
     const TABLE_NAME = 'test_table';
@@ -33,12 +32,12 @@ class FlatTest extends TestCase
     const RECURSION_LEVEL = 0;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $categoryCollectionFactoryMock;
 
     /**
-     * @var Collection|MockObject
+     * @var Collection|\PHPUnit\Framework\MockObject\MockObject
      */
     private $categoryCollectionMock;
 
@@ -53,32 +52,32 @@ class FlatTest extends TestCase
     private $objectManager;
 
     /**
-     * @var Select|MockObject
+     * @var Select|\PHPUnit\Framework\MockObject\MockObject
      */
     private $selectMock;
 
     /**
-     * @var Adapter|MockObject
+     * @var Adapter|\PHPUnit\Framework\MockObject\MockObject
      */
     private $connectionMock;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit\Framework\MockObject\MockObject
      */
     private $resourceMock;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit\Framework\MockObject\MockObject
      */
     private $contextMock;
 
     /**
-     * @var Store|MockObject
+     * @var Store|\PHPUnit\Framework\MockObject\MockObject
      */
     private $storeMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $storeManagerMock;
 

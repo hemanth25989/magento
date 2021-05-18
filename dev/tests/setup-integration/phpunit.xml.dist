@@ -22,8 +22,8 @@
     <!-- Code coverage filters -->
     <filter>
         <whitelist>
-            <directory suffix=".php">../../../app/code/Magento</directory>
-            <directory suffix=".php">../../../lib/internal/Magento</directory>
+            <directory>../../../app/code/Magento</directory>
+            <directory>../../../lib/internal/Magento</directory>
         </whitelist>
     </filter>
     <!-- PHP INI settings and constants definition -->

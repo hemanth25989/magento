@@ -3,16 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\ResourceModel\Product\Indexer\Eav;
 
-use Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\BatchSizeCalculator;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Indexer\BatchSizeManagement;
-use PHPUnit\Framework\TestCase;
+use Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\BatchSizeCalculator;
 
-class BatchSizeCalculatorTest extends TestCase
+class BatchSizeCalculatorTest extends \PHPUnit\Framework\TestCase
 {
     public function testEstimateBatchSize()
     {
@@ -36,9 +34,12 @@ class BatchSizeCalculatorTest extends TestCase
         $this->assertEquals($batchSizes[$indexerId], $model->estimateBatchSize($connectionMock, $indexerId));
     }
 
+    /**
+     */
     public function testEstimateBatchSizeThrowsExceptionIfIndexerIdIsNotRecognized()
     {
-        $this->expectException('Magento\Framework\Exception\NoSuchEntityException');
+        $this->expectException(\Magento\Framework\Exception\NoSuchEntityException::class);
+
         $model = new BatchSizeCalculator(
             [],
             []

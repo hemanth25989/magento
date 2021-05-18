@@ -3,24 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Shipping\Test\Unit\Model\Carrier;
 
-use Magento\Catalog\Model\Product;
-use Magento\CatalogInventory\Model\Stock\Item;
-use Magento\CatalogInventory\Model\StockRegistry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\Xml\Security;
+use \Magento\Shipping\Model\Carrier\AbstractCarrierOnline;
+
 use Magento\Quote\Model\Quote\Address\RateRequest;
-use Magento\Shipping\Model\Carrier\AbstractCarrierOnline;
-use Magento\Shipping\Model\Simplexml\Element;
-use Magento\Store\Model\Store;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AbstractCarrierOnlineTest extends TestCase
+class AbstractCarrierOnlineTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test identification number of product
@@ -30,24 +21,24 @@ class AbstractCarrierOnlineTest extends TestCase
     protected $productId = 1;
 
     /**
-     * @var AbstractCarrierOnline|MockObject
+     * @var AbstractCarrierOnline|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $carrier;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $stockRegistry;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $stockItemData;
 
     protected function setUp(): void
     {
-        $this->stockRegistry = $this->createMock(StockRegistry::class);
-        $this->stockItemData = $this->createMock(Item::class);
+        $this->stockRegistry = $this->createMock(\Magento\CatalogInventory\Model\StockRegistry::class);
+        $this->stockItemData = $this->createMock(\Magento\CatalogInventory\Model\Stock\Item::class);
 
         $this->stockRegistry->expects($this->any())->method('getStockItem')
             ->with($this->productId, 10)
@@ -55,13 +46,13 @@ class AbstractCarrierOnlineTest extends TestCase
 
         $objectManagerHelper = new ObjectManagerHelper($this);
         $carrierArgs = $objectManagerHelper->getConstructArguments(
-            AbstractCarrierOnline::class,
+            \Magento\Shipping\Model\Carrier\AbstractCarrierOnline::class,
             [
                 'stockRegistry' => $this->stockRegistry,
-                'xmlSecurity' => new Security(),
+                'xmlSecurity' => new \Magento\Framework\Xml\Security(),
             ]
         );
-        $this->carrier = $this->getMockBuilder(AbstractCarrierOnline::class)
+        $this->carrier = $this->getMockBuilder(\Magento\Shipping\Model\Carrier\AbstractCarrierOnline::class)
             ->setConstructorArgs($carrierArgs)
             ->setMethods(['getConfigData', '_doShipmentRequest', 'collectRates'])
             ->getMock();
@@ -80,7 +71,7 @@ class AbstractCarrierOnlineTest extends TestCase
             return isset($configData[$key]) ? $configData[$key] : 0;
         });
 
-        $product = $this->createMock(Product::class);
+        $product = $this->createMock(\Magento\Catalog\Model\Product::class);
         $product->expects($this->any())->method('getId')->willReturn($this->productId);
 
         $item = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item::class)
@@ -89,7 +80,7 @@ class AbstractCarrierOnlineTest extends TestCase
             ->getMock();
         $item->expects($this->any())->method('getProduct')->willReturn($product);
 
-        $store = $this->createPartialMock(Store::class, ['getWebsiteId']);
+        $store = $this->createPartialMock(\Magento\Store\Model\Store::class, ['getWebsiteId']);
         $store->expects($this->any())
             ->method('getWebsiteId')
             ->willReturn(10);
@@ -121,15 +112,18 @@ class AbstractCarrierOnlineTest extends TestCase
         $this->assertInstanceOf('SimpleXMLElement', $simpleXmlElement);
         $customSimpleXmlElement = $this->carrier->parseXml(
             $xmlString,
-            Element::class
+            \Magento\Shipping\Model\Simplexml\Element::class
         );
-        $this->assertInstanceOf(Element::class, $customSimpleXmlElement);
+        $this->assertInstanceOf(\Magento\Shipping\Model\Simplexml\Element::class, $customSimpleXmlElement);
     }
 
+    /**
+     */
     public function testParseXmlXXEXml()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('The security validation of the XML document has failed.');
+
         $xmlString = '<!DOCTYPE scan [
             <!ENTITY test SYSTEM "php://filter/read=convert.base64-encode/resource='
             . __DIR__ . '/AbstractCarrierOnline/xxe-xml.txt">]><scan>&test;</scan>';
@@ -140,10 +134,13 @@ class AbstractCarrierOnlineTest extends TestCase
         echo $xmlElement->asXML();
     }
 
+    /**
+     */
     public function testParseXmlXQBXml()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('The security validation of the XML document has failed.');
+
         $xmlString = '<?xml version="1.0"?>
             <!DOCTYPE test [
               <!ENTITY value "value">

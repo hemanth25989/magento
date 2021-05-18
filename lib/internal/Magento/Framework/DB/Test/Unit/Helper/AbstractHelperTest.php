@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * \Magento\Framework\DB\Helper\AbstractHelper test case
  *
@@ -7,41 +7,35 @@
  */
 namespace Magento\Framework\DB\Test\Unit\Helper;
 
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Helper\AbstractHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AbstractHelperTest extends TestCase
+class AbstractHelperTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AbstractHelper|MockObject
+     * @var \Magento\Framework\DB\Helper\AbstractHelper|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_model;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var \Magento\Framework\App\ResourceConnection|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_resourceMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_adapterMock;
 
     protected function setUp(): void
     {
-        $this->_adapterMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        $this->_adapterMock = $this->createMock(\Magento\Framework\DB\Adapter\AdapterInterface::class);
 
-        $this->_resourceMock = $this->createMock(ResourceConnection::class);
+        $this->_resourceMock = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
         $this->_resourceMock->expects($this->any())
             ->method('getConnection')
             ->with('prefix')
             ->willReturn($this->_adapterMock);
 
         $this->_model = $this->getMockForAbstractClass(
-            AbstractHelper::class,
+            \Magento\Framework\DB\Helper\AbstractHelper::class,
             [$this->_resourceMock, 'prefix'],
             '',
             true,

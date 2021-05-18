@@ -6,10 +6,10 @@
 namespace Magento\Framework\MessageQueue\UseCase;
 
 use Magento\Framework\App\DeploymentConfig\FileReader;
+use Magento\TestModuleAsyncAmqp\Model\AsyncTestData;
 use Magento\Framework\App\DeploymentConfig\Writer;
 use Magento\Framework\Config\File\ConfigFilePool;
 use Magento\Framework\Filesystem;
-use Magento\TestModuleAsyncAmqp\Model\AsyncTestData;
 
 class WaitAndNotWaitMessagesTest extends QueueTestCaseAbstract
 {
@@ -66,21 +66,14 @@ class WaitAndNotWaitMessagesTest extends QueueTestCaseAbstract
      */
     public function testWaitForMessages()
     {
-        $this->publisherConsumerController->stopConsumers();
-
-        $config = $this->config;
-        $config['queue']['consumers_wait_for_messages'] = 1;
-        $this->writeConfig($config);
-
-        $loadedConfig = $this->loadConfig();
-        $this->assertArrayHasKey('queue', $loadedConfig);
-        $this->assertArrayHasKey('consumers_wait_for_messages', $loadedConfig['queue']);
-        $this->assertEquals(1, $loadedConfig['queue']['consumers_wait_for_messages']);
+        $this->assertArrayHasKey('queue', $this->config);
+        $this->assertArrayHasKey('consumers_wait_for_messages', $this->config['queue']);
+        $this->assertEquals(1, $this->config['queue']['consumers_wait_for_messages']);
 
         foreach ($this->messages as $message) {
             $this->publishMessage($message);
         }
-        $this->publisherConsumerController->startConsumers();
+
         $this->waitForAsynchronousResult(count($this->messages), $this->logFilePath);
 
         foreach ($this->messages as $item) {

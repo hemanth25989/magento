@@ -3,19 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Exception\Test\Unit;
 
-use Magento\Framework\Exception\LocalizedException;
+use \Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Phrase;
-use Magento\Framework\Phrase\Renderer\Placeholder;
-use Magento\Framework\Phrase\RendererInterface;
-use PHPUnit\Framework\TestCase;
 
-class LocalizedExceptionTest extends TestCase
+/**
+ * Class LocalizedExceptionTest
+ */
+class LocalizedExceptionTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var RendererInterface */
+    /** @var \Magento\Framework\Phrase\RendererInterface */
     private $defaultRenderer;
 
     /** @var string */
@@ -26,15 +24,15 @@ class LocalizedExceptionTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->defaultRenderer = Phrase::getRenderer();
-        $rendererMock = $this->getMockBuilder(Placeholder::class)
+        $this->defaultRenderer = \Magento\Framework\Phrase::getRenderer();
+        $rendererMock = $this->getMockBuilder(\Magento\Framework\Phrase\Renderer\Placeholder::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->renderedMessage = 'rendered message';
         $rendererMock->expects($this->once())
             ->method('render')
             ->willReturn($this->renderedMessage);
-        Phrase::setRenderer($rendererMock);
+        \Magento\Framework\Phrase::setRenderer($rendererMock);
     }
 
     /**
@@ -42,7 +40,7 @@ class LocalizedExceptionTest extends TestCase
      */
     protected function tearDown(): void
     {
-        Phrase::setRenderer($this->defaultRenderer);
+        \Magento\Framework\Phrase::setRenderer($this->defaultRenderer);
     }
 
     /**
@@ -78,13 +76,13 @@ class LocalizedExceptionTest extends TestCase
             'withNoNameParameters' => [
                 'message %1 %2',
                 ['parameter1',
-                    'parameter2'],
+                 'parameter2'],
                 'message parameter1 parameter2',
             ],
             'withNamedParameters'  => [
                 'message %key1 %key2',
                 ['key1' => 'parameter1',
-                    'key2' => 'parameter2'],
+                 'key2' => 'parameter2'],
                 'message parameter1 parameter2',
             ],
             'withoutParameters'    => [

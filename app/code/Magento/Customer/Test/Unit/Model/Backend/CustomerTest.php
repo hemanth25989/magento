@@ -5,26 +5,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Customer\Model\Backend\Customer testing
  */
 namespace Magento\Customer\Test\Unit\Model\Backend;
 
-use Magento\Customer\Model\Backend\Customer;
-use Magento\Framework\DataObject;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\StoreManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CustomerTest extends TestCase
+class CustomerTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var StoreManager|MockObject */
+    /** @var \Magento\Store\Model\StoreManager|\PHPUnit\Framework\MockObject\MockObject */
     protected $_storeManager;
 
-    /** @var Customer */
+    /** @var \Magento\Customer\Model\Backend\Customer */
     protected $_model;
 
     /**
@@ -32,10 +24,10 @@ class CustomerTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->_storeManager = $this->createMock(StoreManager::class);
-        $helper = new ObjectManager($this);
+        $this->_storeManager = $this->createMock(\Magento\Store\Model\StoreManager::class);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_model = $helper->getObject(
-            Customer::class,
+            \Magento\Customer\Model\Backend\Customer::class,
             ['storeManager' => $this->_storeManager]
         );
     }
@@ -51,7 +43,7 @@ class CustomerTest extends TestCase
     {
         if ($websiteId * 1) {
             $this->_model->setWebsiteId($websiteId);
-            $website = new DataObject(['store_ids' => [$websiteStoreId]]);
+            $website = new \Magento\Framework\DataObject(['store_ids' => [$websiteStoreId]]);
             $this->_storeManager->expects($this->once())->method('getWebsite')->willReturn($website);
         } else {
             $this->_model->setStoreId($storeId);

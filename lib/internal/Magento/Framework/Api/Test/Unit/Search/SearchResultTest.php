@@ -3,16 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Api\Test\Unit\Search;
 
-use Magento\Framework\Api\Search\DocumentInterface;
-use Magento\Framework\Api\Search\SearchResult;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Api\Search\SearchResult;
+use Magento\Framework\Api\Search\DocumentInterface;
 
-class SearchResultTest extends TestCase
+class SearchResultTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SearchResult

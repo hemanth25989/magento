@@ -3,61 +3,51 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Tax\Test\Unit\Model;
 
-use Magento\Checkout\Model\Session;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Quote\Model\Quote;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Tax\Helper\Data;
-use Magento\Tax\Model\Config;
-use Magento\Tax\Model\TaxConfigProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Tax\Model\Config;
 
-class TaxConfigProviderTest extends TestCase
+class TaxConfigProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $taxHelperMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $taxConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $checkoutSessionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $scopeConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $quoteMock;
 
     /**
-     * @var TaxConfigProvider
+     * @var \Magento\Tax\Model\TaxConfigProvider
      */
     protected $model;
 
     protected function setUp(): void
     {
-        $this->taxHelperMock = $this->createMock(Data::class);
-        $this->taxConfigMock = $this->createMock(Config::class);
-        $this->checkoutSessionMock = $this->createMock(Session::class);
-        $this->scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $this->quoteMock = $this->createMock(Quote::class);
+        $this->taxHelperMock = $this->createMock(\Magento\Tax\Helper\Data::class);
+        $this->taxConfigMock = $this->createMock(\Magento\Tax\Model\Config::class);
+        $this->checkoutSessionMock = $this->createMock(\Magento\Checkout\Model\Session::class);
+        $this->scopeConfigMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->quoteMock = $this->createMock(\Magento\Quote\Model\Quote::class);
         $this->checkoutSessionMock->expects($this->any())->method('getQuote')->willReturn($this->quoteMock);
-        $this->model = new TaxConfigProvider(
+        $this->model = new \Magento\Tax\Model\TaxConfigProvider(
             $this->taxHelperMock,
             $this->taxConfigMock,
             $this->checkoutSessionMock,
@@ -116,7 +106,7 @@ class TaxConfigProviderTest extends TestCase
 
         $valueMap = [];
         foreach ($config as $key => $value) {
-            $valueMap[] = [$key, ScopeInterface::SCOPE_STORE, null, $value];
+            $valueMap[] = [$key, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, null, $value];
         }
         $this->scopeConfigMock->expects($this->atLeastOnce())
             ->method('getValue')

@@ -11,7 +11,7 @@ use Magento\Setup\Mvc\Bootstrap\InitParamListener;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Console\Application;
-use Laminas\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Tests ObjectManagerProvider

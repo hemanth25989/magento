@@ -34,18 +34,18 @@ class StoreThemesResolverTest extends TestCase
     {
         parent::setUp();
         $this->resolvers = [];
-        $this->resolvers[] = $this->createMock(StoreThemesResolverInterface::class);
-        $this->resolvers[] = $this->createMock(StoreThemesResolverInterface::class);
-        $this->resolvers[] = $this->createMock(StoreThemesResolverInterface::class);
+        $this->resolvers[] = $this->getMockForAbstractClass(StoreThemesResolverInterface::class);
+        $this->resolvers[] = $this->getMockForAbstractClass(StoreThemesResolverInterface::class);
+        $this->resolvers[] = $this->getMockForAbstractClass(StoreThemesResolverInterface::class);
         $this->model = new StoreThemesResolver($this->resolvers);
     }
 
     /**
      * Test that constructor SHOULD throw an exception when resolver is not instance of StoreThemesResolverInterface.
      */
-    public function testInvalidConstructorArguments(): void
+    public function testInvalidConstructorArguments()
     {
-        $resolver = $this->createMock(StoreInterface::class);
+        $resolver = $this->getMockForAbstractClass(StoreInterface::class);
         $this->expectExceptionObject(
             new \InvalidArgumentException(
                 sprintf(
@@ -69,9 +69,9 @@ class StoreThemesResolverTest extends TestCase
      * @param array $expected
      * @dataProvider getThemesDataProvider
      */
-    public function testGetThemes(array $themes, array $expected): void
+    public function testGetThemes(array $themes, array $expected)
     {
-        $store = $this->createMock(StoreInterface::class);
+        $store = $this->getMockForAbstractClass(StoreInterface::class);
         foreach ($this->resolvers as $key => $resolver) {
             $resolver->expects($this->once())
                 ->method('getThemes')

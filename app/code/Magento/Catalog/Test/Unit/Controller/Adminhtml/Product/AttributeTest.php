@@ -3,23 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Controller\Adminhtml\Product;
 
 use Magento\Backend\App\Action\Context;
 use Magento\Catalog\Controller\Adminhtml\Product\Attribute;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Cache\FrontendInterface;
-use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\ObjectManager\ObjectManager;
 use Magento\Framework\Registry;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Framework\View\Result\PageFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Controller\ResultFactory;
 
-class AttributeTest extends TestCase
+/**
+ * Class AttributeTest
+ */
+class AttributeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -27,37 +27,37 @@ class AttributeTest extends TestCase
     protected $objectManager;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $contextMock;
 
     /**
-     * @var Registry|MockObject
+     * @var Registry|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $coreRegistryMock;
 
     /**
-     * @var FrontendInterface|MockObject
+     * @var FrontendInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $attributeLabelCacheMock;
 
     /**
-     * @var PageFactory|MockObject
+     * @var PageFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resultPageFactoryMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $requestMock;
 
     /**
-     * @var ResultFactory|MockObject
+     * @var ResultFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resultFactoryMock;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var ManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $messageManager;
 

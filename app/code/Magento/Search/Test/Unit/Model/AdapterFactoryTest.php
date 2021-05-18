@@ -3,31 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Search\Test\Unit\Model;
 
 use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Search\AdapterInterface;
 use Magento\Framework\Search\EngineResolverInterface;
 use Magento\Search\Model\AdapterFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AdapterFactoryTest extends TestCase
+class AdapterFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AdapterFactory|MockObject
+     * @var AdapterFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $adapterFactory;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface |\PHPUnit\Framework\MockObject\MockObject
      */
     private $objectManager;
 
     /**
-     * @var EngineResolverInterface|MockObject
+     * @var EngineResolverInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $engineResolverMock;
 
@@ -50,34 +45,40 @@ class AdapterFactoryTest extends TestCase
         $this->engineResolverMock->expects($this->once())->method('getCurrentSearchEngine')
             ->willReturn('ClassName');
 
-        $adapter = $this->getMockBuilder(AdapterInterface::class)
+        $adapter = $this->getMockBuilder(\Magento\Framework\Search\AdapterInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->objectManager->expects($this->once())->method('create')
-            ->with('ClassName', ['input'])
+            ->with($this->equalTo('ClassName'), $this->equalTo(['input']))
             ->willReturn($adapter);
 
         $result = $this->adapterFactory->create(['input']);
-        $this->assertInstanceOf(AdapterInterface::class, $result);
+        $this->assertInstanceOf(\Magento\Framework\Search\AdapterInterface::class, $result);
     }
 
+    /**
+     */
     public function testCreateExceptionThrown()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->engineResolverMock->expects($this->once())->method('getCurrentSearchEngine')
             ->willReturn('ClassName');
 
         $this->objectManager->expects($this->once())->method('create')
-            ->with('ClassName', ['input'])
+            ->with($this->equalTo('ClassName'), $this->equalTo(['input']))
             ->willReturn('t');
 
         $this->adapterFactory->create(['input']);
     }
 
+    /**
+     */
     public function testCreateLogicException()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
+
         $this->engineResolverMock->expects($this->once())->method('getCurrentSearchEngine')
             ->willReturn('Class');
 

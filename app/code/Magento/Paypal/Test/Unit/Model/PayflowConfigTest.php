@@ -3,49 +3,48 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Payment\Model\Method\AbstractMethod;
-use Magento\Payment\Model\MethodInterface;
-use Magento\Paypal\Model\Config;
 use Magento\Paypal\Model\PayflowConfig;
+use Magento\Payment\Model\MethodInterface;
+use Magento\Payment\Model\Method\AbstractMethod;
+use Magento\Paypal\Model\Config;
 use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PayflowConfigTest extends TestCase
+/**
+ * Class PayflowConfigTest
+ */
+class PayflowConfigTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $scopeConfigMock;
 
     /**
-     * @var MethodInterface|MockObject
+     * @var MethodInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $methodInterfaceMock;
 
     /**
-     * @var PayflowConfig|MockObject
+     * @var PayflowConfig|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $config;
 
     protected function setUp(): void
     {
-        $this->scopeConfigMock = $this->getMockBuilder(ScopeConfigInterface::class)
+        $this->scopeConfigMock = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->setMethods(['getValue', 'isSetFlag'])
             ->getMockForAbstractClass();
-        $this->methodInterfaceMock = $this->getMockBuilder(MethodInterface::class)
+        $this->methodInterfaceMock = $this->getMockBuilder(\Magento\Payment\Model\MethodInterface::class)
             ->getMockForAbstractClass();
 
         $om = new ObjectManager($this);
         $this->config = $om->getObject(
-            PayflowConfig::class,
+            \Magento\Paypal\Model\PayflowConfig::class,
             [
                 'scopeConfig' => $this->scopeConfigMock
             ]

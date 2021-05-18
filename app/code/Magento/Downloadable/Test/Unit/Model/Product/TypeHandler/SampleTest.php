@@ -3,46 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Downloadable\Test\Unit\Model\Product\TypeHandler;
 
-use Magento\Catalog\Model\Product;
-use Magento\Downloadable\Helper\Download;
 use Magento\Downloadable\Model\Product\TypeHandler\Sample;
-use Magento\Downloadable\Model\ResourceModel\Link;
-use Magento\Downloadable\Model\SampleFactory;
-use Magento\Framework\EntityManager\EntityMetadata;
-use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for \Magento\Downloadable\Model\Product\TypeHandler\Sample
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SampleTest extends TestCase
+class SampleTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $metadataPoolMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $metadataMock;
 
     /**
-     * @var Link|MockObject
+     * @var \Magento\Downloadable\Model\ResourceModel\Link|\PHPUnit\Framework\MockObject\MockObject
      */
     private $sampleResource;
 
     /**
-     * @var SampleFactory|MockObject
+     * @var \Magento\Downloadable\Model\SampleFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $sampleFactory;
 
@@ -54,7 +43,7 @@ class SampleTest extends TestCase
     protected function setUp(): void
     {
         $objectManagerHelper = new ObjectManagerHelper($this);
-        $this->sampleFactory = $this->getMockBuilder(SampleFactory::class)
+        $this->sampleFactory = $this->getMockBuilder(\Magento\Downloadable\Model\SampleFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -69,10 +58,10 @@ class SampleTest extends TestCase
         $sampleResourceFactory->expects($this->any())
             ->method('create')
             ->willReturn($this->sampleResource);
-        $this->metadataPoolMock = $this->getMockBuilder(MetadataPool::class)
+        $this->metadataPoolMock = $this->getMockBuilder(\Magento\Framework\EntityManager\MetadataPool::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->metadataMock = $this->createMock(EntityMetadata::class);
+        $this->metadataMock = $this->createMock(\Magento\Framework\EntityManager\EntityMetadata::class);
         $this->metadataPoolMock->expects($this->any())->method('getMetadata')->willReturn($this->metadataMock);
         $this->target = $objectManagerHelper->getObject(
             Sample::class,
@@ -90,13 +79,13 @@ class SampleTest extends TestCase
 
     /**
      * @dataProvider saveDataProvider
-     * @param \Magento\Catalog\Model\Product|MockObject $product
+     * @param \Magento\Catalog\Model\Product|\PHPUnit\Framework\MockObject\MockObject $product
      * @param array $data
      * @param array $modelData
      */
     public function testSave($product, array $data, array $modelData)
     {
-        $link = $this->createSampleModel($product, $modelData);
+        $link = $this->createSampleModel($product, $modelData, true);
         $this->metadataMock->expects($this->once())->method('getLinkField')->willReturn('id');
         $this->sampleFactory->expects($this->once())
             ->method('create')
@@ -118,7 +107,7 @@ class SampleTest extends TestCase
                             'is_delete' => 0,
                             'sample_id' => 0,
                             'title' => 'Downloadable Product Sample Title',
-                            'type' => Download::LINK_TYPE_FILE,
+                            'type' => \Magento\Downloadable\Helper\Download::LINK_TYPE_FILE,
                             'sample_url' => null,
                             'sort_order' => '0',
                         ],
@@ -126,7 +115,7 @@ class SampleTest extends TestCase
                 ],
                 'modelData' => [
                     'title' => 'Downloadable Product Sample Title',
-                    'type' => Download::LINK_TYPE_FILE,
+                    'type' => \Magento\Downloadable\Helper\Download::LINK_TYPE_FILE,
                     'sample_url' => null,
                     'sort_order' => '0',
                 ]
@@ -135,7 +124,7 @@ class SampleTest extends TestCase
     }
 
     /**
-     * @param \Magento\Catalog\Model\Product|MockObject $product
+     * @param \Magento\Catalog\Model\Product|\PHPUnit\Framework\MockObject\MockObject $product
      * @param array $data
      * @param array $expectedItems
      * @dataProvider deleteDataProvider
@@ -144,7 +133,7 @@ class SampleTest extends TestCase
     {
         $this->sampleResource->expects($this->once())
             ->method('deleteItems')
-            ->with($expectedItems);
+            ->with($this->equalTo($expectedItems));
         $this->target->save($product, $data);
     }
 
@@ -186,9 +175,9 @@ class SampleTest extends TestCase
     }
 
     /**
-     * @param \Magento\Catalog\Model\Product|MockObject $product
+     * @param \Magento\Catalog\Model\Product|\PHPUnit\Framework\MockObject\MockObject $product
      * @param array $modelData
-     * @return \Magento\Downloadable\Model\Sample|MockObject
+     * @return \Magento\Downloadable\Model\Sample|\PHPUnit\Framework\MockObject\MockObject
      */
     private function createSampleModel($product, array $modelData)
     {
@@ -211,17 +200,20 @@ class SampleTest extends TestCase
             ->getMock();
         $sample->expects($this->once())
             ->method('setData')
-            ->with($modelData)->willReturnSelf();
+            ->with($modelData)
+            ->willReturnSelf();
         $sample->expects($this->once())
             ->method('setSampleType')
-            ->with($modelData['type'])->willReturnSelf();
+            ->with($modelData['type'])
+            ->willReturnSelf();
         $sample->expects($this->once())
             ->method('setProductId')
             ->with($product->getData('id'))
             ->willReturnSelf();
         $sample->expects($this->once())
             ->method('setStoreId')
-            ->with($product->getStoreId())->willReturnSelf();
+            ->with($product->getStoreId())
+            ->willReturnSelf();
 
         return $sample;
     }
@@ -231,12 +223,12 @@ class SampleTest extends TestCase
      * @param int $storeId
      * @param int $storeWebsiteId
      * @param array $websiteIds
-     * @return \Magento\Catalog\Model\Product|MockObject
+     * @return \Magento\Catalog\Model\Product|\PHPUnit\Framework\MockObject\MockObject
      * @internal param bool $isUnlimited
      */
     private function createProductMock($id, $storeId, $storeWebsiteId, array $websiteIds)
     {
-        $product = $this->getMockBuilder(Product::class)
+        $product = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->setMethods(['getId', 'getStoreId', 'getStore', 'getWebsiteIds', 'getData'])
             ->getMock();
@@ -249,7 +241,7 @@ class SampleTest extends TestCase
         $product->expects($this->any())
             ->method('getWebsiteIds')
             ->willReturn($websiteIds);
-        $store = $this->getMockBuilder(Store::class)
+        $store = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
             ->setMethods(['getWebsiteId'])
             ->getMock();

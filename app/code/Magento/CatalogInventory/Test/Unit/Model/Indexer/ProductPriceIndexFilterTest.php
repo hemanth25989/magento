@@ -3,25 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\CatalogInventory\Test\Unit\Model\Indexer;
 
-use Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\IndexTableStructure;
 use Magento\CatalogInventory\Api\StockConfigurationInterface;
 use Magento\CatalogInventory\Model\Indexer\ProductPriceIndexFilter;
 use Magento\CatalogInventory\Model\ResourceModel\Stock\Item;
 use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Query\Generator;
-use Magento\Framework\DB\Select;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\IndexTableStructure;
 
 /**
  * Product Price filter test, to ensure that product id's filtered.
  */
-class ProductPriceIndexFilterTest extends TestCase
+class ProductPriceIndexFilterTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -76,9 +72,9 @@ class ProductPriceIndexFilterTest extends TestCase
     {
         $entityIds = [1, 2, 3];
         $indexTableStructure = $this->createMock(IndexTableStructure::class);
-        $connectionMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        $connectionMock = $this->createMock(\Magento\Framework\DB\Adapter\AdapterInterface::class);
         $this->resourceCnnection->expects($this->once())->method('getConnection')->willReturn($connectionMock);
-        $selectMock = $this->createMock(Select::class);
+        $selectMock = $this->createMock(\Magento\Framework\DB\Select::class);
         $connectionMock->expects($this->once())->method('select')->willReturn($selectMock);
         $selectMock->expects($this->at(2))
             ->method('where')
@@ -87,7 +83,9 @@ class ProductPriceIndexFilterTest extends TestCase
         $this->generator->expects($this->once())
             ->method('generate')
             ->willReturnCallback(
-                $this->getBatchIteratorCallback($selectMock, 5)
+                
+                    $this->getBatchIteratorCallback($selectMock, 5)
+                
             );
 
         $fetchStmtMock = $this->createPartialMock(\Zend_Db_Statement_Pdo::class, ['fetchAll']);

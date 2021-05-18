@@ -3,14 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Quote\Test\Unit\Model\Quote\Item;
 
-use Magento\Quote\Model\Quote\Item\AbstractItem;
-use PHPUnit\Framework\TestCase;
-
-class AbstractItemTest extends TestCase
+/**
+ * Class AbstractItemTest
+ */
+class AbstractItemTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test the getTotalDiscountAmount function
@@ -24,7 +22,7 @@ class AbstractItemTest extends TestCase
     public function testGetTotalDiscountAmount($expectedDiscountAmount, $children, $calculated, $myDiscountAmount)
     {
         $abstractItemMock = $this->getMockForAbstractClass(
-            AbstractItem::class,
+            \Magento\Quote\Model\Quote\Item\AbstractItem::class,
             [],
             '',
             false,
@@ -53,7 +51,7 @@ class AbstractItemTest extends TestCase
     {
         $childOneDiscountAmount = 1000;
         $childOneItemMock = $this->getMockForAbstractClass(
-            AbstractItem::class,
+            \Magento\Quote\Model\Quote\Item\AbstractItem::class,
             [],
             '',
             false,
@@ -67,7 +65,7 @@ class AbstractItemTest extends TestCase
 
         $childTwoDiscountAmount = 50;
         $childTwoItemMock = $this->getMockForAbstractClass(
-            AbstractItem::class,
+            \Magento\Quote\Model\Quote\Item\AbstractItem::class,
             [],
             '',
             false,

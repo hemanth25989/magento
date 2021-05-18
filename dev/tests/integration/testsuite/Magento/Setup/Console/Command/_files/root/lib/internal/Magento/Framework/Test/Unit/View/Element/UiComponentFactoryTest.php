@@ -6,8 +6,6 @@
 namespace Magento\Framework\Test\Unit\View\Element;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Element\UiComponent\DataProvider\Sanitizer;
-use PHPUnit\Framework\MockObject\MockObject;
 
 class UiComponentFactoryTest extends \PHPUnit\Framework\TestCase
 {
@@ -17,19 +15,25 @@ class UiComponentFactoryTest extends \PHPUnit\Framework\TestCase
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    /** @var \Magento\Framework\ObjectManagerInterface|MockObject */
+    /** @var \Magento\Framework\ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $objectManagerMock;
 
-    /** @var \Magento\Framework\Data\Argument\InterpreterInterface|MockObject */
+    /** @var \Magento\Framework\Data\Argument\InterpreterInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $interpreterMock;
 
-    /** @var \Magento\Framework\View\Element\UiComponent\ContextFactory|MockObject */
+    /** @var \Magento\Framework\View\Element\UiComponent\ContextFactory|\PHPUnit\Framework\MockObject\MockObject */
     protected $contextFactoryMock;
 
-    /** @var \Magento\Framework\Config\DataInterfaceFactory|MockObject */
+    /** @var \Magento\Framework\Config\DataInterfaceFactory|\PHPUnit\Framework\MockObject\MockObject */
     protected $dataInterfaceFactoryMock;
 
-    /** @var \Magento\Ui\Config\Reader\Definition\Data|MockObject */
+    /** @var \SafeReflectionClass|\PHPUnit\Framework\MockObject\MockObject */
+    protected $safeReflectionClassMock;
+
+    /** @var \SafeReflectionClass|\PHPUnit\Framework\MockObject\MockObject */
+    protected $safeReflectionClassMock2;
+
+    /** @var \Magento\Ui\Config\Reader\Definition\Data|\PHPUnit\Framework\MockObject\MockObject */
     protected $dataMock;
 
     protected function setUp(): void
@@ -47,10 +51,13 @@ class UiComponentFactoryTest extends \PHPUnit\Framework\TestCase
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
+        $this->safeReflectionClassMock = $this->getMockBuilder(\SafeReflectionClass::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->safeReflectionClassMock2 = $this->getMockBuilder(\SafeReflectionClass::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->dataMock = $this->createMock(\Magento\Framework\Config\DataInterface::class);
-        $sanitizerMock = $this->createMock(Sanitizer::class);
-        $sanitizerMock->method('sanitize')->willReturnArgument(0);
-        $sanitizerMock->method('sanitizeComponentMetadata')->willReturnArgument(0);
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $this->objectManagerHelper->getObject(
             \Magento\Framework\View\Element\UiComponentFactory::class,
@@ -61,8 +68,7 @@ class UiComponentFactoryTest extends \PHPUnit\Framework\TestCase
                 'configFactory' => $this->dataInterfaceFactoryMock,
                 'data' => [],
                 'componentChildFactories' => [],
-                'definitionData' => $this->dataMock,
-                'sanitizer' => $sanitizerMock
+                'definitionData' => $this->dataMock
             ]
         );
     }
@@ -115,7 +121,7 @@ class UiComponentFactoryTest extends \PHPUnit\Framework\TestCase
         $name = "fieldset";
         $context = $this->createMock(\Magento\Framework\View\Element\UiComponent\ContextInterface::class);
         $arguments = ['context' => $context];
-        $definitionArguments = [
+        $defintionArguments = [
             'componentType' => 'select',
             'attributes' => [
                 'class' => '\Some\Class',
@@ -132,7 +138,7 @@ class UiComponentFactoryTest extends \PHPUnit\Framework\TestCase
         $this->dataMock->expects($this->once())
             ->method('get')
             ->with($name)
-            ->willReturn($definitionArguments);
+            ->willReturn($defintionArguments);
         $this->objectManagerMock->expects($this->once())
             ->method('create')
             ->with('\Some\Class', $expectedArguments);

@@ -6,14 +6,14 @@
 
 /**
  * @var \Magento\Payment\Block\Adminhtml\Transparent\Form $block
- * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
  */
 $code = $block->escapeHtml($block->getMethodCode());
 $ccType = $block->getInfoData('cc_type');
 $ccExpMonth = $block->getInfoData('cc_exp_month');
 $ccExpYear = $block->getInfoData('cc_exp_year');
 ?>
-<fieldset class="admin__fieldset payment-method" id="payment_form_<?= /* @noEscape */ $code ?>">
+<fieldset class="admin__fieldset payment-method" id="payment_form_<?= /* @noEscape */ $code ?>"
+          style="display:none">
     <div class="field-type admin__field _required">
         <label class="admin__field-label" for="<?= /* @noEscape */ $code ?>_cc_type">
             <span><?= $block->escapeHtml(__('Credit Card Type')) ?></span>
@@ -23,8 +23,8 @@ $ccExpYear = $block->getInfoData('cc_exp_year');
                     class="required-entry validate-cc-type-select admin__control-select">
                 <option value=""></option>
                 <?php foreach ($block->getCcAvailableTypes() as $typeCode => $typeName): ?>
-                    <option value="<?= $block->escapeHtml($typeCode) ?>"
-                            <?php if ($typeCode == $ccType): ?>selected="selected"<?php endif ?>>
+                    <option value="<?= $block->escapeHtmlAttr($typeCode) ?>"
+                        <?php if ($typeCode == $ccType): ?>selected="selected"<?php endif ?>>
                         <?= $block->escapeHtml($typeName) ?>
                     </option>
                 <?php endforeach ?>
@@ -36,8 +36,12 @@ $ccExpYear = $block->getInfoData('cc_exp_year');
             <span><?= $block->escapeHtml(__('Credit Card Number')) ?></span>
         </label>
         <div class="admin__field-control">
-            <input type="text" id="<?= /* @noEscape */ $code ?>_cc_number" name="payment[cc_number]"
-                   title="<?= $block->escapeHtml(__('Credit Card Number')) ?>"
+            <input type="text" id="<?= /* @noEscape */ $code ?>_cc_number"
+                   name="payment[cc_number]"
+                   oncopy="return false;"
+                   oncut="return false;"
+                   onpaste="return false;"
+                   title="<?= $block->escapeHtmlAttr(__('Credit Card Number')) ?>"
                    class="admin__control-text validate-cc-number"
                    value="<?= /* @noEscape */ $block->getInfoData('cc_number') ?>"/>
         </div>
@@ -50,7 +54,7 @@ $ccExpYear = $block->getInfoData('cc_exp_year');
             <select id="<?= /* @noEscape */ $code ?>_expiration" name="payment[cc_exp_month]"
                     class="admin__control-select admin__control-select-month validate-cc-exp required-entry">
                 <?php foreach ($block->getCcMonths() as $k => $v): ?>
-                    <option value="<?= $block->escapeHtml($k) ?>"
+                    <option value="<?= $block->escapeHtmlAttr($k) ?>"
                             <?php if ($k == $ccExpMonth): ?>selected="selected"<?php endif ?>>
                         <?= $block->escapeHtml($v) ?>
                     </option>
@@ -74,15 +78,16 @@ $ccExpYear = $block->getInfoData('cc_exp_year');
                 <span><?= $block->escapeHtml(__('Card Verification Number')) ?></span>
             </label>
             <div class="admin__field-control">
-                <input type="text" title="<?= $block->escapeHtml(__('Card Verification Number')) ?>"
+                <input type="text"
+                       title="<?= $block->escapeHtmlAttr(__('Card Verification Number')) ?>"
+                       oncopy="return false;"
+                       oncut="return false;"
+                       onpaste="return false;"
                        class="required-entry validate-cc-cvn admin__control-cvn admin__control-text"
                        id="<?= /* @noEscape */ $code ?>_cc_cid"
-                       name="payment[cc_cid]" value="<?= /* @noEscape */ $block->getInfoData('cc_cid') ?>"/>
+                       name="payment[cc_cid]"
+                       value="<?= /* @noEscape */ $block->getInfoData('cc_cid') ?>"/>
             </div>
         </div>
     <?php endif; ?>
 </fieldset>
-<?= /* @noEscape */ $secureRenderer->renderStyleAsTag(
-    "display:none",
-    'fieldset#payment_form_' . /* @noEscape */ $code
-) ?>

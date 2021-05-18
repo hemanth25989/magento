@@ -173,9 +173,9 @@ class CookieMetadata
     /**
      * Get Same Site Flag
      *
-     * @return string|null
+     * @return string
      */
-    public function getSameSite(): ?string
+    public function getSameSite(): string
     {
         return $this->get(self::KEY_SAME_SITE);
     }

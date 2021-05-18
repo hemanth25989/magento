@@ -3,60 +3,51 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\Config;
 
-use Magento\Framework\App\Config\FileResolver;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Config\FileIteratorFactory;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\Read;
-use Magento\Framework\Module\Dir\Reader;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class FileResolverTest extends TestCase
+class FileResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Files resolver
      *
-     * @var FileResolver
+     * @var \Magento\Framework\App\Config\FileResolver
      */
     protected $model;
 
     /**
      * Filesystem
      *
-     * @var \Magento\Framework\Filesystem|MockObject
+     * @var \Magento\Framework\Filesystem|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $filesystem;
 
     /**
      * File iterator factory
      *
-     * @var FileIteratorFactory|MockObject
+     * @var \Magento\Framework\Config\FileIteratorFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $iteratorFactory;
 
     /**
-     * @var Reader|MockObject
+     * @var \Magento\Framework\Module\Dir\Reader|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $moduleReader;
 
     protected function setUp(): void
     {
-        $this->iteratorFactory = $this->getMockBuilder(FileIteratorFactory::class)
+        $this->iteratorFactory = $this->getMockBuilder(\Magento\Framework\Config\FileIteratorFactory::class)
             ->disableOriginalConstructor()
             ->setConstructorArgs(['getPath'])
             ->getMock();
-        $this->filesystem = $this->createPartialMock(Filesystem::class, ['getDirectoryRead']);
-        $this->moduleReader = $this->getMockBuilder(Reader::class)
+        $this->filesystem = $this->createPartialMock(\Magento\Framework\Filesystem::class, ['getDirectoryRead']);
+        $this->moduleReader = $this->getMockBuilder(\Magento\Framework\Module\Dir\Reader::class)
             ->disableOriginalConstructor()
             ->setConstructorArgs(['getConfigurationFiles'])
             ->getMock();
 
-        $this->model = new FileResolver(
+        $this->model = new \Magento\Framework\App\Config\FileResolver(
             $this->moduleReader,
             $this->filesystem,
             $this->iteratorFactory
@@ -74,7 +65,7 @@ class FileResolverTest extends TestCase
     public function testGetPrimary($filename, $fileList)
     {
         $scope = 'primary';
-        $directory = $this->createMock(Read::class);
+        $directory = $this->createMock(\Magento\Framework\Filesystem\Directory\Read::class);
         $directory->expects(
             $this->once()
         )->method(

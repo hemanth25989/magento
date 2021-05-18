@@ -13,7 +13,7 @@ use Magento\Framework\Acl\Builder;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\Framework\UrlInterface;
 use Magento\Review\Model\ResourceModel\Review\CollectionFactory;
-use Laminas\Http\Request;
+use Zend\Http\Request;
 
 /**
  * Test Mass Update action.

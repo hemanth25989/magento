@@ -7,12 +7,11 @@ declare(strict_types=1);
 
 namespace Magento\ImportExport\Test\Unit\Helper;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\File\Size as FileSize;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\ImportExport\Helper\Data as HelperData;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,22 +27,22 @@ class DataTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var FileSize|MockObject
+     * @var FileSize|PHPUnit\Framework\MockObject\MockObject
      */
     private $fileSizeMock;
 
     /**
-     * @var Context|MockObject
+     * @var Context|PHPUnit\Framework\MockObject\MockObject
      */
     private $contextMock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|PHPUnit\Framework\MockObject\MockObject
      */
     private $scopeConfigMock;
 
     /**
-     * @var HelperData|MockObject
+     * @var HelperData|PHPUnit\Framework\MockObject\MockObject
      */
     private $helperData;
 

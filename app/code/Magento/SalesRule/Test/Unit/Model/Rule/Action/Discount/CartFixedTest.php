@@ -3,13 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\SalesRule\Test\Unit\Model\Rule\Action\Discount;
 
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
-use Magento\Quote\Api\Data\CartExtensionInterface;
+use Magento\Quote\Api\Data\CartExtension;
 use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\Quote\Address;
 use Magento\Quote\Model\Quote\Item\AbstractItem;
@@ -21,12 +19,11 @@ use Magento\SalesRule\Model\Rule\Action\Discount\Data;
 use Magento\SalesRule\Model\Rule\Action\Discount\DataFactory;
 use Magento\SalesRule\Model\Validator;
 use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 
 /**
  * Tests for Magento\SalesRule\Model\Rule\Action\Discount\CartFixed.
- *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class CartFixedTest extends TestCase
@@ -93,14 +90,19 @@ class CartFixedTest extends TestCase
         $this->item = $this->createMock(AbstractItem::class);
         $this->data = $this->createPartialMock(Data::class, []);
 
-        $this->quote = $this->getMockBuilder(Quote::class)
-            ->addMethods(['getCartFixedRules', 'setCartFixedRules'])
-            ->onlyMethods(['getStore', 'getExtensionAttributes', 'isVirtual'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->quote = $this->createPartialMock(
+            Quote::class,
+            [
+                'getStore',
+                'getCartFixedRules',
+                'setCartFixedRules',
+                'getExtensionAttributes',
+                'isVirtual'
+            ]
+        );
         $this->address = $this->createPartialMock(
             Address::class,
-            ['getShippingMethod']
+            ['__wakeup', 'getShippingMethod']
         );
         $this->item->expects($this->any())->method('getQuote')->willReturn($this->quote);
         $this->item->expects($this->any())->method('getAddress')->willReturn($this->address);
@@ -111,7 +113,7 @@ class CartFixedTest extends TestCase
             DataFactory::class,
             ['create']
         );
-        $dataFactory->method('create')->willReturn($this->data);
+        $dataFactory->expects($this->any())->method('create')->willReturn($this->data);
         $this->priceCurrency = $this->getMockBuilder(PriceCurrencyInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['roundPrice'])
@@ -131,7 +133,6 @@ class CartFixedTest extends TestCase
                 'getAvailableDiscountAmount'])
             ->disableOriginalConstructor()
             ->getMock();
-
         $this->model = new CartFixed(
             $this->validator,
             $dataFactory,
@@ -155,46 +156,58 @@ class CartFixedTest extends TestCase
         $this->rule
             ->expects($this->any())
             ->method('getId')
-            ->will(
-                $this->returnValue(
+            ->willReturn(
+                
                     $ruleDetails['id']
-                )
+                
             );
         $this->rule
             ->expects($this->any())
             ->method('getApplyToShipping')
-            ->will(
-                $this->returnValue(
+            ->willReturn(
+                
                     $shipping['is_applied_to_shipping']
-                )
+                
             );
         $this->cartFixedDiscountHelper
             ->expects($this->any())
             ->method('getDiscountAmount')
-            ->will(
-                $this->returnValue(
+            ->willReturn(
+                
                     $ruleDetails['discounted_amount']
-                )
+                
             );
-        $cartExtensionMock = $this->getMockBuilder(CartExtensionInterface::class)
+        $cartExtensionMock = $this->getMockBuilder(CartExtension::class)
             ->disableOriginalConstructor()
             ->setMethods(['getShippingAssignments'])
-            ->getMockForAbstractClass();
-        $this->quote->expects($this->any())->method('getCartFixedRules')->will($this->returnValue([]));
+            ->getMock();
+        $this->quote->expects($this->any())->method('getCartFixedRules')->willReturn([]);
         $store = $this->createMock(Store::class);
         $this->priceCurrency
             ->expects($this->atLeastOnce())
             ->method('convert')
-            ->willReturnArgument($ruleDetails['rounded_amount']);
+            ->willReturnArgument(
+                
+                    $ruleDetails['rounded_amount']
+                
+            );
         $this->priceCurrency
             ->expects($this->atLeastOnce())
             ->method('roundPrice')
-            ->willReturnArgument($ruleDetails['rounded_amount']);
+            ->willReturnArgument(
+                
+                    $ruleDetails['rounded_amount']
+                
+            );
         $this->deltaPriceRound
             ->expects($this->any())
             ->method('round')
-            ->willReturnArgument($ruleDetails['base_items_price']);
-        $this->quote->expects($this->any())->method('getStore')->will($this->returnValue($store));
+            ->willReturn(
+                
+                    $ruleDetails['base_items_price']
+                
+            );
+        $this->quote->expects($this->any())->method('getStore')->willReturn($store);
         $this->quote->method('isVirtual')
             ->willReturn(false);
         $this->quote->method('getExtensionAttributes')
@@ -206,10 +219,10 @@ class CartFixedTest extends TestCase
         $this->address
             ->expects($this->once())
             ->method('getShippingMethod')
-            ->will(
-                $this->returnValue(
+            ->willReturn(
+                
                     $shipping['shipping_method']
-                )
+                
             );
 
         /** validators data */
@@ -217,27 +230,27 @@ class CartFixedTest extends TestCase
             ->expects($this->once())
             ->method('getItemPrice')
             ->with($this->item)
-            ->will($this->returnValue($ruleDetails['items_price']));
+            ->willReturn($ruleDetails['items_price']);
         $this->validator
             ->expects($this->once())
             ->method('getItemBasePrice')
             ->with($this->item)
-            ->will($this->returnValue($ruleDetails['base_items_price']));
+            ->willReturn($ruleDetails['base_items_price']);
         $this->validator
             ->expects($this->once())
             ->method('getItemOriginalPrice')
             ->with($this->item)
-            ->will($this->returnValue($ruleDetails['items_price']));
+            ->willReturn($ruleDetails['items_price']);
         $this->validator
             ->expects($this->once())
             ->method('getItemBaseOriginalPrice')
             ->with($this->item)
-            ->will($this->returnValue($ruleDetails['items_price']));
+            ->willReturn($ruleDetails['items_price']);
         $this->validator
             ->expects($this->once())
             ->method('getRuleItemTotalsInfo')
             ->with($this->rule->getId())
-            ->will($this->returnValue($ruleDetails));
+            ->willReturn($ruleDetails);
 
         $this->quote->expects($this->once())->method('setCartFixedRules')->with([1 => $ruleDetails['cart_rules']]);
         $this->model->calculate($this->rule, $this->item, $ruleDetails['items_count']);

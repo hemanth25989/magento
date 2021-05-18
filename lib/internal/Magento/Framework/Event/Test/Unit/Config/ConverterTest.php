@@ -3,15 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Event\Test\Unit\Config;
 
-use Magento\Framework\Event\Config\Converter;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Event\Config\Converter;
 
-class ConverterTest extends TestCase
+class ConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Converter
@@ -48,10 +45,13 @@ class ConverterTest extends TestCase
         $this->assertEquals($convertedFile, $this->model->convert($this->source));
     }
 
+    /**
+     */
     public function testConvertThrowsExceptionWhenDomIsInvalid()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Attribute name is missed');
+
         $this->source->loadXML(file_get_contents($this->filePath . 'event_invalid_config.xml'));
         $this->model->convert($this->source);
     }

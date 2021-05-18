@@ -32,7 +32,8 @@ class ProductSwatchDataTest extends GraphQlAbstract
     }
 
     /**
-     * @magentoApiDataFixture Magento/Swatches/_files/configurable_product_text_swatch_attribute.php
+     * @magentoApiDataFixture Magento/Swatches/_files/text_swatch_attribute.php
+     * @magentoApiDataFixture Magento/ConfigurableProduct/_files/configurable_products.php
      */
     public function testTextSwatchDataValues()
     {
@@ -67,15 +68,14 @@ QUERY;
         $option = $product['configurable_options'][0];
         $this->assertArrayHasKey('values', $option);
         $length = count($option['values']);
-        $swatchData = ['Swatch 1', 'Swatch 2', 'Swatch 3'];
         for ($i = 0; $i < $length; $i++) {
-            $swatchValue = $option['values'][$i]['swatch_data']['value'];
-            $this->assertContains($swatchValue, $swatchData);
+            $this->assertEquals('option ' . ($i + 1), $option['values'][$i]['swatch_data']['value']);
         }
     }
 
     /**
-     * @magentoApiDataFixture Magento/Swatches/_files/configurable_product_with_visual_swatch_attribute.php
+     * @magentoApiDataFixture Magento/Swatches/_files/visual_swatch_attribute_with_different_options_type.php
+     * @magentoApiDataFixture Magento/ConfigurableProduct/_files/configurable_products.php
      */
     public function testVisualSwatchDataValues()
     {

@@ -6,7 +6,8 @@
 namespace Magento\Payment\Block\Transparent;
 
 /**
- * Test for \Magento\Payment\Block\Transparent\Iframe
+ * Class IframeTest
+ * @package Magento\Payment\Block\Transparent
  */
 class IframeTest extends \PHPUnit\Framework\TestCase
 {
@@ -37,7 +38,7 @@ class IframeTest extends \PHPUnit\Framework\TestCase
         $content = $block->toHtml();
 
         $this->assertStringNotContainsString($xssString, $content, 'Params must be escaped');
-        $this->assertStringContainsString($block->escapeJs($xssString), $content, 'Content must be present');
+        $this->assertStringContainsString($block->escapeXssInUrl($xssString), $content, 'Content must be present');
     }
 
     /**

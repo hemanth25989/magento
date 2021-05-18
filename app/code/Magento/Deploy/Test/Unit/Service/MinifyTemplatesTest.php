@@ -3,22 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Deploy\Test\Unit\Service;
 
 use Magento\Deploy\Service\MinifyTemplates;
+
 use Magento\Framework\App\Utility\Files;
-
 use Magento\Framework\View\Template\Html\MinifierInterface;
-use PHPUnit\Framework\MockObject\MockObject as Mock;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject as Mock;
 
 /**
  * Minify Templates service class unit tests
  */
-class MinifyTemplatesTest extends TestCase
+class MinifyTemplatesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var MinifyTemplates

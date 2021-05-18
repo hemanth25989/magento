@@ -3,30 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GroupedProduct\Test\Unit\Model\Product\Cart\Configuration\Plugin;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\CartConfiguration;
-use Magento\GroupedProduct\Model\Product\Cart\Configuration\Plugin\Grouped;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class GroupedTest extends TestCase
+class GroupedTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Grouped
+     * @var \Magento\GroupedProduct\Model\Product\Cart\Configuration\Plugin\Grouped
      */
     protected $groupedPlugin;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $productMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $subjectMock;
 
@@ -37,12 +29,12 @@ class GroupedTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->productMock = $this->createMock(Product::class);
-        $this->subjectMock = $this->createMock(CartConfiguration::class);
+        $this->productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $this->subjectMock = $this->createMock(\Magento\Catalog\Model\Product\CartConfiguration::class);
         $this->closureMock = function () {
             return 'Expected';
         };
-        $this->groupedPlugin = new Grouped();
+        $this->groupedPlugin = new \Magento\GroupedProduct\Model\Product\Cart\Configuration\Plugin\Grouped();
     }
 
     public function testAroundIsProductConfiguredWhenProductGrouped()

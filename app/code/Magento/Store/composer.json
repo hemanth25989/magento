@@ -9,21 +9,21 @@
     "config": {
         "sort-packages": true
     },
-    "version": "101.1.2",
+    "version": "101.0.7",
     "require": {
         "php": "~7.3.0||~7.4.0",
-        "magento/framework": "103.0.*",
-        "magento/module-catalog": "104.0.*",
-        "magento/module-config": "101.2.*",
-        "magento/module-directory": "100.4.*",
-        "magento/module-media-storage": "100.4.*",
-        "magento/module-ui": "101.2.*",
-        "magento/module-customer": "103.0.*",
-        "magento/module-authorization": "100.4.*",
-        "magento/module-backend": "102.0.*"
+        "magento/framework": "102.0.*",
+        "magento/module-catalog": "103.0.*",
+        "magento/module-config": "101.1.*",
+        "magento/module-directory": "100.3.*",
+        "magento/module-media-storage": "100.3.*",
+        "magento/module-ui": "101.1.*",
+        "magento/module-customer": "102.0.*",
+        "magento/module-authorization": "100.3.*",
+        "magento/module-backend": "101.0.*"
     },
     "suggest": {
-        "magento/module-deploy": "100.4.*"
+        "magento/module-deploy": "100.3.*"
     },
     "autoload": {
         "files": [

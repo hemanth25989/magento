@@ -3,30 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Cms\Test\Unit\Controller\Adminhtml\Page;
 
-use Magento\Cms\Controller\Adminhtml\Page\MassEnable;
-use Magento\Cms\Model\ResourceModel\Page\Collection;
-use Magento\Cms\Model\ResourceModel\Page\CollectionFactory;
 use Magento\Cms\Test\Unit\Controller\Adminhtml\AbstractMassActionTest;
-use PHPUnit\Framework\MockObject\MockObject;
 
 class MassEnableTest extends AbstractMassActionTest
 {
     /**
-     * @var MassEnable
+     * @var \Magento\Cms\Controller\Adminhtml\Page\MassEnable
      */
     protected $massEnableController;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Cms\Model\ResourceModel\Page\CollectionFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $collectionFactoryMock;
 
     /**
-     * @var \Magento\Cms\Model\ResourceModel\Page\Collection|MockObject
+     * @var \Magento\Cms\Model\ResourceModel\Page\Collection|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $pageCollectionMock;
 
@@ -35,14 +29,14 @@ class MassEnableTest extends AbstractMassActionTest
         parent::setUp();
 
         $this->collectionFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Cms\Model\ResourceModel\Page\CollectionFactory::class,
             ['create']
         );
 
-        $this->pageCollectionMock = $this->createMock(Collection::class);
+        $this->pageCollectionMock = $this->createMock(\Magento\Cms\Model\ResourceModel\Page\Collection::class);
 
         $this->massEnableController = $this->objectManager->getObject(
-            MassEnable::class,
+            \Magento\Cms\Controller\Adminhtml\Page\MassEnable::class,
             [
                 'context' => $this->contextMock,
                 'filter' => $this->filterMock,
@@ -88,15 +82,14 @@ class MassEnableTest extends AbstractMassActionTest
     /**
      * Create Cms Page Collection Mock
      *
-     * @return \Magento\Cms\Model\ResourceModel\Page\Collection|MockObject
+     * @return \Magento\Cms\Model\ResourceModel\Page\Collection|\PHPUnit\Framework\MockObject\MockObject
      */
     protected function getPageMock()
     {
-        $pageMock = $this->getMockBuilder(Collection::class)
-            ->addMethods(['setIsActive'])
-            ->onlyMethods(['save'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $pageMock = $this->createPartialMock(
+            \Magento\Cms\Model\ResourceModel\Page\Collection::class,
+            ['setIsActive', 'save']
+        );
         $pageMock->expects($this->once())->method('setIsActive')->with(true)->willReturn(true);
         $pageMock->expects($this->once())->method('save')->willReturn(true);
 

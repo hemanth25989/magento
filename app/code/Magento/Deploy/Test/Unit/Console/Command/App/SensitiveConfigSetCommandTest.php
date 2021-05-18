@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Deploy\Test\Unit\Console\Command\App;
 
 use Magento\Config\App\Config\Type\System;
@@ -14,14 +12,13 @@ use Magento\Deploy\Console\Command\App\SensitiveConfigSetCommand;
 use Magento\Deploy\Model\DeploymentConfig\ChangeDetector;
 use Magento\Deploy\Model\DeploymentConfig\Hash;
 use Magento\Framework\Console\Cli;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SensitiveConfigSetCommandTest extends TestCase
+class SensitiveConfigSetCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SensitiveConfigSetFacade|MockObject
@@ -111,10 +108,7 @@ class SensitiveConfigSetCommandTest extends TestCase
             Cli::RETURN_FAILURE,
             $tester->getStatusCode()
         );
-        $this->assertStringContainsString(
-            'This command is unavailable right now.',
-            $tester->getDisplay()
-        );
+        $this->assertStringContainsString('This command is unavailable right now.', $tester->getDisplay());
     }
 
     public function testExecuteWithException()
@@ -133,9 +127,6 @@ class SensitiveConfigSetCommandTest extends TestCase
             Cli::RETURN_FAILURE,
             $tester->getStatusCode()
         );
-        $this->assertStringContainsString(
-            'Some exception',
-            $tester->getDisplay()
-        );
+        $this->assertStringContainsString('Some exception', $tester->getDisplay());
     }
 }

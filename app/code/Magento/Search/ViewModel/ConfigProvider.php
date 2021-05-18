@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Magento\Search\ViewModel;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\DataObject;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Store\Model\ScopeInterface;
 

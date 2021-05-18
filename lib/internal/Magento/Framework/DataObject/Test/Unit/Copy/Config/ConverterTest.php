@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * \Magento\Framework\DataObject\Copy\Config\Converter
  *
@@ -7,20 +7,16 @@
  */
 namespace Magento\Framework\DataObject\Test\Unit\Copy\Config;
 
-use Magento\Framework\DataObject\Copy\Config\Converter;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ConverterTest extends TestCase
+class ConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|Converter
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\DataObject\Copy\Config\Converter
      */
     protected $_model;
 
     protected function setUp(): void
     {
-        $this->_model = new Converter();
+        $this->_model = new \Magento\Framework\DataObject\Copy\Config\Converter();
     }
 
     public function testConvert()

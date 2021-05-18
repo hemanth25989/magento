@@ -3,17 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\I18n\Dictionary\Writer;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Setup\Module\I18n\Dictionary\Phrase;
-use Magento\Setup\Module\I18n\Dictionary\Writer\Csv;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CsvTest extends TestCase
+class CsvTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
@@ -21,12 +13,12 @@ class CsvTest extends TestCase
     protected $_testFile;
 
     /**
-     * @var Phrase|MockObject
+     * @var \Magento\Setup\Module\I18n\Dictionary\Phrase|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_phraseFirstMock;
 
     /**
-     * @var Phrase|MockObject
+     * @var \Magento\Setup\Module\I18n\Dictionary\Phrase|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_phraseSecondMock;
 
@@ -34,8 +26,8 @@ class CsvTest extends TestCase
     {
         $this->_testFile = str_replace('\\', '/', realpath(dirname(__FILE__))) . '/_files/test.csv';
 
-        $this->_phraseFirstMock = $this->createMock(Phrase::class);
-        $this->_phraseSecondMock = $this->createMock(Phrase::class);
+        $this->_phraseFirstMock = $this->createMock(\Magento\Setup\Module\I18n\Dictionary\Phrase::class);
+        $this->_phraseSecondMock = $this->createMock(\Magento\Setup\Module\I18n\Dictionary\Phrase::class);
     }
 
     protected function tearDown(): void
@@ -45,13 +37,16 @@ class CsvTest extends TestCase
         }
     }
 
+    /**
+     */
     public function testWrongOutputFile()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Cannot open file for write dictionary: "wrong/path"');
-        $objectManagerHelper = new ObjectManager($this);
+
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $objectManagerHelper->getObject(
-            Csv::class,
+            \Magento\Setup\Module\I18n\Dictionary\Writer\Csv::class,
             ['outputFilename' => 'wrong/path']
         );
     }
@@ -116,10 +111,10 @@ class CsvTest extends TestCase
             "content_value2_quote\\'"
         );
 
-        $objectManagerHelper = new ObjectManager($this);
-        /** @var Csv $writer */
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        /** @var \Magento\Setup\Module\I18n\Dictionary\Writer\Csv $writer */
         $writer = $objectManagerHelper->getObject(
-            Csv::class,
+            \Magento\Setup\Module\I18n\Dictionary\Writer\Csv::class,
             ['outputFilename' => $this->_testFile]
         );
         $writer->write($this->_phraseFirstMock);
@@ -157,10 +152,10 @@ EXPECTED;
             ->method('getContextValueAsString')
             ->willReturn('');
 
-        $objectManagerHelper = new ObjectManager($this);
-        /** @var Csv $writer */
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        /** @var \Magento\Setup\Module\I18n\Dictionary\Writer\Csv $writer */
         $writer = $objectManagerHelper->getObject(
-            Csv::class,
+            \Magento\Setup\Module\I18n\Dictionary\Writer\Csv::class,
             ['outputFilename' => $this->_testFile]
         );
         $writer->write($this->_phraseFirstMock);

@@ -1,19 +1,17 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Developer\Test\Unit\Block\Adminhtml\System\Config;
 
-use Magento\Backend\Block\Template\Context;
 use Magento\Developer\Block\Adminhtml\System\Config\WorkflowType;
-use Magento\Framework\App\State;
-use Magento\Framework\Data\Form\Element\AbstractElement;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Data\Form\Element\AbstractElement;
+use Magento\Backend\Block\Template\Context;
+use Magento\Framework\App\State;
 
-class WorkflowTypeTest extends TestCase
+class WorkflowTypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var WorkflowType
@@ -26,7 +24,7 @@ class WorkflowTypeTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var AbstractElement|MockObject
+     * @var AbstractElement|\PHPUnit\Framework\MockObject\MockObject
      */
     private $elementMock;
 
@@ -36,7 +34,7 @@ class WorkflowTypeTest extends TestCase
     private $context;
 
     /**
-     * @var State|MockObject
+     * @var State|\PHPUnit\Framework\MockObject\MockObject
      */
     private $appStateMock;
 

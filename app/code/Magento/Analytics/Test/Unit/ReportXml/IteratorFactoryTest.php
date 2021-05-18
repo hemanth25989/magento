@@ -3,24 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Analytics\Test\Unit\ReportXml;
 
 use Magento\Analytics\ReportXml\IteratorFactory;
 use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class IteratorFactoryTest extends TestCase
+class IteratorFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $objectManagerMock;
 
     /**
-     * @var \IteratorIterator|MockObject
+     * @var \IteratorIterator|\PHPUnit\Framework\MockObject\MockObject
      */
     private $iteratorIteratorMock;
 
@@ -34,9 +30,13 @@ class IteratorFactoryTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
 
-        $this->iteratorIteratorMock = $this->createMock(\IteratorIterator::class);
+        $this->iteratorIteratorMock = $this->getMockBuilder(\IteratorIterator::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->iteratorFactory = new IteratorFactory(
             $this->objectManagerMock

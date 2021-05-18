@@ -3,22 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Deploy\Test\Unit\Console\Command\App\SensitiveConfigSet;
 
 use Magento\Deploy\Console\Command\App\SensitiveConfigSet\SimpleCollector;
 use Magento\Deploy\Console\Command\App\SensitiveConfigSetCommand;
 use Magento\Framework\Exception\LocalizedException;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Question\QuestionFactory;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 
-class SimpleCollectorTest extends TestCase
+class SimpleCollectorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var QuestionFactory|MockObject
@@ -112,10 +109,13 @@ class SimpleCollectorTest extends TestCase
         );
     }
 
+    /**
+     */
     public function testWrongConfigPath()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('A configuration with this path does not exist or is not sensitive');
+
         $configPaths = [
             'some/config/path1',
             'some/config/path2'
@@ -140,9 +140,12 @@ class SimpleCollectorTest extends TestCase
         );
     }
 
+    /**
+     */
     public function testEmptyValue()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
+
         $configPaths = [
             'some/config/path1',
             'some/config/path2'

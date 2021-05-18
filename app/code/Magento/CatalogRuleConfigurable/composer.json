@@ -9,17 +9,17 @@
     "config": {
         "sort-packages": true
     },
-    "version": "100.4.1",
+    "version": "100.3.6",
     "require": {
         "php": "~7.3.0||~7.4.0",
-        "magento/framework": "103.0.*",
+        "magento/framework": "102.0.*",
         "magento/magento-composer-installer": "*",
-        "magento/module-catalog": "104.0.*",
-        "magento/module-catalog-rule": "101.2.*",
-        "magento/module-configurable-product": "100.4.*"
+        "magento/module-catalog": "103.0.*",
+        "magento/module-catalog-rule": "101.1.*",
+        "magento/module-configurable-product": "100.3.*"
     },
     "suggest": {
-        "magento/module-catalog-rule": "101.2.*"
+        "magento/module-catalog-rule": "101.1.*"
     },
     "autoload": {
         "files": [

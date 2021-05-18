@@ -3,36 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Message\Test\Unit;
 
-use Magento\Framework\Message\ExceptionMessageFactory;
-use Magento\Framework\Message\Factory;
 use Magento\Framework\Message\MessageInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ExceptionMessageFactoryTest extends TestCase
+class ExceptionMessageFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Factory|MockObject
+     * @var \Magento\Framework\Message\Factory | \PHPUnit\Framework\MockObject\MockObject
      */
     private $messageFactoryMock;
 
     /**
-     * @var ExceptionMessageFactory
+     * @var \Magento\Framework\Message\ExceptionMessageFactory
      */
     private $exceptionMessageFactory;
 
     protected function setUp(): void
     {
         $this->messageFactoryMock = $this->createPartialMock(
-            Factory::class,
+            \Magento\Framework\Message\Factory::class,
             ['create']
         );
 
-        $this->exceptionMessageFactory = new ExceptionMessageFactory(
+        $this->exceptionMessageFactory = new \Magento\Framework\Message\ExceptionMessageFactory(
             $this->messageFactoryMock
         );
     }

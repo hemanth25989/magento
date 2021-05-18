@@ -3,20 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Config\Test\Unit;
 
 use Magento\Framework\Config\GenericSchemaLocator;
 use Magento\Framework\Config\SchemaLocatorInterface;
 use Magento\Framework\Module\Dir\Reader as ModuleDirReader;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Magento\Framework\Config\GenericSchemaLocator
  */
-class GenericSchemaLocatorTest extends TestCase
+class GenericSchemaLocatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
@@ -29,7 +26,7 @@ class GenericSchemaLocatorTest extends TestCase
     private $schemaLocator;
 
     /**
-     * @var ModuleDirReader|MockObject
+     * @var ModuleDirReader|\PHPUnit\Framework\MockObject\MockObject
      */
     private $moduleReaderMock;
 

@@ -3,63 +3,52 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\GroupedImportExport\Test\Unit\Model\Import\Product\Type\Grouped;
 
-use Magento\Catalog\Model\ResourceModel\Product\Link;
 use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\DB\Select;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\GroupedImportExport\Model\Import\Product\Type\Grouped\Links;
-use Magento\ImportExport\Model\Import;
-use Magento\ImportExport\Model\ImportFactory;
-use Magento\ImportExport\Model\ResourceModel\Import\Data;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class LinksTest extends TestCase
+class LinksTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Links */
+    /** @var \Magento\GroupedImportExport\Model\Import\Product\Type\Grouped\Links */
     protected $links;
 
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    /** @var Link|MockObject */
+    /** @var \Magento\Catalog\Model\ResourceModel\Product\Link|\PHPUnit\Framework\MockObject\MockObject */
     protected $link;
 
-    /** @var ResourceConnection|MockObject */
+    /** @var \Magento\Framework\App\ResourceConnection|\PHPUnit\Framework\MockObject\MockObject */
     protected $resource;
 
-    /** @var Mysql */
+    /** @var \Magento\Framework\DB\Adapter\Pdo\Mysql */
     protected $connection;
 
-    /** @var ImportFactory|MockObject */
+    /** @var \Magento\ImportExport\Model\ImportFactory|\PHPUnit\Framework\MockObject\MockObject */
     protected $importFactory;
 
-    /** @var Import|MockObject */
+    /** @var \Magento\ImportExport\Model\Import|\PHPUnit\Framework\MockObject\MockObject */
     protected $import;
 
     protected function setUp(): void
     {
-        $this->link = $this->createMock(Link::class);
-        $this->connection = $this->createMock(Mysql::class);
-        $this->resource = $this->createMock(ResourceConnection::class);
+        $this->link = $this->createMock(\Magento\Catalog\Model\ResourceModel\Product\Link::class);
+        $this->connection = $this->createMock(\Magento\Framework\DB\Adapter\Pdo\Mysql::class);
+        $this->resource = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
         $this->resource
             ->expects($this->once())
             ->method('getConnection')
             ->willReturn($this->connection);
 
-        $this->import = $this->createMock(Import::class);
-        $this->importFactory = $this->createPartialMock(ImportFactory::class, ['create']);
+        $this->import = $this->createMock(\Magento\ImportExport\Model\Import::class);
+        $this->importFactory = $this->createPartialMock(\Magento\ImportExport\Model\ImportFactory::class, ['create']);
         $this->importFactory->expects($this->any())->method('create')->willReturn($this->import);
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->links = $this->objectManagerHelper->getObject(
-            Links::class,
+            \Magento\GroupedImportExport\Model\Import\Product\Type\Grouped\Links::class,
             [
                 'productLink' => $this->link,
                 'resource' => $this->resource,
@@ -113,7 +102,7 @@ class LinksTest extends TestCase
             ['id' => 2, 'code' => 'qty', 'type' => 'decimal'],
         ];
         $this->processBehaviorGetter('append');
-        $select = $this->createMock(Select::class);
+        $select = $this->createMock(\Magento\Framework\DB\Select::class);
         $this->connection->expects($this->any())->method('select')->willReturn($select);
         $select->expects($this->any())->method('from')->willReturnSelf();
         $select->expects($this->any())->method('where')->willReturnSelf();
@@ -125,7 +114,6 @@ class LinksTest extends TestCase
         $this->link->expects($this->exactly(2))->method('getAttributeTypeTable')->willReturn(
             'table_name'
         );
-
         $this->links->saveLinksData($linksData);
     }
 
@@ -165,7 +153,7 @@ class LinksTest extends TestCase
      */
     protected function processAttributeGetter($dbAttributes)
     {
-        $select = $this->createMock(Select::class);
+        $select = $this->createMock(\Magento\Framework\DB\Select::class);
         $this->connection->expects($this->once())->method('select')->willReturn($select);
         $select->expects($this->once())->method('from')->willReturnSelf();
         $select->expects($this->once())->method('where')->willReturnSelf();
@@ -195,7 +183,7 @@ class LinksTest extends TestCase
      */
     protected function processBehaviorGetter($behavior)
     {
-        $dataSource = $this->createMock(Data::class);
+        $dataSource = $this->createMock(\Magento\ImportExport\Model\ResourceModel\Import\Data::class);
         $dataSource->expects($this->once())->method('getBehavior')->willReturn($behavior);
         $this->import->expects($this->once())->method('getDataSourceModel')->willReturn($dataSource);
     }

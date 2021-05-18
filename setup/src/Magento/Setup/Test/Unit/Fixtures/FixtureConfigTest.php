@@ -3,24 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Fixtures;
 
 use Magento\Framework\Xml\Parser;
 use Magento\Setup\Fixtures\FixtureConfig;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class FixtureConfigTest extends TestCase
+class FixtureConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var FixtureConfig
+     * @var \Magento\Setup\Fixtures\FixtureConfig
      */
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $fileParserMock;
 
@@ -31,12 +28,13 @@ class FixtureConfigTest extends TestCase
         $this->model = new FixtureConfig($this->fileParserMock);
     }
 
+    /**
+     */
     public function testLoadConfigException()
     {
-        $this->expectException('Exception');
-        $this->expectExceptionMessage(
-            'Profile configuration file `exception.file` is not readable or does not exists.'
-        );
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Profile configuration file `exception.file` is not readable or does not exists.');
+
         $this->model->loadConfig('exception.file');
     }
 

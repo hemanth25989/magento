@@ -3,98 +3,78 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\Order\Payment\Transaction;
 
-use Magento\Framework\Api\Filter;
-use Magento\Framework\Api\FilterBuilder;
-use Magento\Framework\Api\Search\FilterGroup;
-use Magento\Framework\Api\SearchCriteria;
-use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Api\SortOrderBuilder;
-use Magento\Framework\Exception\InputException;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Api\Data\TransactionInterface;
-use Magento\Sales\Api\Data\TransactionSearchResultInterfaceFactory;
-use Magento\Sales\Model\EntityStorage;
-use Magento\Sales\Model\EntityStorageFactory;
 use Magento\Sales\Model\Order\Payment\Transaction;
-use Magento\Sales\Model\Order\Payment\Transaction\Repository;
-use Magento\Sales\Model\ResourceModel\Metadata;
-use Magento\Sales\Model\ResourceModel\Order\Payment\Transaction\Collection;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RepositoryTest extends TestCase
+class RepositoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $searchResultFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $filterBuilder;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $searchCriteriaBuilder;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $sortOrderBuilder;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $metaData;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $entityStorage;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $transactionResource;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $searchCriteria;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $filterGroup;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $filter;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $collection;
 
     /**
-     * @var Repository
+     * @var \Magento\Sales\Model\Order\Payment\Transaction\Repository
      */
     protected $repository;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $collectionProcessor;
 
@@ -104,32 +84,32 @@ class RepositoryTest extends TestCase
      */
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->searchResultFactory = $this->createPartialMock(
-            TransactionSearchResultInterfaceFactory::class,
+            \Magento\Sales\Api\Data\TransactionSearchResultInterfaceFactory::class,
             ['create']
         );
-        $this->filterBuilder = $this->createMock(FilterBuilder::class);
-        $this->searchCriteriaBuilder = $this->createMock(SearchCriteriaBuilder::class);
-        $this->sortOrderBuilder = $this->createMock(SortOrderBuilder::class);
-        $this->metaData = $this->createMock(Metadata::class);
-        $entityStorageFactory = $this->createPartialMock(EntityStorageFactory::class, ['create']);
-        $this->entityStorage = $this->createMock(EntityStorage::class);
+        $this->filterBuilder = $this->createMock(\Magento\Framework\Api\FilterBuilder::class);
+        $this->searchCriteriaBuilder = $this->createMock(\Magento\Framework\Api\SearchCriteriaBuilder::class);
+        $this->sortOrderBuilder = $this->createMock(\Magento\Framework\Api\SortOrderBuilder::class);
+        $this->metaData = $this->createMock(\Magento\Sales\Model\ResourceModel\Metadata::class);
+        $entityStorageFactory = $this->createPartialMock(\Magento\Sales\Model\EntityStorageFactory::class, ['create']);
+        $this->entityStorage = $this->createMock(\Magento\Sales\Model\EntityStorage::class);
         $this->transactionResource = $this->createMock(
             \Magento\Sales\Model\ResourceModel\Order\Payment\Transaction::class
         );
-        $this->searchCriteria = $this->createMock(SearchCriteria::class);
-        $this->filterGroup = $this->createMock(FilterGroup::class);
-        $this->filter = $this->createMock(Filter::class);
+        $this->searchCriteria = $this->createMock(\Magento\Framework\Api\SearchCriteria::class);
+        $this->filterGroup = $this->createMock(\Magento\Framework\Api\Search\FilterGroup::class);
+        $this->filter = $this->createMock(\Magento\Framework\Api\Filter::class);
         $this->collection = $this->createMock(
-            Collection::class
+            \Magento\Sales\Model\ResourceModel\Order\Payment\Transaction\Collection::class
         );
         $entityStorageFactory->expects($this->once())->method('create')->willReturn($this->entityStorage);
         $this->collectionProcessor = $this->createMock(
-            CollectionProcessorInterface::class
+            \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface::class
         );
         $this->repository = $objectManager->getObject(
-            Repository::class,
+            \Magento\Sales\Model\Order\Payment\Transaction\Repository::class,
             [
                 'searchResultFactory' => $this->searchResultFactory,
                 'filterBuilder' => $this->filterBuilder,
@@ -198,24 +178,26 @@ class RepositoryTest extends TestCase
 
     /**
      * @return void
-     * @throws InputException
-     * @throws NoSuchEntityException
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function testGetException(): void
     {
-        $this->expectException('Magento\Framework\Exception\InputException');
+        $this->expectException(\Magento\Framework\Exception\InputException::class);
+
         $transactionId = null;
         $this->repository->get($transactionId);
     }
 
     /**
      * @return void
-     * @throws InputException
-     * @throws NoSuchEntityException
+     * @throws \Magento\Framework\Exception\InputException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function testGetNoSuchEntity(): void
     {
-        $this->expectException('Magento\Framework\Exception\NoSuchEntityException');
+        $this->expectException(\Magento\Framework\Exception\NoSuchEntityException::class);
+
         $transactionId = null;
         $transactionIdFromArgument = 12;
         $transaction = $this->mockTransaction($transactionId);
@@ -347,8 +329,8 @@ class RepositoryTest extends TestCase
             ->willReturn(false);
         $this->filterBuilder->expects($this->exactly(2))->method('setField')
             ->withConsecutive(
-                [TransactionInterface::TXN_TYPE],
-                [TransactionInterface::PAYMENT_ID]
+                [\Magento\Sales\Api\Data\TransactionInterface::TXN_TYPE],
+                [\Magento\Sales\Api\Data\TransactionInterface::PAYMENT_ID]
             )->willReturnSelf();
         $this->filterBuilder->expects($this->exactly(2))->method('setValue')
             ->withConsecutive(
@@ -417,11 +399,11 @@ class RepositoryTest extends TestCase
     /**
      * @param string|int|null $transactionId
      * @param bool $withoutTransactionIdMatcher
-     * @return MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     protected function mockTransaction($transactionId, $withoutTransactionIdMatcher = false)
     {
-        $transaction = $this->createMock(Transaction::class);
+        $transaction = $this->createMock(\Magento\Sales\Model\Order\Payment\Transaction::class);
         if (!$withoutTransactionIdMatcher) {
             $transaction->expects($this->once())->method('getTransactionId')->willReturn($transactionId);
         }

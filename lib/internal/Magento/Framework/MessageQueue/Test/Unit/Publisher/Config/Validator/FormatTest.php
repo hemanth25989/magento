@@ -3,14 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\MessageQueue\Test\Unit\Publisher\Config\Validator;
 
-use Magento\Framework\MessageQueue\Publisher\Config\Validator\Format;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\MessageQueue\Publisher\Config\Validator\Format;
 
-class FormatTest extends TestCase
+class FormatTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Format
@@ -44,10 +41,13 @@ class FormatTest extends TestCase
         $this->model->validate($configData);
     }
 
+    /**
+     */
     public function testValidateMissingTopicName()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Missing topic field for publisher pub01.');
+
         $configData = [
             'pub01' => [
                 'disabled' => false,
@@ -60,10 +60,13 @@ class FormatTest extends TestCase
         $this->model->validate($configData);
     }
 
+    /**
+     */
     public function testValidateMissingDisabledField()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Missing disabled field for publisher pub01.');
+
         $configData = [
             'pub01' => [
                 'topic' => 'pub01',
@@ -76,10 +79,13 @@ class FormatTest extends TestCase
         $this->model->validate($configData);
     }
 
+    /**
+     */
     public function testValidateMissingConnectionsField()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Missing connections field for publisher pub01.');
+
         $configData = [
             'pub01' => [
                 'topic' => 'pub01',
@@ -89,10 +95,13 @@ class FormatTest extends TestCase
         $this->model->validate($configData);
     }
 
+    /**
+     */
     public function testValidateInvalidConnectionsFormat()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Invalid connections format for publisher pub01.');
+
         $configData = [
             'pub01' => [
                 'topic' => 'pub01',
@@ -103,10 +112,13 @@ class FormatTest extends TestCase
         $this->model->validate($configData);
     }
 
+    /**
+     */
     public function testValidateInvalidPublisherConnectionName()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Missing name field for publisher pub01 in connection config.');
+
         $configData = [
             'pub01' => [
                 'topic' => 'pub01',
@@ -119,10 +131,13 @@ class FormatTest extends TestCase
         $this->model->validate($configData);
     }
 
+    /**
+     */
     public function testValidateInvalidConnectionExchange()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Missing exchange field for publisher pub01 in connection config.');
+
         $configData = [
             'pub01' => [
                 'topic' => 'pub01',
@@ -135,10 +150,13 @@ class FormatTest extends TestCase
         $this->model->validate($configData);
     }
 
+    /**
+     */
     public function testValidateInvalidConnectionDisabledField()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Missing disabled field for publisher pub01 in connection config.');
+
         $configData = [
             'pub01' => [
                 'topic' => 'pub01',
@@ -151,12 +169,13 @@ class FormatTest extends TestCase
         $this->model->validate($configData);
     }
 
+    /**
+     */
     public function testValidateMultipleExceptions()
     {
-        $this->expectException('LogicException');
-        $this->expectExceptionMessage(
-            'Missing topic field for publisher pub01. Missing disabled field for publisher pub02.'
-        );
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Missing topic field for publisher pub01. Missing disabled field for publisher pub02.');
+
         $configData = [
             'pub01' => [
                 'disabled' => false,

@@ -3,43 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Module\Dependency\Report\Dependency\Data;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Setup\Module\Dependency\Report\Dependency\Data\Dependency;
-use Magento\Setup\Module\Dependency\Report\Dependency\Data\Module;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ModuleTest extends TestCase
+class ModuleTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Dependency|MockObject
+     * @var \Magento\Setup\Module\Dependency\Report\Dependency\Data\Dependency|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $dependencyFirst;
 
     /**
-     * @var Dependency|MockObject
+     * @var \Magento\Setup\Module\Dependency\Report\Dependency\Data\Dependency|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $dependencySecond;
 
     /**
-     * @var Module
+     * @var \Magento\Setup\Module\Dependency\Report\Dependency\Data\Module
      */
     protected $module;
 
     protected function setUp(): void
     {
         $this->dependencyFirst =
-            $this->createMock(Dependency::class);
+            $this->createMock(\Magento\Setup\Module\Dependency\Report\Dependency\Data\Dependency::class);
         $this->dependencySecond =
-            $this->createMock(Dependency::class);
+            $this->createMock(\Magento\Setup\Module\Dependency\Report\Dependency\Data\Dependency::class);
 
         $objectManagerHelper = new ObjectManager($this);
         $this->module = $objectManagerHelper->getObject(
-            Module::class,
+            \Magento\Setup\Module\Dependency\Report\Dependency\Data\Module::class,
             ['name' => 'name', 'dependencies' => [$this->dependencyFirst, $this->dependencySecond]]
         );
     }

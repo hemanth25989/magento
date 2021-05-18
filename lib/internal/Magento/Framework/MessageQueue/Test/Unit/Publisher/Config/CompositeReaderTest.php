@@ -3,18 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\MessageQueue\Test\Unit\Publisher\Config;
 
-use Magento\Framework\MessageQueue\DefaultValueProvider;
 use Magento\Framework\MessageQueue\Publisher\Config\CompositeReader;
-use Magento\Framework\MessageQueue\Publisher\Config\ReaderInterface;
 use Magento\Framework\MessageQueue\Publisher\Config\ValidatorInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\MessageQueue\Publisher\Config\ReaderInterface;
 
-class CompositeReaderTest extends TestCase
+class CompositeReaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CompositeReader
@@ -22,27 +17,27 @@ class CompositeReaderTest extends TestCase
     private $reader;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $validatorMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $readerOneMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $readerTwoMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $readerThreeMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $defaultConfigProviderMock;
 
@@ -56,7 +51,7 @@ class CompositeReaderTest extends TestCase
         $this->readerTwoMock = $this->getMockForAbstractClass(ReaderInterface::class);
         $this->readerThreeMock = $this->getMockForAbstractClass(ReaderInterface::class);
         $this->defaultConfigProviderMock =
-            $this->createMock(DefaultValueProvider::class);
+            $this->createMock(\Magento\Framework\MessageQueue\DefaultValueProvider::class);
 
         $this->reader = new CompositeReader(
             $this->validatorMock,

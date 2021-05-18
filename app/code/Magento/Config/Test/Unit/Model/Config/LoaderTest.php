@@ -3,44 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config;
 
-use Magento\Config\Model\Config\Loader;
-use Magento\Config\Model\ResourceModel\Config\Data\Collection;
-use Magento\Framework\App\Config\Value;
-use Magento\Framework\App\Config\ValueFactory;
-use Magento\Framework\DataObject;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class LoaderTest extends TestCase
+/**
+ * @package Magento\Config\Test\Unit\Model\Config
+ */
+class LoaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Loader
+     * @var \Magento\Config\Model\Config\Loader
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_configValueFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_configCollection;
 
     protected function setUp(): void
     {
-        $this->_configValueFactory = $this->getMockBuilder(ValueFactory::class)
-            ->addMethods(['getCollection'])
-            ->onlyMethods(['create'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->_model = new Loader($this->_configValueFactory);
-        $this->_configCollection = $this->createMock(Collection::class);
+        $this->_configValueFactory = $this->createPartialMock(
+            \Magento\Framework\App\Config\ValueFactory::class,
+            ['create', 'getCollection']
+        );
+        $this->_model = new \Magento\Config\Model\Config\Loader($this->_configValueFactory);
+        $this->_configCollection = $this->createMock(\Magento\Config\Model\ResourceModel\Config\Data\Collection::class);
         $this->_configCollection->expects(
             $this->once()
         )->method(
@@ -49,9 +41,11 @@ class LoaderTest extends TestCase
             'scope',
             'scopeId',
             'section'
-        )->willReturnSelf();
+        )->willReturnSelf(
+            
+        );
 
-        $configDataMock = $this->createMock(Value::class);
+        $configDataMock = $this->createMock(\Magento\Framework\App\Config\Value::class);
         $this->_configValueFactory->expects(
             $this->once()
         )->method(
@@ -72,7 +66,9 @@ class LoaderTest extends TestCase
         )->method(
             'getItems'
         )->willReturn(
-            [new DataObject(['path' => 'section', 'value' => 10, 'config_id' => 20])]
+            
+                [new \Magento\Framework\DataObject(['path' => 'section', 'value' => 10, 'config_id' => 20])]
+            
         );
     }
 

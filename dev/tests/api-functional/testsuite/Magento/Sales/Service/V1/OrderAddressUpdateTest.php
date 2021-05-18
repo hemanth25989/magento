@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\Sales\Service\V1;
 
 use Magento\Sales\Api\Data\OrderAddressInterface as OrderAddress;

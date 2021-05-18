@@ -3,23 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
-namespace Magento\Config\Test\Unit\Block\System\Config\Form\Field;
-
-use Magento\Config\Block\System\Config\Form\Field\File;
-use Magento\Framework\DataObject;
-use Magento\Framework\Escaper;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests for \Magento\Framework\Data\Form\Field\File
  */
-class FileTest extends TestCase
+namespace Magento\Config\Test\Unit\Block\System\Config\Form\Field;
+
+class FileTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var File
+     * @var \Magento\Config\Block\System\Config\Form\Field\File
      */
     protected $file;
 
@@ -30,15 +23,15 @@ class FileTest extends TestCase
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
         $this->testData = [
             'before_element_html' => 'test_before_element_html',
-            'html_id' => 'test_id',
-            'name' => 'test_name',
-            'value' => 'test_value',
-            'title' => 'test_title',
-            'disabled' => true,
+            'html_id'             => 'test_id',
+            'name'                => 'test_name',
+            'value'               => 'test_value',
+            'title'               => 'test_title',
+            'disabled'            => true,
             'after_element_js'    => 'test_after_element_js',
             'after_element_html'  => 'test_after_element_html',
             'html_id_prefix'      => 'test_id_prefix_',
@@ -46,15 +39,15 @@ class FileTest extends TestCase
         ];
 
         $this->file = $objectManager->getObject(
-            File::class,
+            \Magento\Config\Block\System\Config\Form\Field\File::class,
             [
-                '_escaper' => $objectManager->getObject(Escaper::class),
+                '_escaper' => $objectManager->getObject(\Magento\Framework\Escaper::class),
                 'data' => $this->testData,
 
             ]
         );
 
-        $formMock = new DataObject();
+        $formMock = new \Magento\Framework\DataObject();
         $formMock->setHtmlIdPrefix($this->testData['html_id_prefix']);
         $formMock->setHtmlIdSuffix($this->testData['html_id_suffix']);
         $this->file->setForm($formMock);

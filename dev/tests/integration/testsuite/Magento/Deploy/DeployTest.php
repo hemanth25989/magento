@@ -19,6 +19,8 @@ use Magento\Deploy\Config\BundleConfig;
 use Magento\Framework\Filesystem\Directory\WriteInterface;
 
 /**
+ * Class DeployTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class DeployTest extends \PHPUnit\Framework\TestCase

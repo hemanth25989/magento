@@ -27,7 +27,7 @@
             <AddressLine1 />
             <AddressLine2 />
             <City />
-            <CountryCode>UK</CountryCode>
+            <CountryCode />
             <PostalCode />
             <ResidentialAddress />
         </Address>

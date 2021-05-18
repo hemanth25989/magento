@@ -22,7 +22,6 @@ use Magento\Framework\App\ObjectManager;
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.CookieAndSessionMisuse)
- * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  *
  * @api
  * @since 100.0.2
@@ -154,11 +153,6 @@ class Storage extends \Magento\Framework\DataObject
     private $ioFile;
 
     /**
-     * @var \Magento\Framework\File\Mime|null
-     */
-    private $mime;
-
-    /**
      * Construct
      *
      * @param \Magento\Backend\Model\Session $session
@@ -180,7 +174,6 @@ class Storage extends \Magento\Framework\DataObject
      * @param \Magento\Framework\Filesystem\DriverInterface $file
      * @param \Magento\Framework\Filesystem\Io\File|null $ioFile
      * @param \Psr\Log\LoggerInterface|null $logger
-     * @param \Magento\Framework\File\Mime $mime
      *
      * @throws \Magento\Framework\Exception\FileSystemException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -204,8 +197,7 @@ class Storage extends \Magento\Framework\DataObject
         array $data = [],
         \Magento\Framework\Filesystem\DriverInterface $file = null,
         \Magento\Framework\Filesystem\Io\File $ioFile = null,
-        \Psr\Log\LoggerInterface $logger = null,
-        \Magento\Framework\File\Mime $mime = null
+        \Psr\Log\LoggerInterface $logger = null
     ) {
         $this->_session = $session;
         $this->_backendUrl = $backendUrl;
@@ -225,7 +217,6 @@ class Storage extends \Magento\Framework\DataObject
         $this->_dirs = $dirs;
         $this->file = $file ?: ObjectManager::getInstance()->get(\Magento\Framework\Filesystem\Driver\File::class);
         $this->ioFile = $ioFile ?: ObjectManager::getInstance()->get(\Magento\Framework\Filesystem\Io\File::class);
-        $this->mime = $mime ?: ObjectManager::getInstance()->get(\Magento\Framework\File\Mime::class);
         parent::__construct($data);
     }
 
@@ -363,16 +354,15 @@ class Storage extends \Magento\Framework\DataObject
             $collection->setFilesFilter('/\.(' . implode('|', $allowed) . ')$/i');
         }
 
+        // prepare items
         foreach ($collection as $item) {
             $item->setId($this->_cmsWysiwygImages->idEncode($item->getBasename()));
             $item->setName($item->getBasename());
             $item->setShortName($this->_cmsWysiwygImages->getShortFilename($item->getBasename()));
             $item->setUrl($this->_cmsWysiwygImages->getCurrentUrl() . $item->getBasename());
-            $driver = $this->_directory->getDriver();
-            $itemStats = $driver->stat($item->getFilename());
+            $itemStats = $this->file->stat($item->getFilename());
             $item->setSize($itemStats['size']);
-            $mimeType = $itemStats['mimetype'] ?? $this->mime->getMimeType($item->getFilename());
-            $item->setMimeType($mimeType);
+            $item->setMimeType(\mime_content_type($item->getFilename()));
 
             if ($this->isImage($item->getBasename())) {
                 $thumbUrl = $this->getThumbnailUrl($item->getFilename(), true);
@@ -382,9 +372,7 @@ class Storage extends \Magento\Framework\DataObject
                 }
 
                 try {
-                    $size = getimagesizefromstring(
-                        $driver->fileGetContents($item->getFilename())
-                    );
+                    $size = getimagesize($item->getFilename());
 
                     if (is_array($size)) {
                         $item->setWidth($size[0]);
@@ -430,9 +418,13 @@ class Storage extends \Magento\Framework\DataObject
      */
     public function createDirectory($name, $path)
     {
+        $path = $this->_directory->getDriver()->getRealPathSafety(
+            $this->_directory->getAbsolutePath($path)
+        );
+
         if (!preg_match(self::DIRECTORY_NAME_REGEXP, $name)) {
             throw new \Magento\Framework\Exception\LocalizedException(
-                __('Please rename the folder using only Latin letters, numbers, underscores and dashes.')
+                __('Please rename the folder using only letters, numbers, underscores and dashes.')
             );
         }
 
@@ -441,7 +433,7 @@ class Storage extends \Magento\Framework\DataObject
             $path = $this->_cmsWysiwygImages->getStorageRoot();
         }
 
-        $newPath = rtrim($path, '/') . '/' . $name;
+        $newPath = $path . '/' . $name;
         $relativeNewPath = $this->_directory->getRelativePath($newPath);
         if ($this->_directory->isDirectory($relativeNewPath)) {
             throw new \Magento\Framework\Exception\LocalizedException(
@@ -551,11 +543,18 @@ class Storage extends \Magento\Framework\DataObject
      */
     public function uploadFile($targetPath, $type = null)
     {
-        if (!$this->isPathAllowed($targetPath, $this->getConditionsForExcludeDirs())) {
+        $targetPath = $this->file->getRealPathSafety($targetPath);
+
+        if ($this->file->isDirectory($targetPath)) {
+            $targetPath = $targetPath . DIRECTORY_SEPARATOR;
+        }
+
+        if (!$this->isPathAllowed($targetPath, $this->getConditionsForExcludeDirs()) || strlen($targetPath) > 255) {
             throw new \Magento\Framework\Exception\LocalizedException(
                 __('We can\'t upload the file to current folder right now. Please try another folder.')
             );
         }
+
         /** @var \Magento\MediaStorage\Model\File\Uploader $uploader */
         $uploader = $this->_uploaderFactory->create(['fileId' => 'image']);
         $allowed = $this->getAllowedExtensions($type);
@@ -574,7 +573,7 @@ class Storage extends \Magento\Framework\DataObject
         }
 
         // create thumbnail
-        $this->resizeFile($targetPath . '/' . ltrim($uploader->getUploadedFileName(), '/'), true);
+        $this->resizeFile($targetPath . '/' . $uploader->getUploadedFileName(), true);
 
         return $result;
     }
@@ -655,41 +654,14 @@ class Storage extends \Magento\Framework\DataObject
         }
         $image = $this->_imageFactory->create();
         $image->open($source);
-
         $image->keepAspectRatio($keepRatio);
-
-        [$imageWidth, $imageHeight] = $this->getResizedParams($source);
-
-        $image->resize($imageWidth, $imageHeight);
+        $image->resize($this->_resizeParameters['width'], $this->_resizeParameters['height']);
         $dest = $targetDir . '/' . $this->ioFile->getPathInfo($source)['basename'];
         $image->save($dest);
         if ($this->_directory->isFile($this->_directory->getRelativePath($dest))) {
             return $dest;
         }
         return false;
-    }
-
-    /**
-     * Return width height for the image resizing.
-     *
-     * @param string $source
-     * @return array
-     */
-    private function getResizedParams(string $source): array
-    {
-        $configWidth = $this->_resizeParameters['width'];
-        $configHeight = $this->_resizeParameters['height'];
-
-        //phpcs:ignore Generic.PHP.NoSilencedErrors
-        [$imageWidth, $imageHeight] = @getimagesize($source);
-
-        if ($imageWidth && $imageHeight) {
-            $imageWidth = $configWidth > $imageWidth ? $imageWidth : $configWidth;
-            $imageHeight = $configHeight > $imageHeight ? $imageHeight : $configHeight;
-
-            return  [$imageWidth, $imageHeight];
-        }
-        return [$configWidth, $configHeight];
     }
 
     /**
@@ -762,7 +734,7 @@ class Storage extends \Magento\Framework\DataObject
      */
     public function getThumbnailRoot()
     {
-        return rtrim($this->_cmsWysiwygImages->getStorageRoot(), '/') . '/' . self::THUMBS_DIRECTORY_NAME;
+        return $this->_cmsWysiwygImages->getStorageRoot() . '/' . self::THUMBS_DIRECTORY_NAME;
     }
 
     /**
@@ -847,7 +819,7 @@ class Storage extends \Magento\Framework\DataObject
     {
         return rtrim(
             preg_replace(
-                '~[/\\\]+(?<![htps?]://)~',
+                '~[/\\\]+~',
                 '/',
                 $this->_directory->getDriver()->getRealPathSafety(
                     $this->_directory->getAbsolutePath($path)

@@ -3,52 +3,49 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\CatalogRule\Test\Unit\Model\Rule\Condition;
 
-use Magento\Catalog\Model\ProductCategoryList;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\CatalogRule\Model\Rule\Condition\Product;
-use Magento\Eav\Model\Config;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ProductTest extends TestCase
+class ProductTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Product */
+    /** @var \Magento\CatalogRule\Model\Rule\Condition\Product */
     protected $product;
 
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    /** @var Config|MockObject */
+    /** @var \Magento\Eav\Model\Config|\PHPUnit\Framework\MockObject\MockObject */
     protected $config;
 
-    /** @var \Magento\Catalog\Model\Product|MockObject */
+    /** @var \Magento\Catalog\Model\Product|\PHPUnit\Framework\MockObject\MockObject */
     protected $productModel;
 
-    /** @var \Magento\Catalog\Model\ResourceModel\Product|MockObject */
+    /** @var \Magento\Catalog\Model\ResourceModel\Product|\PHPUnit\Framework\MockObject\MockObject */
     protected $productResource;
 
-    /** @var Attribute|MockObject */
+    /** @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute|\PHPUnit\Framework\MockObject\MockObject */
     protected $eavAttributeResource;
 
-    /** @var ProductCategoryList|MockObject */
+    /** @var \Magento\Catalog\Model\ProductCategoryList|\PHPUnit\Framework\MockObject\MockObject */
     private $productCategoryList;
 
     protected function setUp(): void
     {
-        $this->config = $this->createPartialMock(Config::class, ['getAttribute']);
-        $this->productModel = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
-            ->addMethods(['addAttributeToSelect', 'getAttributesByCode'])
-            ->onlyMethods(['__wakeup', 'hasData', 'getData', 'getId', 'getStoreId', 'getResource'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->config = $this->createPartialMock(\Magento\Eav\Model\Config::class, ['getAttribute']);
+        $this->productModel = $this->createPartialMock(\Magento\Catalog\Model\Product::class, [
+                '__wakeup',
+                'hasData',
+                'getData',
+                'getId',
+                'getStoreId',
+                'getResource',
+                'addAttributeToSelect',
+                'getAttributesByCode'
+            ]);
 
-        $this->productCategoryList = $this->getMockBuilder(ProductCategoryList::class)
+        $this->productCategoryList = $this->getMockBuilder(\Magento\Catalog\Model\ProductCategoryList::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -57,21 +54,23 @@ class ProductTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->eavAttributeResource = $this->getMockBuilder(Attribute::class)
-            ->addMethods(['getFrontendLabel', 'getAttributesByCode'])
-            ->onlyMethods([
+        $this->eavAttributeResource = $this->createPartialMock(
+            \Magento\Catalog\Model\ResourceModel\Eav\Attribute::class,
+            [
                 '__wakeup',
                 'isAllowedForRuleCondition',
                 'getDataUsingMethod',
                 'getAttributeCode',
+                'getFrontendLabel',
                 'isScopeGlobal',
                 'getBackendType',
-                'getFrontendInput'
-            ])
-            ->disableOriginalConstructor()
-            ->getMock();
+                'getFrontendInput',
+                'getAttributesByCode'
+            ]
+        );
 
-        $this->productResource->expects($this->any())->method('loadAllAttributes')->willReturnSelf();
+        $this->productResource->expects($this->any())->method('loadAllAttributes')
+            ->willReturnSelf();
         $this->productResource->expects($this->any())->method('getAttributesByCode')
             ->willReturn([$this->eavAttributeResource]);
         $this->eavAttributeResource->expects($this->any())->method('isAllowedForRuleCondition')
@@ -85,7 +84,7 @@ class ProductTest extends TestCase
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->product = $this->objectManagerHelper->getObject(
-            Product::class,
+            \Magento\CatalogRule\Model\Rule\Condition\Product::class,
             [
                 'config' => $this->config,
                 'product' => $this->productModel,

@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Payment\Test\Unit\Model\Config;
 
-use Magento\Framework\Module\Dir\Reader;
-use Magento\Payment\Model\Config\SchemaLocator;
-use PHPUnit\Framework\TestCase;
+use \Magento\Payment\Model\Config\SchemaLocator;
 
-class SchemaLocatorTest extends TestCase
+class SchemaLocatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SchemaLocator
+     * @var \Magento\Payment\Model\Config\SchemaLocator
      */
     protected $model;
 
@@ -23,9 +19,8 @@ class SchemaLocatorTest extends TestCase
     protected function setUp(): void
     {
         $moduleReader = $this->getMockBuilder(
-            Reader::class
-        )->disableOriginalConstructor()
-            ->setMethods([])->getMock();
+            \Magento\Framework\Module\Dir\Reader::class
+        )->disableOriginalConstructor()->setMethods([])->getMock();
         $moduleReader->expects($this->once())->method('getModuleDir')->with('etc', 'Magento_Payment')->willReturn(
             self::MODULE_DIR_PATH
         );

@@ -3,19 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit;
 
-use Magento\Framework\View\BlockPool;
-use Magento\Framework\View\Element\BlockFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\View\BlockPool;
 
 /**
  * Test for view BlockPool model
  */
-class BlockPoolTest extends TestCase
+class BlockPoolTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var BlockPool
@@ -24,13 +20,13 @@ class BlockPoolTest extends TestCase
 
     /**
      * Block factory
-     * @var BlockFactory|MockObject
+     * @var \Magento\Framework\View\Element\BlockFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $blockFactory;
 
     protected function setUp(): void
     {
-        $this->blockFactory = $this->getMockBuilder(BlockFactory::class)
+        $this->blockFactory = $this->getMockBuilder(\Magento\Framework\View\Element\BlockFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['createBlock'])
             ->getMock();
@@ -40,10 +36,10 @@ class BlockPoolTest extends TestCase
     public function testAdd()
     {
         $blockName = 'testName';
-        $blockClass = BlockPoolTestBlock::class;
+        $blockClass = \Magento\Framework\View\Test\Unit\BlockPoolTestBlock::class;
         $arguments = ['key' => 'value'];
 
-        $block = $this->createMock(BlockPoolTestBlock::class);
+        $block = $this->createMock(\Magento\Framework\View\Test\Unit\BlockPoolTestBlock::class);
 
         $this->blockFactory->expects($this->atLeastOnce())
             ->method('createBlock')
@@ -57,10 +53,13 @@ class BlockPoolTest extends TestCase
         $this->assertNull($this->blockPool->get('someWrongName'));
     }
 
+    /**
+     */
     public function testAddWithException()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid Block class name: NotExistingBlockClass');
+
         $this->blockPool->add('BlockPoolTestBlock', 'NotExistingBlockClass');
     }
 }

@@ -69,8 +69,8 @@ class Write extends Read implements WriteInterface
      */
     protected function assertIsFile($path)
     {
+        clearstatcache();
         $absolutePath = $this->driver->getAbsolutePath($this->path, $path);
-        clearstatcache(true, $absolutePath);
         if (!$this->driver->isFile($absolutePath)) {
             throw new FileSystemException(
                 new Phrase('The "%1" file doesn\'t exist.', [$absolutePath])
@@ -116,7 +116,7 @@ class Write extends Read implements WriteInterface
         }
         $absolutePath = $this->driver->getAbsolutePath($this->path, $path);
         $absoluteNewPath = $targetDirectory->getAbsolutePath($newPath);
-        return $this->driver->rename($absolutePath, $absoluteNewPath, $targetDirectory->getDriver());
+        return $this->driver->rename($absolutePath, $absoluteNewPath, $targetDirectory->driver);
     }
 
     /**
@@ -349,11 +349,7 @@ class Write extends Read implements WriteInterface
      */
     public function writeFile($path, $content, $mode = 'w+')
     {
-         $file = $this->openFile($path, $mode);
-         $result = $file->write($content);
-         $file->close();
-
-         return $result;
+        return $this->openFile($path, $mode)->write($content);
     }
 
     /**

@@ -3,30 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Directory\Test\Unit\Model\ResourceModel\Region;
 
-use Magento\Directory\Model\AllowedCountries;
 use Magento\Directory\Model\ResourceModel\Region\Collection;
-use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
-use Magento\Framework\Data\Collection\EntityFactory;
-use Magento\Framework\DataObject;
+use Magento\Directory\Model\AllowedCountries;
 use Magento\Framework\DB\Adapter\Pdo\Mysql;
 use Magento\Framework\DB\Select;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Locale\ResolverInterface;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Event\ManagerInterface;
+use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
+use Magento\Framework\Data\Collection\EntityFactory;
+use Magento\Framework\Locale\ResolverInterface;
+use Magento\Framework\DataObject;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 
 /**
+ * Class CollectionTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CollectionTest extends TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Collection
@@ -127,7 +125,7 @@ class CollectionTest extends TestCase
     {
         $allowedCountries = [1, 2, 3];
         $this->allowedCountries->expects($this->once())->method('getAllowedCountries')->with(
-            ScopeInterface::SCOPE_STORE,
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             null
         )->willReturn($allowedCountries);
         $this->assertEquals($this->collection->addAllowedCountriesFilter(), $this->collection);

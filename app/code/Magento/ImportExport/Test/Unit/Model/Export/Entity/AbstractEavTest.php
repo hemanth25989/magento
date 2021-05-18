@@ -3,23 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ImportExport\Test\Unit\Model\Export\Entity;
 
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
-use Magento\Eav\Model\Entity\Collection\AbstractCollection;
-use Magento\Framework\Model\AbstractModel;
-use Magento\ImportExport\Model\Export\Entity\AbstractEav;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AbstractEavTest extends TestCase
+class AbstractEavTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Abstract eav export model
      *
-     * @var AbstractEav|MockObject
+     * @var \Magento\ImportExport\Model\Export\Entity\AbstractEav|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_model;
 
@@ -33,7 +24,7 @@ class AbstractEavTest extends TestCase
     protected function setUp(): void
     {
         $this->_model = $this->getMockForAbstractClass(
-            AbstractEav::class,
+            \Magento\ImportExport\Model\Export\Entity\AbstractEav::class,
             [],
             '',
             false,
@@ -66,7 +57,7 @@ class AbstractEavTest extends TestCase
         $method = new \ReflectionMethod($this->_model, '_addAttributesToCollection');
         $method->setAccessible(true);
         $stubCollection = $this->createPartialMock(
-            AbstractCollection::class,
+            \Magento\Eav\Model\Entity\Collection\AbstractCollection::class,
             ['addAttributeToSelect']
         );
         $stubCollection->expects($this->once())->method('addAttributeToSelect')->with($this->_expectedAttributes);
@@ -86,12 +77,13 @@ class AbstractEavTest extends TestCase
         $testAttributeOptions = ['value' => 'option'];
         /** @var $testAttribute \Magento\Eav\Model\Entity\Attribute */
         $testAttribute = $this->getMockForAbstractClass(
-            AbstractAttribute::class,
+            \Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class,
             [],
             '',
             false,
             false,
-            false
+            false,
+            ['__wakeup']
         );
         $testAttribute->setAttributeCode($testAttributeCode);
 
@@ -111,9 +103,9 @@ class AbstractEavTest extends TestCase
             $testAttributeOptions
         );
 
-        /** @var AbstractModel|MockObject $item */
+        /** @var $item \Magento\Framework\Model\AbstractModel|\PHPUnit\Framework\MockObject\MockObject */
         $item = $this->getMockForAbstractClass(
-            AbstractModel::class,
+            \Magento\Framework\Model\AbstractModel::class,
             [],
             '',
             false,

@@ -3,20 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Ui\Component\Listing\Column\Status;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\ResourceModel\Order\Status\Collection;
 use Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory;
 use Magento\Sales\Ui\Component\Listing\Column\Status\Options;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-/** test for Listing Column Status
+/**
+ * Class OptionsTest
  */
-class OptionsTest extends TestCase
+class OptionsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Options
@@ -24,7 +20,7 @@ class OptionsTest extends TestCase
     protected $model;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $collectionFactoryMock;
 
@@ -32,11 +28,11 @@ class OptionsTest extends TestCase
     {
         $objectManager = new ObjectManager($this);
         $this->collectionFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory::class,
             ['create']
         );
         $this->model = $objectManager->getObject(
-            Options::class,
+            \Magento\Sales\Ui\Component\Listing\Column\Status\Options::class,
             ['collectionFactory' => $this->collectionFactoryMock]
         );
     }
@@ -44,7 +40,7 @@ class OptionsTest extends TestCase
     public function testToOptionArray()
     {
         $collectionMock = $this->createMock(
-            Collection::class
+            \Magento\Sales\Model\ResourceModel\Order\Status\Collection::class
         );
 
         $options = [
@@ -58,6 +54,7 @@ class OptionsTest extends TestCase
             [
                 'value' => '1',
                 'label' => 'Label',
+                '__disableTmpl' => true
             ]
         ];
 

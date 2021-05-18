@@ -3,91 +3,77 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Store\Test\Unit\App\FrontController\Plugin;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\FrontController;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\ResponseFactory;
-use Magento\Framework\Url;
-use Magento\Store\App\FrontController\Plugin\RequestPreprocessor;
-use Magento\Store\Model\BaseUrlChecker;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class RequestPreprocessorTest extends TestCase
+class RequestPreprocessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var RequestPreprocessor
+     * @var \Magento\Store\App\FrontController\Plugin\RequestPreprocessor
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_storeManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_urlMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_scopeConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $closureMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_requestMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_storeMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $subjectMock;
 
     /**
-     * @var BaseUrlChecker|MockObject
+     * @var \Magento\Store\Model\BaseUrlChecker|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $baseUrlChecker;
 
     protected function setUp(): void
     {
-        $this->_storeMock = $this->createMock(Store::class);
-        $this->_requestMock = $this->createMock(Http::class);
+        $this->_storeMock = $this->createMock(\Magento\Store\Model\Store::class);
+        $this->_requestMock = $this->createMock(\Magento\Framework\App\Request\Http::class);
         $this->closureMock = function () {
             return 'Expected';
         };
-        $this->_storeManagerMock = $this->createMock(StoreManager::class);
-        $this->_urlMock = $this->createMock(Url::class);
-        $this->_scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $this->subjectMock = $this->createMock(FrontController::class);
+        $this->_storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManager::class);
+        $this->_urlMock = $this->createMock(\Magento\Framework\Url::class);
+        $this->_scopeConfigMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->subjectMock = $this->createMock(\Magento\Framework\App\FrontController::class);
 
-        $this->baseUrlChecker = $this->createMock(BaseUrlChecker::class);
+        $this->baseUrlChecker = $this->createMock(\Magento\Store\Model\BaseUrlChecker::class);
         $this->baseUrlChecker->expects($this->any())
             ->method('execute')
             ->willReturn(true);
 
-        $this->_model = new RequestPreprocessor(
+        $this->_model = new \Magento\Store\App\FrontController\Plugin\RequestPreprocessor(
             $this->_storeManagerMock,
             $this->_urlMock,
             $this->_scopeConfigMock,
-            $this->createMock(ResponseFactory::class)
+            $this->createMock(\Magento\Framework\App\ResponseFactory::class)
         );
 
         $modelProperty = (new \ReflectionClass(get_class($this->_model)))

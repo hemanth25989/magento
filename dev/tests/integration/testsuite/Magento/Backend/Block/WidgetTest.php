@@ -27,8 +27,7 @@ class WidgetTest extends \PHPUnit\Framework\TestCase
         $widget = $layout->createBlock(\Magento\Backend\Block\Widget::class);
 
         $this->assertMatchesRegularExpression(
-            '/\<button.*\>[\s\S]*Button Label[\s\S]*<\/button>'
-                . '.*?\<script.*?\>.*?this\.form\.submit\(\).*?\<\/script\>/is',
+            '/<button.*onclick\=\"this.form.submit\(\)\".*\>[\s\S]*Button Label[\s\S]*<\/button>/iu',
             $widget->getButtonHtml('Button Label', 'this.form.submit()')
         );
     }
@@ -50,14 +49,12 @@ class WidgetTest extends \PHPUnit\Framework\TestCase
         $widget = $layout->createBlock(\Magento\Backend\Block\Widget::class);
 
         $this->assertMatchesRegularExpression(
-            '/<button.*\>[\s\S]*Button Label[\s\S]*<\/button>'
-                . '.*?\<script.*?\>.*?this\.form\.submit\(\).*?\<\/script\>/ius',
+            '/<button.*onclick\=\"this.form.submit\(\)\".*\>[\s\S]*Button Label[\s\S]*<\/button>/iu',
             $widget->getButtonHtml('Button Label', 'this.form.submit()')
         );
 
         $this->assertMatchesRegularExpression(
-            '/<button.*\>[\s\S]*Button Label2[\s\S]*<\/button>'
-                . '.*?\<script.*?\>.*?this\.form\.submit\(\).*?\<\/script\>/ius',
+            '/<button.*onclick\=\"this.form.submit\(\)\".*\>[\s\S]*Button Label2[\s\S]*<\/button>/iu',
             $widget->getButtonHtml('Button Label2', 'this.form.submit()')
         );
     }

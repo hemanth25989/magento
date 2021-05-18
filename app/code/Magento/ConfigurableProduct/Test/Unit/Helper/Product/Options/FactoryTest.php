@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableProduct\Test\Unit\Helper\Product\Options;
 
 use Magento\Catalog\Api\ProductAttributeRepositoryInterface;
@@ -16,13 +14,14 @@ use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable\Attribute;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable\AttributeFactory;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
 
 /**
+ * Class FactoryTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class FactoryTest extends TestCase
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Configurable|MockObject
@@ -91,8 +90,9 @@ class FactoryTest extends TestCase
      */
     public function testCreateWithException()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Provided attribute can not be used with configurable product.');
+
         $attributeId = 90;
         $data = [
             ['attribute_id' => $attributeId, 'values' => [
@@ -137,7 +137,7 @@ class FactoryTest extends TestCase
 
         $attribute = $this->getMockBuilder(Attribute::class)
             ->disableOriginalConstructor()
-            ->setMethods(['setValues', 'setData'])
+            ->setMethods(['setValues', 'setData', '__wakeup'])
             ->getMock();
 
         $this->attributeFactory->expects(static::once())

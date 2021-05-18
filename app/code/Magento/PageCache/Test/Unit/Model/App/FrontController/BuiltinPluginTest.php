@@ -3,24 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\PageCache\Test\Unit\Model\App\FrontController;
 
-use Laminas\Http\Header\GenericHeader;
-use Magento\Framework\App\FrontControllerInterface;
-use Magento\Framework\App\PageCache\Kernel;
-use Magento\Framework\App\PageCache\Version;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\Response\Http;
-use Magento\Framework\App\State;
-use Magento\Framework\Controller\ResultInterface;
 use Magento\PageCache\Model\App\FrontController\BuiltinPlugin;
-use Magento\PageCache\Model\Config;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class BuiltinPluginTest extends TestCase
+class BuiltinPluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var BuiltinPlugin
@@ -28,32 +16,32 @@ class BuiltinPluginTest extends TestCase
     protected $plugin;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\PageCache\Model\Config|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $configMock;
 
     /**
-     * @var Version|MockObject
+     * @var \Magento\Framework\App\PageCache\Version|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $versionMock;
 
     /**
-     * @var Kernel|MockObject
+     * @var \Magento\Framework\App\PageCache\Kernel|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $kernelMock;
 
     /**
-     * @var State|MockObject
+     * @var \Magento\Framework\App\State|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $stateMock;
 
     /**
-     * @var Http|MockObject
+     * @var \Magento\Framework\App\Response\Http|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $responseMock;
 
     /**
-     * @var FrontControllerInterface|MockObject
+     * @var \Magento\Framework\App\FrontControllerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $frontControllerMock;
 
@@ -63,7 +51,7 @@ class BuiltinPluginTest extends TestCase
     protected $closure;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $requestMock;
 
@@ -72,18 +60,18 @@ class BuiltinPluginTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(Config::class);
-        $this->versionMock = $this->createMock(Version::class);
-        $this->kernelMock = $this->createMock(Kernel::class);
-        $this->stateMock = $this->createMock(State::class);
-        $this->frontControllerMock = $this->getMockForAbstractClass(FrontControllerInterface::class);
-        $this->requestMock = $this->getMockForAbstractClass(RequestInterface::class);
-        $this->responseMock = $this->createMock(Http::class);
+        $this->configMock = $this->createMock(\Magento\PageCache\Model\Config::class);
+        $this->versionMock = $this->createMock(\Magento\Framework\App\PageCache\Version::class);
+        $this->kernelMock = $this->createMock(\Magento\Framework\App\PageCache\Kernel::class);
+        $this->stateMock = $this->createMock(\Magento\Framework\App\State::class);
+        $this->frontControllerMock = $this->createMock(\Magento\Framework\App\FrontControllerInterface::class);
+        $this->requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
+        $this->responseMock = $this->createMock(\Magento\Framework\App\Response\Http::class);
         $response = $this->responseMock;
         $this->closure = function () use ($response) {
             return $response;
         };
-        $this->plugin = new BuiltinPlugin(
+        $this->plugin = new \Magento\PageCache\Model\App\FrontController\BuiltinPlugin(
             $this->configMock,
             $this->versionMock,
             $this->kernelMock,
@@ -96,11 +84,11 @@ class BuiltinPluginTest extends TestCase
      */
     public function testAroundDispatchProcessIfCacheMissed($state)
     {
-        $header = GenericHeader::fromString('Cache-Control: no-cache');
+        $header = \Zend\Http\Header\GenericHeader::fromString('Cache-Control: no-cache');
         $this->configMock
             ->expects($this->once())
             ->method('getType')
-            ->willReturn(Config::BUILT_IN);
+            ->willReturn(\Magento\PageCache\Model\Config::BUILT_IN);
         $this->configMock->expects($this->once())
             ->method('isEnabled')
             ->willReturn(true);
@@ -114,7 +102,7 @@ class BuiltinPluginTest extends TestCase
         $this->stateMock->expects($this->any())
             ->method('getMode')
             ->willReturn($state);
-        if ($state == State::MODE_DEVELOPER) {
+        if ($state == \Magento\Framework\App\State::MODE_DEVELOPER) {
             $this->responseMock->expects($this->at(1))
                 ->method('setHeader')
                 ->with('X-Magento-Cache-Control');
@@ -148,7 +136,7 @@ class BuiltinPluginTest extends TestCase
         $this->configMock
             ->expects($this->once())
             ->method('getType')
-            ->willReturn(Config::BUILT_IN);
+            ->willReturn(\Magento\PageCache\Model\Config::BUILT_IN);
         $this->configMock->expects($this->once())
             ->method('isEnabled')
             ->willReturn(true);
@@ -163,7 +151,7 @@ class BuiltinPluginTest extends TestCase
             ->method('getMode')
             ->willReturn($state);
 
-        $result = $this->getMockForAbstractClass(ResultInterface::class);
+        $result = $this->createMock(\Magento\Framework\Controller\ResultInterface::class);
         $result->expects($this->never())->method('setHeader');
         $closure =  function () use ($result) {
             return $result;
@@ -183,7 +171,7 @@ class BuiltinPluginTest extends TestCase
         $this->configMock
             ->expects($this->once())
             ->method('getType')
-            ->willReturn(Config::BUILT_IN);
+            ->willReturn(\Magento\PageCache\Model\Config::BUILT_IN);
         $this->configMock->expects($this->once())
             ->method('isEnabled')
             ->willReturn(true);
@@ -198,7 +186,7 @@ class BuiltinPluginTest extends TestCase
         $this->stateMock->expects($this->any())
             ->method('getMode')
             ->willReturn($state);
-        if ($state == State::MODE_DEVELOPER) {
+        if ($state == \Magento\Framework\App\State::MODE_DEVELOPER) {
             $this->responseMock->expects($this->once())
                 ->method('setHeader')
                 ->with('X-Magento-Cache-Debug');
@@ -244,8 +232,8 @@ class BuiltinPluginTest extends TestCase
     public function dataProvider()
     {
         return [
-            'developer_mode' => [State::MODE_DEVELOPER],
-            'production' => [State::MODE_PRODUCTION],
+            'developer_mode' => [\Magento\Framework\App\State::MODE_DEVELOPER],
+            'production' => [\Magento\Framework\App\State::MODE_PRODUCTION],
         ];
     }
 }

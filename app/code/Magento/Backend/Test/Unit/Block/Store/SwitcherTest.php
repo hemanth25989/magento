@@ -3,21 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Backend\Test\Unit\Block\Store;
 
-use Magento\Backend\Block\Store\Switcher;
-use Magento\Backend\Block\Template\Context;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Store\Model\Website;
-use PHPUnit\Framework\TestCase;
-
-class SwitcherTest extends TestCase
+class SwitcherTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Switcher
+     * @var \Magento\Backend\Block\Store\Switcher
      */
     private $switcherBlock;
 
@@ -25,24 +17,24 @@ class SwitcherTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $objectHelper = new ObjectManager($this);
+        $this->storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
+        $objectHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $context = $objectHelper->getObject(
-            Context::class,
+            \Magento\Backend\Block\Template\Context::class,
             [
                 'storeManager' => $this->storeManagerMock,
             ]
         );
 
         $this->switcherBlock = $objectHelper->getObject(
-            Switcher::class,
+            \Magento\Backend\Block\Store\Switcher::class,
             ['context' => $context]
         );
     }
 
     public function testGetWebsites()
     {
-        $websiteMock =  $this->createMock(Website::class);
+        $websiteMock =  $this->createMock(\Magento\Store\Model\Website::class);
         $websites = [0 => $websiteMock, 1 => $websiteMock];
         $this->storeManagerMock->expects($this->once())->method('getWebsites')->willReturn($websites);
         $this->assertEquals($websites, $this->switcherBlock->getWebsites());
@@ -50,7 +42,7 @@ class SwitcherTest extends TestCase
 
     public function testGetWebsitesIfSetWebsiteIds()
     {
-        $websiteMock =  $this->createMock(Website::class);
+        $websiteMock =  $this->createMock(\Magento\Store\Model\Website::class);
         $websites = [0 => $websiteMock, 1 => $websiteMock];
         $this->storeManagerMock->expects($this->once())->method('getWebsites')->willReturn($websites);
 

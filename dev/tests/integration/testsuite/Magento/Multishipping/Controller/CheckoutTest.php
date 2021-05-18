@@ -3,10 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\Multishipping\Controller;
 
-use Magento\Multishipping\Model\Checkout\Type\Multishipping\State;
+use \Magento\Multishipping\Model\Checkout\Type\Multishipping\State;
 
 /**
  * Test class for \Magento\Multishipping\Controller\Checkout
@@ -63,14 +62,8 @@ class CheckoutTest extends \Magento\TestFramework\TestCase\AbstractController
         $html = $this->getResponse()->getBody();
         $this->assertStringContainsString('<div class="box box-billing-method">', $html);
         $this->assertStringContainsString('<div class="box box-shipping-method">', $html);
-        $this->assertStringContainsString(
-            '<dt class="title">' . $this->quote->getPayment()->getMethodInstance()->getTitle() . '</dt>',
-            $html
-        );
+        $this->assertStringContainsString('<dt class="title">' . $this->quote->getPayment()->getMethodInstance()->getTitle() . '</dt>', $html);
         $this->assertStringContainsString('<span class="price">$10.00</span>', $html);
-        $this->assertStringContainsString(
-            '<input name="form_key" type="hidden" value="' . $formKey->getFormKey(),
-            $html
-        );
+        $this->assertStringContainsString('<input name="form_key" type="hidden" value="' . $formKey->getFormKey(), $html);
     }
 }

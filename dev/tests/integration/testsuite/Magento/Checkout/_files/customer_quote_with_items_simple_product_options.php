@@ -19,10 +19,9 @@ use Magento\Quote\Model\QuoteFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\ObjectManager;
-use Magento\TestFramework\Workaround\Override\Fixture\Resolver;
 
-Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/product_with_options.php');
-Resolver::getInstance()->requireDataFixture('Magento/Customer/_files/customer_with_uk_address.php');
+require __DIR__ . '/../../Catalog/_files/product_with_options.php';
+require __DIR__ . '/../../Customer/_files/customer_with_uk_address.php';
 
 /** @var ObjectManager $objectManager */
 $objectManager = Bootstrap::getObjectManager();

@@ -3,33 +3,25 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GiftMessage\Test\Unit\Block\Cart;
 
-use Magento\Backend\Block\Template\Context;
-use Magento\Checkout\Block\Checkout\LayoutProcessorInterface;
-use Magento\Framework\Json\Encoder;
 use Magento\GiftMessage\Block\Cart\GiftOptions;
-use Magento\GiftMessage\Model\CompositeConfigProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class GiftOptionsTest extends TestCase
+class GiftOptionsTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Context|MockObject */
+    /** @var \Magento\Backend\Block\Template\Context|\PHPUnit\Framework\MockObject\MockObject */
     protected $context;
 
-    /** @var CompositeConfigProvider|MockObject */
+    /** @var \Magento\GiftMessage\Model\CompositeConfigProvider|\PHPUnit\Framework\MockObject\MockObject */
     protected $compositeConfigProvider;
 
-    /** @var \Magento\Checkout\Model\CompositeConfigProvider|MockObject */
+    /** @var \Magento\Checkout\Model\CompositeConfigProvider|\PHPUnit\Framework\MockObject\MockObject */
     protected $layoutProcessorMock;
 
-    /** @var GiftOptions */
+    /** @var \Magento\GiftMessage\Block\Cart\GiftOptions */
     protected $model;
 
-    /** @var Encoder|MockObject */
+    /** @var \Magento\Framework\Json\Encoder|\PHPUnit\Framework\MockObject\MockObject */
     protected $jsonEncoderMock;
 
     /** @var array  */
@@ -37,11 +29,11 @@ class GiftOptionsTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->context = $this->createMock(Context::class);
-        $this->jsonEncoderMock = $this->createMock(Encoder::class);
-        $this->compositeConfigProvider = $this->createMock(CompositeConfigProvider::class);
+        $this->context = $this->createMock(\Magento\Backend\Block\Template\Context::class);
+        $this->jsonEncoderMock = $this->createMock(\Magento\Framework\Json\Encoder::class);
+        $this->compositeConfigProvider = $this->createMock(\Magento\GiftMessage\Model\CompositeConfigProvider::class);
         $this->layoutProcessorMock = $this->getMockForAbstractClass(
-            LayoutProcessorInterface::class,
+            \Magento\Checkout\Block\Checkout\LayoutProcessorInterface::class,
             [],
             '',
             false

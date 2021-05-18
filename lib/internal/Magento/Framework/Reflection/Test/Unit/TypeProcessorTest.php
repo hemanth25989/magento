@@ -3,12 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 // @codingStandardsIgnoreStart
 namespace Magento\Framework\Reflection\Test\Unit;
 
-use Laminas\Code\Reflection\ClassReflection;
 use Magento\Framework\Exception\SerializationException;
 use Magento\Framework\Reflection\Test\Unit\Fixture\TSample;
 use Magento\Framework\Reflection\Test\Unit\Fixture\TSampleInterface;
@@ -18,12 +15,12 @@ use Magento\Framework\Reflection\Test\Unit\Fixture\UseClasses\SampleTwo;
 use Magento\Framework\Reflection\Test\Unit\Fixture\UseClasses\SampleTwo\SampleFour;
 use Magento\Framework\Reflection\Test\Unit\Fixture\UseSample;
 use Magento\Framework\Reflection\TypeProcessor;
-use PHPUnit\Framework\TestCase;
+use Zend\Code\Reflection\ClassReflection;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class TypeProcessorTest extends TestCase
+class TypeProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var TypeProcessor
@@ -63,10 +60,13 @@ class TypeProcessorTest extends TestCase
         $this->assertEquals($typeData, $this->typeProcessor->getTypesData());
     }
 
+    /**
+     */
     public function testGetTypeDataInvalidArgumentException()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The "NonExistentType" data type isn\'t declared. Verify the type and try again.');
+
         $this->typeProcessor->getTypeData('NonExistentType');
     }
 
@@ -169,10 +169,13 @@ class TypeProcessorTest extends TestCase
         );
     }
 
+    /**
+     */
     public function testTranslateTypeNameInvalidArgumentException()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('The "\Magento\TestModule3\V1\Parameter[]" parameter type is invalid. Verify the parameter and try again.');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The "\\Magento\\TestModule3\\V1\\Parameter[]" parameter type is invalid. Verify the parameter and try again.');
+
         $this->typeProcessor->translateTypeName('\Magento\TestModule3\V1\Parameter[]');
     }
 
@@ -221,9 +224,9 @@ class TypeProcessorTest extends TestCase
      */
     public function testProcessSimpleTypeException($value, $type)
     {
-        $this->expectException(SerializationException::class);
-        $this->expectExceptionMessage(
-            "The \"$value\" value's type is invalid. The \"$type\" type was expected. Verify and try again."
+        $this->expectException(
+            SerializationException::class,
+            'Invalid type for value: "' . $value . '". Expected Type: "' . $type . '"'
         );
         $this->typeProcessor->processSimpleAndAnyType($value, $type);
     }
@@ -239,19 +242,25 @@ class TypeProcessorTest extends TestCase
         ];
     }
 
+    /**
+     */
     public function testProcessSimpleTypeInvalidType()
     {
-        $this->expectException('Magento\Framework\Exception\SerializationException');
+        $this->expectException(\Magento\Framework\Exception\SerializationException::class);
         $this->expectExceptionMessage('The "integer" value\'s type is invalid. The "int[]" type was expected. Verify and try again.');
+
         $value = 1;
         $type = 'int[]';
         $this->typeProcessor->processSimpleAndAnyType($value, $type);
     }
 
+    /**
+     */
     public function testGetParamTypeWithIncorrectAnnotation()
     {
-        $this->expectException('LogicException');
-        $this->expectExceptionMessageMatches('/@param annotation is incorrect for the parameter "name" \w+/');
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessageMatches('/@param annotation is incorrect for the parameter "name" \\w+/');
+
         $class = new ClassReflection(DataObject::class);
         $methodReflection = $class->getMethod('setName');
         $paramsReflection = $methodReflection->getParameters();
@@ -348,33 +357,16 @@ class TypeProcessorTest extends TestCase
 
     /**
      * Checks a case when method and parent interface don't have `@return` annotation.
+     *
      */
     public function testGetReturnTypeWithoutReturnTag()
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Method\'s return type must be specified using @return annotation. See Magento\Framework\Reflection\Test\Unit\Fixture\TSample::getName()');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Method\'s return type must be specified using @return annotation. See Magento\\Framework\\Reflection\\Test\\Unit\\Fixture\\TSample::getName()');
+
         $classReflection = new ClassReflection(TSample::class);
         $methodReflection = $classReflection->getMethod('getName');
         $this->typeProcessor->getGetterReturnType($methodReflection);
-    }
-
-    /**
-     * Checks a case when method return annotation has a null-type at first position,
-     * and a valid type at second.
-     */
-    public function testGetReturnTypeNullAtFirstPos()
-    {
-        $expected = [
-            'type' => 'string',
-            'isRequired' => false,
-            'description' => null,
-            'parameterCount' => 0
-        ];
-
-        $classReflection = new ClassReflection(TSample::class);
-        $methodReflection = $classReflection->getMethod('getWithNull');
-
-        self::assertEquals($expected, $this->typeProcessor->getGetterReturnType($methodReflection));
     }
 
     /**

@@ -3,24 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Data\Test\Unit\Argument\Interpreter;
 
-use Magento\Framework\Data\Argument\Interpreter\Composite;
-use Magento\Framework\Data\Argument\InterpreterInterface;
-use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Data\Argument\Interpreter\Composite;
 
-class CompositeTest extends TestCase
+class CompositeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var InterpreterInterface
+     * @var \Magento\Framework\Data\Argument\InterpreterInterface
      */
     protected $_interpreterOne;
 
     /**
-     * @var InterpreterInterface
+     * @var \Magento\Framework\Data\Argument\InterpreterInterface
      */
     protected $_interpreterTwo;
 
@@ -31,21 +26,24 @@ class CompositeTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->_interpreterOne = $this->getMockForAbstractClass(InterpreterInterface::class);
-        $this->_interpreterTwo = $this->getMockForAbstractClass(InterpreterInterface::class);
+        $this->_interpreterOne = $this->createMock(\Magento\Framework\Data\Argument\InterpreterInterface::class);
+        $this->_interpreterTwo = $this->createMock(\Magento\Framework\Data\Argument\InterpreterInterface::class);
         $this->_model = new Composite(
             ['one' => $this->_interpreterOne, 'two' => $this->_interpreterTwo],
             'interpreter'
         );
     }
 
+    /**
+     */
     public function testConstructWrongInterpreter()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Interpreter named \'wrong\' is expected to be an argument interpreter instance');
+
         $interpreters = [
-            'correct' => $this->getMockForAbstractClass(InterpreterInterface::class),
-            'wrong' => $this->getMockForAbstractClass(ObjectManagerInterface::class),
+            'correct' => $this->createMock(\Magento\Framework\Data\Argument\InterpreterInterface::class),
+            'wrong' => $this->createMock(\Magento\Framework\ObjectManagerInterface::class),
         ];
         new Composite($interpreters, 'interpreter');
     }
@@ -97,17 +95,21 @@ class CompositeTest extends TestCase
     public function testAddInterpreter()
     {
         $input = ['interpreter' => 'new', 'value' => 'test'];
-        $newInterpreter = $this->getMockForAbstractClass(InterpreterInterface::class);
+        $newInterpreter = $this->createMock(\Magento\Framework\Data\Argument\InterpreterInterface::class);
         $this->_model->addInterpreter('new', $newInterpreter);
         $newInterpreter->expects($this->once())->method('evaluate')->with(['value' => 'test']);
         $this->_model->evaluate($input);
     }
 
+    /**
+     *
+     */
     public function testAddInterpreterException()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Argument interpreter named \'one\' has already been defined');
-        $newInterpreter = $this->getMockForAbstractClass(InterpreterInterface::class);
+
+        $newInterpreter = $this->createMock(\Magento\Framework\Data\Argument\InterpreterInterface::class);
         $this->_model->addInterpreter('one', $newInterpreter);
     }
 }

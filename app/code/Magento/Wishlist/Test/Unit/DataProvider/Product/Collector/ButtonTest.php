@@ -3,37 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\Wishlist\Test\Unit\DataProvider\Product\Collector;
 
+use Magento\Catalog\Api\Data\ProductRenderExtensionFactory;
+use Magento\Catalog\Api\Data\ProductRender\ButtonInterfaceFactory;
+use Magento\Wishlist\Helper\Data;
+use Magento\Catalog\Api\Data\ProductRenderInterface;
+use Magento\Catalog\Api\Data\ProductRenderExtensionInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductRender\ButtonInterface;
-use Magento\Catalog\Api\Data\ProductRender\ButtonInterfaceFactory;
-use Magento\Catalog\Api\Data\ProductRenderExtensionFactory;
-use Magento\Catalog\Api\Data\ProductRenderExtensionInterface;
-use Magento\Catalog\Api\Data\ProductRenderInterface;
-use Magento\Wishlist\Helper\Data;
 use Magento\Wishlist\Ui\DataProvider\Product\Collector\Button;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Collect information needed to render wishlist button on front
  */
-class ButtonTest extends TestCase
+class ButtonTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Button */
+    /** @var \Magento\Wishlist\Ui\DataProvider\Product\Collector\Button */
     private $button;
 
-    /** @var ProductRenderExtensionFactory|MockObject */
+    /** @var ProductRenderExtensionFactory|\PHPUnit\Framework\MockObject\MockObject */
     private $productRenderExtensionFactoryMock;
 
-    /** @var Data|MockObject */
+    /** @var Data|\PHPUnit\Framework\MockObject\MockObject */
     private $wishlistHelperMock;
 
-    /** @var ButtonInterfaceFactory|MockObject */
+    /** @var ButtonInterfaceFactory|\PHPUnit\Framework\MockObject\MockObject */
     private $buttonInterfaceFactoryMock;
 
     protected function setUp(): void
@@ -70,7 +66,7 @@ class ButtonTest extends TestCase
         $buttonInterfaceMock = $this->getMockBuilder(ButtonInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-
+        
         $productRendererMock->expects($this->once())
             ->method('getExtensionAttributes')
             ->willReturn($productRendererExtensionMock);

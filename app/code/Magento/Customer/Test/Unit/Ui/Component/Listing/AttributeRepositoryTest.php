@@ -3,45 +3,34 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Ui\Component\Listing;
 
-use Magento\Customer\Api\AddressMetadataInterface;
-use Magento\Customer\Api\AddressMetadataManagementInterface;
-use Magento\Customer\Api\CustomerMetadataInterface;
-use Magento\Customer\Api\CustomerMetadataManagementInterface;
-use Magento\Customer\Api\Data\AttributeMetadataInterface;
-use Magento\Customer\Api\Data\OptionInterface;
-use Magento\Customer\Model\Indexer\Attribute\Filter;
 use Magento\Customer\Ui\Component\Listing\AttributeRepository;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test AttributeRepository Class
  */
-class AttributeRepositoryTest extends TestCase
+class AttributeRepositoryTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var CustomerMetadataManagementInterface|MockObject */
+    /** @var \Magento\Customer\Api\CustomerMetadataManagementInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $customerMetadataManagement;
 
-    /** @var AddressMetadataManagementInterface|MockObject */
+    /** @var \Magento\Customer\Api\AddressMetadataManagementInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $addressMetadataManagement;
 
-    /** @var CustomerMetadataInterface|MockObject */
+    /** @var \Magento\Customer\Api\CustomerMetadataInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $customerMetadata;
 
-    /** @var AddressMetadataInterface|MockObject */
+    /** @var \Magento\Customer\Api\AddressMetadataInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $addressMetadata;
 
-    /** @var AttributeMetadataInterface|MockObject */
+    /** @var \Magento\Customer\Api\Data\AttributeMetadataInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $attribute;
 
-    /** @var OptionInterface|MockObject */
+    /** @var \Magento\Customer\Api\Data\OptionInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $option;
 
-    /** @var Filter|MockObject */
+    /** @var \Magento\Customer\Model\Indexer\Attribute\Filter|\PHPUnit\Framework\MockObject\MockObject */
     protected $attributeFilter;
 
     /** @var AttributeRepository */
@@ -50,38 +39,38 @@ class AttributeRepositoryTest extends TestCase
     protected function setUp(): void
     {
         $this->customerMetadataManagement = $this->getMockForAbstractClass(
-            CustomerMetadataManagementInterface::class,
+            \Magento\Customer\Api\CustomerMetadataManagementInterface::class,
             [],
             '',
             false
         );
         $this->addressMetadataManagement = $this->getMockForAbstractClass(
-            AddressMetadataManagementInterface::class,
+            \Magento\Customer\Api\AddressMetadataManagementInterface::class,
             [],
             '',
             false
         );
         $this->customerMetadata = $this->getMockForAbstractClass(
-            CustomerMetadataInterface::class,
+            \Magento\Customer\Api\CustomerMetadataInterface::class,
             [],
             '',
             false
         );
         $this->addressMetadata = $this->getMockForAbstractClass(
-            AddressMetadataInterface::class,
+            \Magento\Customer\Api\AddressMetadataInterface::class,
             [],
             '',
             false
         );
         $this->attribute = $this->getMockForAbstractClass(
-            AttributeMetadataInterface::class,
+            \Magento\Customer\Api\Data\AttributeMetadataInterface::class,
             [],
             '',
             false
         );
-        $this->option = $this->getMockForAbstractClass(OptionInterface::class);
+        $this->option = $this->createMock(\Magento\Customer\Api\Data\OptionInterface::class);
 
-        $this->attributeFilter = $this->createMock(Filter::class);
+        $this->attributeFilter = $this->createMock(\Magento\Customer\Model\Indexer\Attribute\Filter::class);
 
         $this->component = new AttributeRepository(
             $this->customerMetadataManagement,

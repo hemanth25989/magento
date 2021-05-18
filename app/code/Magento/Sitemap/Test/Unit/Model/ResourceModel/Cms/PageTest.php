@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sitemap\Test\Unit\Model\ResourceModel\Cms;
 
@@ -19,7 +18,6 @@ use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\Model\ResourceModel\Db\Context;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Sitemap\Model\ResourceModel\Cms\Page;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -36,27 +34,27 @@ class PageTest extends TestCase
     private $model;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit\Framework\MockObject\MockObject
      */
     private $context;
 
     /**
-     * @var MetadataPool|MockObject
+     * @var MetadataPool|\PHPUnit\Framework\MockObject\MockObject
      */
     private $metadataPool;
 
     /**
-     * @var EntityManager|MockObject
+     * @var EntityManager|\PHPUnit\Framework\MockObject\MockObject
      */
     private $entityManager;
 
     /**
-     * @var GetUtilityPageIdentifiers|MockObject
+     * @var GetUtilityPageIdentifiers|\PHPUnit\Framework\MockObject\MockObject
      */
     private $getUtilityPageIdentifiers;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit\Framework\MockObject\MockObject
      */
     private $resource;
 

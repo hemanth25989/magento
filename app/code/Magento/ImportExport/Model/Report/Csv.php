@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\ImportExport\Model\Report;
 
@@ -83,7 +82,7 @@ class Csv implements ReportProcessorInterface
             }
         }
 
-        $directory = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_IMPORT_EXPORT);
+        $directory = $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
         $outputFileName = $this->generateOutputFileName($originalFileName);
         $directory->writeFile(Import::IMPORT_HISTORY_DIR . $outputFileName, $outputCsv->getContents());
 
@@ -136,7 +135,7 @@ class Csv implements ReportProcessorInterface
         return $this->sourceCsvFactory->create(
             [
                 'file' => $sourceFile,
-                'directory' => $this->filesystem->getDirectoryWrite(DirectoryList::VAR_IMPORT_EXPORT),
+                'directory' => $this->filesystem->getDirectoryWrite(DirectoryList::VAR_DIR),
                 'delimiter' => $this->reportHelper->getDelimiter(),
             ]
         );

@@ -3,45 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\DB\Test\Unit\Logger;
 
-use Magento\Framework\DB\Logger\File;
-use Magento\Framework\DB\LoggerInterface;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\File\WriteInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\DB\Logger\File;
 
-class FileTest extends TestCase
+class FileTest extends \PHPUnit\Framework\TestCase
 {
     const DEBUG_FILE = 'debug.file.log';
 
     /**
-     * @var WriteInterface|MockObject
+     * @var \Magento\Framework\Filesystem\File\WriteInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $stream;
 
     /**
-     * @var \Magento\Framework\Filesystem\Directory\WriteInterface|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\WriteInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $dir;
 
     /**
-     * @var File
+     * @var \Magento\Framework\DB\Logger\File
      */
     private $object;
 
     protected function setUp(): void
     {
-        $this->stream = $this->getMockForAbstractClass(WriteInterface::class);
+        $this->stream = $this->getMockForAbstractClass(\Magento\Framework\Filesystem\File\WriteInterface::class);
         $this->dir = $this->getMockForAbstractClass(\Magento\Framework\Filesystem\Directory\WriteInterface::class);
         $this->dir->expects($this->any())
             ->method('openFile')
             ->with(self::DEBUG_FILE, 'a')
             ->willReturn($this->stream);
-        $filesystem = $this->createMock(Filesystem::class);
+        $filesystem = $this->createMock(\Magento\Framework\Filesystem::class);
         $filesystem->expects($this->any())
             ->method('getDirectoryWrite')
             ->willReturn($this->dir);
@@ -87,23 +80,23 @@ class FileTest extends TestCase
     public function logStatsDataProvider()
     {
         return [
-            [LoggerInterface::TYPE_CONNECT, '', [], null, '%aCONNECT%a'],
+            [\Magento\Framework\DB\LoggerInterface::TYPE_CONNECT, '', [], null, '%aCONNECT%a'],
             [
-                LoggerInterface::TYPE_TRANSACTION,
+                \Magento\Framework\DB\LoggerInterface::TYPE_TRANSACTION,
                 'SELECT something',
                 [],
                 null,
                 '%aTRANSACTION SELECT something%a'
             ],
             [
-                LoggerInterface::TYPE_QUERY,
+                \Magento\Framework\DB\LoggerInterface::TYPE_QUERY,
                 'SELECT something',
                 [],
                 null,
                 '%aSQL: SELECT something%a'
             ],
             [
-                LoggerInterface::TYPE_QUERY,
+                \Magento\Framework\DB\LoggerInterface::TYPE_QUERY,
                 'SELECT something',
                 ['data'],
                 null,
@@ -123,7 +116,7 @@ class FileTest extends TestCase
             ->with($this->logicalNot($this->matches('%aSQL: SELECT something%aAFF: 10')));
 
         $this->object->logStats(
-            LoggerInterface::TYPE_QUERY,
+            \Magento\Framework\DB\LoggerInterface::TYPE_QUERY,
             'SELECT something',
             [],
             $result

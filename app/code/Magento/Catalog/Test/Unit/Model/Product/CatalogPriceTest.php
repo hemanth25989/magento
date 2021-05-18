@@ -3,47 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\CatalogPrice;
-use Magento\Catalog\Model\Product\CatalogPriceFactory;
-use Magento\Catalog\Model\Product\CatalogPriceInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CatalogPriceTest extends TestCase
+class CatalogPriceTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CatalogPrice
+     * @var \Magento\Catalog\Model\Product\CatalogPrice
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $priceFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $productMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $catalogPriceInterfaceMock;
 
     protected function setUp(): void
     {
-        $this->priceFactoryMock = $this->createMock(CatalogPriceFactory::class);
-        $this->productMock = $this->createMock(Product::class);
+        $this->priceFactoryMock = $this->createMock(\Magento\Catalog\Model\Product\CatalogPriceFactory::class);
+        $this->productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
         $this->catalogPriceInterfaceMock = $this->createMock(
-            CatalogPriceInterface::class
+            \Magento\Catalog\Model\Product\CatalogPriceInterface::class
         );
-        $this->model = new CatalogPrice(
+        $this->model = new \Magento\Catalog\Model\Product\CatalogPrice(
             $this->priceFactoryMock,
             ['custom_product_type' => 'CustomProduct/Model/CatalogPrice']
         );

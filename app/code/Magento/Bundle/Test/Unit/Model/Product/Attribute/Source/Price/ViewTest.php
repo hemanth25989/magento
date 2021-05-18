@@ -3,56 +3,47 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Bundle\Test\Unit\Model\Product\Attribute\Source\Price;
 
-use Magento\Bundle\Model\Product\Attribute\Source\Price\View;
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\Option;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\OptionFactory;
-use Magento\Framework\Phrase;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ViewTest extends TestCase
+class ViewTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var View
+     * @var \Magento\Bundle\Model\Product\Attribute\Source\Price\View
      */
     protected $model;
 
     /**
-     * @var Option|MockObject
+     * @var \Magento\Eav\Model\ResourceModel\Entity\Attribute\Option|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $option;
 
     /**
-     * @var OptionFactory|MockObject
+     * @var \Magento\Eav\Model\ResourceModel\Entity\Attribute\OptionFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $optionFactory;
 
     /**
-     * @var AbstractAttribute|MockObject
+     * @var \Magento\Eav\Model\Entity\Attribute\AbstractAttribute|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $attribute;
 
     protected function setUp(): void
     {
-        $this->option = $this->createMock(Option::class);
+        $this->option = $this->createMock(\Magento\Eav\Model\ResourceModel\Entity\Attribute\Option::class);
         $this->optionFactory = $this->createPartialMock(
-            OptionFactory::class,
+            \Magento\Eav\Model\ResourceModel\Entity\Attribute\OptionFactory::class,
             ['create']
         );
         $this->optionFactory->expects($this->any())
             ->method('create')
             ->willReturn($this->option);
-        $this->attribute = $this->createMock(AbstractAttribute::class);
+        $this->attribute = $this->createMock(\Magento\Eav\Model\Entity\Attribute\AbstractAttribute::class);
 
         $this->model = (new ObjectManager($this))
             ->getObject(
-                View::class,
+                \Magento\Bundle\Model\Product\Attribute\Source\Price\View::class,
                 [
                     'optionFactory' => $this->optionFactory,
                 ]
@@ -80,7 +71,7 @@ class ViewTest extends TestCase
     {
         $existValue = 1;
 
-        $this->assertInstanceOf(Phrase::class, $this->model->getOptionText($existValue));
+        $this->assertInstanceOf(\Magento\Framework\Phrase::class, $this->model->getOptionText($existValue));
     }
 
     /**

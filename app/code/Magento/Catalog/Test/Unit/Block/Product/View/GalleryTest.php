@@ -3,13 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Block\Product\View;
 
 use Magento\Catalog\Block\Product\Context;
+use Magento\Catalog\Block\Product\ImageBuilder;
 use Magento\Catalog\Block\Product\View\Gallery;
-use Magento\Catalog\Helper\Image;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Gallery\ImagesConfigFactoryInterface;
 use Magento\Catalog\Model\Product\Image\UrlBuilder;
@@ -21,13 +19,11 @@ use Magento\Framework\Registry;
 use Magento\Framework\Stdlib\ArrayUtils;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class GalleryTest extends TestCase
+class GalleryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Gallery
@@ -35,41 +31,41 @@ class GalleryTest extends TestCase
     protected $model;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $context;
 
     /**
-     * @var ArrayUtils|MockObject
+     * @var ArrayUtils|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $arrayUtils;
 
     /**
-     * @var Image|MockObject
+     * @var \Magento\Catalog\Helper\Image|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $imageHelper;
 
     /**
-     * @var Registry|MockObject
+     * @var Registry|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $registry;
 
     /**
-     * @var EncoderInterface|MockObject
+     * @var EncoderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $jsonEncoderMock;
 
     /**
-     * @var ImagesConfigFactoryInterface|MockObject
+     * @var ImagesConfigFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $imagesConfigFactoryMock;
 
     /**
-     * @var Collection|MockObject
+     * @var Collection|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $galleryImagesConfigMock;
 
-    /** @var  UrlBuilder|MockObject */
+    /** @var  UrlBuilder|\PHPUnit\Framework\MockObject\MockObject */
     private $urlBuilder;
 
     protected function setUp(): void
@@ -120,15 +116,15 @@ class GalleryTest extends TestCase
 
     private function prepareGetGalleryImagesJsonMocks($hasLabel = true)
     {
-        $storeMock = $this->getMockBuilder(Store::class)
+        $storeMock = $this->getMockBuilder(\Magento\Store\Model\Store::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $productMock = $this->getMockBuilder(Product::class)
+        $productMock = $this->getMockBuilder(\Magento\Catalog\Model\Product::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $productTypeMock = $this->getMockBuilder(AbstractType::class)
+        $productTypeMock = $this->getMockBuilder(\Magento\Catalog\Model\Product\Type\AbstractType::class)
             ->disableOriginalConstructor()
             ->getMock();
         $productTypeMock->expects($this->any())
@@ -151,7 +147,7 @@ class GalleryTest extends TestCase
             ->with('product')
             ->willReturn($productMock);
 
-        $this->imageHelper = $this->getMockBuilder(Image::class)
+        $this->imageHelper = $this->getMockBuilder(\Magento\Catalog\Helper\Image::class)
             ->setMethods(['init', 'setImageFile', 'getUrl'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -261,12 +257,12 @@ class GalleryTest extends TestCase
      */
     private function getImagesCollectionWithPopulatedDataObject($hasLabel)
     {
-        $collectionMock = $this->getMockBuilder(Collection::class)
+        $collectionMock = $this->getMockBuilder(\Magento\Framework\Data\Collection::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $items = [
-            new DataObject([
+            new \Magento\Framework\DataObject([
                 'file' => 'test_file',
                 'label' => ($hasLabel ? 'test_label' : ''),
                 'position' => '2',

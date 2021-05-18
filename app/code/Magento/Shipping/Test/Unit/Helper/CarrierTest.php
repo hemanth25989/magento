@@ -3,21 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Shipping\Test\Unit\Helper;
-
-use Magento\Framework\App\Helper\Context;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Shipping\Helper\Carrier;
-use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Carrier helper test
  */
-class CarrierTest extends TestCase
+class CarrierTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Shipping Carrier helper
@@ -27,16 +18,16 @@ class CarrierTest extends TestCase
     protected $helper;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $scopeConfig;
 
     protected function setUp(): void
     {
-        $objectManagerHelper = new ObjectManager($this);
-        $className = Carrier::class;
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $className = \Magento\Shipping\Helper\Carrier::class;
         $arguments = $objectManagerHelper->getConstructArguments($className);
-        /** @var Context $context */
+        /** @var \Magento\Framework\App\Helper\Context $context */
         $context = $arguments['context'];
         $this->scopeConfig = $context->getScopeConfig();
         $this->helper = $objectManagerHelper->getObject($className, $arguments);
@@ -55,7 +46,7 @@ class CarrierTest extends TestCase
             'getValue'
         )->with(
             'carriers',
-            ScopeInterface::SCOPE_STORE
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         )->willReturn(
             $carriers
         );
@@ -90,7 +81,7 @@ class CarrierTest extends TestCase
             'getValue'
         )->with(
             sprintf('carriers/%s/%s', $carrierCode, $configPath),
-            ScopeInterface::SCOPE_STORE
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         )->willReturn(
             $configValue
         );
@@ -105,7 +96,7 @@ class CarrierTest extends TestCase
             'getValue'
         )->with(
             'general/country/eu_countries',
-            ScopeInterface::SCOPE_STORE
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         )->willReturn(
             "GB"
         );

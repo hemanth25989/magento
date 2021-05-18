@@ -70,8 +70,7 @@ class RuntimeConfigSource implements ConfigSourceInterface
     public function get($path = '')
     {
         $data = new DataObject($this->deploymentConfig->isDbAvailable() ? $this->loadConfig() : []);
-
-        return $data->getData($path) !== null ? $data->getData($path) : null;
+        return $data->getData($path) ?: [];
     }
 
     /**

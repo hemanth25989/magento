@@ -3,15 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Search\Test\Unit\Model;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Search\Model\QueryResult;
-use PHPUnit\Framework\TestCase;
 
-class QueryResultTest extends TestCase
+class QueryResultTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -28,9 +25,9 @@ class QueryResultTest extends TestCase
      */
     public function testGetProperties($queryText, $resultsCount)
     {
-        /** @var QueryResult $queryResult */
+        /** @var \Magento\Search\Model\QueryResult $queryResult */
         $queryResult = $this->objectManager->getObject(
-            QueryResult::class,
+            \Magento\Search\Model\QueryResult::class,
             [
                 'queryText' => $queryText,
                 'resultsCount' => $resultsCount,

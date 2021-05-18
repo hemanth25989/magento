@@ -3,18 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Review\Test\Unit\Helper\Action;
 
-use Magento\Backend\Model\Session;
-use Magento\Framework\App\Helper\Context;
-use Magento\Review\Helper\Action\Pager;
-use PHPUnit\Framework\TestCase;
-
-class PagerTest extends TestCase
+class PagerTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Pager */
+    /** @var \Magento\Review\Helper\Action\Pager */
     protected $_helper = null;
 
     /**
@@ -23,17 +16,16 @@ class PagerTest extends TestCase
     protected function setUp(): void
     {
         $sessionMock = $this->getMockBuilder(
-            Session::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                ['setData', 'getData']
-            )->getMock();
+            \Magento\Backend\Model\Session::class
+        )->disableOriginalConstructor()->setMethods(
+            ['setData', 'getData']
+        )->getMock();
         $sessionMock->expects(
             $this->any()
         )->method(
             'setData'
         )->with(
-            'search_result_idsreviews',
+            $this->equalTo('search_result_idsreviews'),
             $this->anything()
         );
         $sessionMock->expects(
@@ -41,16 +33,16 @@ class PagerTest extends TestCase
         )->method(
             'getData'
         )->with(
-            'search_result_idsreviews'
+            $this->equalTo('search_result_idsreviews')
         )->willReturn(
             [3, 2, 6, 5]
         );
 
         $contextMock = $this->createPartialMock(
-            Context::class,
+            \Magento\Framework\App\Helper\Context::class,
             ['getModuleManager', 'getRequest']
         );
-        $this->_helper = new Pager($contextMock, $sessionMock);
+        $this->_helper = new \Magento\Review\Helper\Action\Pager($contextMock, $sessionMock);
         $this->_helper->setStorageId('reviews');
     }
 

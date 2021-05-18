@@ -13,11 +13,11 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHe
 use Magento\Framework\View\LayoutInterface;
 use Magento\PageCache\Model\DepersonalizeChecker;
 use Magento\PageCache\Model\Layout\DepersonalizePlugin;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
- * Unit tests for \Magento\PageCache\Model\Layout\DepersonalizePlugin class.
+ * Tests \Magento\PageCache\Model\Layout\DepersonalizePlugin.
  */
 class DepersonalizePluginTest extends TestCase
 {
@@ -27,22 +27,22 @@ class DepersonalizePluginTest extends TestCase
     private $plugin;
 
     /**
-     * @var LayoutInterface|MockObject
+     * @var LayoutInterface|PHPUnit\Framework\MockObject\MockObject
      */
     private $layoutMock;
 
     /**
-     * @var Manager|MockObject
+     * @var Manager|PHPUnit\Framework\MockObject\MockObject
      */
     private $eventManagerMock;
 
     /**
-     * @var Session|MockObject
+     * @var Session|PHPUnit\Framework\MockObject\MockObject
      */
     private $messageSessionMock;
 
     /**
-     * @var DepersonalizeChecker|MockObject
+     * @var DepersonalizeChecker|PHPUnit\Framework\MockObject\MockObject
      */
     private $depersonalizeCheckerMock;
 
@@ -77,7 +77,7 @@ class DepersonalizePluginTest extends TestCase
     {
         $this->eventManagerMock->expects($this->once())
             ->method('dispatch')
-            ->with('depersonalize_clear_session');
+            ->with($this->equalTo('depersonalize_clear_session'));
         $this->messageSessionMock->expects($this->once())->method('clearStorage');
         $this->depersonalizeCheckerMock->expects($this->once())->method('checkIfDepersonalize')->willReturn(true);
 

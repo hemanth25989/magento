@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Product\Attribute\Frontend;
 
@@ -62,7 +61,7 @@ class ImageTest extends TestCase
     private function getMockedProduct(string $productImage): Product
     {
         $mockBuilder = $this->getMockBuilder(Product::class);
-        $mock = $mockBuilder->setMethods(['getData', 'getStore'])
+        $mock = $mockBuilder->setMethods(['getData', 'getStore', '__wakeup'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -101,7 +100,7 @@ class ImageTest extends TestCase
     private function getMockedStore(): Store
     {
         $mockBuilder = $this->getMockBuilder(Store::class);
-        $mock = $mockBuilder->setMethods(['getBaseUrl'])
+        $mock = $mockBuilder->setMethods(['getBaseUrl', '__wakeup'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
@@ -118,7 +117,7 @@ class ImageTest extends TestCase
     private function getMockedAttribute(): AbstractAttribute
     {
         $mockBuilder = $this->getMockBuilder(AbstractAttribute::class);
-        $mockBuilder->setMethods(['getAttributeCode']);
+        $mockBuilder->setMethods(['getAttributeCode', '__wakeup']);
         $mockBuilder->disableOriginalConstructor();
         $mock = $mockBuilder->getMockForAbstractClass();
 

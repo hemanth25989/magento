@@ -3,25 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Controller\Adminhtml\Product\Initialization;
 
 use Magento\Catalog\Controller\Adminhtml\Product\Initialization\StockDataFilter;
-use Magento\CatalogInventory\Model\Configuration;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class StockDataFilterTest extends TestCase
+/**
+ * Class StockDataFilterTest
+ */
+class StockDataFilterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $scopeConfigMock;
 
@@ -30,17 +27,17 @@ class StockDataFilterTest extends TestCase
      */
     protected $stockDataFilter;
 
-    /** @var MockObject */
+    /** @var \PHPUnit\Framework\MockObject\MockObject */
     protected $stockConfiguration;
 
     protected function setUp(): void
     {
-        $this->scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $this->scopeConfigMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
 
         $this->scopeConfigMock->expects($this->any())->method('getValue')->willReturn(1);
 
         $this->stockConfiguration = $this->createPartialMock(
-            Configuration::class,
+            \Magento\CatalogInventory\Model\Configuration::class,
             ['getManageStock']
         );
 

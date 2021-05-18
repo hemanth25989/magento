@@ -3,17 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Model\Test\Unit\ResourceModel\Type\Db;
 
 use Magento\Framework\App\ResourceConnection\ConnectionAdapterInterface;
 use Magento\Framework\Model\ResourceModel\Type\Db\ConnectionFactory;
 use Magento\Framework\ObjectManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConnectionFactoryTest extends TestCase
+class ConnectionFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConnectionFactory
@@ -21,7 +17,7 @@ class ConnectionFactoryTest extends TestCase
     private $connectionFactory;
 
     /**
-     * @var MockObject|ObjectManagerInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\ObjectManagerInterface
      */
     private $objectManagerMock;
 

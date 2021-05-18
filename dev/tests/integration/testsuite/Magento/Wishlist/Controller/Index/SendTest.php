@@ -19,7 +19,7 @@ use Magento\TestFramework\TestCase\AbstractController;
 /**
  * Test sending wish list.
  *
- * @magentoDbIsolation disabled
+ * @magentoDbIsolation enabled
  * @magentoAppArea frontend
  * @magentoDataFixture Magento/Wishlist/_files/wishlist.php
  */
@@ -116,7 +116,7 @@ class SendTest extends AbstractController
         $this->customerSession->setCustomerId(1);
         $postValues = ['emails' => 'test@example.com, test2@example.com, test3@example.com'];
         $this->dispatchSendWishListRequest($postValues);
-        $this->assertResponseWithError('Maximum of 2 emails can be sent.');
+        $this->assertResponseWithError('This wish list can be shared 2 more times.');
     }
 
     /**

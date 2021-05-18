@@ -10,21 +10,21 @@ namespace Magento\Cron\Test\Unit\Model\System\Config\Initial;
 use Magento\Cron\Model\Groups\Config\Data as GroupsConfigModel;
 use Magento\Cron\Model\System\Config\Initial\Converter as ConverterPlugin;
 use Magento\Framework\App\Config\Initial\Converter;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Magento\Cron\Model\System\Config\Initial\Converter
+ * Class ConverterTest
+ *
+ * Unit test for \Magento\Cron\Model\System\Config\Initial\Converter
  */
-class ConverterTest extends TestCase
+class ConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var GroupsConfigModel|MockObject
+     * @var GroupsConfigModel|\PHPUnit\Framework\MockObject\MockObject
      */
     private $groupsConfigMock;
 
     /**
-     * @var Converter|MockObject
+     * @var Converter|\PHPUnit\Framework\MockObject\MockObject
      */
     private $converterMock;
 
@@ -38,11 +38,10 @@ class ConverterTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->groupsConfigMock = $this->getMockBuilder(GroupsConfigModel::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->converterMock = $this->getMockBuilder(Converter::class)
-            ->getMock();
+        $this->groupsConfigMock = $this->getMockBuilder(
+            GroupsConfigModel::class
+        )->disableOriginalConstructor()->getMock();
+        $this->converterMock = $this->getMockBuilder(Converter::class)->getMock();
         $this->converterPlugin = new ConverterPlugin($this->groupsConfigMock);
     }
 

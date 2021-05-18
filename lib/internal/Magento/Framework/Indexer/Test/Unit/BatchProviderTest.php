@@ -3,16 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Indexer\Test\Unit;
 
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
-use Magento\Framework\Indexer\BatchProvider;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\DB\Adapter\AdapterInterface;
+use \Magento\Framework\DB\Select;
+use \Magento\Framework\Indexer\BatchProvider;
 
-class BatchProviderTest extends TestCase
+class BatchProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var BatchProvider

@@ -3,34 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Sales\Test\Unit\Model\Grid;
 
-use Magento\Framework\Registry;
-use Magento\Sales\Model\Grid\CollectionUpdater;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\ResourceModel\Order\Payment\Transaction\Collection;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CollectionUpdaterTest extends TestCase
+class CollectionUpdaterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CollectionUpdater
+     * @var \Magento\Sales\Model\Grid\CollectionUpdater
      */
     protected $collectionUpdater;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $registryMock;
 
     protected function setUp(): void
     {
-        $this->registryMock = $this->createMock(Registry::class);
+        $this->registryMock = $this->createMock(\Magento\Framework\Registry::class);
 
-        $this->collectionUpdater = new CollectionUpdater(
+        $this->collectionUpdater = new \Magento\Sales\Model\Grid\CollectionUpdater(
             $this->registryMock
         );
     }
@@ -38,7 +30,7 @@ class CollectionUpdaterTest extends TestCase
     public function testUpdateIfOrderNotExists()
     {
         $collectionMock = $this->createMock(
-            Collection::class
+            \Magento\Sales\Model\ResourceModel\Order\Payment\Transaction\Collection::class
         );
         $this->registryMock
             ->expects($this->once())
@@ -49,16 +41,17 @@ class CollectionUpdaterTest extends TestCase
         $collectionMock
             ->expects($this->once())
             ->method('addOrderInformation')
-            ->with(['increment_id'])->willReturnSelf();
+            ->with(['increment_id'])
+            ->willReturnSelf();
         $this->assertEquals($collectionMock, $this->collectionUpdater->update($collectionMock));
     }
 
     public function testUpdateIfOrderExists()
     {
         $collectionMock = $this->createMock(
-            Collection::class
+            \Magento\Sales\Model\ResourceModel\Order\Payment\Transaction\Collection::class
         );
-        $orderMock = $this->createMock(Order::class);
+        $orderMock = $this->createMock(\Magento\Sales\Model\Order::class);
         $this->registryMock
             ->expects($this->once())
             ->method('registry')
@@ -69,7 +62,8 @@ class CollectionUpdaterTest extends TestCase
         $collectionMock
             ->expects($this->once())
             ->method('addOrderInformation')
-            ->with(['increment_id'])->willReturnSelf();
+            ->with(['increment_id'])
+            ->willReturnSelf();
         $this->assertEquals($collectionMock, $this->collectionUpdater->update($collectionMock));
     }
 }

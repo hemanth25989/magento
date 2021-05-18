@@ -6,13 +6,13 @@
         "OSL-3.0",
         "AFL-3.0"
     ],
-    "version": "100.4.1",
+    "version": "100.3.4",
     "require": {
         "php": "~7.3.0||~7.4.0",
-        "magento/framework": "103.0.*"
+        "magento/framework": "102.0.*"
     },
     "suggest": {
-        "magento/module-store-graph-ql": "100.4.*"
+        "magento/module-store-graph-ql": "100.3.*"
     },
     "autoload": {
         "files": [

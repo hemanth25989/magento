@@ -3,18 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Deploy\Test\Unit\Model\Plugin;
 
-use Magento\Deploy\Model\DeploymentConfig\ChangeDetector;
 use Magento\Deploy\Model\Plugin\ConfigChangeDetector;
+use Magento\Deploy\Model\DeploymentConfig\ChangeDetector;
 use Magento\Framework\App\FrontControllerInterface;
 use Magento\Framework\App\RequestInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConfigChangeDetectorTest extends TestCase
+class ConfigChangeDetectorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConfigChangeDetector
@@ -22,17 +19,17 @@ class ConfigChangeDetectorTest extends TestCase
     private $configChangeDetectorPlugin;
 
     /**
-     * @var ChangeDetector|MockObject
+     * @var ChangeDetector|\PHPUnit\Framework\MockObject\MockObject
      */
     private $changeDetectorMock;
 
     /**
-     * @var FrontControllerInterface|MockObject
+     * @var FrontControllerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $frontControllerMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $requestMock;
 
@@ -70,11 +67,9 @@ class ConfigChangeDetectorTest extends TestCase
      */
     public function testBeforeDispatchWithException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage(
-            'The configuration file has changed. Run the "app:config:import" '
-                . 'or the "setup:upgrade" command to synchronize the configuration.'
-        );
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
+        $this->expectExceptionMessage('The configuration file has changed. Run the "app:config:import" or the "setup:upgrade" command to synchronize the configuration.');
+
         $this->changeDetectorMock->expects($this->once())
             ->method('hasChanges')
             ->willReturn(true);

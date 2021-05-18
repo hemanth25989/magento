@@ -3,11 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\AdvancedPricingImportExport\Model\Export;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\File\Csv;
 use Magento\TestFramework\Indexer\TestCase;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -21,7 +19,8 @@ use Magento\ImportExport\Model\Import\Source\Csv as ImportSourceCsv;
 use Magento\ImportExport\Model\Import;
 
 /**
- * Test for \Magento\AdvancedPricingImportExport\Model\Export\AdvancedPricing
+ * Advanced pricing test
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class AdvancedPricingTest extends TestCase
@@ -55,7 +54,6 @@ class AdvancedPricingTest extends TestCase
 
         parent::setUpBeforeClass();
     }
-
     // @codingStandardsIgnoreEnd
 
     protected function setUp(): void
@@ -104,8 +102,6 @@ class AdvancedPricingTest extends TestCase
             $this->assertEquals(count($origPricingData[$index]), count($newPricingData));
             $this->assertEqualsOtherThanSkippedAttributes($origPricingData[$index], $newPricingData, []);
         }
-
-        $this->removeImportedProducts($skus);
     }
 
     /**
@@ -116,14 +112,8 @@ class AdvancedPricingTest extends TestCase
      */
     private function assertDiscountTypes($exportContent)
     {
-        $this->assertStringContainsString(
-            '2.0000,8.000000,Fixed',
-            $exportContent
-        );
-        $this->assertStringContainsString(
-            '10.0000,50.00,Discount',
-            $exportContent
-        );
+        $this->assertStringContainsString('2.0000,8.000000,Fixed', $exportContent);
+        $this->assertStringContainsString('10.0000,50.00,Discount', $exportContent);
     }
 
     /**
@@ -152,10 +142,7 @@ class AdvancedPricingTest extends TestCase
         $csvfile = uniqid('importexport_') . '.csv';
 
         $exportContent = $this->exportData($csvfile);
-        $this->assertStringContainsString(
-            '"AdvancedPricingSimple 2",test,"ALL GROUPS",3.0000,5.0000',
-            $exportContent
-        );
+        $this->assertStringContainsString('"AdvancedPricingSimple 2",test,"ALL GROUPS",3.0000,5.0000', $exportContent);
         $this->importData($csvfile);
 
         while ($index > 0) {
@@ -166,7 +153,6 @@ class AdvancedPricingTest extends TestCase
             $this->assertEquals(count($origPricingData[$index]), count($newPricingData));
             $this->assertEqualsOtherThanSkippedAttributes($origPricingData[$index], $newPricingData, []);
         }
-        $this->removeImportedProducts($skus);
     }
 
     /**
@@ -177,18 +163,10 @@ class AdvancedPricingTest extends TestCase
      */
     public function testExportImportOfAdvancedPricing(): void
     {
-        $simpleSku = 'simple';
-        $secondSimpleSku = 'second_simple';
         $csvfile = uniqid('importexport_') . '.csv';
         $exportContent = $this->exportData($csvfile);
-        $this->assertStringContainsString(
-            \sprintf('%s,"All Websites [USD]","ALL GROUPS",10.0000,3.00,Discount', $secondSimpleSku),
-            $exportContent
-        );
-        $this->assertStringContainsString(
-            \sprintf('%s,"All Websites [USD]",General,5.0000,95.000000,Fixed', $simpleSku),
-            $exportContent
-        );
+        $this->assertStringContainsString('second_simple,"All Websites [USD]","ALL GROUPS",10.0000,3.00,Discount', $exportContent);
+        $this->assertStringContainsString('simple,"All Websites [USD]",General,5.0000,95.000000,Fixed', $exportContent);
         $this->updateTierPriceDataInCsv($csvfile);
         $this->importData($csvfile);
 
@@ -205,12 +183,13 @@ class AdvancedPricingTest extends TestCase
             ]
         );
 
-        $this->assertEqualsWithDelta(
+        $this->assertEquals(
             ['5.0000', '90.000000'],
             [
                 $firstProductTierPrices[0]->getQty(),
                 $firstProductTierPrices[0]->getValue(),
             ],
+            '',
             0.1
         );
 
@@ -222,16 +201,15 @@ class AdvancedPricingTest extends TestCase
             ]
         );
 
-        $this->assertEqualsWithDelta(
+        $this->assertEquals(
             ['5.00', '10.0000'],
             [
                 $secondProductTierPrices[0]->getExtensionAttributes()->getPercentageValue(),
                 $secondProductTierPrices[0]->getQty(),
             ],
+            '',
             0.1
         );
-
-        $this->removeImportedProducts([$simpleSku, $secondSimpleSku]);
     }
 
     /**
@@ -338,32 +316,5 @@ class AdvancedPricingTest extends TestCase
                 );
             }
         }
-    }
-
-    /**
-     * Cleanup test by removing imported product.
-     *
-     * @param string[] $skus
-     * @return void
-     */
-    private function removeImportedProducts(array $skus): void
-    {
-        /** @var ProductRepositoryInterface $productRepository */
-        $productRepository = $this->objectManager->create(ProductRepositoryInterface::class);
-        $registry = $this->objectManager->get(\Magento\Framework\Registry::class);
-        /** @var ProductRepositoryInterface $productRepository */
-        $registry->unregister('isSecureArea');
-        $registry->register('isSecureArea', true);
-
-        foreach ($skus as $sku) {
-            try {
-                $productRepository->deleteById($sku);
-            } catch (NoSuchEntityException $e) {
-                // product already deleted
-            }
-        }
-
-        $registry->unregister('isSecureArea');
-        $registry->register('isSecureArea', false);
     }
 }

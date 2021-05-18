@@ -26,7 +26,6 @@ use PHPUnit\Framework\TestCase;
  *
  * @see \Magento\Persistent\Model\Checkout\ConfigProviderPlugin
  * @magentoAppArea frontend
- * @magentoDbIsolation enabled
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class ConfigProviderPluginTest extends TestCase
@@ -80,7 +79,6 @@ class ConfigProviderPluginTest extends TestCase
         $this->customerSession->setCustomerId(null);
         $this->checkoutSession->clearQuote();
         $this->checkoutSession->setCustomerData(null);
-        $this->persistentSessionHelper->setSession(null);
 
         parent::tearDown();
     }
@@ -131,7 +129,7 @@ class ConfigProviderPluginTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento/Checkout/_files/quote_with_customer_without_address.php
+     * @magentoDataFixture Magento/Persistent/_files/persistent_with_customer_quote_and_cookie.php
      * @magentoConfigFixture current_store persistent/options/enabled 0
      *
      * @return void
@@ -145,7 +143,7 @@ class ConfigProviderPluginTest extends TestCase
     }
 
     /**
-     * @magentoDataFixture Magento/Checkout/_files/quote_with_customer_without_address.php
+     * @magentoDataFixture Magento/Persistent/_files/persistent_with_customer_quote_and_cookie.php
      * @magentoConfigFixture current_store persistent/options/enabled 1
      *
      * @return void

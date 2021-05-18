@@ -21,7 +21,6 @@ use Magento\Quote\Model\Quote\Item as QuoteItem;
 use Magento\Quote\Model\ResourceModel\Quote\Item\CollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\TestFramework\TestCase\AbstractBackendController;
-use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Tests for update quote item in customer shopping cart.
@@ -50,7 +49,7 @@ class UpdateTest extends AbstractBackendController
     private $baseWebsiteId;
 
     /** @inheritdoc */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->quoteItemCollectionFactory = $this->_objectManager->get(CollectionFactory::class);
@@ -253,9 +252,9 @@ class UpdateTest extends AbstractBackendController
     /**
      * Prepare mock for updating file type options.
      *
-     * @return MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
-    private function prepareValidatorInfoMock(): MockObject
+    private function prepareValidatorInfoMock(): \PHPUnit\Framework\MockObject\MockObject
     {
         $validatorInfoMock = $this->createMock(ValidatorInfo::class);
         $validatorInfoMock->method('setUseQuotePath')->willReturnSelf();

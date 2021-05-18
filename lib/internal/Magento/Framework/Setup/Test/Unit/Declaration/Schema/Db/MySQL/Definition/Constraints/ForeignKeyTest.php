@@ -3,25 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Setup\Test\Unit\Declaration\Schema\Db\MySQL\Definition\Constraints;
 
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Constraints\ForeignKey;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Column;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Constraints\Reference;
 use Magento\Framework\Setup\Declaration\Schema\Dto\Table;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for Foreign Key constraint definition.
  *
+ * @package Magento\Framework\Setup\Test\Unit\Declaration\Schema\Db\MySQL\Definition\Constraints
  */
-class ForeignKeyTest extends TestCase
+class ForeignKeyTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -34,7 +31,7 @@ class ForeignKeyTest extends TestCase
     private $foreignKey;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit\Framework\MockObject\MockObject
      */
     private $resourceConnectionMock;
 
@@ -57,7 +54,7 @@ class ForeignKeyTest extends TestCase
      */
     public function testToDefinition()
     {
-        /** @var Reference|MockObject $constraint */
+        /** @var Reference|\PHPUnit\Framework\MockObject\MockObject $constraint */
         $constraint = $this->getMockBuilder(Reference::class)
             ->disableOriginalConstructor()
             ->getMock();

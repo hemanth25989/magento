@@ -3,18 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Search\Test\Unit\Request;
 
-use Magento\Framework\Search\Request\Binder;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
-class BinderTest extends TestCase
+class BinderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Binder
+     * @var \Magento\Framework\Search\Request\Binder
      */
     private $binder;
 
@@ -25,7 +21,7 @@ class BinderTest extends TestCase
     {
         $helper = new ObjectManager($this);
 
-        $this->binder = $helper->getObject(Binder::class);
+        $this->binder = $helper->getObject(\Magento\Framework\Search\Request\Binder::class);
     }
 
     /**

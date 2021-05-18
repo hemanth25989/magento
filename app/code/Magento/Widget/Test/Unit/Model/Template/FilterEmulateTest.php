@@ -3,17 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Widget\Test\Unit\Model\Template;
 
-use Magento\Framework\App\State;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Widget\Model\Template\FilterEmulate;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
-class FilterEmulateTest extends TestCase
+class FilterEmulateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -21,12 +15,12 @@ class FilterEmulateTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var FilterEmulate
+     * @var \Magento\Widget\Model\Template\FilterEmulate
      */
     protected $filterEmulate;
 
     /**
-     * @var State|MockObject
+     * @var \Magento\Framework\App\State|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $appStateMock;
 
@@ -36,10 +30,10 @@ class FilterEmulateTest extends TestCase
     protected function setUp(): void
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
-        $this->appStateMock = $this->createMock(State::class);
+        $this->appStateMock = $this->createMock(\Magento\Framework\App\State::class);
 
         $this->filterEmulate = $this->objectManagerHelper->getObject(
-            FilterEmulate::class,
+            \Magento\Widget\Model\Template\FilterEmulate::class,
             ['appState' => $this->appStateMock]
         );
     }

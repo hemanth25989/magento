@@ -8,27 +8,22 @@ declare(strict_types=1);
 
 namespace Magento\WebapiAsync\Test\Unit\Model\ServiceConfig;
 
-use Magento\Framework\Module\Dir\Reader;
-use Magento\WebapiAsync\Model\ServiceConfig\SchemaLocator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class SchemaLocatorTest extends TestCase
+class SchemaLocatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $moduleReaderMock;
 
     /**
-     * @var SchemaLocator
+     * @var \Magento\WebapiAsync\Model\ServiceConfig\SchemaLocator
      */
     private $model;
 
     protected function setUp(): void
     {
         $this->moduleReaderMock = $this->createPartialMock(
-            Reader::class,
+            \Magento\Framework\Module\Dir\Reader::class,
             ['getModuleDir']
         );
         $this->moduleReaderMock->expects(
@@ -42,7 +37,7 @@ class SchemaLocatorTest extends TestCase
             'schema_dir'
         );
 
-        $this->model = new SchemaLocator($this->moduleReaderMock);
+        $this->model = new \Magento\WebapiAsync\Model\ServiceConfig\SchemaLocator($this->moduleReaderMock);
     }
 
     public function testGetSchema()

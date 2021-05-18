@@ -3,24 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Bundle\Test\Unit\Block\Adminhtml\Catalog\Product\Edit\Tab\Bundle;
 
-use Magento\Bundle\Block\Adminhtml\Catalog\Product\Edit\Tab\Bundle\Option;
-use Magento\Framework\DataObject;
-use PHPUnit\Framework\TestCase;
-
-class OptionTest extends TestCase
+class OptionTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetAddButtonId()
     {
-        $button = new DataObject();
+        $button = new \Magento\Framework\DataObject();
 
-        $itemsBlock = $this->getMockBuilder(DataObject::class)
-            ->addMethods(['getChildBlock'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $itemsBlock = $this->createPartialMock(\Magento\Framework\DataObject::class, ['getChildBlock']);
         $itemsBlock->expects(
             $this->atLeastOnce()
         )->method(
@@ -31,10 +22,7 @@ class OptionTest extends TestCase
             $button
         );
 
-        $layout = $this->getMockBuilder(DataObject::class)
-            ->addMethods(['getBlock'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $layout = $this->createPartialMock(\Magento\Framework\DataObject::class, ['getBlock']);
         $layout->expects(
             $this->atLeastOnce()
         )->method(
@@ -46,7 +34,7 @@ class OptionTest extends TestCase
         );
 
         $block = $this->createPartialMock(
-            Option::class,
+            \Magento\Bundle\Block\Adminhtml\Catalog\Product\Edit\Tab\Bundle\Option::class,
             ['getLayout']
         );
         $block->expects($this->atLeastOnce())->method('getLayout')->willReturn($layout);

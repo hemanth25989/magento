@@ -3,77 +3,46 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Indexer\Test\Unit\Model;
 
-use Magento\Framework\Indexer\ActionFactory;
-use Magento\Framework\Indexer\ActionInterface;
-use Magento\Framework\Indexer\ConfigInterface;
 use Magento\Framework\Indexer\StateInterface;
-use Magento\Framework\Indexer\StructureFactory;
-use Magento\Framework\Indexer\IndexerInterfaceFactory;
-use Magento\Framework\Mview\ViewInterface;
-use Magento\Indexer\Model\Indexer;
-use Magento\Indexer\Model\Indexer\CollectionFactory;
-use Magento\Indexer\Model\Indexer\State;
-use Magento\Indexer\Model\Indexer\StateFactory;
-use Magento\Indexer\Model\WorkingStateProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class IndexerTest extends TestCase
+class IndexerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Indexer|MockObject
+     * @var \Magento\Indexer\Model\Indexer|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $model;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var \Magento\Framework\Indexer\ConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $configMock;
 
     /**
-     * @var ActionFactory|MockObject
+     * @var \Magento\Framework\Indexer\ActionFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $actionFactoryMock;
 
     /**
-     * @var ViewInterface|MockObject
+     * @var \Magento\Framework\Mview\ViewInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $viewMock;
 
     /**
-     * @var StateFactory|MockObject
+     * @var \Magento\Indexer\Model\Indexer\StateFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $stateFactoryMock;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Indexer\Model\Indexer\CollectionFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $indexFactoryMock;
 
-    /**
-     * @var WorkingStateProvider|MockObject
-     */
-    private $workingStateProvider;
-
-    /**
-     * @var IndexerInterfaceFactory|MockObject
-     */
-    private $indexerFactoryMock;
-
     protected function setUp(): void
     {
-        $this->workingStateProvider = $this->getMockBuilder(WorkingStateProvider::class)
-            ->disableOriginalConstructor()
-            ->getMock();
         $this->configMock = $this->getMockForAbstractClass(
-            ConfigInterface::class,
+            \Magento\Framework\Indexer\ConfigInterface::class,
             [],
             '',
             false,
@@ -82,15 +51,11 @@ class IndexerTest extends TestCase
             ['getIndexer']
         );
         $this->actionFactoryMock = $this->createPartialMock(
-            ActionFactory::class,
-            ['create']
-        );
-        $this->indexerFactoryMock = $this->createPartialMock(
-            IndexerInterfaceFactory::class,
+            \Magento\Framework\Indexer\ActionFactory::class,
             ['create']
         );
         $this->viewMock = $this->getMockForAbstractClass(
-            ViewInterface::class,
+            \Magento\Framework\Mview\ViewInterface::class,
             [],
             '',
             false,
@@ -99,35 +64,36 @@ class IndexerTest extends TestCase
             ['load', 'isEnabled', 'getUpdated', 'getStatus', '__wakeup', 'getId', 'suspend', 'resume']
         );
         $this->stateFactoryMock = $this->createPartialMock(
-            StateFactory::class,
+            \Magento\Indexer\Model\Indexer\StateFactory::class,
             ['create']
         );
         $this->indexFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Indexer\Model\Indexer\CollectionFactory::class,
             ['create']
         );
-        $structureFactory = $this->getMockBuilder(StructureFactory::class)
+        $structureFactory = $this->getMockBuilder(\Magento\Framework\Indexer\StructureFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        /** @var StructureFactory $structureFactory */
-        $this->model = new Indexer(
+        /** @var \Magento\Framework\Indexer\StructureFactory $structureFactory */
+        $this->model = new \Magento\Indexer\Model\Indexer(
             $this->configMock,
             $this->actionFactoryMock,
             $structureFactory,
             $this->viewMock,
             $this->stateFactoryMock,
-            $this->indexFactoryMock,
-            $this->workingStateProvider,
-            $this->indexerFactoryMock
+            $this->indexFactoryMock
         );
     }
 
+    /**
+     */
     public function testLoadWithException()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('indexer_id indexer does not exist.');
+
         $indexId = 'indexer_id';
         $this->configMock->expects(
             $this->once()
@@ -154,7 +120,7 @@ class IndexerTest extends TestCase
     {
         $indexId = 'indexer_internal_name';
         $stateMock = $this->createPartialMock(
-            State::class,
+            \Magento\Indexer\Model\Indexer\State::class,
             ['loadByIndexer', 'getId', '__wakeup']
         );
         $stateMock->expects($this->once())->method('loadByIndexer')->with($indexId)->willReturnSelf();
@@ -162,7 +128,7 @@ class IndexerTest extends TestCase
 
         $this->loadIndexer($indexId);
 
-        $this->assertInstanceOf(State::class, $this->model->getState());
+        $this->assertInstanceOf(\Magento\Indexer\Model\Indexer\State::class, $this->model->getState());
     }
 
     /**
@@ -181,7 +147,7 @@ class IndexerTest extends TestCase
         $this->viewMock->expects($this->any())->method('getUpdated')->willReturn($getViewGetUpdated);
 
         $stateMock = $this->createPartialMock(
-            State::class,
+            \Magento\Indexer\Model\Indexer\State::class,
             ['load', 'getId', 'setIndexerId', '__wakeup', 'getUpdated']
         );
 
@@ -189,7 +155,15 @@ class IndexerTest extends TestCase
         $this->stateFactoryMock->expects($this->once())->method('create')->willReturn($stateMock);
 
         if ($getViewIsEnabled && $getViewGetUpdated) {
-            $this->assertEquals($getViewGetUpdated, $this->model->getLatestUpdated());
+            if (!$getStateGetUpdated) {
+                $this->assertEquals($getViewGetUpdated, $this->model->getLatestUpdated());
+            } else {
+                if ($getViewGetUpdated == $getStateGetUpdated) {
+                    $this->assertEquals($getViewGetUpdated, $this->model->getLatestUpdated());
+                } else {
+                    $this->assertEquals($getViewGetUpdated, $this->model->getLatestUpdated());
+                }
+            }
         } else {
             $getLatestUpdated = $this->model->getLatestUpdated();
             $this->assertEquals($getStateGetUpdated, $getLatestUpdated);
@@ -225,14 +199,14 @@ class IndexerTest extends TestCase
         $this->loadIndexer($indexId);
 
         $stateMock = $this->createPartialMock(
-            State::class,
+            \Magento\Indexer\Model\Indexer\State::class,
             ['load', 'getId', 'setIndexerId', '__wakeup', 'getStatus', 'setStatus', 'save']
         );
         $stateMock->expects($this->once())->method('load')->with($indexId, 'indexer_id')->willReturnSelf();
         $stateMock->expects($this->never())->method('setIndexerId');
         $stateMock->expects($this->once())->method('getId')->willReturn(1);
         $stateMock->expects($this->exactly(2))->method('setStatus')->willReturnSelf();
-        $stateMock->expects($this->any())->method('getStatus')->willReturn('idle');
+        $stateMock->expects($this->once())->method('getStatus')->willReturn('idle');
         $stateMock->expects($this->exactly(2))->method('save')->willReturnSelf();
         $this->stateFactoryMock->expects($this->once())->method('create')->willReturn($stateMock);
 
@@ -241,7 +215,7 @@ class IndexerTest extends TestCase
         $this->viewMock->expects($this->once())->method('resume');
 
         $actionMock = $this->createPartialMock(
-            ActionInterface::class,
+            \Magento\Framework\Indexer\ActionInterface::class,
             ['executeFull', 'executeList', 'executeRow']
         );
         $this->actionFactoryMock->expects(
@@ -257,22 +231,25 @@ class IndexerTest extends TestCase
         $this->model->reindexAll();
     }
 
+    /**
+     */
     public function testReindexAllWithException()
     {
-        $this->expectException('Exception');
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Test exception');
+
         $indexId = 'indexer_internal_name';
         $this->loadIndexer($indexId);
 
         $stateMock = $this->createPartialMock(
-            State::class,
+            \Magento\Indexer\Model\Indexer\State::class,
             ['load', 'getId', 'setIndexerId', '__wakeup', 'getStatus', 'setStatus', 'save']
         );
         $stateMock->expects($this->once())->method('load')->with($indexId, 'indexer_id')->willReturnSelf();
         $stateMock->expects($this->never())->method('setIndexerId');
         $stateMock->expects($this->once())->method('getId')->willReturn(1);
         $stateMock->expects($this->exactly(2))->method('setStatus')->willReturnSelf();
-        $stateMock->expects($this->any())->method('getStatus')->willReturn('idle');
+        $stateMock->expects($this->once())->method('getStatus')->willReturn('idle');
         $stateMock->expects($this->exactly(2))->method('save')->willReturnSelf();
         $this->stateFactoryMock->expects($this->once())->method('create')->willReturn($stateMock);
 
@@ -281,13 +258,15 @@ class IndexerTest extends TestCase
         $this->viewMock->expects($this->once())->method('resume');
 
         $actionMock = $this->createPartialMock(
-            ActionInterface::class,
+            \Magento\Framework\Indexer\ActionInterface::class,
             ['executeFull', 'executeList', 'executeRow']
         );
         $actionMock->expects($this->once())->method('executeFull')->willReturnCallback(
-            function () {
-                throw new \Exception('Test exception');
-            }
+            
+                function () {
+                    throw new \Exception('Test exception');
+                }
+            
         );
         $this->actionFactoryMock->expects(
             $this->once()
@@ -302,22 +281,26 @@ class IndexerTest extends TestCase
         $this->model->reindexAll();
     }
 
+    /**
+     */
     public function testReindexAllWithError()
     {
-        $this->expectException('Error');
+        $this->expectException(\Error::class);
         $this->expectExceptionMessage('Test Engine Error');
+
+
         $indexId = 'indexer_internal_name';
         $this->loadIndexer($indexId);
 
         $stateMock = $this->createPartialMock(
-            State::class,
+            \Magento\Indexer\Model\Indexer\State::class,
             ['load', 'getId', 'setIndexerId', '__wakeup', 'getStatus', 'setStatus', 'save']
         );
         $stateMock->expects($this->once())->method('load')->with($indexId, 'indexer_id')->willReturnSelf();
         $stateMock->expects($this->never())->method('setIndexerId');
         $stateMock->expects($this->once())->method('getId')->willReturn(1);
         $stateMock->expects($this->exactly(2))->method('setStatus')->willReturnSelf();
-        $stateMock->expects($this->any())->method('getStatus')->willReturn('idle');
+        $stateMock->expects($this->once())->method('getStatus')->willReturn('idle');
         $stateMock->expects($this->exactly(2))->method('save')->willReturnSelf();
         $this->stateFactoryMock->expects($this->once())->method('create')->willReturn($stateMock);
 
@@ -326,13 +309,15 @@ class IndexerTest extends TestCase
         $this->viewMock->expects($this->once())->method('resume');
 
         $actionMock = $this->createPartialMock(
-            ActionInterface::class,
+            \Magento\Framework\Indexer\ActionInterface::class,
             ['executeFull', 'executeList', 'executeRow']
         );
         $actionMock->expects($this->once())->method('executeFull')->willReturnCallback(
-            function () {
-                throw new \Error('Test Engine Error');
-            }
+            
+                function () {
+                     throw new \Error('Test Engine Error');
+                }
+            
         );
         $this->actionFactoryMock->expects(
             $this->once()
@@ -357,8 +342,7 @@ class IndexerTest extends TestCase
             'view_id' => 'view_test',
             'action_class' => 'Some\Class\Name',
             'title' => 'Indexer public name',
-            'description' => 'Indexer public description',
-            'shared_index' => null
+            'description' => 'Indexer public description'
         ];
     }
 
@@ -368,7 +352,7 @@ class IndexerTest extends TestCase
     protected function loadIndexer($indexId)
     {
         $this->configMock->expects(
-            $this->any()
+            $this->once()
         )->method(
             'getIndexer'
         )->with(
@@ -396,12 +380,12 @@ class IndexerTest extends TestCase
     public function testSetState()
     {
         $stateMock = $this->createPartialMock(
-            State::class,
+            \Magento\Indexer\Model\Indexer\State::class,
             ['loadByIndexer', 'getId', '__wakeup']
         );
 
         $this->model->setState($stateMock);
-        $this->assertInstanceOf(State::class, $this->model->getState());
+        $this->assertInstanceOf(\Magento\Indexer\Model\Indexer\State::class, $this->model->getState());
     }
 
     public function testIsScheduled()
@@ -419,7 +403,7 @@ class IndexerTest extends TestCase
      */
     public function testSetScheduled($scheduled, $method)
     {
-        $stateMock = $this->createPartialMock(State::class, ['load', 'save']);
+        $stateMock = $this->createPartialMock(\Magento\Indexer\Model\Indexer\State::class, ['load', 'save']);
 
         $this->stateFactoryMock->expects($this->once())->method('create')->willReturn($stateMock);
         $this->viewMock->expects($this->once())->method('load')->willReturnSelf();
@@ -442,7 +426,7 @@ class IndexerTest extends TestCase
     public function testGetStatus()
     {
         $status = StateInterface::STATUS_WORKING;
-        $stateMock = $this->createPartialMock(State::class, ['load', 'getStatus']);
+        $stateMock = $this->createPartialMock(\Magento\Indexer\Model\Indexer\State::class, ['load', 'getStatus']);
 
         $this->stateFactoryMock->expects($this->once())->method('create')->willReturn($stateMock);
         $stateMock->expects($this->once())->method('getStatus')->willReturn($status);
@@ -456,7 +440,7 @@ class IndexerTest extends TestCase
      */
     public function testStatus($method, $status)
     {
-        $stateMock = $this->createPartialMock(State::class, ['load', 'getStatus']);
+        $stateMock = $this->createPartialMock(\Magento\Indexer\Model\Indexer\State::class, ['load', 'getStatus']);
 
         $this->stateFactoryMock->expects($this->once())->method('create')->willReturn($stateMock);
         $stateMock->expects($this->once())->method('getStatus')->willReturn($status);
@@ -478,12 +462,14 @@ class IndexerTest extends TestCase
     public function testInvalidate()
     {
         $stateMock = $this->createPartialMock(
-            State::class,
+            \Magento\Indexer\Model\Indexer\State::class,
             ['load', 'setStatus', 'save']
         );
 
         $this->stateFactoryMock->expects($this->once())->method('create')->willReturn($stateMock);
-        $stateMock->expects($this->once())->method('setStatus')->with(StateInterface::STATUS_INVALID)->willReturnSelf();
+        $stateMock->expects($this->once())->method('setStatus')->with(StateInterface::STATUS_INVALID)->willReturnSelf(
+            
+        );
         $stateMock->expects($this->once())->method('save')->willReturnSelf();
         $this->model->invalidate();
     }
@@ -492,9 +478,9 @@ class IndexerTest extends TestCase
     {
         $id = 1;
 
-        $stateMock = $this->createPartialMock(State::class, ['load', 'save']);
+        $stateMock = $this->createPartialMock(\Magento\Indexer\Model\Indexer\State::class, ['load', 'save']);
         $actionMock = $this->createPartialMock(
-            ActionInterface::class,
+            \Magento\Framework\Indexer\ActionInterface::class,
             ['executeFull', 'executeList', 'executeRow']
         );
 
@@ -516,9 +502,9 @@ class IndexerTest extends TestCase
     {
         $ids = [1];
 
-        $stateMock = $this->createPartialMock(State::class, ['load', 'save']);
+        $stateMock = $this->createPartialMock(\Magento\Indexer\Model\Indexer\State::class, ['load', 'save']);
         $actionMock = $this->createPartialMock(
-            ActionInterface::class,
+            \Magento\Framework\Indexer\ActionInterface::class,
             ['executeFull', 'executeList', 'executeRow']
         );
 

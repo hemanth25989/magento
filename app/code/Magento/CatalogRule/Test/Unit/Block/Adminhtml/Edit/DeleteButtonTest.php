@@ -3,31 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogRule\Test\Unit\Block\Adminhtml\Edit;
 
-use Magento\Backend\Block\Widget\Context;
-use Magento\CatalogRule\Block\Adminhtml\Edit\DeleteButton;
-use Magento\Framework\Registry;
-use Magento\Framework\UrlInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\CatalogRule\Controller\RegistryConstants;
 
-class DeleteButtonTest extends TestCase
+class DeleteButtonTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DeleteButton
+     * @var \Magento\CatalogRule\Block\Adminhtml\Edit\DeleteButton
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlBuilderMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $registryMock;
 
@@ -36,13 +29,13 @@ class DeleteButtonTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->urlBuilderMock = $this->getMockForAbstractClass(UrlInterface::class);
-        $this->registryMock = $this->createMock(Registry::class);
-        $contextMock = $this->createMock(Context::class);
+        $this->urlBuilderMock = $this->createMock(\Magento\Framework\UrlInterface::class);
+        $this->registryMock = $this->createMock(\Magento\Framework\Registry::class);
+        $contextMock = $this->createMock(\Magento\Backend\Block\Widget\Context::class);
 
         $contextMock->expects($this->any())->method('getUrlBuilder')->willReturn($this->urlBuilderMock);
 
-        $this->model = new DeleteButton(
+        $this->model = new \Magento\CatalogRule\Block\Adminhtml\Edit\DeleteButton(
             $contextMock,
             $this->registryMock
         );

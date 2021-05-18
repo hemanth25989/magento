@@ -3,23 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Tests for \Magento\Framework\Data\Form\Field\Regexceptions
  */
 namespace Magento\Config\Test\Unit\Block\System\Config\Form\Field;
 
-use Magento\Config\Block\System\Config\Form\Field\Regexceptions;
-use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Framework\Data\Form\Element\Factory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Design\Theme\Label;
-use Magento\Framework\View\Design\Theme\LabelFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class RegexceptionsTest extends TestCase
+class RegexceptionsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var array
@@ -27,27 +17,27 @@ class RegexceptionsTest extends TestCase
     protected $cellParameters;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $labelFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $labelMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $elementFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $elementMock;
 
     /**
-     * @var Regexceptions
+     * @var \Magento\Config\Block\System\Config\Form\Field\Regexceptions
      */
     protected $object;
 
@@ -59,18 +49,18 @@ class RegexceptionsTest extends TestCase
             'class' => 'testClass',
         ];
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->labelFactoryMock = $this->getMockBuilder(LabelFactory::class)
+        $this->labelFactoryMock = $this->getMockBuilder(\Magento\Framework\View\Design\Theme\LabelFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->labelMock = $this->getMockBuilder(Label::class)
+        $this->labelMock = $this->getMockBuilder(\Magento\Framework\View\Design\Theme\Label::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->elementFactoryMock = $this->getMockBuilder(Factory::class)
+        $this->elementFactoryMock = $this->getMockBuilder(\Magento\Framework\Data\Form\Element\Factory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->elementMock = $this->getMockBuilder(AbstractElement::class)
+        $this->elementMock = $this->getMockBuilder(\Magento\Framework\Data\Form\Element\AbstractElement::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 ['setForm', 'setName', 'setHtmlId', 'setValues', 'getName', 'getHtmlId', 'getValues', 'getElementHtml']
@@ -85,7 +75,7 @@ class RegexceptionsTest extends TestCase
             ],
         ];
         $this->object = $objectManager->getObject(
-            Regexceptions::class,
+            \Magento\Config\Block\System\Config\Form\Field\Regexceptions::class,
             $data
         );
     }

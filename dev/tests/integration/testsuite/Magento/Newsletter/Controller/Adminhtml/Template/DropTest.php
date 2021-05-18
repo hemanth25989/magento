@@ -36,7 +36,7 @@ class DropTest extends AbstractBackendController
         $this->getRequest()->setMethod(HttpRequest::METHOD_POST);
         $this->dispatch('backend/newsletter/template/drop');
         $this->assertStringContainsString(
-            'Template : Text',
+            'Template 123: Text',
             $this->getResponse()->getBody()
         );
     }

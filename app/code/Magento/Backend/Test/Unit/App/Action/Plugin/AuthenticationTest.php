@@ -3,24 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\App\Action\Plugin;
 
 use Magento\Backend\App\Action\Plugin\Authentication;
-use Magento\Backend\Controller\Adminhtml\Index;
-use Magento\Backend\Model\Auth;
-use Magento\Backend\Model\Auth\Session;
-use Magento\Framework\App\Request\Http;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\User\Model\User;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AuthenticationTest extends TestCase
+/**
+ * Test for Authentication
+ */
+class AuthenticationTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Auth|MockObject
+     * @var \Magento\Backend\Model\Auth | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $auth;
 
@@ -32,12 +26,12 @@ class AuthenticationTest extends TestCase
     protected function setUp(): void
     {
         $this->auth = $this->createPartialMock(
-            Auth::class,
+            \Magento\Backend\Model\Auth::class,
             ['getUser', 'isLoggedIn', 'getAuthStorage']
         );
         $objectManager = new ObjectManager($this);
         $this->plugin = $objectManager->getObject(
-            Authentication::class,
+            \Magento\Backend\App\Action\Plugin\Authentication::class,
             ['auth' => $this->auth]
         );
     }
@@ -50,10 +44,10 @@ class AuthenticationTest extends TestCase
 
     public function testAroundDispatchProlongStorage()
     {
-        $subject = $this->createMock(Index::class);
-        $request = $this->createPartialMock(Http::class, ['getActionName']);
-        $user = $this->createPartialMock(User::class, ['reload', '__wakeup']);
-        $storage = $this->createPartialMock(Session::class, ['prolong', 'refreshAcl']);
+        $subject = $this->createMock(\Magento\Backend\Controller\Adminhtml\Index::class);
+        $request = $this->createPartialMock(\Magento\Framework\App\Request\Http::class, ['getActionName']);
+        $user = $this->createPartialMock(\Magento\User\Model\User::class, ['reload', '__wakeup']);
+        $storage = $this->createPartialMock(\Magento\Backend\Model\Auth\Session::class, ['prolong', 'refreshAcl']);
 
         $expectedResult = 'expectedResult';
         $action = 'index';
@@ -96,13 +90,13 @@ class AuthenticationTest extends TestCase
      */
     public function testProcessNotLoggedInUser($isIFrameParam, $isAjaxParam, $isForwardedFlag)
     {
-        $subject = $this->getMockBuilder(Index::class)
+        $subject = $this->getMockBuilder(\Magento\Backend\Controller\Adminhtml\Index::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $request = $this->getMockBuilder(Http::class)
+        $request = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $storage = $this->getMockBuilder(Session::class)
+        $storage = $this->getMockBuilder(\Magento\Backend\Model\Auth\Session::class)
             ->disableOriginalConstructor()
             ->getMock();
 

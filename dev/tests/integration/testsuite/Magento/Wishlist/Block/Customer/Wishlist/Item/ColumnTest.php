@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Test wish list item column.
  *
- * @magentoDbIsolation disabled
+ * @magentoDbIsolation enabled
  * @magentoAppArea frontend
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */

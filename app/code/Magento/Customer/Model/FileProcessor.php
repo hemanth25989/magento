@@ -7,20 +7,14 @@ declare(strict_types=1);
 
 namespace Magento\Customer\Model;
 
-use Magento\Customer\Api\AddressMetadataInterface;
-use Magento\Customer\Api\CustomerMetadataInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\File\Mime;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\WriteInterface;
-use Magento\Framework\Url\EncoderInterface;
-use Magento\Framework\UrlInterface;
-use Magento\MediaStorage\Model\File\Uploader;
-use Magento\MediaStorage\Model\File\UploaderFactory;
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Filesystem\Directory\WriteFactory;
 
 /**
- * Processor class for work with uploaded files
+ * Processor class for work with uploaded files.
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class FileProcessor
 {
@@ -30,22 +24,22 @@ class FileProcessor
     const TMP_DIR = 'tmp';
 
     /**
-     * @var WriteInterface
+     * @var \Magento\Framework\Filesystem\Directory\WriteInterface
      */
-    private $mediaDirectory;
+    private $mediaEntityDirectory;
 
     /**
-     * @var UploaderFactory
+     * @var \Magento\MediaStorage\Model\File\UploaderFactory
      */
     private $uploaderFactory;
 
     /**
-     * @var UrlInterface
+     * @var \Magento\Framework\UrlInterface
      */
     private $urlBuilder;
 
     /**
-     * @var EncoderInterface
+     * @var \Magento\Framework\Url\EncoderInterface
      */
     private $urlEncoder;
 
@@ -60,35 +54,45 @@ class FileProcessor
     private $allowedExtensions = [];
 
     /**
-     * @var Mime
+     * @var \Magento\Framework\File\Mime
      */
     private $mime;
 
     /**
-     * @param Filesystem $filesystem
-     * @param UploaderFactory $uploaderFactory
-     * @param UrlInterface $urlBuilder
-     * @param EncoderInterface $urlEncoder
+     * @param \Magento\Framework\Filesystem $filesystem
+     * @param \Magento\MediaStorage\Model\File\UploaderFactory $uploaderFactory
+     * @param \Magento\Framework\UrlInterface $urlBuilder
+     * @param \Magento\Framework\Url\EncoderInterface $urlEncoder
      * @param string $entityTypeCode
-     * @param Mime $mime
+     * @param \Magento\Framework\File\Mime $mime
      * @param array $allowedExtensions
+     * @param WriteFactory|null $writeFactory
+     * @param DirectoryList|null $directoryList
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function __construct(
-        Filesystem $filesystem,
-        UploaderFactory $uploaderFactory,
-        UrlInterface $urlBuilder,
-        EncoderInterface $urlEncoder,
+        \Magento\Framework\Filesystem $filesystem,
+        \Magento\MediaStorage\Model\File\UploaderFactory $uploaderFactory,
+        \Magento\Framework\UrlInterface $urlBuilder,
+        \Magento\Framework\Url\EncoderInterface $urlEncoder,
         $entityTypeCode,
-        Mime $mime,
-        array $allowedExtensions = []
+        \Magento\Framework\File\Mime $mime,
+        array $allowedExtensions = [],
+        WriteFactory $writeFactory = null,
+        DirectoryList $directoryList = null
     ) {
-        $this->mediaDirectory = $filesystem->getDirectoryWrite(DirectoryList::MEDIA);
         $this->uploaderFactory = $uploaderFactory;
         $this->urlBuilder = $urlBuilder;
         $this->urlEncoder = $urlEncoder;
         $this->entityTypeCode = $entityTypeCode;
         $this->mime = $mime;
         $this->allowedExtensions = $allowedExtensions;
+        $writeFactory = $writeFactory ?? ObjectManager::getInstance()->get(WriteFactory::class);
+        $directoryList = $directoryList ?? ObjectManager::getInstance()->get(DirectoryList::class);
+        $this->mediaEntityDirectory = $writeFactory->create(
+            $directoryList->getPath(DirectoryList::MEDIA)
+            . DIRECTORY_SEPARATOR . $this->entityTypeCode
+        );
     }
 
     /**
@@ -99,11 +103,10 @@ class FileProcessor
      */
     public function getBase64EncodedData($fileName)
     {
-        $filePath = $this->entityTypeCode . '/' . ltrim($fileName, '/');
+        $fileContent = $this->mediaEntityDirectory->readFile($fileName);
 
-        $fileContent = $this->mediaDirectory->readFile($filePath);
-
-        return base64_encode($fileContent);
+        $encodedContent = base64_encode($fileContent);
+        return $encodedContent;
     }
 
     /**
@@ -114,9 +117,8 @@ class FileProcessor
      */
     public function getStat($fileName)
     {
-        $filePath = $this->entityTypeCode . '/' . ltrim($fileName, '/');
-
-        return $this->mediaDirectory->stat($filePath);
+        $result = $this->mediaEntityDirectory->stat($fileName);
+        return $result;
     }
 
     /**
@@ -127,10 +129,10 @@ class FileProcessor
      */
     public function getMimeType($fileName)
     {
-        $filePath = $this->entityTypeCode . '/' . ltrim($fileName, '/');
-        $absoluteFilePath = $this->mediaDirectory->getAbsolutePath($filePath);
+        $absoluteFilePath = $this->mediaEntityDirectory->getAbsolutePath($fileName);
 
-        return $this->mime->getMimeType($absoluteFilePath);
+        $result = $this->mime->getMimeType($absoluteFilePath);
+        return $result;
     }
 
     /**
@@ -141,9 +143,8 @@ class FileProcessor
      */
     public function isExist($fileName)
     {
-        $filePath = $this->entityTypeCode . '/' . ltrim($fileName, '/');
-
-        return $this->mediaDirectory->isExist($filePath);
+        $result = $this->mediaEntityDirectory->isExist($fileName);
+        return $result;
     }
 
     /**
@@ -157,13 +158,13 @@ class FileProcessor
     {
         $viewUrl = '';
 
-        if ($this->entityTypeCode == AddressMetadataInterface::ENTITY_TYPE_ADDRESS) {
-            $filePath = $this->entityTypeCode . '/' . ltrim($filePath, '/');
-            $viewUrl = $this->urlBuilder->getBaseUrl(['_type' => UrlInterface::URL_TYPE_MEDIA])
-                . $this->mediaDirectory->getRelativePath($filePath);
+        if ($this->entityTypeCode == \Magento\Customer\Api\AddressMetadataInterface::ENTITY_TYPE_ADDRESS) {
+            $filePath = $this->entityTypeCode . DIRECTORY_SEPARATOR . ltrim($filePath, '/');
+            $viewUrl = $this->urlBuilder->getBaseUrl(['_type' => \Magento\Framework\UrlInterface::URL_TYPE_MEDIA])
+                . $this->mediaEntityDirectory->getRelativePath($filePath);
         }
 
-        if ($this->entityTypeCode == CustomerMetadataInterface::ENTITY_TYPE_CUSTOMER) {
+        if ($this->entityTypeCode == \Magento\Customer\Api\CustomerMetadataInterface::ENTITY_TYPE_CUSTOMER) {
             $viewUrl = $this->urlBuilder->getUrl(
                 'customer/index/viewfile',
                 [$type => $this->urlEncoder->encode(ltrim($filePath, '/'))]
@@ -178,25 +179,25 @@ class FileProcessor
      *
      * @param string $fileId
      * @return \string[]
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function saveTemporaryFile($fileId)
     {
-        /** @var Uploader $uploader */
+        /** @var \Magento\MediaStorage\Model\File\Uploader $uploader */
         $uploader = $this->uploaderFactory->create(['fileId' => $fileId]);
         $uploader->setFilesDispersion(false);
         $uploader->setFilenamesCaseSensitivity(false);
         $uploader->setAllowRenameFiles(true);
         $uploader->setAllowedExtensions($this->allowedExtensions);
 
-        $path = $this->mediaDirectory->getAbsolutePath(
-            $this->entityTypeCode . '/' . self::TMP_DIR
+        $path = $this->mediaEntityDirectory->getAbsolutePath(
+            DIRECTORY_SEPARATOR . self::TMP_DIR
         );
 
         $result = $uploader->save($path);
         unset($result['path']);
         if (!$result) {
-            throw new LocalizedException(
+            throw new \Magento\Framework\Exception\LocalizedException(
                 __('File can not be saved to the destination folder.')
             );
         }
@@ -209,48 +210,42 @@ class FileProcessor
      *
      * @param string $fileName
      * @return string
-     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function moveTemporaryFile($fileName)
     {
-        if (!$this->isFileTemporary($fileName)) {
-            return $fileName;
-        }
-
         $fileName = ltrim($fileName, '/');
 
-        $dispersionPath = Uploader::getDispersionPath($fileName);
-        $destinationPath = $this->entityTypeCode . $dispersionPath;
+        $destinationPath = \Magento\MediaStorage\Model\File\Uploader::getDispersionPath($fileName);
 
-        if (!$this->mediaDirectory->create($destinationPath)) {
-            throw new LocalizedException(
+        if (!$this->mediaEntityDirectory->create($destinationPath)) {
+            throw new \Magento\Framework\Exception\LocalizedException(
                 __('Unable to create directory %1.', $destinationPath)
             );
         }
 
-        if (!$this->mediaDirectory->isWritable($destinationPath)) {
-            throw new LocalizedException(
+        if (!$this->mediaEntityDirectory->isWritable($destinationPath)) {
+            throw new \Magento\Framework\Exception\LocalizedException(
                 __('Destination folder is not writable or does not exists.')
             );
         }
 
-        $destinationFileName = Uploader::getNewFileName(
-            $this->mediaDirectory->getAbsolutePath($destinationPath) . '/' . $fileName
+        $destinationFileName = \Magento\MediaStorage\Model\File\Uploader::getNewFileName(
+            $this->mediaEntityDirectory->getAbsolutePath($destinationPath) . '/' . $fileName
         );
 
         try {
-            $this->mediaDirectory->renameFile(
-                $this->entityTypeCode . '/' . self::TMP_DIR . '/' . $fileName,
-                $destinationPath . '/' . $destinationFileName
+            $this->mediaEntityDirectory->renameFile(
+                DIRECTORY_SEPARATOR . self::TMP_DIR . DIRECTORY_SEPARATOR . $fileName,
+                $destinationPath . DIRECTORY_SEPARATOR . $destinationFileName
             );
         } catch (\Exception $e) {
             throw new \Magento\Framework\Exception\LocalizedException(
-                __('Something went wrong while saving the file.'),
-                $e
+                __('Something went wrong while saving the file.')
             );
         }
 
-        return $dispersionPath . '/' . $destinationFileName;
+        return $destinationPath . DIRECTORY_SEPARATOR . $destinationFileName;
     }
 
     /**
@@ -261,22 +256,9 @@ class FileProcessor
      */
     public function removeUploadedFile($fileName)
     {
-        $filePath = $this->entityTypeCode . '/' . ltrim($fileName, '/');
+        $filePath = DIRECTORY_SEPARATOR . ltrim($fileName, '/');
 
-        return $this->mediaDirectory->delete($filePath);
-    }
-
-    /**
-     * Verify if given file temporary.
-     *
-     * @param string $fileName
-     * @return bool
-     */
-    private function isFileTemporary(string $fileName): bool
-    {
-        $tmpFile = $this->entityTypeCode . '/' . self::TMP_DIR . '/' . ltrim($fileName, '/');
-        $destinationFile = $this->entityTypeCode . '/' . ltrim($fileName, '/');
-
-        return $this->mediaDirectory->isExist($tmpFile) && !$this->mediaDirectory->isExist($destinationFile);
+        $result = $this->mediaEntityDirectory->delete($filePath);
+        return $result;
     }
 }

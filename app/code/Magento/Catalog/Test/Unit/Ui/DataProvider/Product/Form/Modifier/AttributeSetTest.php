@@ -3,41 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
-use Magento\Catalog\Model\ResourceModel\Product as ProductResource;
 use Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\AbstractModifier;
 use Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\AttributeSet;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\Collection;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory;
+use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\Collection;
 use Magento\Framework\UrlInterface;
-use PHPUnit\Framework\MockObject\MockObject;
+use Magento\Catalog\Model\ResourceModel\Product as ProductResource;
 
 /**
+ * Class AttributeSetTest
+ *
  * @method \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\AttributeSet getModel
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class AttributeSetTest extends AbstractModifierTest
 {
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $attributeSetCollectionFactoryMock;
 
     /**
-     * @var Collection|MockObject
+     * @var Collection|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $attributeSetCollectionMock;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var UrlInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlBuilderMock;
 
     /**
-     * @var ProductResource|MockObject
+     * @var ProductResource|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $productResourceMock;
 

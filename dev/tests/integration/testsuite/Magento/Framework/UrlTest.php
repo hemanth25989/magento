@@ -5,7 +5,7 @@
  */
 namespace Magento\Framework;
 
-use Laminas\Stdlib\Parameters;
+use Zend\Stdlib\Parameters;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
@@ -181,7 +181,7 @@ class UrlTest extends \PHPUnit\Framework\TestCase
          * Get url with type specified in params
          */
         $mediaUrl = $this->model->getBaseUrl(['_type' => \Magento\Framework\UrlInterface::URL_TYPE_MEDIA]);
-        $this->assertEquals('http://localhost/media/', $mediaUrl, 'Incorrect media url');
+        $this->assertEquals('http://localhost/pub/media/', $mediaUrl, 'Incorrect media url');
         $this->assertEquals('http://localhost/index.php/', $this->model->getBaseUrl(), 'Incorrect link url');
     }
 

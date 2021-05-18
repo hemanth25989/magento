@@ -3,106 +3,91 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product;
 
-use Magento\Catalog\Model\Indexer\Product\Category;
-use Magento\Catalog\Model\Product\Action;
-use Magento\Catalog\Model\Product\Website;
-use Magento\Catalog\Model\Product\WebsiteFactory;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\Eav\Model\Config;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Indexer\IndexerRegistry;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Indexer\Model\Indexer;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class ActionTest extends TestCase
+class ActionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Action
+     * @var \Magento\Catalog\Model\Product\Action
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $productWebsiteFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $resource;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $productWebsite;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $categoryIndexer;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Eav\Model\Config|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $eavConfig;
 
     /**
-     * @var Attribute|MockObject
+     * @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $eavAttribute;
 
     /**
-     * @var IndexerRegistry|MockObject
+     * @var \Magento\Framework\Indexer\IndexerRegistry|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $indexerRegistryMock;
 
     protected function setUp(): void
     {
-        $eventManagerMock = $this->getMockForAbstractClass(ManagerInterface::class);
+        $eventManagerMock = $this->createMock(\Magento\Framework\Event\ManagerInterface::class);
         $this->productWebsiteFactory = $this->createPartialMock(
-            WebsiteFactory::class,
+            \Magento\Catalog\Model\Product\WebsiteFactory::class,
             ['create']
         );
-        $this->resource = $this->getMockBuilder(AbstractResource::class)
-            ->addMethods(['updateAttributes', 'getIdFieldName'])
-            ->onlyMethods(['getConnection'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        $this->resource = $this->createPartialMock(
+            \Magento\Framework\Model\ResourceModel\AbstractResource::class,
+            [
+                'updateAttributes',
+                'getConnection',
+                '_construct',
+                'getIdFieldName',
+            ]
+        );
         $this->productWebsite = $this->createPartialMock(
-            Website::class,
-            ['addProducts', 'removeProducts']
+            \Magento\Catalog\Model\Product\Website::class,
+            ['addProducts', 'removeProducts', '__wakeup']
         );
         $this->productWebsiteFactory
             ->expects($this->any())
             ->method('create')
             ->willReturn($this->productWebsite);
         $this->categoryIndexer = $this->createPartialMock(
-            Indexer::class,
+            \Magento\Indexer\Model\Indexer::class,
             ['getId', 'load', 'isScheduled', 'reindexList']
         );
-        $this->eavConfig = $this->createPartialMock(Config::class, [ 'getAttribute']);
+        $this->eavConfig = $this->createPartialMock(\Magento\Eav\Model\Config::class, ['__wakeup', 'getAttribute']);
         $this->eavAttribute = $this->createPartialMock(
-            Attribute::class,
-            [ 'isIndexable']
+            \Magento\Catalog\Model\ResourceModel\Eav\Attribute::class,
+            ['__wakeup', 'isIndexable']
         );
         $this->indexerRegistryMock = $this->createPartialMock(
-            IndexerRegistry::class,
+            \Magento\Framework\Indexer\IndexerRegistry::class,
             ['get']
         );
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $objectManager->getObject(
-            Action::class,
+            \Magento\Catalog\Model\Product\Action::class,
             [
                 'eventDispatcher' => $eventManagerMock,
                 'resource' => $this->resource,
@@ -122,7 +107,8 @@ class ActionTest extends TestCase
         $this->resource
             ->expects($this->any())
             ->method('updateAttributes')
-            ->with($productIds, $attrData, $storeId)->willReturnSelf();
+            ->with($productIds, $attrData, $storeId)
+            ->willReturnSelf();
 
         $this->categoryIndexer
             ->expects($this->any())
@@ -160,7 +146,8 @@ class ActionTest extends TestCase
         $this->productWebsite
             ->expects($this->any())
             ->method($methodName)
-            ->with($websiteIds, $productIds)->willReturnSelf();
+            ->with($websiteIds, $productIds)
+            ->willReturnSelf();
 
         $this->categoryIndexer
             ->expects($this->any())
@@ -192,7 +179,7 @@ class ActionTest extends TestCase
     {
         $this->indexerRegistryMock->expects($this->once())
             ->method('get')
-            ->with(Category::INDEXER_ID)
+            ->with(\Magento\Catalog\Model\Indexer\Product\Category::INDEXER_ID)
             ->willReturn($this->categoryIndexer);
     }
 }

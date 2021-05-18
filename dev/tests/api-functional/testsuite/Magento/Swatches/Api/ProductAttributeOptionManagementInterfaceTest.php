@@ -35,7 +35,7 @@ class ProductAttributeOptionManagementInterfaceTest extends WebapiAbstract
      * @magentoApiDataFixture Magento/Catalog/Model/Product/Attribute/_files/select_attribute.php
      * @param array $data
      * @param array $payload
-     * @param int $expectedSwatchType
+     * @param string $expectedSwatchType
      * @param string $expectedLabel
      * @param string $expectedValue
      *

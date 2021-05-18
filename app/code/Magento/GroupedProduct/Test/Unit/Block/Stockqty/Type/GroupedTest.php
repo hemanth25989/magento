@@ -3,35 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GroupedProduct\Test\Unit\Block\Stockqty\Type;
 
-use Magento\Catalog\Model\Product;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\GroupedProduct\Block\Stockqty\Type\Grouped;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class GroupedTest extends TestCase
+class GroupedTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Grouped
+     * @var \Magento\GroupedProduct\Block\Stockqty\Type\Grouped
      */
     protected $block;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $registry;
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
-        $this->registry = $this->createMock(Registry::class);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->registry = $this->createMock(\Magento\Framework\Registry::class);
         $this->block = $objectManager->getObject(
-            Grouped::class,
+            \Magento\GroupedProduct\Block\Stockqty\Type\Grouped::class,
             ['registry' => $this->registry]
         );
     }
@@ -44,7 +35,7 @@ class GroupedTest extends TestCase
     public function testGetIdentities()
     {
         $productTags = ['catalog_product_1'];
-        $childProduct = $this->createMock(Product::class);
+        $childProduct = $this->createMock(\Magento\Catalog\Model\Product::class);
         $childProduct->expects($this->once())->method('getIdentities')->willReturn($productTags);
         $typeInstance = $this->createMock(\Magento\GroupedProduct\Model\Product\Type\Grouped::class);
         $typeInstance->expects(
@@ -54,7 +45,7 @@ class GroupedTest extends TestCase
         )->willReturn(
             [$childProduct]
         );
-        $product = $this->createMock(Product::class);
+        $product = $this->createMock(\Magento\Catalog\Model\Product::class);
         $product->expects($this->once())->method('getTypeInstance')->willReturn($typeInstance);
         $this->registry->expects(
             $this->any()

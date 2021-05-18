@@ -7,21 +7,23 @@ declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\ResourceModel\Product;
 
-use Magento\Catalog\Model\ResourceModel\Product\Gallery;
 use Magento\Catalog\Model\ResourceModel\Product\Image;
-use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Query\BatchIteratorInterface;
 use Magento\Framework\DB\Query\Generator;
 use Magento\Framework\DB\Select;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\App\ResourceConnection;
+use Magento\Catalog\Model\ResourceModel\Product\Gallery;
+use PHPUnit\Framework\MockObject\MockObject as MockObject;
+use Magento\Framework\DB\Query\BatchIteratorInterface;
 
-class ImageTest extends TestCase
+/**
+ * Class ImageTest
+ * @package Magento\Catalog\Test\Unit\Model\ResourceModel\Product
+ */
+class ImageTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
@@ -43,7 +45,7 @@ class ImageTest extends TestCase
     protected function setUp(): void
     {
         $this->objectManager =
-            new ObjectManager($this);
+            new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->connectionMock = $this->getMockForAbstractClass(AdapterInterface::class);
         $this->resourceMock = $this->createMock(ResourceConnection::class);
         $this->resourceMock->method('getConnection')
@@ -219,7 +221,9 @@ class ImageTest extends TestCase
                 $batchSize,
                 BatchIteratorInterface::NON_UNIQUE_FIELD_ITERATOR
             )->willReturnCallback(
-                $this->getBatchIteratorCallback($selectMock, $batchCount)
+                
+                    $this->getBatchIteratorCallback($selectMock, $batchCount)
+                
             );
 
         $imageModel = $this->objectManager->getObject(
@@ -264,7 +268,9 @@ class ImageTest extends TestCase
                 $batchSize,
                 BatchIteratorInterface::NON_UNIQUE_FIELD_ITERATOR
             )->willReturnCallback(
-                $this->getBatchIteratorCallback($selectMock, $batchCount)
+                
+                    $this->getBatchIteratorCallback($selectMock, $batchCount)
+                
             );
 
         /** @var Image $imageModel */

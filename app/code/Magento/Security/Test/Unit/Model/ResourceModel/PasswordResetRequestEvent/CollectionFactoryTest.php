@@ -3,28 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Security\Test\Unit\Model\ResourceModel\PasswordResetRequestEvent;
 
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Security\Model\Config\Source\ResetMethod;
 use Magento\Security\Model\ConfigInterface;
-use Magento\Security\Model\ResourceModel\PasswordResetRequestEvent\Collection;
 use Magento\Security\Model\ResourceModel\PasswordResetRequestEvent\CollectionFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Security\Model\ResourceModel\PasswordResetRequestEvent\Collection;
 
-class CollectionFactoryTest extends TestCase
+class CollectionFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ObjectManagerInterface|MockObject */
+    /** @var \Magento\Framework\ObjectManagerInterface | \PHPUnit\Framework\MockObject\MockObject */
     protected $objectManagerMock;
 
-    /** @var ConfigInterface|MockObject */
+    /** @var ConfigInterface | \PHPUnit\Framework\MockObject\MockObject */
     protected $securityConfigMock;
 
-    /** @var  CollectionFactory */
+    /** @var  \Magento\Security\Model\ResourceModel\PasswordResetRequestEvent\CollectionFactory */
     protected $model;
 
     /**
@@ -33,9 +29,9 @@ class CollectionFactoryTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->securityConfigMock = $this->getMockBuilder(ConfigInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();

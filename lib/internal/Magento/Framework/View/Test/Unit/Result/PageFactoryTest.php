@@ -3,42 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit\Result;
 
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Result\Page;
-use Magento\Framework\View\Result\PageFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PageFactoryTest extends TestCase
+class PageFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var PageFactory */
+    /** @var \Magento\Framework\View\Result\PageFactory */
     protected $pageFactory;
 
-    /** @var Page|MockObject */
+    /** @var \Magento\Framework\View\Result\Page|\PHPUnit\Framework\MockObject\MockObject */
     protected $page;
 
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    /** @var ObjectManagerInterface|MockObject */
+    /** @var \Magento\Framework\ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $objectManagerMock;
 
     protected function setUp(): void
     {
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->pageFactory = $this->objectManagerHelper->getObject(
-            PageFactory::class,
+            \Magento\Framework\View\Result\PageFactory::class,
             [
                 'objectManager' => $this->objectManagerMock
             ]
         );
-        $this->page = $this->getMockBuilder(Page::class)
+        $this->page = $this->getMockBuilder(\Magento\Framework\View\Result\Page::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
@@ -47,7 +41,7 @@ class PageFactoryTest extends TestCase
     {
         $this->objectManagerMock->expects($this->once())
             ->method('create')
-            ->with(Page::class)
+            ->with(\Magento\Framework\View\Result\Page::class)
             ->willReturn($this->page);
         $this->assertSame($this->page, $this->pageFactory->create());
     }

@@ -3,27 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\Layout\Data;
 
-use Magento\Framework\App\State;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Layout\Data\Structure;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\MockObject\Rule\InvokedCount;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
+use Magento\Framework\App\State;
 
-class StructureTest extends TestCase
+class StructureTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var LoggerInterface|MockObject
+     * @var \Psr\Log\LoggerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $loggerMock;
 
     /**
-     * @var State|MockObject
+     * @var State|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $stateMock;
 
@@ -33,7 +26,7 @@ class StructureTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var Structure
+     * @var \Magento\Framework\View\Layout\Data\Structure
      */
     protected $dataStructure;
 
@@ -42,12 +35,12 @@ class StructureTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
-        $this->stateMock = $this->createMock(State::class);
+        $this->loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $this->stateMock = $this->createMock(\Magento\Framework\App\State::class);
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->dataStructure = $this->objectManagerHelper->getObject(
-            Structure::class,
+            \Magento\Framework\View\Layout\Data\Structure::class,
             [
                 'logger' => $this->loggerMock,
                 'state' => $this->stateMock
@@ -56,7 +49,7 @@ class StructureTest extends TestCase
     }
 
     /**
-     * @param InvokedCount $loggerExpects
+     * @param \PHPUnit\Framework\MockObject\Matcher\InvokedCount $loggerExpects
      * @param string $stateMode
      * @return void
      * @dataProvider reorderChildElementLogDataProvider

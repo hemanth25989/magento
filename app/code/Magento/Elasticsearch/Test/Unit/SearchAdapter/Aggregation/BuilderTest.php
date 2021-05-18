@@ -3,26 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Elasticsearch\Test\Unit\SearchAdapter\Aggregation;
 
 use Magento\Elasticsearch\SearchAdapter\Aggregation\Builder;
-use Magento\Elasticsearch\SearchAdapter\Aggregation\Builder\BucketBuilderInterface;
 use Magento\Elasticsearch\SearchAdapter\Aggregation\DataProviderFactory;
 use Magento\Elasticsearch\SearchAdapter\QueryContainer;
-use Magento\Framework\Search\Dynamic\DataProviderInterface;
-use Magento\Framework\Search\Request\BucketInterface;
-use Magento\Framework\Search\Request\Dimension;
-use Magento\Framework\Search\RequestInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Search\Dynamic\DataProviderInterface;
+use Magento\Elasticsearch\SearchAdapter\Aggregation\Builder\BucketBuilderInterface;
 
-class BuilderTest extends TestCase
+class BuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DataProviderFactory|MockObject
+     * @var DataProviderFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $dataProviderFactory;
 
@@ -32,22 +25,22 @@ class BuilderTest extends TestCase
     private $model;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\Search\RequestInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $requestInterface;
 
     /**
-     * @var BucketInterface|MockObject
+     * @var \Magento\Framework\Search\Request\BucketInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $requestBuckedInterface;
 
     /**
-     * @var DataProviderInterface|MockObject
+     * @var DataProviderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $dataProviderContainer;
 
     /**
-     * @var BucketBuilderInterface|MockObject
+     * @var BucketBuilderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $aggregationContainer;
 
@@ -59,17 +52,17 @@ class BuilderTest extends TestCase
     protected function setUp(): void
     {
         $this->dataProviderContainer = $this->getMockBuilder(
-            DataProviderInterface::class
+            \Magento\Framework\Search\Dynamic\DataProviderInterface::class
         )
             ->disableOriginalConstructor()
             ->getMock();
         $this->aggregationContainer = $this
-            ->getMockBuilder(BucketBuilderInterface::class)
+            ->getMockBuilder(\Magento\Elasticsearch\SearchAdapter\Aggregation\Builder\BucketBuilderInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->dataProviderFactory = $this->getMockBuilder(
-            DataProviderFactory::class
+            \Magento\Elasticsearch\SearchAdapter\Aggregation\DataProviderFactory::class
         )
             ->disableOriginalConstructor()
             ->setMethods(['create'])
@@ -77,7 +70,7 @@ class BuilderTest extends TestCase
 
         $objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $objectManagerHelper->getObject(
-            Builder::class,
+            \Magento\Elasticsearch\SearchAdapter\Aggregation\Builder::class,
             [
                 'dataProviderContainer' => ['indexName' => $this->dataProviderContainer],
                 'aggregationContainer' => ['bucketType' => $this->aggregationContainer],
@@ -91,22 +84,22 @@ class BuilderTest extends TestCase
      */
     public function testBuild()
     {
-        $this->requestInterface = $this->getMockBuilder(RequestInterface::class)
+        $this->requestInterface = $this->getMockBuilder(\Magento\Framework\Search\RequestInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $this->requestBuckedInterface = $this->getMockBuilder(BucketInterface::class)
+        $this->requestBuckedInterface = $this->getMockBuilder(\Magento\Framework\Search\Request\BucketInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $this->requestInterface->expects($this->once())
             ->method('getIndex')
             ->willReturn('indexName');
 
-        $dimensionMock = $this->getMockBuilder(Dimension::class)
+        $dimensionMock = $this->getMockBuilder(\Magento\Framework\Search\Request\Dimension::class)
             ->disableOriginalConstructor()
             ->getMock();
-
+            
         $this->requestInterface->expects($this->once())
             ->method('getDimensions')
             ->willReturn([$dimensionMock]);

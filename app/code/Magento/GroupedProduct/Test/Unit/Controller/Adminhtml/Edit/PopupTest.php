@@ -3,73 +3,61 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\GroupedProduct\Test\Unit\Controller\Adminhtml\Edit;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\ProductFactory;
-use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Result\Layout;
-use Magento\GroupedProduct\Controller\Adminhtml\Edit\Popup;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class PopupTest extends TestCase
+class PopupTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var Popup
+     * @var \Magento\GroupedProduct\Controller\Adminhtml\Edit\Popup
      */
     protected $action;
 
     /**
-     * @var Context
+     * @var \Magento\Backend\App\Action\Context
      */
     protected $context;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $request;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $factory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $registry;
 
     /**
-     * @var ResultFactory|MockObject
+     * @var \Magento\Framework\Controller\ResultFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resultFactoryMock;
 
     /**
-     * @var Layout|MockObject
+     * @var \Magento\Framework\View\Result\Layout|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resultLayoutMock;
 
     protected function setUp(): void
     {
-        $this->request = $this->getMockForAbstractClass(RequestInterface::class);
-        $this->factory = $this->createPartialMock(ProductFactory::class, ['create']);
-        $this->registry = $this->createMock(Registry::class);
-        $this->resultFactoryMock = $this->getMockBuilder(ResultFactory::class)
+        $this->request = $this->createMock(\Magento\Framework\App\RequestInterface::class);
+        $this->factory = $this->createPartialMock(\Magento\Catalog\Model\ProductFactory::class, ['create']);
+        $this->registry = $this->createMock(\Magento\Framework\Registry::class);
+        $this->resultFactoryMock = $this->getMockBuilder(\Magento\Framework\Controller\ResultFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resultLayoutMock = $this->getMockBuilder(Layout::class)
+        $this->resultLayoutMock = $this->getMockBuilder(\Magento\Framework\View\Result\Layout::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -78,16 +66,16 @@ class PopupTest extends TestCase
             ->with(ResultFactory::TYPE_LAYOUT, [])
             ->willReturn($this->resultLayoutMock);
 
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->context = $this->objectManager->getObject(
-            Context::class,
+            \Magento\Backend\App\Action\Context::class,
             [
                 'request' => $this->request,
                 'resultFactory' => $this->resultFactoryMock
             ]
         );
         $this->action = $this->objectManager->getObject(
-            Popup::class,
+            \Magento\GroupedProduct\Controller\Adminhtml\Edit\Popup::class,
             [
                 'context' => $this->context,
                 'factory' => $this->factory,
@@ -103,7 +91,7 @@ class PopupTest extends TestCase
         $productId = null;
         $setId = 0;
         $product = $this->createPartialMock(
-            Product::class,
+            \Magento\Catalog\Model\Product::class,
             ['setStoreId', 'setTypeId', 'setData', '__wakeup']
         );
 
@@ -137,7 +125,7 @@ class PopupTest extends TestCase
         $setId = 0;
         $productId = 399;
         $product = $this->createPartialMock(
-            Product::class,
+            \Magento\Catalog\Model\Product::class,
             ['setStoreId', 'setTypeId', 'setData', 'load', '__wakeup']
         );
 

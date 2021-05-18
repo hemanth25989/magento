@@ -3,37 +3,31 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\App\Test\Unit;
 
-use Magento\Framework\App\DeploymentConfig;
 use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\App\ResourceConnection\ConfigInterface;
 use Magento\Framework\Config\ConfigOptionsListConstants;
-use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Model\ResourceModel\Type\Db\ConnectionFactoryInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AclResourceTest extends TestCase
+class AclResourceTest extends \PHPUnit\Framework\TestCase
 {
-    const RESOURCE_NAME = ResourceConnection::DEFAULT_CONNECTION;
+    const RESOURCE_NAME = \Magento\Framework\App\ResourceConnection::DEFAULT_CONNECTION;
     const CONNECTION_NAME = 'connection-name';
     const TABLE_PREFIX = 'prefix_';
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var \Magento\Framework\App\ResourceConnection\ConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $config;
 
     /**
-     * @var ConnectionFactoryInterface|MockObject
+     * @var ConnectionFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $connectionFactory;
 
     /**
-     * @var DeploymentConfig|MockObject
+     * @var \Magento\Framework\App\DeploymentConfig|\PHPUnit\Framework\MockObject\MockObject
      */
     private $deploymentConfig;
 
@@ -43,7 +37,7 @@ class AclResourceTest extends TestCase
     protected $resource;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $connection;
 
@@ -52,16 +46,16 @@ class AclResourceTest extends TestCase
         $this->connectionFactory = $this->getMockBuilder(ConnectionFactoryInterface::class)
             ->setMethods(['create'])
             ->getMockForAbstractClass();
-        $this->config = $this->getMockBuilder(ConfigInterface::class)
+        $this->config = $this->getMockBuilder(\Magento\Framework\App\ResourceConnection\ConfigInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getConnectionName'])
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->config->expects($this->any())
             ->method('getConnectionName')
             ->with(self::RESOURCE_NAME)
             ->willReturn(self::CONNECTION_NAME);
 
-        $this->deploymentConfig = $this->createMock(DeploymentConfig::class);
+        $this->deploymentConfig = $this->createMock(\Magento\Framework\App\DeploymentConfig::class);
         $this->deploymentConfig
             ->expects($this->any())
             ->method('get')
@@ -84,7 +78,7 @@ class AclResourceTest extends TestCase
                 ]
             );
 
-        $this->connection = $this->getMockForAbstractClass(AdapterInterface::class);
+        $this->connection = $this->getMockForAbstractClass(\Magento\Framework\DB\Adapter\AdapterInterface::class);
         $this->connection->expects($this->any())
             ->method('getTableName')
             ->willReturnArgument(0);
@@ -96,10 +90,13 @@ class AclResourceTest extends TestCase
         );
     }
 
+    /**
+     */
     public function testGetConnectionFail()
     {
-        $this->expectException('DomainException');
+        $this->expectException(\DomainException::class);
         $this->expectExceptionMessage('Connection "invalid" is not defined');
+
         $this->resource->getConnectionByName('invalid');
     }
 

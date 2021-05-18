@@ -12,21 +12,19 @@ use Magento\Multishipping\Model\Checkout\Type\Multishipping\PlaceOrderDefault;
 use Magento\Multishipping\Model\Checkout\Type\Multishipping\PlaceOrderFactory;
 use Magento\Multishipping\Model\Checkout\Type\Multishipping\PlaceOrderInterface;
 use Magento\Multishipping\Model\Checkout\Type\Multishipping\PlaceOrderPool;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Tests Magento\Multishipping\Model\Checkout\Type\Multishipping\PlaceOrderFactory.
  */
-class PlaceOrderFactoryTest extends TestCase
+class PlaceOrderFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $objectManager;
 
     /**
-     * @var PlaceOrderPool|MockObject
+     * @var PlaceOrderPool|\PHPUnit\Framework\MockObject\MockObject
      */
     private $placeOrderPool;
 

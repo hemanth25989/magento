@@ -3,39 +3,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\Layer\Category;
 
-use Magento\Catalog\Model\Category;
-use Magento\Catalog\Model\Layer\Category\StateKey;
-use Magento\Customer\Model\Session;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Catalog\Model\Layer\Category\StateKey;
 
-class StateKeyTest extends TestCase
+class StateKeyTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $customerSessionMock;
 
     /**
-     * @var StateKey
+     * @var \Magento\Catalog\Model\Layer\Category\StateKey
      */
     protected $model;
 
     protected function setUp(): void
     {
-        $this->storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $this->customerSessionMock = $this->createMock(Session::class);
+        $this->storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
+        $this->customerSessionMock = $this->createMock(\Magento\Customer\Model\Session::class);
         $this->model = new StateKey($this->storeManagerMock, $this->customerSessionMock);
     }
 
@@ -45,10 +38,10 @@ class StateKeyTest extends TestCase
      */
     public function testToString()
     {
-        $categoryMock = $this->createMock(Category::class);
+        $categoryMock = $this->createMock(\Magento\Catalog\Model\Category::class);
         $categoryMock->expects($this->once())->method('getId')->willReturn('1');
 
-        $storeMock = $this->createMock(Store::class);
+        $storeMock = $this->createMock(\Magento\Store\Model\Store::class);
         $this->storeManagerMock->expects($this->once())->method('getStore')->willReturn($storeMock);
         $storeMock->expects($this->once())->method('getId')->willReturn('2');
 

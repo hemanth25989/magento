@@ -3,25 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit\Asset\NotationResolver;
 
+use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Asset\File\FallbackContext;
 use Magento\Framework\View\Asset\NotationResolver\Variable;
 use Magento\Framework\View\Asset\Repository;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class VariableTest extends TestCase
+class VariableTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var FallbackContext|MockObject
+     * @var FallbackContext|\PHPUnit\Framework\MockObject\MockObject
      */
     private $context;
 
     /**
-     * @var Repository|MockObject
+     * @var Repository|\PHPUnit\Framework\MockObject\MockObject
      */
     private $assetRepo;
 

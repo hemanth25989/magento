@@ -3,37 +3,32 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\App\Action\Plugin;
 
-use Magento\Backend\App\AbstractAction;
-use Magento\Backend\App\Action\Plugin\MassactionKey;
-use Magento\Framework\App\RequestInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Backend\App\AbstractAction;
+use Magento\Framework\App\RequestInterface;
 
-class MassactionKeyTest extends TestCase
+class MassactionKeyTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MassactionKey
+     * @var \Magento\Backend\App\Action\Plugin\MassactionKey
      */
     protected $plugin;
 
     /**
-     * @var MockObject|RequestInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|RequestInterface
      */
     protected $requestMock;
 
     /**
-     * @var MockObject|AbstractAction
+     * @var \PHPUnit\Framework\MockObject\MockObject|AbstractAction
      */
     protected $subjectMock;
 
     protected function setUp(): void
     {
-        $this->subjectMock = $this->createMock(AbstractAction::class);
+        $this->subjectMock = $this->createMock(\Magento\Backend\App\AbstractAction::class);
         $this->requestMock = $this->getMockForAbstractClass(
             RequestInterface::class,
             [],
@@ -46,7 +41,7 @@ class MassactionKeyTest extends TestCase
 
         $objectManager = new ObjectManager($this);
         $this->plugin = $objectManager->getObject(
-            MassactionKey::class,
+            \Magento\Backend\App\Action\Plugin\MassactionKey::class,
             [
                 'subject' => $this->subjectMock,
                 'request' => $this->requestMock,

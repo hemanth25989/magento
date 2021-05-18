@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\UiComponent\Factory;
 
 use Magento\Framework\View\Element\AbstractBlock;
@@ -12,23 +10,21 @@ use Magento\Framework\View\Element\UiComponent\Config\ManagerInterface;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponent\Factory\HtmlContentFactory;
 use Magento\Framework\View\Layout;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class HtmlContentFactoryTest extends TestCase
+class HtmlContentFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Layout|MockObject
+     * @var Layout|\PHPUnit\Framework\MockObject\MockObject
      */
     private $layout;
 
     /**
-     * @var AbstractBlock|MockObject
+     * @var AbstractBlock|\PHPUnit\Framework\MockObject\MockObject
      */
     private $block;
 
     /**
-     * @var ContextInterface|MockObject
+     * @var ContextInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $context;
 

@@ -4,65 +4,55 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Persistent\Test\Unit\Observer;
 
-use Magento\Cron\Model\Schedule;
-use Magento\Persistent\Model\Session;
-use Magento\Persistent\Model\SessionFactory;
-use Magento\Persistent\Observer\ClearExpiredCronJobObserver;
-use Magento\Store\Model\ResourceModel\Website\Collection;
-use Magento\Store\Model\ResourceModel\Website\CollectionFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ClearExpiredCronJobObserverTest extends TestCase
+class ClearExpiredCronJobObserverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ClearExpiredCronJobObserver
+     * @var \Magento\Persistent\Observer\ClearExpiredCronJobObserver
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $collectionFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $sessionFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $scheduleMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $websiteCollectionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $sessionMock;
 
     protected function setUp(): void
     {
         $this->collectionFactoryMock =
-            $this->createPartialMock(CollectionFactory::class, ['create']);
+            $this->createPartialMock(\Magento\Store\Model\ResourceModel\Website\CollectionFactory::class, ['create']);
         $this->sessionFactoryMock = $this->createPartialMock(
-            SessionFactory::class,
+            \Magento\Persistent\Model\SessionFactory::class,
             ['create']
         );
-        $this->scheduleMock = $this->createMock(Schedule::class);
-        $this->sessionMock = $this->createMock(Session::class);
+        $this->scheduleMock = $this->createMock(\Magento\Cron\Model\Schedule::class);
+        $this->sessionMock = $this->createMock(\Magento\Persistent\Model\Session::class);
         $this->websiteCollectionMock
-            = $this->createMock(Collection::class);
+            = $this->createMock(\Magento\Store\Model\ResourceModel\Website\Collection::class);
 
-        $this->model = new ClearExpiredCronJobObserver(
+        $this->model = new \Magento\Persistent\Observer\ClearExpiredCronJobObserver(
             $this->collectionFactoryMock,
             $this->sessionFactoryMock
         );

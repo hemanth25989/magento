@@ -3,14 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Filesystem\Test\Unit;
 
-use Magento\Framework\Filesystem\DirectoryList;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Filesystem\DirectoryList;
 
-class DirectoryListTest extends TestCase
+class DirectoryListTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetDefaultConfig()
     {
@@ -52,10 +49,13 @@ class DirectoryListTest extends TestCase
         $this->assertEquals('/root/dir', $object->getRoot());
     }
 
+    /**
+     */
     public function testUnknownType()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown type: foo');
+
         new DirectoryList('/root/dir', ['foo' => [DirectoryList::PATH => '/foo/dir']]);
     }
 
@@ -65,8 +65,9 @@ class DirectoryListTest extends TestCase
      */
     public function testAssertCode($method)
     {
-        $this->expectException('Magento\Framework\Exception\FileSystemException');
+        $this->expectException(\Magento\Framework\Exception\FileSystemException::class);
         $this->expectExceptionMessage('Unknown directory type: \'foo\'');
+
         $object = new DirectoryList('/root/dir');
         $object->$method('foo');
     }
@@ -119,10 +120,9 @@ class DirectoryListTest extends TestCase
      */
     public function testAssertUrlPath($value)
     {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage(
-            'URL path must be relative directory path in lowercase with \'/\' directory separator:'
-        );
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('URL path must be relative directory path in lowercase with \'/\' directory separator:');
+
         new DirectoryList('/root/dir', [DirectoryList::SYS_TMP => [DirectoryList::URL_PATH => $value]]);
     }
 

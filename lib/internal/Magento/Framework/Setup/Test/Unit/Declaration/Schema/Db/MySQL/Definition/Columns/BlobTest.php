@@ -3,21 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Setup\Test\Unit\Declaration\Schema\Db\MySQL\Definition\Columns;
 
 use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Columns\Blob;
 use Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Columns\Comment;
 use Magento\Framework\Setup\Declaration\Schema\Db\MySQL\Definition\Columns\Nullable;
 use Magento\Framework\Setup\Declaration\Schema\Dto\ElementInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class BlobTest extends TestCase
+class BlobTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManager
@@ -30,17 +25,17 @@ class BlobTest extends TestCase
     private $blob;
 
     /**
-     * @var Nullable|MockObject
+     * @var Nullable|\PHPUnit\Framework\MockObject\MockObject
      */
     private $nullableMock;
 
     /**
-     * @var Comment|MockObject
+     * @var Comment|\PHPUnit\Framework\MockObject\MockObject
      */
     private $commentMock;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit\Framework\MockObject\MockObject
      */
     private $resourceConnectionMock;
 
@@ -71,7 +66,7 @@ class BlobTest extends TestCase
      */
     public function testToDefinition()
     {
-        /** @var ElementInterface|MockObject $column */
+        /** @var ElementInterface|\PHPUnit\Framework\MockObject\MockObject $column */
         $column = $this->getMockBuilder(ElementInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
@@ -81,9 +76,9 @@ class BlobTest extends TestCase
         $column->expects($this->any())
             ->method('getType')
             ->willReturn('blob');
-        $adapterMock = $this->getMockBuilder(AdapterInterface::class)
+        $adapterMock = $this->getMockBuilder(\Magento\Framework\DB\Adapter\AdapterInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->resourceConnectionMock->expects($this->once())->method('getConnection')->willReturn($adapterMock);
         $adapterMock->expects($this->once())
             ->method('quoteIdentifier')

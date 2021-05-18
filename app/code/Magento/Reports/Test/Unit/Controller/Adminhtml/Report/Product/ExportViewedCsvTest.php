@@ -3,39 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Reports\Test\Unit\Controller\Adminhtml\Report\Product;
 
-use Magento\Backend\Helper\Data;
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Stdlib\DateTime\Filter\Date;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Reports\Block\Adminhtml\Product\Viewed\Grid;
 use Magento\Reports\Controller\Adminhtml\Report\Product\ExportViewedCsv;
-use Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest;
-use PHPUnit\Framework\MockObject\MockObject;
 
-class ExportViewedCsvTest extends AbstractControllerTest
+class ExportViewedCsvTest extends \Magento\Reports\Test\Unit\Controller\Adminhtml\Report\AbstractControllerTest
 {
     /**
-     * @var ExportViewedCsv
+     * @var \Magento\Reports\Controller\Adminhtml\Report\Product\ExportViewedCsv
      */
     protected $exportViewedCsv;
 
     /**
-     * @var Date|MockObject
+     * @var \Magento\Framework\Stdlib\DateTime\Filter\Date|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $dateMock;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Backend\Helper\Data|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $helperMock;
 
@@ -46,17 +37,17 @@ class ExportViewedCsvTest extends AbstractControllerTest
     {
         parent::setUp();
 
-        $this->dateMock = $this->getMockBuilder(Date::class)
+        $this->dateMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\Filter\Date::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->helperMock = $this->getMockBuilder(Data::class)
+        $this->helperMock = $this->getMockBuilder(\Magento\Backend\Helper\Data::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->objectManagerMock
             ->expects($this->any())
             ->method('get')
@@ -64,9 +55,9 @@ class ExportViewedCsvTest extends AbstractControllerTest
 
         $this->contextMock->expects($this->any())->method('getObjectManager')->willReturn($this->objectManagerMock);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->exportViewedCsv = $objectManager->getObject(
-            ExportViewedCsv::class,
+            \Magento\Reports\Controller\Adminhtml\Report\Product\ExportViewedCsv::class,
             [
                 'context' => $this->contextMock,
                 'fileFactory' => $this->fileFactoryMock,
@@ -91,13 +82,13 @@ class ExportViewedCsvTest extends AbstractControllerTest
         $this->layoutMock
             ->expects($this->once())
             ->method('createBlock')
-            ->with(Grid::class)
+            ->with(\Magento\Reports\Block\Adminhtml\Product\Viewed\Grid::class)
             ->willReturn($this->abstractBlockMock);
 
         $this->fileFactoryMock
             ->expects($this->once())
             ->method('create')
-            ->with($fileName, $content, DirectoryList::VAR_DIR);
+            ->with($fileName, $content, \Magento\Framework\App\Filesystem\DirectoryList::VAR_DIR);
 
         $this->exportViewedCsv->execute();
     }

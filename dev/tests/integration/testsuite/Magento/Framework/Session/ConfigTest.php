@@ -13,6 +13,8 @@ namespace Magento\Framework\Session {
 
     use Magento\Framework\App\Filesystem\DirectoryList;
 
+    // @codingStandardsIgnoreEnd
+
     /**
      * Mock ini_get global function
      *
@@ -36,8 +38,6 @@ namespace Magento\Framework\Session {
         //phpcs:ignore PHPCompatibility
         return call_user_func_array('\ini_get', func_get_args());
     }
-
-    // @codingStandardsIgnoreEnd
 
     /**
      * @magentoAppIsolation enabled
@@ -195,8 +195,8 @@ namespace Magento\Framework\Session {
         public function testWrongMethodCall()
         {
             $model = $this->getModel();
-            $this->expectException(\BadMethodCallException::class);
-            $this->expectExceptionMessage(
+            $this->expectException(
+                '\BadMethodCallException',
                 'Method "methodThatNotExist" does not exist in Magento\Framework\Session\Config'
             );
             $model->methodThatNotExist();

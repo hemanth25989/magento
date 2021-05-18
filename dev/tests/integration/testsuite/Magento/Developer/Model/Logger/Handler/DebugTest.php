@@ -16,11 +16,9 @@ use Magento\Framework\Shell;
 use Magento\Setup\Mvc\Bootstrap\InitParamListener;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\ObjectManager;
-use Psr\Log\LoggerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @magentoAppIsolation enabled
  */
 class DebugTest extends \PHPUnit\Framework\TestCase
 {
@@ -78,7 +76,7 @@ class DebugTest extends \PHPUnit\Framework\TestCase
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->shell = $this->objectManager->get(Shell::class);
-        $this->logger = $this->objectManager->get(LoggerInterface::class);
+        $this->logger = $this->objectManager->get(Monolog::class);
         $this->deploymentConfig = $this->objectManager->get(DeploymentConfig::class);
 
         /** @var Filesystem $filesystem */
@@ -175,7 +173,6 @@ class DebugTest extends \PHPUnit\Framework\TestCase
     {
         $this->etcDirectory->delete(self::$configFile);
         $this->etcDirectory->copyFile(self::$backupFile, self::$configFile);
-        $this->deploymentConfig->resetData();
     }
 
     /**

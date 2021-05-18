@@ -10,15 +10,14 @@ use Magento\Customer\Api\CustomerMetadataInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\Data\CustomerSearchResultsInterfaceFactory;
-use Magento\Customer\Api\GroupRepositoryInterface;
 use Magento\Customer\Model\Customer as CustomerModel;
+use Magento\Customer\Model\Customer\Attribute\CompositeValidator;
 use Magento\Customer\Model\Customer\NotificationStorage;
 use Magento\Customer\Model\CustomerFactory;
 use Magento\Customer\Model\CustomerRegistry;
 use Magento\Customer\Model\Data\CustomerSecureFactory;
 use Magento\Customer\Model\Delegation\Data\NewOperation;
 use Magento\Customer\Model\Delegation\Storage as DelegatedStorage;
-use Magento\Customer\Model\ResourceModel\Customer\Collection;
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\Api\ExtensibleDataObjectConverter;
 use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
@@ -28,14 +27,11 @@ use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Customer\Model\ResourceModel\Customer\Collection;
 
 /**
- * Customer repository.
- *
- * CRUD operations for customer entity
+ * Customer repository responsible for CRUD operations.
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.TooManyFields)
@@ -123,9 +119,9 @@ class CustomerRepository implements CustomerRepositoryInterface
     private $delegatedStorage;
 
     /**
-     * @var GroupRepositoryInterface
+     * @var CompositeValidator
      */
-    private $groupRepository;
+    private $compositeValidator;
 
     /**
      * @param CustomerFactory $customerFactory
@@ -144,7 +140,7 @@ class CustomerRepository implements CustomerRepositoryInterface
      * @param CollectionProcessorInterface $collectionProcessor
      * @param NotificationStorage $notificationStorage
      * @param DelegatedStorage|null $delegatedStorage
-     * @param GroupRepositoryInterface|null $groupRepository
+     * @param CompositeValidator|null $compositeValidator
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -164,7 +160,7 @@ class CustomerRepository implements CustomerRepositoryInterface
         CollectionProcessorInterface $collectionProcessor,
         NotificationStorage $notificationStorage,
         DelegatedStorage $delegatedStorage = null,
-        ?GroupRepositoryInterface $groupRepository = null
+        CompositeValidator $compositeValidator = null
     ) {
         $this->customerFactory = $customerFactory;
         $this->customerSecureFactory = $customerSecureFactory;
@@ -182,7 +178,9 @@ class CustomerRepository implements CustomerRepositoryInterface
         $this->collectionProcessor = $collectionProcessor;
         $this->notificationStorage = $notificationStorage;
         $this->delegatedStorage = $delegatedStorage ?? ObjectManager::getInstance()->get(DelegatedStorage::class);
-        $this->groupRepository = $groupRepository ?: ObjectManager::getInstance()->get(GroupRepositoryInterface::class);
+        $this->compositeValidator = $compositeValidator ?? ObjectManager::getInstance()->get(
+            CompositeValidator::class
+        );
     }
 
     /**
@@ -199,9 +197,13 @@ class CustomerRepository implements CustomerRepositoryInterface
      */
     public function save(CustomerInterface $customer, $passwordHash = null)
     {
+        foreach ($customer->getCustomAttributes() as $customAttribute) {
+            $this->compositeValidator->validate($customAttribute);
+        }
         /** @var NewOperation|null $delegatedNewOperation */
         $delegatedNewOperation = !$customer->getId() ? $this->delegatedStorage->consumeNewOperation() : null;
-        $prevCustomerData = $prevCustomerDataArr = null;
+        $prevCustomerData = null;
+        $prevCustomerDataArr = null;
         if ($customer->getId()) {
             $prevCustomerData = $this->getById($customer->getId());
             $prevCustomerDataArr = $prevCustomerData->__toArray();
@@ -227,8 +229,6 @@ class CustomerRepository implements CustomerRepositoryInterface
                 $prevCustomerData ? $prevCustomerData->getStoreId() : $this->storeManager->getStore()->getId()
             );
         }
-        $this->validateGroupId($customer->getGroupId());
-        $this->setCustomerGroupId($customerModel, $customerArr, $prevCustomerDataArr);
         // Need to use attribute set or future updates can cause data loss
         if (!$customerModel->getAttributeSetId()) {
             $customerModel->setAttributeSetId(CustomerMetadataInterface::ATTRIBUTE_SET_ID_CUSTOMER);
@@ -239,16 +239,10 @@ class CustomerRepository implements CustomerRepositoryInterface
             $customerModel->setRpToken(null);
             $customerModel->setRpTokenCreatedAt(null);
         }
-        if (!array_key_exists('addresses', $customerArr)
-            && null !== $prevCustomerDataArr
-            && array_key_exists('default_billing', $prevCustomerDataArr)
-        ) {
+        if ($this->isDefaultAddressChanged('default_billing', $customerArr, $prevCustomerDataArr)) {
             $customerModel->setDefaultBilling($prevCustomerDataArr['default_billing']);
         }
-        if (!array_key_exists('addresses', $customerArr)
-            && null !== $prevCustomerDataArr
-            && array_key_exists('default_shipping', $prevCustomerDataArr)
-        ) {
+        if ($this->isDefaultAddressChanged('default_shipping', $customerArr, $prevCustomerDataArr)) {
             $customerModel->setDefaultShipping($prevCustomerDataArr['default_shipping']);
         }
         $this->setValidationFlag($customerArr, $customerModel);
@@ -280,7 +274,10 @@ class CustomerRepository implements CustomerRepositoryInterface
                     $savedAddressIds[] = $address->getId();
                 }
             }
-            $this->deleteAddressesByIds(array_diff($existingAddressIds, $savedAddressIds));
+            $addressIdsToDelete = array_diff($existingAddressIds, $savedAddressIds);
+            foreach ($addressIdsToDelete as $addressId) {
+                $this->addressRepository->deleteById($addressId);
+            }
         }
         $this->customerRegistry->remove($customerId);
         $savedCustomer = $this->get($customer->getEmail(), $customer->getWebsiteId());
@@ -296,36 +293,22 @@ class CustomerRepository implements CustomerRepositoryInterface
     }
 
     /**
-     * Delete addresses by ids
+     * Check if customer default address is changed.
      *
-     * @param array $addressIds
-     * @return void
-     */
-    private function deleteAddressesByIds(array $addressIds): void
-    {
-        foreach ($addressIds as $id) {
-            $this->addressRepository->deleteById($id);
-        }
-    }
-
-    /**
-     * Validate customer group id if exist
+     * @param string $addressType
+     * @param array $currentCustomerData
+     * @param array|null $prevCustomerData
      *
-     * @param int|null $groupId
      * @return bool
-     * @throws LocalizedException
      */
-    private function validateGroupId(?int $groupId): bool
-    {
-        if ($groupId) {
-            try {
-                $this->groupRepository->getById($groupId);
-            } catch (NoSuchEntityException $e) {
-                throw new LocalizedException(__('The specified customer group id does not exist.'));
-            }
-        }
-
-        return true;
+    private function isDefaultAddressChanged(
+        string $addressType,
+        array $currentCustomerData,
+        ?array $prevCustomerData
+    ): bool {
+        return !array_key_exists('addresses', $currentCustomerData)
+            && null !== $prevCustomerData
+            && array_key_exists($addressType, $prevCustomerData);
     }
 
     /**
@@ -495,20 +478,6 @@ class CustomerRepository implements CustomerRepositoryInterface
     {
         if (isset($customerArray['ignore_validation_flag'])) {
             $customerModel->setData('ignore_validation_flag', true);
-        }
-    }
-
-    /**
-     * Set customer group id
-     *
-     * @param Customer $customerModel
-     * @param array $customerArr
-     * @param array $prevCustomerDataArr
-     */
-    private function setCustomerGroupId($customerModel, $customerArr, $prevCustomerDataArr)
-    {
-        if (!isset($customerArr['group_id']) && $prevCustomerDataArr && isset($prevCustomerDataArr['group_id'])) {
-            $customerModel->setGroupId($prevCustomerDataArr['group_id']);
         }
     }
 }

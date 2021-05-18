@@ -104,7 +104,7 @@ class UpgradeHashAlgorithmCommandTest extends TestCase
         $updated->loadByEmail('customer@example.com');
 
         //Using the latest algorithm
-        $this->assertMatchesRegularExpression(
+        $this->assertRegExp(
             '/\:' .$this->encryptor->getLatestHashVersion() .'[^\:]*?$/',
             $updated->getPasswordHash()
         );

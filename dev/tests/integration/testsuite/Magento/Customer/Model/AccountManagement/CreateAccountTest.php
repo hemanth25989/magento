@@ -289,8 +289,8 @@ class CreateAccountTest extends TestCase
 
     /**
      * @magentoAppArea frontend
+     * @magentoDataFixture Magento/Customer/_files/customer_confirmation_config_enable.php
      * @magentoDataFixture Magento/Customer/_files/customer_confirmation_email_template.php
-     * @magentoConfigFixture current_website customer/create_account/confirm 1
      * @magentoConfigFixture current_store customer/create_account/email_identity custom1
      * @return void
      */
@@ -313,9 +313,9 @@ class CreateAccountTest extends TestCase
 
     /**
      * @magentoAppArea frontend
+     * @magentoDataFixture Magento/Customer/_files/customer_confirmation_config_enable.php
      * @magentoDataFixture Magento/Customer/_files/customer_confirmed_email_template.php
      * @magentoConfigFixture current_store customer/create_account/email_identity custom1
-     * @magentoConfigFixture current_website customer/create_account/confirm 1
      * @return void
      */
     public function testCreateAccountWithConfiguredConfirmedEmail(): void
@@ -499,7 +499,7 @@ class CreateAccountTest extends TestCase
         ];
         $actualInAfterOnly = array_keys($inAfterOnly);
         foreach ($expectedInAfter as $item) {
-            $this->assertContains($item, $actualInAfterOnly);
+            $this->assertContains($item,$actualInAfterOnly);
         }
     }
 

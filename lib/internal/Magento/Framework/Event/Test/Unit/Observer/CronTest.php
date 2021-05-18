@@ -3,15 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Event\Test\Unit\Observer;
 
-use Magento\Framework\Event;
-use Magento\Framework\Event\Observer\Cron;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Event\Observer\Cron;
 
-class CronTest extends TestCase
+/**
+ * Class CronTest
+ */
+class CronTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Cron
@@ -106,7 +105,7 @@ class CronTest extends TestCase
      */
     public function testIsValidFor($time, $expression, $expectedResult)
     {
-        $eventMock = $this->createMock(Event::class);
+        $eventMock = $this->createMock(\Magento\Framework\Event::class);
 
         $this->cron->setCronExpr($expression);
         $this->cron->setNow($time);

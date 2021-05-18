@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\ResourceModel\Product;
 
 use Magento\Catalog\Api\Data\ProductInterface;
@@ -18,34 +16,31 @@ use Magento\Framework\DB\Select;
 use Magento\Framework\EntityManager\EntityMetadataInterface;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Store\Model\Store;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class StatusBaseSelectProcessorTest extends TestCase
+class StatusBaseSelectProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config|MockObject
+     * @var Config|\PHPUnit\Framework\MockObject\MockObject
      */
     private $eavConfig;
 
     /**
-     * @var MetadataPool|MockObject
+     * @var MetadataPool|\PHPUnit\Framework\MockObject\MockObject
      */
     private $metadataPool;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $storeManager;
 
     /**
-     * @var Select|MockObject
+     * @var Select|\PHPUnit\Framework\MockObject\MockObject
      */
     private $select;
 
@@ -56,17 +51,10 @@ class StatusBaseSelectProcessorTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->eavConfig = $this->getMockBuilder(Config::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->metadataPool = $this->getMockBuilder(MetadataPool::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->storeManager = $this->getMockBuilder(StoreManagerInterface::class)
-            ->getMock();
-        $this->select = $this->getMockBuilder(Select::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->eavConfig = $this->getMockBuilder(Config::class)->disableOriginalConstructor()->getMock();
+        $this->metadataPool = $this->getMockBuilder(MetadataPool::class)->disableOriginalConstructor()->getMock();
+        $this->storeManager = $this->getMockBuilder(StoreManagerInterface::class)->getMock();
+        $this->select = $this->getMockBuilder(Select::class)->disableOriginalConstructor()->getMock();
 
         $this->statusBaseSelectProcessor =  (new ObjectManager($this))->getObject(StatusBaseSelectProcessor::class, [
             'eavConfig' => $this->eavConfig,
@@ -91,7 +79,7 @@ class StatusBaseSelectProcessorTest extends TestCase
             ->with(ProductInterface::class)
             ->willReturn($metadata);
 
-        /** @var AttributeInterface|MockObject $statusAttribute */
+        /** @var AttributeInterface|\PHPUnit\Framework\MockObject\MockObject $statusAttribute */
         $statusAttribute = $this->getMockBuilder(AttributeInterface::class)
             ->setMethods(['getBackendTable', 'getAttributeId'])
             ->getMockForAbstractClass();
@@ -106,8 +94,7 @@ class StatusBaseSelectProcessorTest extends TestCase
             ->with(Product::ENTITY, ProductInterface::STATUS)
             ->willReturn($statusAttribute);
 
-        $storeMock = $this->getMockBuilder(StoreInterface::class)
-            ->getMock();
+        $storeMock = $this->getMockBuilder(\Magento\Store\Api\Data\StoreInterface::class)->getMock();
 
         $this->storeManager->expects($this->once())
             ->method('getStore')

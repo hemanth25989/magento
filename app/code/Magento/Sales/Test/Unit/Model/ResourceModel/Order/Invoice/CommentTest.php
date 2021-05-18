@@ -3,51 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\ResourceModel\Order\Invoice;
 
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
-use Magento\Framework\Model\ResourceModel\Db\Context;
-use Magento\Framework\Model\ResourceModel\Db\ObjectRelationProcessor;
-use Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Model\Order\Invoice\Comment\Validator;
-use Magento\Sales\Model\ResourceModel\Order\Invoice\Comment;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CommentTest extends TestCase
+/**
+ * Class CommentTest
+ */
+class CommentTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Comment
+     * @var \Magento\Sales\Model\ResourceModel\Order\Invoice\Comment
      */
     protected $commentResource;
 
     /**
-     * @var \Magento\Sales\Model\Order\Invoice\Comment|MockObject
+     * @var \Magento\Sales\Model\Order\Invoice\Comment|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $commentModelMock;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var \Magento\Framework\App\ResourceConnection|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $appResourceMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $connectionMock;
 
     /**
-     * @var Validator|MockObject
+     * @var \Magento\Sales\Model\Order\Invoice\Comment\Validator|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $validatorMock;
 
     /**
-     * @var Snapshot|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $entitySnapshotMock;
 
@@ -57,11 +46,11 @@ class CommentTest extends TestCase
     protected function setUp(): void
     {
         $this->commentModelMock = $this->createMock(\Magento\Sales\Model\Order\Invoice\Comment::class);
-        $this->appResourceMock = $this->createMock(ResourceConnection::class);
-        $this->connectionMock = $this->createMock(Mysql::class);
-        $this->validatorMock = $this->createMock(Validator::class);
+        $this->appResourceMock = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
+        $this->connectionMock = $this->createMock(\Magento\Framework\DB\Adapter\Pdo\Mysql::class);
+        $this->validatorMock = $this->createMock(\Magento\Sales\Model\Order\Invoice\Comment\Validator::class);
         $this->entitySnapshotMock = $this->createMock(
-            Snapshot::class
+            \Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot::class
         );
         $this->appResourceMock->expects($this->any())
             ->method('getConnection')
@@ -77,16 +66,16 @@ class CommentTest extends TestCase
         $this->commentModelMock->expects($this->any())->method('isSaveAllowed')->willReturn(true);
 
         $relationProcessorMock = $this->createMock(
-            ObjectRelationProcessor::class
+            \Magento\Framework\Model\ResourceModel\Db\ObjectRelationProcessor::class
         );
 
-        $contextMock = $this->createMock(Context::class);
+        $contextMock = $this->createMock(\Magento\Framework\Model\ResourceModel\Db\Context::class);
         $contextMock->expects($this->once())->method('getResources')->willReturn($this->appResourceMock);
         $contextMock->expects($this->once())->method('getObjectRelationProcessor')->willReturn($relationProcessorMock);
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->commentResource = $objectManager->getObject(
-            Comment::class,
+            \Magento\Sales\Model\ResourceModel\Order\Invoice\Comment::class,
             [
                 'context' => $contextMock,
                 'validator' => $this->validatorMock,
@@ -106,7 +95,7 @@ class CommentTest extends TestCase
             ->willReturn(true);
         $this->validatorMock->expects($this->once())
             ->method('validate')
-            ->with($this->commentModelMock)
+            ->with($this->equalTo($this->commentModelMock))
             ->willReturn([]);
         $this->commentModelMock->expects($this->any())->method('getData')->willReturn([]);
         $this->commentResource->save($this->commentModelMock);
@@ -115,18 +104,20 @@ class CommentTest extends TestCase
 
     /**
      * Test _beforeSaveMethod via save() with failed validation
+     *
      */
     public function testSaveValidationFailed()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Cannot save comment:');
+
         $this->entitySnapshotMock->expects($this->once())
             ->method('isModified')
             ->with($this->commentModelMock)
             ->willReturn(true);
         $this->validatorMock->expects($this->once())
             ->method('validate')
-            ->with($this->commentModelMock)
+            ->with($this->equalTo($this->commentModelMock))
             ->willReturn(['warning message']);
         $this->commentResource->save($this->commentModelMock);
         $this->assertTrue(true);

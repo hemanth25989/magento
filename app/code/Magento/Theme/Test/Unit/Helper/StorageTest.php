@@ -3,50 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Storage helper test
  */
 namespace Magento\Theme\Test\Unit\Helper;
 
-use Magento\Backend\Model\Session;
-use Magento\Framework\App\Helper\Context;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\Write;
-use Magento\Framework\Url\DecoderInterface;
-use Magento\Framework\Url\EncoderInterface;
-use Magento\Framework\View\Design\Theme\Customization;
-use Magento\Framework\View\Design\Theme\FlyweightFactory;
 use Magento\Framework\Filesystem\DriverInterface;
 use Magento\Theme\Helper\Storage;
-use PHPUnit\Framework\MockObject\MockObject;
-use Magento\Theme\Model\Theme;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class StorageTest extends TestCase
+class StorageTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Filesystem|MockObject
+     * @var \Magento\Framework\Filesystem|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $filesystem;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Backend\Model\Session|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $session;
 
     /**
-     * @var FlyweightFactory|MockObject
+     * @var \Magento\Framework\View\Design\Theme\FlyweightFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $themeFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $request;
 
@@ -61,62 +48,63 @@ class StorageTest extends TestCase
     protected $customizationPath;
 
     /**
-     * @var Write|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\Write|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $directoryWrite;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Framework\App\Helper\Context|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $contextHelper;
 
     /**
-     * @var Theme|MockObject
+     * @var \Magento\Theme\Model\Theme|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $theme;
 
     /**
-     * @var Customization|MockObject
+     * @var \Magento\Framework\View\Design\Theme\Customization|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $customization;
 
     /**
-     * @var EncoderInterface|MockObject
+     * @var \Magento\Framework\Url\EncoderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlEncoder;
 
     /**
-     * @var DecoderInterface|MockObject
+     * @var \Magento\Framework\Url\DecoderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlDecoder;
 
     protected $requestParams;
 
     /**
-     * @var DriverInterface|MockObject
+     * @var DriverInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $filesystemDriver;
 
+    /**
+     * @inheritDoc
+     */
     protected function setUp(): void
     {
         $this->customizationPath = '/' . implode('/', ['var', 'theme']);
 
-        $this->request = $this->createMock(Http::class);
-        $this->filesystem = $this->createMock(Filesystem::class);
-        $this->session = $this->createMock(Session::class);
-        $this->contextHelper = $this->createMock(Context::class);
-        $this->directoryWrite = $this->createMock(Write::class);
-        $this->themeFactory = $this->createMock(FlyweightFactory::class);
-        $this->theme = $this->createMock(Theme::class);
-        $this->customization = $this->createMock(Customization::class);
+        $this->request = $this->createMock(\Magento\Framework\App\Request\Http::class);
+        $this->filesystem = $this->createMock(\Magento\Framework\Filesystem::class);
+        $this->session = $this->createMock(\Magento\Backend\Model\Session::class);
+        $this->contextHelper = $this->createMock(\Magento\Framework\App\Helper\Context::class);
+        $this->directoryWrite = $this->createMock(\Magento\Framework\Filesystem\Directory\Write::class);
+        $this->themeFactory = $this->createMock(\Magento\Framework\View\Design\Theme\FlyweightFactory::class);
+        $this->theme = $this->createMock(\Magento\Theme\Model\Theme::class);
+        $this->customization = $this->createMock(\Magento\Framework\View\Design\Theme\Customization::class);
 
         $this->filesystem->expects($this->any())
             ->method('getDirectoryWrite')
             ->willReturn($this->directoryWrite);
-        $this->urlEncoder = $this->getMockBuilder(EncoderInterface::class)
-            ->getMock();
-        $this->urlDecoder = $this->getMockBuilder(DecoderInterface::class)
-            ->getMock();
+        $this->urlEncoder = $this->getMockBuilder(\Magento\Framework\Url\EncoderInterface::class)->getMock();
+        $this->urlDecoder = $this->getMockBuilder(\Magento\Framework\Url\DecoderInterface::class)->getMock();
 
         $this->directoryWrite->expects($this->any())->method('create')->willReturn(true);
         $this->contextHelper->expects($this->any())->method('getRequest')->willReturn($this->request);
@@ -138,13 +126,18 @@ class StorageTest extends TestCase
             ->with(Storage::PARAM_CONTENT_TYPE)
             ->willReturn(\Magento\Theme\Model\Wysiwyg\Storage::TYPE_IMAGE);
 
-        $this->helper = new Storage(
-            $this->contextHelper,
-            $this->filesystem,
-            $this->session,
-            $this->themeFactory,
-            null,
-            $this->filesystemDriver
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+
+        $this->helper = $objectManager->getObject(
+            Storage::class,
+            [
+                'context' => $this->contextHelper,
+                'filesystem' => $this->filesystem,
+                'session' => $this->session,
+                'themeFactory' => $this->themeFactory,
+                'file' => null,
+                'filesystemDriver' => $this->filesystemDriver,
+            ]
         );
     }
 
@@ -286,11 +279,10 @@ class StorageTest extends TestCase
      */
     public function testGetThumbnailPathNotFound()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The image not found');
 
-        $this->filesystemDriver->method('getRealpathSafety')
-            ->willReturnArgument(0);
+        $this->filesystemDriver->method('getRealpathSafety')->willReturnArgument(0);
         $image = 'notFoundImage.png';
         $root = '/image';
         $sourceNode = '/not/a/root';
@@ -364,7 +356,7 @@ class StorageTest extends TestCase
 
     public function testGetSession()
     {
-        $this->assertInstanceOf(Session::class, $this->helper->getSession());
+        $this->assertInstanceOf(\Magento\Backend\Model\Session::class, $this->helper->getSession());
     }
 
     public function testGetRelativeUrl()
@@ -444,8 +436,9 @@ class StorageTest extends TestCase
      */
     public function testGetStorageTypeNameInvalid()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Invalid type');
+
         $this->helper->getStorageTypeName();
     }
 
@@ -455,8 +448,9 @@ class StorageTest extends TestCase
      */
     public function testGetThemeNotFound()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Theme was not found');
+
         $this->themeFactory->expects($this->once())
             ->method('create')
             ->willReturn(null);
@@ -471,8 +465,10 @@ class StorageTest extends TestCase
 
     /**
      * @dataProvider getCurrentPathDataProvider
+     *
+     * @return void
      */
-    public function testGetCurrentPathCachesResult()
+    public function testGetCurrentPathCachesResult(): void
     {
         $this->request->expects($this->once())
             ->method('getParam')
@@ -485,6 +481,8 @@ class StorageTest extends TestCase
 
     /**
      * @dataProvider getCurrentPathDataProvider
+     *
+     * @return void
      */
     public function testGetCurrentPath(
         string $expectedPath,
@@ -492,7 +490,7 @@ class StorageTest extends TestCase
         ?bool $isDirectory = null,
         ?string $relativePath = null,
         ?string $resolvedPath = null
-    ) {
+    ): void {
         $this->directoryWrite->method('isDirectory')
             ->willReturn($isDirectory);
 
@@ -519,6 +517,9 @@ class StorageTest extends TestCase
         self::assertSame($expectedPath, $actualPath);
     }
 
+    /**
+     * @return array
+     */
     public function getCurrentPathDataProvider(): array
     {
         $rootPath = '/' . \Magento\Theme\Model\Wysiwyg\Storage::TYPE_IMAGE;

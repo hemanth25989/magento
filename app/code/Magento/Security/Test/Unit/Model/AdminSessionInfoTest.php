@@ -3,29 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Security\Test\Unit\Model;
 
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Security\Model\AdminSessionInfo;
 use Magento\Security\Model\ConfigInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\Security\Model\AdminSessionInfo testing
  */
-class AdminSessionInfoTest extends TestCase
+class AdminSessionInfoTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var  AdminSessionInfo
+     * @var  \Magento\Security\Model\AdminSessionInfo
      */
     protected $model;
 
     /**
-     * @var MockObject|ConfigInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject | ConfigInterface
      */
     protected $securityConfigMock;
 
@@ -35,7 +30,7 @@ class AdminSessionInfoTest extends TestCase
     protected $dateTimeMock;
 
     /**
-     * @var  ObjectManager
+     * @var  \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
@@ -46,15 +41,15 @@ class AdminSessionInfoTest extends TestCase
     protected function setUp(): void
     {
         $this->objectManager = new ObjectManager($this);
-        $this->securityConfigMock =  $this->getMockBuilder(ConfigInterface::class)
+        $this->securityConfigMock =  $this->getMockBuilder(\Magento\Security\Model\ConfigInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->dateTimeMock =  $this->getMockBuilder(DateTime::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->model = $this->objectManager->getObject(
-            AdminSessionInfo::class,
+            \Magento\Security\Model\AdminSessionInfo::class,
             [
                 'securityConfig' => $this->securityConfigMock,
                 'dateTime' => $this->dateTimeMock,
@@ -67,7 +62,7 @@ class AdminSessionInfoTest extends TestCase
      */
     public function testIsLoggedInStatus()
     {
-        $this->model->setData('status', AdminSessionInfo::LOGGED_IN);
+        $this->model->setData('status', \Magento\Security\Model\AdminSessionInfo::LOGGED_IN);
         $this->model->setUpdatedAt(901);
         $this->securityConfigMock->expects($this->once())->method('getAdminSessionLifetime')->willReturn(100);
         $this->dateTimeMock->expects($this->once())
@@ -81,14 +76,14 @@ class AdminSessionInfoTest extends TestCase
      */
     public function testIsLoggedInStatusExpired()
     {
-        $this->model->setData('status', AdminSessionInfo::LOGGED_IN);
+        $this->model->setData('status', \Magento\Security\Model\AdminSessionInfo::LOGGED_IN);
         $this->model->setUpdatedAt(899);
         $this->securityConfigMock->expects($this->once())->method('getAdminSessionLifetime')->willReturn(100);
         $this->dateTimeMock->expects($this->once())
             ->method('gmtTimestamp')
             ->willReturn(1000);
         $this->assertFalse($this->model->isLoggedInStatus());
-        $this->assertEquals(AdminSessionInfo::LOGGED_OUT, $this->model->getStatus());
+        $this->assertEquals(\Magento\Security\Model\AdminSessionInfo::LOGGED_OUT, $this->model->getStatus());
     }
 
     /**
@@ -152,7 +147,7 @@ class AdminSessionInfoTest extends TestCase
     public function testSetIsOtherSessionsTerminated($isOtherSessionsTerminated)
     {
         $this->assertInstanceOf(
-            AdminSessionInfo::class,
+            \Magento\Security\Model\AdminSessionInfo::class,
             $this->model->setIsOtherSessionsTerminated($isOtherSessionsTerminated)
         );
     }

@@ -3,48 +3,42 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Security\Test\Unit\Model\SecurityChecker;
 
 use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Security\Model\Config\Source\ResetMethod;
 use Magento\Security\Model\ConfigInterface;
-use Magento\Security\Model\PasswordResetRequestEvent;
 use Magento\Security\Model\ResourceModel\PasswordResetRequestEvent\Collection;
 use Magento\Security\Model\ResourceModel\PasswordResetRequestEvent\CollectionFactory;
-use Magento\Security\Model\SecurityChecker\Quantity;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\Security\Model\SecurityChecker\Quantity testing
  */
-class QuantityTest extends TestCase
+class QuantityTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var  Quantity
+     * @var  \Magento\Security\Model\SecurityChecker\Quantity
      */
     protected $model;
 
     /**
-     * @var ConfigInterface|MockObject
+     * @var ConfigInterface | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $securityConfigMock;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var CollectionFactory | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $collectionFactoryMock;
 
     /**
-     * @var Collection|MockObject
+     * @var Collection | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $collectionMock;
 
     /**
-     * @var  ObjectManager
+     * @var  \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
@@ -60,7 +54,7 @@ class QuantityTest extends TestCase
     protected function setUp(): void
     {
         $this->objectManager = new ObjectManager($this);
-        $this->securityConfigMock =  $this->getMockBuilder(ConfigInterface::class)
+        $this->securityConfigMock =  $this->getMockBuilder(\Magento\Security\Model\ConfigInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getScopeByEventType'])
             ->getMockForAbstractClass();
@@ -74,12 +68,12 @@ class QuantityTest extends TestCase
             );
 
         $this->collectionFactoryMock = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Security\Model\ResourceModel\PasswordResetRequestEvent\CollectionFactory::class,
             ['create']
         );
 
         $this->collectionMock = $this->createPartialMock(
-            Collection::class,
+            \Magento\Security\Model\ResourceModel\PasswordResetRequestEvent\Collection::class,
             ['addFieldToFilter', 'filterByLifetime', 'count']
         );
 
@@ -88,7 +82,7 @@ class QuantityTest extends TestCase
             ->getMock();
 
         $this->model = $this->objectManager->getObject(
-            Quantity::class,
+            \Magento\Security\Model\SecurityChecker\Quantity::class,
             [
                 'securityConfig' => $this->securityConfigMock,
                 'collectionFactory' => $this->collectionFactoryMock,
@@ -122,7 +116,8 @@ class QuantityTest extends TestCase
      */
     public function testCheckException($securityEventType, $requestsMethod)
     {
-        $this->expectException('Magento\Framework\Exception\SecurityViolationException');
+        $this->expectException(\Magento\Framework\Exception\SecurityViolationException::class);
+
         $limitNumberPasswordResetRequests = 10;
 
         $this->prepareTestCheck($requestsMethod, $limitNumberPasswordResetRequests);
@@ -146,28 +141,28 @@ class QuantityTest extends TestCase
     {
         return [
             [
-                PasswordResetRequestEvent::CUSTOMER_PASSWORD_RESET_REQUEST,
-                ResetMethod::OPTION_BY_IP_AND_EMAIL
+                \Magento\Security\Model\PasswordResetRequestEvent::CUSTOMER_PASSWORD_RESET_REQUEST,
+                \Magento\Security\Model\Config\Source\ResetMethod::OPTION_BY_IP_AND_EMAIL
             ],
             [
-                PasswordResetRequestEvent::CUSTOMER_PASSWORD_RESET_REQUEST,
-                ResetMethod::OPTION_BY_IP
+                \Magento\Security\Model\PasswordResetRequestEvent::CUSTOMER_PASSWORD_RESET_REQUEST,
+                \Magento\Security\Model\Config\Source\ResetMethod::OPTION_BY_IP
             ],
             [
-                PasswordResetRequestEvent::CUSTOMER_PASSWORD_RESET_REQUEST,
-                ResetMethod::OPTION_BY_EMAIL
+                \Magento\Security\Model\PasswordResetRequestEvent::CUSTOMER_PASSWORD_RESET_REQUEST,
+                \Magento\Security\Model\Config\Source\ResetMethod::OPTION_BY_EMAIL
             ],
             [
-                PasswordResetRequestEvent::ADMIN_PASSWORD_RESET_REQUEST,
-                ResetMethod::OPTION_BY_IP_AND_EMAIL
+                \Magento\Security\Model\PasswordResetRequestEvent::ADMIN_PASSWORD_RESET_REQUEST,
+                \Magento\Security\Model\Config\Source\ResetMethod::OPTION_BY_IP_AND_EMAIL
             ],
             [
-                PasswordResetRequestEvent::ADMIN_PASSWORD_RESET_REQUEST,
-                ResetMethod::OPTION_BY_IP
+                \Magento\Security\Model\PasswordResetRequestEvent::ADMIN_PASSWORD_RESET_REQUEST,
+                \Magento\Security\Model\Config\Source\ResetMethod::OPTION_BY_IP
             ],
             [
-                PasswordResetRequestEvent::ADMIN_PASSWORD_RESET_REQUEST,
-                ResetMethod::OPTION_BY_EMAIL
+                \Magento\Security\Model\PasswordResetRequestEvent::ADMIN_PASSWORD_RESET_REQUEST,
+                \Magento\Security\Model\Config\Source\ResetMethod::OPTION_BY_EMAIL
             ]
         ];
     }

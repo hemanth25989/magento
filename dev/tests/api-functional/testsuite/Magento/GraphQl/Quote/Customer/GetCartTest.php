@@ -168,7 +168,7 @@ QUERY;
     public function testGetInactiveCart()
     {
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('The cart isn\'t active.');
+        $this->expectExceptionMessage('Current user does not have an active cart.');
 
         $maskedQuoteId = $this->getMaskedQuoteIdByReservedOrderId->execute('test_quote');
         $query = $this->getQuery($maskedQuoteId);

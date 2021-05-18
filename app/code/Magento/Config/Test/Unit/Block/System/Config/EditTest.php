@@ -3,64 +3,50 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Block\System\Config;
 
-use Magento\Backend\Model\Url;
-use Magento\Config\Block\System\Config\Edit;
-use Magento\Config\Model\Config\Structure;
-use Magento\Config\Model\Config\Structure\Element\Section;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Element\Template;
-use Magento\Framework\View\Layout;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class EditTest extends TestCase
+class EditTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Edit
+     * @var \Magento\Config\Block\System\Config\Edit
      */
     protected $_object;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_systemConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_requestMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_layoutMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_urlModelMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_sectionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_jsonMock;
 
     protected function setUp(): void
     {
-        $this->_systemConfigMock = $this->createMock(Structure::class);
+        $this->_systemConfigMock = $this->createMock(\Magento\Config\Model\Config\Structure::class);
 
-        $this->_requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->_requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
         $this->_requestMock->expects(
             $this->any()
         )->method(
@@ -71,11 +57,11 @@ class EditTest extends TestCase
             'test_section'
         );
 
-        $this->_layoutMock = $this->createMock(Layout::class);
+        $this->_layoutMock = $this->createMock(\Magento\Framework\View\Layout::class);
 
-        $this->_urlModelMock = $this->createMock(Url::class);
+        $this->_urlModelMock = $this->createMock(\Magento\Backend\Model\Url::class);
 
-        $this->_sectionMock = $this->createMock(Section::class);
+        $this->_sectionMock = $this->createMock(\Magento\Config\Model\Config\Structure\Element\Section::class);
         $this->_systemConfigMock->expects(
             $this->any()
         )->method(
@@ -86,7 +72,7 @@ class EditTest extends TestCase
             $this->_sectionMock
         );
 
-        $this->_jsonMock = $this->createMock(Json::class);
+        $this->_jsonMock = $this->createMock(\Magento\Framework\Serialize\Serializer\Json::class);
 
         $data = [
             'data' => ['systemConfig' => $this->_systemConfigMock],
@@ -97,8 +83,8 @@ class EditTest extends TestCase
             'jsonSerializer' => $this->_jsonMock,
         ];
 
-        $helper = new ObjectManager($this);
-        $this->_object = $helper->getObject(Edit::class, $data);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->_object = $helper->getObject(\Magento\Config\Block\System\Config\Edit::class, $data);
     }
 
     public function testGetSaveButtonHtml()
@@ -154,7 +140,7 @@ class EditTest extends TestCase
         $expectedLabel  = 'Test  Label';
         $expectedBlock  = 'Test  Block';
 
-        $blockMock = $this->getMockBuilder(Template::class)
+        $blockMock = $this->getMockBuilder(\Magento\Framework\View\Element\Template::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -194,7 +180,7 @@ class EditTest extends TestCase
      */
     public function testGetConfigSearchParamsJson(array $requestData, array $expected)
     {
-        $requestMock = $this->getMockForAbstractClass(RequestInterface::class);
+        $requestMock = $this->createMock(\Magento\Framework\App\RequestInterface::class);
 
         $requestMock->expects($this->any())
             ->method('getParam')
@@ -212,8 +198,8 @@ class EditTest extends TestCase
             'jsonSerializer' => $this->_jsonMock,
         ];
 
-        $helper = new ObjectManager($this);
-        $object = $helper->getObject(Edit::class, $data);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $object = $helper->getObject(\Magento\Config\Block\System\Config\Edit::class, $data);
 
         $object->getConfigSearchParamsJson();
     }

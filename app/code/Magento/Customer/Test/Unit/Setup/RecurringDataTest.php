@@ -7,21 +7,19 @@ declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Setup;
 
+use Magento\Framework\Indexer\IndexerInterface;
+use Magento\Framework\Indexer\StateInterface;
+use Magento\Framework\Indexer\IndexerRegistry;
+use Magento\Framework\Setup\ModuleDataSetupInterface;
+use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Customer\Model\Customer;
 use Magento\Customer\Setup\RecurringData;
-use Magento\Framework\Indexer\IndexerInterface;
-use Magento\Framework\Indexer\IndexerRegistry;
-use Magento\Framework\Indexer\StateInterface;
-use Magento\Framework\Setup\ModuleContextInterface;
-use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for recurring data
  */
-class RecurringDataTest extends TestCase
+class RecurringDataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -29,27 +27,27 @@ class RecurringDataTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var IndexerInterface|MockObject
+     * @var IndexerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $indexer;
 
     /**
-     * @var StateInterface|MockObject
+     * @var StateInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $state;
 
     /**
-     * @var IndexerRegistry|MockObject
+     * @var IndexerRegistry|\PHPUnit\Framework\MockObject\MockObject
      */
     private $indexerRegistry;
 
     /**
-     * @var ModuleDataSetupInterface|MockObject
+     * @var ModuleDataSetupInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $setup;
 
     /**
-     * @var ModuleContextInterface|MockObject
+     * @var ModuleContextInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $context;
 

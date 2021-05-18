@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Observer;
 
@@ -11,9 +10,8 @@ use Magento\Catalog\Model\ResourceModel\Attribute\WebsiteAttributesSynchronizer;
 use Magento\Catalog\Observer\SynchronizeWebsiteAttributesOnStoreChange;
 use Magento\Framework\Event\Observer;
 use Magento\Store\Model\Store;
-use PHPUnit\Framework\TestCase;
 
-class SynchronizeWebsiteAttributesOnStoreChangeTest extends TestCase
+class SynchronizeWebsiteAttributesOnStoreChangeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param $invalidDataObject

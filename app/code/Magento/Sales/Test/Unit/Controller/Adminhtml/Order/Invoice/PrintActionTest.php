@@ -3,61 +3,50 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Controller\Adminhtml\Order\Invoice;
 
-use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\Session;
-use Magento\Framework\App\ActionFlag;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\App\Response\Http\FileFactory;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Stdlib\DateTime\DateTime;
+use Magento\Backend\App\Action;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Api\InvoiceRepositoryInterface;
-use Magento\Sales\Controller\Adminhtml\Order\Invoice\PrintAction;
-use Magento\Sales\Model\Order\Invoice;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class PrintActionTest
+ * @package Magento\Sales\Controller\Adminhtml\Order\Invoice
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PrintActionTest extends TestCase
+class PrintActionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $requestMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $responseMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $fileFactory;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $actionFlagMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $sessionMock;
 
     /**
-     * @var MockObject|ObjectManagerInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\ObjectManagerInterface
      */
     protected $objectManagerMock;
 
     /**
-     * @var PrintAction
+     * @var \Magento\Sales\Controller\Adminhtml\Order\Invoice\PrintAction
      */
     protected $controller;
 
@@ -65,7 +54,7 @@ class PrintActionTest extends TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->requestMock = $this->getMockBuilder(Http::class)
+        $this->requestMock = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -74,19 +63,19 @@ class PrintActionTest extends TestCase
             ->setMethods([])
             ->getMock();
 
-        $this->sessionMock = $this->getMockBuilder(Session::class)
+        $this->sessionMock = $this->getMockBuilder(\Magento\Backend\Model\Session::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->actionFlagMock = $this->getMockBuilder(ActionFlag::class)
+        $this->actionFlagMock = $this->getMockBuilder(\Magento\Framework\App\ActionFlag::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
 
-        $contextMock = $this->getMockBuilder(Context::class)
+        $contextMock = $this->getMockBuilder(\Magento\Backend\App\Action\Context::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -106,13 +95,13 @@ class PrintActionTest extends TestCase
             ->method('getObjectManager')
             ->willReturn($this->objectManagerMock);
 
-        $this->fileFactory = $this->getMockBuilder(FileFactory::class)
+        $this->fileFactory = $this->getMockBuilder(\Magento\Framework\App\Response\Http\FileFactory::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
         $this->controller = $objectManager->getObject(
-            PrintAction::class,
+            \Magento\Sales\Controller\Adminhtml\Order\Invoice\PrintAction::class,
             [
                 'context' => $contextMock,
                 'fileFactory' => $this->fileFactory
@@ -129,29 +118,26 @@ class PrintActionTest extends TestCase
             ->with('invoice_id')
             ->willReturn($invoiceId);
 
-        $invoiceMock = $this->createMock(Invoice::class);
+        $invoiceMock = $this->createMock(\Magento\Sales\Model\Order\Invoice::class);
 
-        $pdfMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Pdf\Invoice::class)->addMethods(['render'])
-            ->onlyMethods(['getPdf'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $pdfMock = $this->createPartialMock(\Magento\Sales\Model\Order\Pdf\Invoice::class, ['render', 'getPdf']);
         $pdfMock->expects($this->once())
             ->method('getPdf')
             ->willReturnSelf();
         $pdfMock->expects($this->once())
             ->method('render');
-        $dateTimeMock = $this->createMock(DateTime::class);
+        $dateTimeMock = $this->createMock(\Magento\Framework\Stdlib\DateTime\DateTime::class);
 
-        $invoiceRepository = $this->getMockBuilder(InvoiceRepositoryInterface::class)
+        $invoiceRepository = $this->getMockBuilder(\Magento\Sales\Api\InvoiceRepositoryInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $invoiceRepository->expects($this->any())
             ->method('get')
             ->willReturn($invoiceMock);
 
         $this->objectManagerMock->expects($this->at(0))
             ->method('create')
-            ->with(InvoiceRepositoryInterface::class)
+            ->with(\Magento\Sales\Api\InvoiceRepositoryInterface::class)
             ->willReturn($invoiceRepository);
         $this->objectManagerMock->expects($this->at(1))
             ->method('create')
@@ -159,7 +145,7 @@ class PrintActionTest extends TestCase
             ->willReturn($pdfMock);
         $this->objectManagerMock->expects($this->at(2))
             ->method('get')
-            ->with(DateTime::class)
+            ->with(\Magento\Framework\Stdlib\DateTime\DateTime::class)
             ->willReturn($dateTimeMock);
 
         $this->assertNull($this->controller->execute());

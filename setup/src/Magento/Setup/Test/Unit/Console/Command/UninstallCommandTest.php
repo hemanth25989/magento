@@ -3,40 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Console\Command;
 
-use Magento\Setup\Console\Command\UninstallCommand;
-use Magento\Setup\Model\Installer;
 use Magento\Setup\Model\InstallerFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Helper\HelperSet;
-use Symfony\Component\Console\Helper\QuestionHelper;
+use Magento\Setup\Console\Command\UninstallCommand;
 use Symfony\Component\Console\Tester\CommandTester;
+use Magento\Setup\Model\Installer;
 
-class UninstallCommandTest extends TestCase
+class UninstallCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var InstallerFactory|MockObject
+     * @var InstallerFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $installerFactory;
 
     /**
-     * @var Installer|MockObject
+     * @var Installer|\PHPUnit\Framework\MockObject\MockObject
      */
     private $installer;
 
     /**
-     * @var UninstallCommand|MockObject
+     * @var UninstallCommand|\PHPUnit\Framework\MockObject\MockObject
      */
     private $command;
 
     protected function setUp(): void
     {
-        $this->installerFactory = $this->createMock(InstallerFactory::class);
-        $this->installer = $this->createMock(Installer::class);
+        $this->installerFactory = $this->createMock(\Magento\Setup\Model\InstallerFactory::class);
+        $this->installer = $this->createMock(\Magento\Setup\Model\Installer::class);
         $this->command = new UninstallCommand($this->installerFactory);
     }
 
@@ -61,14 +56,14 @@ class UninstallCommandTest extends TestCase
      */
     public function checkInteraction($answer)
     {
-        $question = $this->createMock(QuestionHelper::class);
+        $question = $this->createMock(\Symfony\Component\Console\Helper\QuestionHelper::class);
         $question
             ->expects($this->once())
             ->method('ask')
             ->willReturn($answer);
 
-        /** @var HelperSet|MockObject $helperSet */
-        $helperSet = $this->createMock(HelperSet::class);
+        /** @var \Symfony\Component\Console\Helper\HelperSet|\PHPUnit\Framework\MockObject\MockObject $helperSet */
+        $helperSet = $this->createMock(\Symfony\Component\Console\Helper\HelperSet::class);
         $helperSet
             ->expects($this->once())
             ->method('get')

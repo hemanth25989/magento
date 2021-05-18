@@ -3,38 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Block\Adminhtml\Order\Create\Sidebar;
 
-use Magento\Catalog\Model\Product\Type;
-use Magento\Framework\DataObject;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Sales\Block\Adminhtml\Order\Create\Sidebar\AbstractSidebar;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AbstractSidebarTest extends TestCase
+class AbstractSidebarTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AbstractSidebar
+     * @var \Magento\Sales\Block\Adminhtml\Order\Create\Sidebar\AbstractSidebar
      */
     protected $abstractSidebar;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $itemMock;
 
     protected function setUp(): void
     {
-        $helper = new ObjectManager($this);
-        $this->itemMock = $this->getMockBuilder(DataObject::class)
-            ->addMethods(['getQty'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->itemMock = $this->createPartialMock(\Magento\Framework\DataObject::class, ['getQty']);
         $this->abstractSidebar = $helper->getObject(
-            AbstractSidebar::class,
+            \Magento\Sales\Block\Adminhtml\Order\Create\Sidebar\AbstractSidebar::class,
             []
         );
     }
@@ -61,7 +49,7 @@ class AbstractSidebarTest extends TestCase
 
     public function testIsConfigurationRequired()
     {
-        $productTypeMock = $this->createMock(Type::class);
+        $productTypeMock = $this->createMock(\Magento\Catalog\Model\Product\Type::class);
         $this->assertFalse($this->abstractSidebar->isConfigurationRequired($productTypeMock));
     }
 }

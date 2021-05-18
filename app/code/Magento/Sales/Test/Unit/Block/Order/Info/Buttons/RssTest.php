@@ -3,27 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Block\Order\Info\Buttons;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\Rss\UrlBuilderInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Sales\Block\Order\Info\Buttons\Rss;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\OrderFactory;
 use Magento\Sales\Model\Rss\Signature;
-use Magento\Store\Model\ScopeInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class RssTest extends TestCase
+/**
+ * Class RssTest
+ * @package Magento\Sales\Block\Order\Info\Buttons
+ */
+class RssTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Rss
+     * @var \Magento\Sales\Block\Order\Info\Buttons\Rss
      */
     protected $rss;
 
@@ -33,27 +25,27 @@ class RssTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Framework\View\Element\Template\Context|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $context;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $orderFactory;
 
     /**
-     * @var UrlBuilderInterface|MockObject
+     * @var \Magento\Framework\App\Rss\UrlBuilderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlBuilderInterface;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $scopeConfigInterface;
 
     /**
-     * @var MockObject|Signature
+     * @var \PHPUnit\Framework\MockObject\MockObject|Signature
      */
     private $signature;
 
@@ -62,16 +54,16 @@ class RssTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->context = $this->createMock(Context::class);
-        $this->orderFactory = $this->createPartialMock(OrderFactory::class, ['create']);
-        $this->urlBuilderInterface = $this->getMockForAbstractClass(UrlBuilderInterface::class);
-        $this->scopeConfigInterface = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $request = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->context = $this->createMock(\Magento\Framework\View\Element\Template\Context::class);
+        $this->orderFactory = $this->createPartialMock(\Magento\Sales\Model\OrderFactory::class, ['create']);
+        $this->urlBuilderInterface = $this->createMock(\Magento\Framework\App\Rss\UrlBuilderInterface::class);
+        $this->scopeConfigInterface = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $request = $this->createMock(\Magento\Framework\App\RequestInterface::class);
         $this->signature = $this->createMock(Signature::class);
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->rss = $this->objectManagerHelper->getObject(
-            Rss::class,
+            \Magento\Sales\Block\Order\Info\Buttons\Rss::class,
             [
                 'request' => $request,
                 'orderFactory' => $this->orderFactory,
@@ -84,8 +76,8 @@ class RssTest extends TestCase
 
     public function testGetLink()
     {
-        $order = $this->getMockBuilder(Order::class)
-            ->setMethods(['getId', 'getCustomerId', 'getIncrementId', 'load'])
+        $order = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
+            ->setMethods(['getId', 'getCustomerId', 'getIncrementId', 'load', '__wakeup', '__sleep'])
             ->disableOriginalConstructor()
             ->getMock();
         $order->expects($this->once())->method('load')->willReturnSelf();
@@ -97,7 +89,7 @@ class RssTest extends TestCase
         $data = base64_encode(json_encode(['order_id' => 1, 'increment_id' => '100000001', 'customer_id' => 1]));
         $signature = '651932dfc862406b72628d95623bae5ea18242be757b3493b337942d61f834be';
         $this->signature->expects($this->once())->method('signData')->willReturn($signature);
-        $link = 'http://magento.com/rss/feed/index/type/order_status?data=' . $data . '&signature=' . $signature;
+        $link = 'http://magento.com/rss/feed/index/type/order_status?data=' . $data .'&signature='.$signature;
         $this->urlBuilderInterface->expects($this->once())->method('getUrl')
             ->with(
                 [
@@ -119,7 +111,7 @@ class RssTest extends TestCase
     public function testIsRssAllowed()
     {
         $this->scopeConfigInterface->expects($this->once())->method('isSetFlag')
-            ->with('rss/order/status', ScopeInterface::SCOPE_STORE)
+            ->with('rss/order/status', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)
             ->willReturn(true);
         $this->assertTrue($this->rss->isRssAllowed());
     }

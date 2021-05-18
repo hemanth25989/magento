@@ -4,13 +4,10 @@
  * See COPYING.txt for license details.
  */
 
-declare(strict_types=1);
-
 namespace Magento\Downloadable\Api;
 
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Framework\Api\ExtensibleDataInterface;
-use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\TestCase\WebapiAbstract;
 
 /**
@@ -18,27 +15,22 @@ use Magento\TestFramework\TestCase\WebapiAbstract;
  */
 class ProductRepositoryTest extends WebapiAbstract
 {
-    private const SERVICE_NAME = 'catalogProductRepositoryV1';
-    private const SERVICE_VERSION = 'V1';
-    private const RESOURCE_PATH = '/V1/products';
-    private const PRODUCT_SKU = 'sku-test-product-downloadable';
-
-    private const PRODUCT_SAMPLES = 'downloadable_product_samples';
-    private const PRODUCT_LINKS = 'downloadable_product_links';
+    const SERVICE_NAME = 'catalogProductRepositoryV1';
+    const SERVICE_VERSION = 'V1';
+    const RESOURCE_PATH = '/V1/products';
+    const PRODUCT_SKU = 'sku-test-product-downloadable';
 
     /**
      * @var string
      */
-    private $testImagePath;
+    protected $testImagePath;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp(): void
     {
-        $objectManager = Bootstrap::getObjectManager();
-
+        parent::setUp();
         $this->testImagePath = __DIR__ . DIRECTORY_SEPARATOR . '_files' . DIRECTORY_SEPARATOR . 'test_image.jpg';
+
+        $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
         /** @var DomainManagerInterface $domainManager */
         $domainManager = $objectManager->get(DomainManagerInterface::class);
@@ -53,7 +45,7 @@ class ProductRepositoryTest extends WebapiAbstract
         $this->deleteProductBySku(self::PRODUCT_SKU);
         parent::tearDown();
 
-        $objectManager = Bootstrap::getObjectManager();
+        $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
         /** @var DomainManagerInterface $domainManager */
         $domainManager = $objectManager->get(DomainManagerInterface::class);
@@ -302,35 +294,6 @@ class ProductRepositoryTest extends WebapiAbstract
 
         $resultSamples = $response[ExtensibleDataInterface::EXTENSION_ATTRIBUTES_KEY]["downloadable_product_samples"];
         $this->assertCount(2, $resultSamples);
-    }
-
-    /**
-     * Update downloadable product extension attribute and check data
-     *
-     * @return void
-     */
-    public function testUpdateDownloadableProductData(): void
-    {
-        $productResponce = $this->createDownloadableProduct();
-        $stockItemData = $productResponce[ProductInterface::EXTENSION_ATTRIBUTES_KEY]['stock_item'];
-
-        $stockItemData = TESTS_WEB_API_ADAPTER === self::ADAPTER_SOAP
-            ? $stockItemData['manage_stock'] = false
-            : ['stock_item' => ['manage_stock' => false]];
-
-        $productData = [
-            ProductInterface::SKU => self::PRODUCT_SKU,
-            ProductInterface::EXTENSION_ATTRIBUTES_KEY => $stockItemData,
-        ];
-
-        $response = $this->saveProduct($productData);
-
-        $this->assertArrayHasKey(ProductInterface::EXTENSION_ATTRIBUTES_KEY, $response);
-        $this->assertArrayHasKey(self::PRODUCT_SAMPLES, $response[ProductInterface::EXTENSION_ATTRIBUTES_KEY]);
-        $this->assertArrayHasKey(self::PRODUCT_LINKS, $response[ProductInterface::EXTENSION_ATTRIBUTES_KEY]);
-
-        $this->assertCount(2, $response[ProductInterface::EXTENSION_ATTRIBUTES_KEY][self::PRODUCT_SAMPLES]);
-        $this->assertCount(2, $response[ProductInterface::EXTENSION_ATTRIBUTES_KEY][self::PRODUCT_LINKS]);
     }
 
     /**

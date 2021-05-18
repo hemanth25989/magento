@@ -7,12 +7,11 @@ declare(strict_types=1);
 
 namespace Magento\Shipping\Test\Unit\Helper;
 
+use PHPUnit\Framework\TestCase;
+use Magento\Shipping\Helper\Data as HelperData;
+use Magento\Framework\Url\DecoderInterface;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\Url\DecoderInterface;
-use Magento\Shipping\Helper\Data as HelperData;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Data helper test
@@ -27,12 +26,12 @@ class DataTest extends TestCase
     private $helper;
 
     /**
-     * @var DecoderInterface|MockObject
+     * @var DecoderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $urlDecoderMock;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit\Framework\MockObject\MockObject
      */
     private $contextMock;
 

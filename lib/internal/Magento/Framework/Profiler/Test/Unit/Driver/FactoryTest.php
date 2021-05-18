@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Test class for \Magento\Framework\Profiler\Driver\Factory
  *
@@ -7,14 +7,10 @@
  */
 namespace Magento\Framework\Profiler\Test\Unit\Driver;
 
-use Magento\Framework\Profiler\Driver\Factory;
-use Magento\Framework\Profiler\DriverInterface;
-use PHPUnit\Framework\TestCase;
-
-class FactoryTest extends TestCase
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Factory
+     * @var \Magento\Framework\Profiler\Driver\Factory
      */
     protected $_factory;
 
@@ -30,7 +26,7 @@ class FactoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->_factory = new Factory(
+        $this->_factory = new \Magento\Framework\Profiler\Driver\Factory(
             $this->_defaultDriverPrefix,
             $this->_defaultDriverType
         );
@@ -40,17 +36,20 @@ class FactoryTest extends TestCase
     {
         $this->markTestSkipped('Skipped in #27500 due to testing protected/private methods and properties');
 
-        $this->assertAttributeEquals($this->_defaultDriverPrefix, '_defaultDriverPrefix', $this->_factory);
-        $this->assertAttributeEquals($this->_defaultDriverType, '_defaultDriverType', $this->_factory);
+        //$this->assertAttributeEquals($this->_defaultDriverPrefix, '_defaultDriverPrefix', $this->_factory);
+        //$this->assertAttributeEquals($this->_defaultDriverType, '_defaultDriverType', $this->_factory);
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+     */
     public function testDefaultConstructor()
     {
         $this->markTestSkipped('Skipped in #27500 due to testing protected/private methods and properties');
 
-        $factory = new Factory();
-        $this->assertAttributeNotEmpty('_defaultDriverPrefix', $factory);
-        $this->assertAttributeNotEmpty('_defaultDriverType', $factory);
+        $factory = new \Magento\Framework\Profiler\Driver\Factory();
+        //$this->assertAttributeNotEmpty('_defaultDriverPrefix', $factory);
+        //$this->assertAttributeNotEmpty('_defaultDriverType', $factory);
     }
 
     /**
@@ -62,7 +61,7 @@ class FactoryTest extends TestCase
     {
         $driver = $this->_factory->create($config);
         $this->assertInstanceOf($expectedClass, $driver);
-        $this->assertInstanceOf(DriverInterface::class, $driver);
+        $this->assertInstanceOf(\Magento\Framework\Profiler\DriverInterface::class, $driver);
     }
 
     /**
@@ -71,13 +70,13 @@ class FactoryTest extends TestCase
     public function createDataProvider()
     {
         $defaultDriverClass = $this->getMockClass(
-            DriverInterface::class,
+            \Magento\Framework\Profiler\DriverInterface::class,
             [],
             [],
             'Magento_Framework_Profiler_Driver_Test_Default'
         );
         $testDriverClass = $this->getMockClass(
-            DriverInterface::class,
+            \Magento\Framework\Profiler\DriverInterface::class,
             [],
             [],
             'Magento_Framework_Profiler_Driver_Test_Test'
@@ -98,12 +97,15 @@ class FactoryTest extends TestCase
         $this->_factory->create(['type' => 'baz']);
     }
 
+    /**
+     */
     public function testCreateInvalidClass()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Driver class "stdClass" must implement \Magento\Framework\Profiler\DriverInterface.'
+            'Driver class "stdClass" must implement \\Magento\\Framework\\Profiler\\DriverInterface.'
         );
+
         $this->_factory->create(['type' => 'stdClass']);
     }
 }

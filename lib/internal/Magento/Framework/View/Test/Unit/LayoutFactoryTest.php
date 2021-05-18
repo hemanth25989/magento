@@ -3,35 +3,29 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit;
 
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\View\LayoutFactory;
-use Magento\Framework\View\LayoutInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class LayoutFactoryTest extends TestCase
+class LayoutFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var LayoutFactory */
+    /** @var \Magento\Framework\View\LayoutFactory */
     protected $layoutFactory;
 
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
-    /** @var ObjectManagerInterface|MockObject */
+    /** @var \Magento\Framework\ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $objectManagerMock;
 
     protected function setUp(): void
     {
-        $this->objectManagerMock = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->objectManagerMock = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->layoutFactory = $this->objectManagerHelper->getObject(
-            LayoutFactory::class,
+            \Magento\Framework\View\LayoutFactory::class,
             [
                 'objectManager' => $this->objectManagerMock
             ]
@@ -40,20 +34,23 @@ class LayoutFactoryTest extends TestCase
 
     public function testCreate()
     {
-        $instance = LayoutInterface::class;
+        $instance = \Magento\Framework\View\LayoutInterface::class;
         $layoutMock = $this->createMock($instance);
         $data = ['some' => 'data'];
         $this->objectManagerMock->expects($this->once())
             ->method('create')
-            ->with($instance, $data)
+            ->with($this->equalTo($instance), $this->equalTo($data))
             ->willReturn($layoutMock);
         $this->assertInstanceOf($instance, $this->layoutFactory->create($data));
     }
 
+    /**
+     */
     public function testCreateException()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('stdClass must be an instance of LayoutInterface.');
+
         $data = ['some' => 'other_data'];
         $this->objectManagerMock->expects($this->once())
             ->method('create')

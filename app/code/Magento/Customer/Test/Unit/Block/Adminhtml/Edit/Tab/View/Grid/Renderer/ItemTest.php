@@ -3,26 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Block\Adminhtml\Edit\Tab\View\Grid\Renderer;
 
-use Magento\Backend\Block\Context;
-use Magento\Bundle\Helper\Catalog\Product\Configuration;
-use Magento\Catalog\Helper\Product\ConfigurationPool;
-use Magento\Catalog\Model\Product;
-use Magento\Customer\Block\Adminhtml\Edit\Tab\View\Grid\Renderer\Item;
-use Magento\Framework\Escaper;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ItemTest extends TestCase
+class ItemTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var  MockObject */
+    /** @var  \PHPUnit\Framework\MockObject\MockObject */
     protected $item;
 
-    /** @var  Item */
+    /** @var  \Magento\Customer\Block\Adminhtml\Edit\Tab\View\Grid\Renderer\Item */
     protected $itemBlock;
 
     /**
@@ -39,7 +28,7 @@ class ItemTest extends TestCase
             ];
         }
 
-        $product = $this->createPartialMock(Product::class, ['getTypeId', 'getName']);
+        $product = $this->createPartialMock(\Magento\Catalog\Model\Product::class, ['getTypeId', 'getName']);
         $product
             ->expects($this->once())
             ->method('getTypeId')
@@ -56,13 +45,13 @@ class ItemTest extends TestCase
             ->willReturn($product);
 
         $productConfigPool = $this->createPartialMock(
-            ConfigurationPool::class,
+            \Magento\Catalog\Helper\Product\ConfigurationPool::class,
             ['get']
         );
-        $helper = $this->createPartialMock(Configuration::class, ['getOptions']);
-        $objectManager = new ObjectManager($this);
+        $helper = $this->createPartialMock(\Magento\Bundle\Helper\Catalog\Product\Configuration::class, ['getOptions']);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $productConfig = $objectManager->getObject(\Magento\Catalog\Helper\Product\Configuration::class);
-        $escaper = $objectManager->getObject(Escaper::class);
+        $escaper = $objectManager->getObject(\Magento\Framework\Escaper::class);
         if ($withoutOptions) {
             $helper
                 ->expects($this->once())
@@ -75,7 +64,7 @@ class ItemTest extends TestCase
                 ->willReturn($options);
         }
 
-        $context = $this->createPartialMock(Context::class, ['getEscaper']);
+        $context = $this->createPartialMock(\Magento\Backend\Block\Context::class, ['getEscaper']);
         $context
             ->expects($this->once())
             ->method('getEscaper')
@@ -87,7 +76,7 @@ class ItemTest extends TestCase
             ->with(\Magento\Catalog\Helper\Product\Configuration::class)
             ->willReturn($helper);
 
-        $this->itemBlock = new Item(
+        $this->itemBlock = new \Magento\Customer\Block\Adminhtml\Edit\Tab\View\Grid\Renderer\Item(
             $context,
             $productConfig,
             $productConfigPool

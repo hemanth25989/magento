@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Importer;
 
 use Magento\Config\Model\Config\Backend\Currency\AbstractCurrency;
@@ -15,14 +13,13 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Value;
 use Magento\Framework\Stdlib\ArrayUtils;
 use PHPUnit\Framework\MockObject\MockObject as Mock;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for SaveProcessor.
  *
  * @see Importer
  */
-class SaveProcessorTest extends TestCase
+class SaveProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SaveProcessor

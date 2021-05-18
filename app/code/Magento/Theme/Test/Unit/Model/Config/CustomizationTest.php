@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test theme customization config model
@@ -16,6 +15,7 @@ use Magento\Framework\View\DesignInterface;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Theme\Model\Config\Customization;
+use Magento\Theme\Model\ResourceModel\Theme\CollectionFactory;
 use Magento\Theme\Model\Theme\StoreThemesResolverInterface;
 use Magento\Theme\Model\Theme\ThemeProvider;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -57,7 +57,7 @@ class CustomizationTest extends TestCase
             ->setMethods(['getThemeCustomizations', 'getThemeByFullPath'])
             ->getMock();
 
-        $this->storeThemesResolver = $this->createMock(StoreThemesResolverInterface::class);
+        $this->storeThemesResolver = $this->getMockForAbstractClass(StoreThemesResolverInterface::class);
 
         $this->model = new Customization(
             $this->storeManager,

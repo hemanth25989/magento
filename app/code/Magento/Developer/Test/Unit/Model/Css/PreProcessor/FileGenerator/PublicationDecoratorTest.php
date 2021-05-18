@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /***
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
@@ -16,13 +16,11 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Asset\File;
 use Magento\Framework\View\Asset\LocalInterface;
 use Magento\Framework\View\Asset\Repository;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PublicationDecoratorTest extends TestCase
+class PublicationDecoratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PublicationDecorator
@@ -30,47 +28,47 @@ class PublicationDecoratorTest extends TestCase
     private $model;
 
     /**
-     * @var Filesystem|MockObject
+     * @var Filesystem|\PHPUnit\Framework\MockObject\MockObject
      */
     private $filesystemMock;
 
     /**
-     * @var Temporary|MockObject
+     * @var Temporary|\PHPUnit\Framework\MockObject\MockObject
      */
     private $temporaryFileMock;
 
     /**
-     * @var Publisher|MockObject
+     * @var Publisher|\PHPUnit\Framework\MockObject\MockObject
      */
     private $publisherMock;
 
     /**
-     * @var Repository|MockObject
+     * @var Repository|\PHPUnit\Framework\MockObject\MockObject
      */
     private $assetRepositoryMock;
 
     /**
-     * @var File|MockObject
+     * @var File|\PHPUnit\Framework\MockObject\MockObject
      */
     private $relatedAssetMock;
 
     /**
-     * @var Import|MockObject
+     * @var Import|\PHPUnit\Framework\MockObject\MockObject
      */
     private $importGeneratorMock;
 
     /**
-     * @var LocalInterface|MockObject
+     * @var LocalInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $localAssetMock;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $scopeConfigMock;
 
     /**
-     * @var State|MockObject
+     * @var State|\PHPUnit\Framework\MockObject\MockObject
      */
     private $stateMock;
 

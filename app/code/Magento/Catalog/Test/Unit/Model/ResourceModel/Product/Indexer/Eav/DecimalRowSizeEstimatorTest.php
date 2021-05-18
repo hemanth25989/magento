@@ -3,22 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\ResourceModel\Product\Indexer\Eav;
 
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\Decimal;
 use Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\DecimalRowSizeEstimator;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\DB\Select;
-use Magento\Framework\EntityManager\EntityMetadataInterface;
-use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Catalog\Model\ResourceModel\Product\Indexer\Eav\Decimal;
 use Magento\Store\Api\StoreManagementInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\EntityManager\EntityMetadataInterface;
+use Magento\Framework\DB\Select;
 
-class DecimalRowSizeEstimatorTest extends TestCase
+class DecimalRowSizeEstimatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DecimalRowSizeEstimator
@@ -26,22 +23,22 @@ class DecimalRowSizeEstimatorTest extends TestCase
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $indexerResourceMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $storeManagementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $metadataPoolMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $connectionMock;
 

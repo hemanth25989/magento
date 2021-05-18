@@ -3,43 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Integration\Test\Unit\Model\Oauth;
 
-use Laminas\Validator\Uri as LaminasUriValidator;
-use Magento\Framework\Data\Collection\AbstractDb;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\Registry;
-use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\Url\Validator as UrlValidator;
-use Magento\Integration\Helper\Oauth\Data;
-use Magento\Integration\Model\Oauth\Consumer;
+use Zend\Validator\Uri as ZendUriValidator;
 use Magento\Integration\Model\Oauth\Consumer\Validator\KeyLength;
-use Magento\Integration\Model\Oauth\Consumer\Validator\KeyLengthFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test for \Magento\Integration\Model\Oauth\Consumer
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ConsumerTest extends TestCase
+class ConsumerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Consumer
+     * @var \Magento\Integration\Model\Oauth\Consumer
      */
     protected $consumerModel;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Framework\Model\Context|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $contextMock;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $registryMock;
 
@@ -49,7 +36,7 @@ class ConsumerTest extends TestCase
     protected $keyLengthValidator;
 
     /**
-     * @var KeyLengthFactory
+     * @var \Magento\Integration\Model\Oauth\Consumer\Validator\KeyLengthFactory
      */
     protected $keyLengthValidatorFactory;
 
@@ -59,17 +46,17 @@ class ConsumerTest extends TestCase
     protected $urlValidator;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Integration\Helper\Oauth\Data|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $oauthDataMock;
 
     /**
-     * @var AbstractResource|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\AbstractResource|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resourceMock;
 
     /**
-     * @var AbstractDb|MockObject
+     * @var \Magento\Framework\Data\Collection\AbstractDb|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resourceCollectionMock;
 
@@ -80,9 +67,9 @@ class ConsumerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->contextMock = $this->createPartialMock(Context::class, ['getEventDispatcher']);
+        $this->contextMock = $this->createPartialMock(\Magento\Framework\Model\Context::class, ['getEventDispatcher']);
         $eventManagerMock = $this->getMockForAbstractClass(
-            ManagerInterface::class,
+            \Magento\Framework\Event\ManagerInterface::class,
             [],
             '',
             false,
@@ -94,28 +81,26 @@ class ConsumerTest extends TestCase
             ->method('getEventDispatcher')
             ->willReturn($eventManagerMock);
 
-        $this->registryMock = $this->createMock(Registry::class);
+        $this->registryMock = $this->createMock(\Magento\Framework\Registry::class);
 
         $this->keyLengthValidator = new KeyLength();
 
-        $this->urlValidator = new UrlValidator(new LaminasUriValidator());
+        $this->urlValidator = new UrlValidator(new ZendUriValidator());
 
         $this->oauthDataMock = $this->createPartialMock(
-            Data::class,
+            \Magento\Integration\Helper\Oauth\Data::class,
             ['getConsumerExpirationPeriod']
         );
         $this->oauthDataMock->expects($this->any())
             ->method('getConsumerExpirationPeriod')
-            ->willReturn(Data::CONSUMER_EXPIRATION_PERIOD_DEFAULT);
+            ->willReturn(\Magento\Integration\Helper\Oauth\Data::CONSUMER_EXPIRATION_PERIOD_DEFAULT);
 
-        $this->resourceMock = $this->getMockBuilder(
-            \Magento\Integration\Model\ResourceModel\Oauth\Consumer::class
-        )->addMethods(['selectByCompositeKey', 'deleteOldEntries'])
-            ->onlyMethods(['getIdFieldName'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->resourceCollectionMock = $this->createMock(AbstractDb::class);
-        $this->consumerModel = new Consumer(
+        $this->resourceMock = $this->createPartialMock(
+            \Magento\Integration\Model\ResourceModel\Oauth\Consumer::class,
+            ['getIdFieldName', 'selectByCompositeKey', 'deleteOldEntries']
+        );
+        $this->resourceCollectionMock = $this->createMock(\Magento\Framework\Data\Collection\AbstractDb::class);
+        $this->consumerModel = new \Magento\Integration\Model\Oauth\Consumer(
             $this->contextMock,
             $this->registryMock,
             $this->keyLengthValidator,
@@ -126,8 +111,8 @@ class ConsumerTest extends TestCase
         );
 
         $this->validDataArray = [
-            'key' => md5(uniqid()), // phpcs:ignore Magento2.Security.InsecureFunction
-            'secret' => md5(uniqid()), // phpcs:ignore Magento2.Security.InsecureFunction
+            'key' => md5(uniqid()),
+            'secret' => md5(uniqid()),
             'callback_url' => 'http://example.com/callback',
             'rejected_callback_url' => 'http://example.com/rejectedCallback'
         ];
@@ -149,46 +134,61 @@ class ConsumerTest extends TestCase
         $this->assertTrue($this->consumerModel->validate());
     }
 
+    /**
+     */
     public function testValidateInvalidData()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Invalid Callback URL');
+
         $this->validDataArray['callback_url'] = 'invalid';
         $this->consumerModel->setData($this->validDataArray);
         $this->consumerModel->validate();
     }
 
+    /**
+     */
     public function testValidateInvalidCallback()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Invalid Callback URL');
+
         $this->validDataArray['callback_url'] = 'invalid';
         $this->consumerModel->setData($this->validDataArray);
         $this->consumerModel->validate();
     }
 
+    /**
+     */
     public function testValidateInvalidRejectedCallback()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Invalid Rejected Callback URL');
+
         $this->validDataArray['rejected_callback_url'] = 'invalid';
         $this->consumerModel->setData($this->validDataArray);
         $this->consumerModel->validate();
     }
 
+    /**
+     */
     public function testValidateInvalidConsumerKey()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Consumer Key \'invalid\' is less than 32 characters long');
+
         $this->validDataArray['key'] = 'invalid';
         $this->consumerModel->setData($this->validDataArray);
         $this->consumerModel->validate();
     }
 
+    /**
+     */
     public function testValidateInvalidConsumerSecret()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Consumer Secret \'invalid\' is less than 32 characters long');
+
         $this->validDataArray['secret'] = 'invalid';
         $this->consumerModel->setData($this->validDataArray);
         $this->consumerModel->validate();
@@ -196,33 +196,33 @@ class ConsumerTest extends TestCase
 
     public function testGetConsumerExpirationPeriodValid()
     {
-        $dateHelperMock = $this->getMockBuilder(DateTime::class)
+        $dateHelperMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\DateTime::class)
             ->disableOriginalConstructor()
             ->getMock();
         $dateHelperMock->expects($this->at(0))->method('gmtTimestamp')->willReturn(time());
         $dateHelperMock->expects($this->at(1))->method('gmtTimestamp')->willReturn(time() - 100);
 
-        $dateHelper = new \ReflectionProperty(Consumer::class, '_dateHelper');
+        $dateHelper = new \ReflectionProperty(\Magento\Integration\Model\Oauth\Consumer::class, '_dateHelper');
         $dateHelper->setAccessible(true);
         $dateHelper->setValue($this->consumerModel, $dateHelperMock);
 
-        $this->consumerModel->setUpdatedAt((string)time());
+        $this->consumerModel->setUpdatedAt(time());
         $this->assertTrue($this->consumerModel->isValidForTokenExchange());
     }
 
     public function testGetConsumerExpirationPeriodExpired()
     {
-        $dateHelperMock = $this->getMockBuilder(DateTime::class)
+        $dateHelperMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\DateTime::class)
             ->disableOriginalConstructor()
             ->getMock();
         $dateHelperMock->expects($this->at(0))->method('gmtTimestamp')->willReturn(time());
         $dateHelperMock->expects($this->at(1))->method('gmtTimestamp')->willReturn(time() - 1000);
 
-        $dateHelper = new \ReflectionProperty(Consumer::class, '_dateHelper');
+        $dateHelper = new \ReflectionProperty(\Magento\Integration\Model\Oauth\Consumer::class, '_dateHelper');
         $dateHelper->setAccessible(true);
         $dateHelper->setValue($this->consumerModel, $dateHelperMock);
 
-        $this->consumerModel->setUpdatedAt((string)time());
+        $this->consumerModel->setUpdatedAt(time());
         $this->assertFalse($this->consumerModel->isValidForTokenExchange());
     }
 }

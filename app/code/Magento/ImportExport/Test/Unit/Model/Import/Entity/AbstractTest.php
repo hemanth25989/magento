@@ -3,25 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\ImportExport\Model\Import\Entity\AbstractEntity
  */
 namespace Magento\ImportExport\Test\Unit\Model\Import\Entity;
 
-use Magento\ImportExport\Model\Import;
-use Magento\ImportExport\Model\Import\AbstractSource;
 use Magento\ImportExport\Model\Import\Entity\AbstractEntity;
-use Magento\ImportExport\Test\Unit\Model\Import\AbstractImportTestCase;
-use PHPUnit\Framework\MockObject\MockObject;
 
-class AbstractTest extends AbstractImportTestCase
+class AbstractTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractImportTestCase
 {
     /**
      * Abstract import entity model
      *
-     * @var AbstractEntity|MockObject
+     * @var \Magento\ImportExport\Model\Import\Entity\AbstractEntity|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_model;
 
@@ -29,7 +24,7 @@ class AbstractTest extends AbstractImportTestCase
     {
         parent::setUp();
 
-        $this->_model = $this->getMockBuilder(AbstractEntity::class)
+        $this->_model = $this->getMockBuilder(\Magento\ImportExport\Model\Import\Entity\AbstractEntity::class)
             ->disableOriginalConstructor()
             ->setMethods(['_saveValidatedBunches', 'getErrorAggregator'])
             ->getMockForAbstractClass();
@@ -50,13 +45,13 @@ class AbstractTest extends AbstractImportTestCase
      * Create source adapter mock and set it into model object which tested in this class
      *
      * @param array $columns value which will be returned by method getColNames()
-     * @return AbstractSource|MockObject
+     * @return \Magento\ImportExport\Model\Import\AbstractSource|\PHPUnit\Framework\MockObject\MockObject
      */
     protected function _createSourceAdapterMock(array $columns)
     {
-        /** @var $source \Magento\ImportExport\Model\Import\AbstractSource|MockObject */
+        /** @var $source \Magento\ImportExport\Model\Import\AbstractSource|\PHPUnit\Framework\MockObject\MockObject */
         $source = $this->getMockForAbstractClass(
-            AbstractSource::class,
+            \Magento\ImportExport\Model\Import\AbstractSource::class,
             [],
             '',
             false,
@@ -93,7 +88,7 @@ class AbstractTest extends AbstractImportTestCase
     public function testValidateDataEmptyColumnNameForDeleteBehaviour()
     {
         $this->_createSourceAdapterMock(['']);
-        $this->_model->setParameters(['behavior' => Import::BEHAVIOR_DELETE]);
+        $this->_model->setParameters(['behavior' => \Magento\ImportExport\Model\Import::BEHAVIOR_DELETE]);
         $errorAggregator = $this->_model->validateData();
         $this->assertEquals(0, $errorAggregator->getErrorsCount());
     }
@@ -106,7 +101,7 @@ class AbstractTest extends AbstractImportTestCase
     public function testValidateDataColumnNameWithWhitespacesForDeleteBehaviour()
     {
         $this->_createSourceAdapterMock(['  ']);
-        $this->_model->setParameters(['behavior' => Import::BEHAVIOR_DELETE]);
+        $this->_model->setParameters(['behavior' => \Magento\ImportExport\Model\Import::BEHAVIOR_DELETE]);
         $errorAggregator = $this->_model->validateData();
         $this->assertEquals(0, $errorAggregator->getErrorsCount());
     }
@@ -200,7 +195,7 @@ class AbstractTest extends AbstractImportTestCase
      */
     public function testGetCreatedItemsCount()
     {
-        $this->assertIsInt($this->_model->getCreatedItemsCount());
+        $this->assertNotEmpty('integer', $this->_model->getCreatedItemsCount());
     }
 
     /**
@@ -216,6 +211,6 @@ class AbstractTest extends AbstractImportTestCase
      */
     public function testGetDeletedItemsCount()
     {
-        $this->assertIsInt($this->_model->getDeletedItemsCount());
+        $this->assertNotEmpty('integer', $this->_model->getDeletedItemsCount());
     }
 }

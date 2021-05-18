@@ -3,45 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Mview\Test\Unit;
 
-use Magento\Framework\Mview\Processor;
-use Magento\Framework\Mview\View\Collection;
-use Magento\Framework\Mview\View\CollectionFactory;
-use Magento\Framework\Mview\ViewInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ProcessorTest extends TestCase
+class ProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Processor|MockObject
+     * @var \Magento\Framework\Mview\Processor|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $model;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Framework\Mview\View\CollectionFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $viewsFactoryMock;
 
     protected function setUp(): void
     {
         $this->viewsFactoryMock =
-            $this->createPartialMock(CollectionFactory::class, ['create']);
-        $this->model = new Processor($this->viewsFactoryMock);
+            $this->createPartialMock(\Magento\Framework\Mview\View\CollectionFactory::class, ['create']);
+        $this->model = new \Magento\Framework\Mview\Processor($this->viewsFactoryMock);
     }
 
     /**
      * Return array of mocked views
      *
      * @param string $method
-     * @return ViewInterface[]|MockObject[]
+     * @return \Magento\Framework\Mview\ViewInterface[]|\PHPUnit\Framework\MockObject\MockObject[]
      */
     protected function getViews($method)
     {
-        $viewMock = $this->getMockForAbstractClass(ViewInterface::class);
+        $viewMock = $this->createMock(\Magento\Framework\Mview\ViewInterface::class);
         $viewMock->expects($this->exactly(2))->method($method);
         return [$viewMock, $viewMock];
     }
@@ -49,11 +40,11 @@ class ProcessorTest extends TestCase
     /**
      * Return view collection mock
      *
-     * @return Collection|MockObject
+     * @return \Magento\Framework\Mview\View\Collection|\PHPUnit\Framework\MockObject\MockObject
      */
     protected function getViewsMock()
     {
-        $viewsMock = $this->createMock(Collection::class);
+        $viewsMock = $this->createMock(\Magento\Framework\Mview\View\Collection::class);
         $this->viewsFactoryMock->expects($this->once())->method('create')->willReturn($viewsMock);
         return $viewsMock;
     }

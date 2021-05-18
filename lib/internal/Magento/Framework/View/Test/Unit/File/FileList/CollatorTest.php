@@ -3,17 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\View\Test\Unit\File\FileList;
 
-use Magento\Framework\View\Design\ThemeInterface;
-use Magento\Framework\View\File;
-use Magento\Framework\View\File\FileList\Collator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\View\File\FileList\Collator;
 
-class CollatorTest extends TestCase
+class CollatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Collator
@@ -21,17 +16,17 @@ class CollatorTest extends TestCase
     protected $_model;
 
     /**
-     * @var File[]
+     * @var \Magento\Framework\View\File[]
      */
     protected $_originFiles;
 
     /**
-     * @var File
+     * @var \Magento\Framework\View\File
      */
     protected $_baseFile;
 
     /**
-     * @var File
+     * @var \Magento\Framework\View\File
      */
     protected $_themeFile;
 
@@ -52,16 +47,16 @@ class CollatorTest extends TestCase
      * @param string $filename
      * @param string $module
      * @param string|null $themeFullPath
-     * @return MockObject|File
+     * @return \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\View\File
      */
     protected function _createViewFile($filename, $module, $themeFullPath = null)
     {
         $theme = null;
         if ($themeFullPath !== null) {
-            $theme = $this->getMockForAbstractClass(ThemeInterface::class);
+            $theme = $this->getMockForAbstractClass(\Magento\Framework\View\Design\ThemeInterface::class);
             $theme->expects($this->any())->method('getFullPath')->willReturn($themeFullPath);
         }
-        return new File($filename, $module, $theme);
+        return new \Magento\Framework\View\File($filename, $module, $theme);
     }
 
     public function testCollateBaseFile()
@@ -82,26 +77,35 @@ class CollatorTest extends TestCase
         );
     }
 
+    /**
+     */
     public function testReplaceBaseFileException()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Overriding view file \'new.xml\' does not match to any of the files');
+
         $file = $this->_createViewFile('new.xml', 'Fixture_TestModule');
         $this->_model->collate([$file], $this->_originFiles);
     }
 
+    /**
+     */
     public function testReplaceBaseFileEmptyThemePathException()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Overriding view file \'test/fixture.xml\' does not match to any of the files');
+
         $file = $this->_createViewFile('test/fixture.xml', 'Fixture_TestModule', '');
         $this->_model->collate([$file], $this->_originFiles);
     }
 
+    /**
+     */
     public function testReplaceThemeFileException()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Overriding view file \'new.xml\' does not match to any of the files');
+
         $file = $this->_createViewFile('new.xml', 'Fixture_TestModule', 'area/theme/path');
         $this->_model->collate([$file], $this->_originFiles);
     }

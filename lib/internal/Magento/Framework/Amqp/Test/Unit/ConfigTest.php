@@ -3,20 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Amqp\Test\Unit;
 
 use Magento\Framework\Amqp\Config;
 use Magento\Framework\App\DeploymentConfig;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $deploymentConfigMock;
 
@@ -33,22 +29,25 @@ class ConfigTest extends TestCase
     protected function setUp(): void
     {
         $this->objectManager = new ObjectManager($this);
-        $this->deploymentConfigMock = $this->getMockBuilder(DeploymentConfig::class)
+        $this->deploymentConfigMock = $this->getMockBuilder(\Magento\Framework\App\DeploymentConfig::class)
             ->disableOriginalConstructor()
             ->setMethods(['getConfigData'])
             ->getMock();
         $this->amqpConfig = $this->objectManager->getObject(
-            Config::class,
+            \Magento\Framework\Amqp\Config::class,
             [
                 'config' => $this->deploymentConfigMock,
             ]
         );
     }
 
+    /**
+     */
     public function testGetNullConfig()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Unknown connection name amqp');
+
         $this->deploymentConfigMock->expects($this->once())
             ->method('getConfigData')
             ->with(Config::QUEUE_CONFIG)
@@ -57,10 +56,13 @@ class ConfigTest extends TestCase
         $this->amqpConfig->getValue(Config::HOST);
     }
 
+    /**
+     */
     public function testGetEmptyConfig()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Unknown connection name amqp');
+
         $this->deploymentConfigMock->expects($this->once())
             ->method('getConfigData')
             ->with(Config::QUEUE_CONFIG)
@@ -82,18 +84,20 @@ class ConfigTest extends TestCase
         $this->deploymentConfigMock->expects($this->once())
             ->method('getConfigData')
             ->with(Config::QUEUE_CONFIG)
-            ->willReturn([
-                Config::AMQP_CONFIG => [
-                    'host' => $expectedHost,
-                    'port' => $expectedPort,
-                    'user' => $expectedUsername,
-                    'password' => $expectedPassword,
-                    'virtualhost' => $expectedVirtualHost,
-                    'ssl' => $expectedSsl,
-                    'ssl_options' => $expectedSslOptions,
-                    'randomKey' => 'randomValue',
+            ->willReturn(
+                [
+                    Config::AMQP_CONFIG => [
+                        'host' => $expectedHost,
+                        'port' => $expectedPort,
+                        'user' => $expectedUsername,
+                        'password' => $expectedPassword,
+                        'virtualhost' => $expectedVirtualHost,
+                        'ssl' => $expectedSsl,
+                        'ssl_options' => $expectedSslOptions,
+                        'randomKey' => 'randomValue',
+                    ]
                 ]
-            ]);
+            );
 
         $this->assertEquals($expectedHost, $this->amqpConfig->getValue(Config::HOST));
         $this->assertEquals($expectedPort, $this->amqpConfig->getValue(Config::PORT));
@@ -107,7 +111,7 @@ class ConfigTest extends TestCase
 
     public function testGetCustomConfig()
     {
-        $amqpConfig = new Config($this->deploymentConfigMock, 'connection-01');
+        $amqpConfig = new \Magento\Framework\Amqp\Config($this->deploymentConfigMock, 'connection-01');
         $expectedHost = 'example.com';
         $expectedPort = 5672;
         $expectedUsername = 'guest_username';
@@ -118,19 +122,21 @@ class ConfigTest extends TestCase
         $this->deploymentConfigMock->expects($this->once())
             ->method('getConfigData')
             ->with(Config::QUEUE_CONFIG)
-            ->willReturn([
-                'connections' => [
-                    'connection-01' => [
-                        'host' => $expectedHost,
-                        'port' => $expectedPort,
-                        'user' => $expectedUsername,
-                        'password' => $expectedPassword,
-                        'virtualhost' => $expectedVirtualHost,
-                        'ssl' => $expectedSsl,
-                        'randomKey' => 'randomValue',
+            ->willReturn(
+                [
+                    'connections' => [
+                        'connection-01' => [
+                            'host' => $expectedHost,
+                            'port' => $expectedPort,
+                            'user' => $expectedUsername,
+                            'password' => $expectedPassword,
+                            'virtualhost' => $expectedVirtualHost,
+                            'ssl' => $expectedSsl,
+                            'randomKey' => 'randomValue',
+                        ]
                     ]
                 ]
-            ]);
+            );
 
         $this->assertEquals($expectedHost, $amqpConfig->getValue(Config::HOST));
         $this->assertEquals($expectedPort, $amqpConfig->getValue(Config::PORT));

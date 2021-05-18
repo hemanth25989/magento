@@ -3,40 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Framework\View\Page\Config
  */
 namespace Magento\Framework\View\Test\Unit\Page;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\State;
-use Magento\Framework\Escaper;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Locale\Resolver;
-use Magento\Framework\Locale\ResolverInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Asset\File;
-use Magento\Framework\View\Asset\GroupedCollection;
-use Magento\Framework\View\Asset\Remote;
-use Magento\Framework\View\Asset\Repository;
-use Magento\Framework\View\Layout\BuilderInterface;
-use Magento\Framework\View\LayoutInterface;
 use Magento\Framework\View\Page\Config;
-use Magento\Framework\View\Page\FaviconInterface;
-use Magento\Framework\View\Page\Title;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Magento\Framework\View\Page\Config
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var ObjectManager */
+    /** @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager */
     private $objectManager;
 
     /**
@@ -45,78 +28,78 @@ class ConfigTest extends TestCase
     protected $model;
 
     /**
-     * @var Repository|MockObject
+     * @var \Magento\Framework\View\Asset\Repository|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $assetRepo;
 
     /**
-     * @var GroupedCollection|MockObject
+     * @var \Magento\Framework\View\Asset\GroupedCollection|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $pageAssets;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $scopeConfig;
 
     /**
-     * @var FaviconInterface|MockObject
+     * @var \Magento\Framework\View\Page\FaviconInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $favicon;
 
     /**
-     * @var BuilderInterface|MockObject
+     * @var \Magento\Framework\View\Layout\BuilderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $builder;
 
     /**
-     * @var File|MockObject
+     * @var \Magento\Framework\View\Asset\File|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $asset;
 
     /**
-     * @var Remote|MockObject
+     * @var \Magento\Framework\View\Asset\Remote|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $remoteAsset;
 
     /**
-     * @var Title|MockObject
+     * @var \Magento\Framework\View\Page\Title|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $title;
 
     /**
-     * @var State|MockObject
+     * @var \Magento\Framework\App\State|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $areaResolverMock;
 
     /**
-     * @var ResolverInterface|MockObject
+     * @var \Magento\Framework\Locale\ResolverInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $localeMock;
 
     protected function setUp(): void
     {
-        $this->assetRepo = $this->createMock(Repository::class);
-        $this->pageAssets = $this->createMock(GroupedCollection::class);
+        $this->assetRepo = $this->createMock(\Magento\Framework\View\Asset\Repository::class);
+        $this->pageAssets = $this->createMock(\Magento\Framework\View\Asset\GroupedCollection::class);
         $this->scopeConfig =
-            $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $this->favicon = $this->getMockForAbstractClass(FaviconInterface::class);
-        $this->builder = $this->getMockForAbstractClass(BuilderInterface::class);
-        $this->asset = $this->createMock(File::class);
-        $this->remoteAsset = $this->createMock(Remote::class);
-        $this->title = $this->createMock(Title::class);
+            $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->favicon = $this->createMock(\Magento\Framework\View\Page\FaviconInterface::class);
+        $this->builder = $this->createMock(\Magento\Framework\View\Layout\BuilderInterface::class);
+        $this->asset = $this->createMock(\Magento\Framework\View\Asset\File::class);
+        $this->remoteAsset = $this->createMock(\Magento\Framework\View\Asset\Remote::class);
+        $this->title = $this->createMock(\Magento\Framework\View\Page\Title::class);
         $this->localeMock =
-            $this->getMockForAbstractClass(ResolverInterface::class, [], '', false);
+            $this->getMockForAbstractClass(\Magento\Framework\Locale\ResolverInterface::class, [], '', false);
         $this->localeMock->expects($this->any())
             ->method('getLocale')
             ->willReturn(Resolver::DEFAULT_LOCALE);
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $escaper = $this->objectManager->getObject(
-            Escaper::class
+            \Magento\Framework\Escaper::class
         );
-        $this->model = (new ObjectManager($this))
+        $this->model = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))
             ->getObject(
-                Config::class,
+                \Magento\Framework\View\Page\Config::class,
                 [
                     'assetRepo' => $this->assetRepo,
                     'pageAssets' => $this->pageAssets,
@@ -127,7 +110,7 @@ class ConfigTest extends TestCase
                 ]
             );
 
-        $this->areaResolverMock = $this->createMock(State::class);
+        $this->areaResolverMock = $this->createMock(\Magento\Framework\App\State::class);
         $areaResolverReflection = (new \ReflectionClass(get_class($this->model)))->getProperty('areaResolver');
         $areaResolverReflection->setAccessible(true);
         $areaResolverReflection->setValue($this->model, $this->areaResolverMock);
@@ -136,7 +119,7 @@ class ConfigTest extends TestCase
     public function testSetBuilder()
     {
         $this->assertInstanceOf(
-            Config::class,
+            \Magento\Framework\View\Page\Config::class,
             $this->model->setBuilder($this->builder)
         );
     }
@@ -145,14 +128,14 @@ class ConfigTest extends TestCase
     {
         $this->model->setBuilder($this->builder);
         $this->builder->expects($this->once())->method('build')->willReturn(
-            LayoutInterface::class
+            \Magento\Framework\View\LayoutInterface::class
         );
         $this->model->publicBuild();
     }
 
     public function testGetTitle()
     {
-        $this->assertInstanceOf(Title::class, $this->model->getTitle());
+        $this->assertInstanceOf(\Magento\Framework\View\Page\Title::class, $this->model->getTitle());
     }
 
     public function testMetadata()
@@ -288,7 +271,7 @@ class ConfigTest extends TestCase
     public function testGetAssetCollection()
     {
         $this->assertInstanceOf(
-            GroupedCollection::class,
+            \Magento\Framework\View\Asset\GroupedCollection::class,
             $this->model->getAssetCollection()
         );
     }
@@ -308,7 +291,7 @@ class ConfigTest extends TestCase
         );
         $this->pageAssets->expects($this->once())->method('add')->with($expectedName, $this->asset, $properties);
         $this->assertInstanceOf(
-            Config::class,
+            \Magento\Framework\View\Page\Config::class,
             $this->model->addPageAsset($file, $properties, $name)
         );
     }
@@ -350,7 +333,7 @@ class ConfigTest extends TestCase
         );
         $this->pageAssets->expects($this->once())->method('add')->with($expectedName, $this->remoteAsset, $properties);
         $this->assertInstanceOf(
-            Config::class,
+            \Magento\Framework\View\Page\Config::class,
             $this->model->addRemotePageAsset($url, $contentType, $properties, $name)
         );
     }
@@ -391,13 +374,13 @@ class ConfigTest extends TestCase
             $this->remoteAsset,
             $expected
         );
-        $this->assertInstanceOf(Config::class, $this->model->addRss($title, $href));
+        $this->assertInstanceOf(\Magento\Framework\View\Page\Config::class, $this->model->addRss($title, $href));
     }
 
     public function testAddBodyClass()
     {
         $className = 'test class';
-        $this->assertInstanceOf(Config::class, $this->model->addBodyClass($className));
+        $this->assertInstanceOf(\Magento\Framework\View\Page\Config::class, $this->model->addBodyClass($className));
         $this->assertEquals('test-class', $this->model->getElementAttribute('body', 'class'));
     }
 
@@ -447,7 +430,7 @@ class ConfigTest extends TestCase
      */
     public function testElementAttributeException($elementType, $attribute, $value)
     {
-        $this->expectException(LocalizedException::class);
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage($elementType . " isn't allowed");
         $this->model->setElementAttribute($elementType, $attribute, $value);
     }
@@ -560,9 +543,9 @@ class ConfigTest extends TestCase
      */
     public function testGetIncludes($isAvailable, $result)
     {
-        $model = (new ObjectManager($this))
+        $model = (new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this))
             ->getObject(
-                Config::class,
+                \Magento\Framework\View\Page\Config::class,
                 [
                     'assetRepo' => $this->assetRepo,
                     'pageAssets' => $this->pageAssets,

@@ -8,38 +8,28 @@ declare(strict_types=1);
 namespace Magento\Paypal\Test\Unit\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Locale\ResolverInterface;
 use Magento\Paypal\Model\Config;
-use Magento\Paypal\Model\ConfigFactory;
 use Magento\Paypal\Model\SmartButtonConfig;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\Locale\ResolverInterface;
+use Magento\Paypal\Model\ConfigFactory;
 
-/**
- * Test for smart button config
- */
-class SmartButtonConfigTest extends TestCase
+class SmartButtonConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SmartButtonConfig
+     * @var \Magento\Paypal\Model\SmartButtonConfig
      */
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $localeResolverMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $configMock;
 
-    /**
-     * @inheritDoc
-     */
     protected function setUp(): void
     {
         $this->localeResolverMock = $this->getMockForAbstractClass(ResolverInterface::class);
@@ -47,36 +37,23 @@ class SmartButtonConfigTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        /** @var ScopeConfigInterface|MockObject $scopeConfigMock */
+        /** @var ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject $scopeConfigMock */
         $scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
         $scopeConfigMock->method('isSetFlag')
             ->willReturn(true);
 
-        /** @var ConfigFactory|MockObject $configFactoryMock */
+        /** @var \PHPUnit\Framework\MockObject\MockObject $configFactoryMock */
         $configFactoryMock = $this->getMockBuilder(ConfigFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
         $configFactoryMock->expects($this->once())->method('create')->willReturn($this->configMock);
-
-        /** @var Store|MockObject $storeMock */
-        $storeMock = $this->createMock(Store::class);
-        $storeMock->method('getBaseCurrencyCode')
-            ->willReturn('USD');
-
-        /** @var StoreManagerInterface|MockObject $storeManagerMock */
-        $storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $storeManagerMock->method('getStore')
-            ->willReturn($storeMock);
-
         $this->model = new SmartButtonConfig(
             $this->localeResolverMock,
             $configFactoryMock,
             $scopeConfigMock,
-            $storeManagerMock,
             $this->getDefaultStyles(),
-            $this->getDisallowedFundingMap(),
-            $this->getUnsupportedPaymentMethods()
+            $this->getAllowedFundings()
         );
     }
 
@@ -88,6 +65,7 @@ class SmartButtonConfigTest extends TestCase
      * @param bool $isCustomize
      * @param string $disallowedFundings
      * @param string $layout
+     * @param string $size
      * @param string $shape
      * @param string $label
      * @param string $color
@@ -104,6 +82,7 @@ class SmartButtonConfigTest extends TestCase
         bool $isCustomize,
         ?string $disallowedFundings,
         string $layout,
+        string $size,
         string $shape,
         string $label,
         string $color,
@@ -125,21 +104,7 @@ class SmartButtonConfigTest extends TestCase
                 ['disable_funding_options', null, $disallowedFundings],
                 ["{$page}_page_button_customize", null, $isCustomize],
                 ["{$page}_page_button_layout", null, $layout],
-                ["{$page}_page_button_color", null, $color],
-                ["{$page}_page_button_shape", null, $shape],
-                ["{$page}_page_button_label", null, $label],
-                ['sandbox_client_id', null, 'sb'],
-                ['merchant_id', null, 'merchant'],
-                [
-                    'solution_type',
-                    null,
-                    $isPaypalGuestCheckoutEnabled ? Config::EC_SOLUTION_TYPE_SOLE : Config::EC_SOLUTION_TYPE_MARK
-                ],
-                ['sandbox_flag', null, true],
-                ['paymentAction', null, 'Authorization'],
-                ['disable_funding_options', null, $disallowedFundings],
-                ["{$page}_page_button_customize", null, $isCustomize],
-                ["{$page}_page_button_layout", null, $layout],
+                ["{$page}_page_button_size", null, $size],
                 ["{$page}_page_button_color", null, $color],
                 ["{$page}_page_button_shape", null, $shape],
                 ["{$page}_page_button_label", null, $label],
@@ -155,8 +120,6 @@ class SmartButtonConfigTest extends TestCase
     }
 
     /**
-     * Get config data provider
-     *
      * @return array
      */
     public function getConfigDataProvider()
@@ -165,8 +128,6 @@ class SmartButtonConfigTest extends TestCase
     }
 
     /**
-     * Get default styles
-     *
      * @return array
      */
     private function getDefaultStyles()
@@ -175,22 +136,10 @@ class SmartButtonConfigTest extends TestCase
     }
 
     /**
-     * Get disallowed funding map
-     *
      * @return array
      */
-    private function getDisallowedFundingMap()
+    private function getAllowedFundings()
     {
-        return include __DIR__ . '/_files/disallowed_funding_map.php';
-    }
-
-    /**
-     * Get unsupported payment methods
-     *
-     * @return array
-     */
-    private function getUnsupportedPaymentMethods()
-    {
-        return include __DIR__ . '/_files/unsupported_payment_methods.php';
+        return include __DIR__ . '/_files/allowed_fundings.php';
     }
 }

@@ -73,7 +73,6 @@ class ExportTest extends \PHPUnit\Framework\TestCase
     public function testGetEntityAdapterWithInvalidEntity()
     {
         $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
-
         $this->_model->setData(['entity' => 'test']);
         $this->_model->getEntityAttributeCollection();
     }

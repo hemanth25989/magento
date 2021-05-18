@@ -8,6 +8,9 @@ namespace Magento\Widget\Controller\Adminhtml\Widget\Instance;
 
 use Magento\Framework\App\Action\HttpPostActionInterface;
 
+/**
+ * Class to operate template actions.
+ */
 class Template extends \Magento\Widget\Controller\Adminhtml\Widget\Instance implements HttpPostActionInterface
 {
     /**

@@ -3,20 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Block\Adminhtml\Rss\Grid;
 
-use Magento\Catalog\Block\Adminhtml\Rss\Grid\Link;
-use Magento\Framework\App\Rss\UrlBuilderInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class LinkTest extends TestCase
+/**
+ * Class LinkTest
+ * @package Magento\Catalog\Block\Adminhtml\Rss\Grid
+ */
+class LinkTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Link
+     * @var \Magento\Catalog\Block\Adminhtml\Rss\Grid\Link
      */
     protected $link;
 
@@ -26,17 +24,17 @@ class LinkTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var UrlBuilderInterface|MockObject
+     * @var \Magento\Framework\App\Rss\UrlBuilderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlBuilderInterface;
 
     protected function setUp(): void
     {
-        $this->urlBuilderInterface = $this->getMockForAbstractClass(UrlBuilderInterface::class);
+        $this->urlBuilderInterface = $this->createMock(\Magento\Framework\App\Rss\UrlBuilderInterface::class);
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->link = $this->objectManagerHelper->getObject(
-            Link::class,
+            \Magento\Catalog\Block\Adminhtml\Rss\Grid\Link::class,
             [
                 'rssUrlBuilder' => $this->urlBuilderInterface
             ]

@@ -36,7 +36,7 @@ class StoreUserAgentThemeResolverTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->scopeConfig = $this->createMock(ScopeConfigInterface::class);
+        $this->scopeConfig = $this->getMockForAbstractClass(ScopeConfigInterface::class);
         $this->serializer = new Json();
         $this->model = new StoreUserAgentThemeResolver(
             $this->scopeConfig,
@@ -51,9 +51,9 @@ class StoreUserAgentThemeResolverTest extends TestCase
      * @param array $expected
      * @dataProvider getThemesDataProvider
      */
-    public function testGetThemes(?array $config, array $expected): void
+    public function testGetThemes(?array $config, array $expected)
     {
-        $store = $this->createMock(StoreInterface::class);
+        $store = $this->getMockForAbstractClass(StoreInterface::class);
         $this->scopeConfig->expects($this->once())
             ->method('getValue')
             ->with('design/theme/ua_regexp', ScopeInterface::SCOPE_STORE, $store)

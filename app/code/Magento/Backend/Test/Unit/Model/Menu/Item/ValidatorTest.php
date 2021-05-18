@@ -3,48 +3,42 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\Model\Menu\Item;
 
-use Magento\Backend\Model\Menu\Item\Validator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ValidatorTest extends TestCase
+class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Validator
+     * @var \Magento\Backend\Model\Menu\Item\Validator
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_factoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_urlModelMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_aclMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_helperMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_appConfigMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_scopeConfigMock;
 
@@ -65,7 +59,7 @@ class ValidatorTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->_model = new Validator();
+        $this->_model = new \Magento\Backend\Model\Menu\Item\Validator();
     }
 
     /**
@@ -75,7 +69,8 @@ class ValidatorTest extends TestCase
      */
     public function testValidateWithMissingRequiredParamThrowsException($requiredParam)
     {
-        $this->expectException('BadMethodCallException');
+        $this->expectException(\BadMethodCallException::class);
+
         try {
             unset($this->_params[$requiredParam]);
             $this->_model->validate($this->_params);
@@ -101,7 +96,8 @@ class ValidatorTest extends TestCase
      */
     public function testValidateWithNonValidPrimitivesThrowsException($param, $invalidValue)
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
+
         try {
             $this->_params[$param] = $invalidValue;
             $this->_model->validate($this->_params);
@@ -143,11 +139,10 @@ class ValidatorTest extends TestCase
      */
     public function testValidateWithDuplicateIdsThrowsException($existedItems, $newItem)
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
 
         foreach ($existedItems as $item) {
-            // phpcs:ignore Magento2.Performance.ForeachArrayMerge
-            $item = array_merge($item, $this->_params);
+            $item = array_merge($item, $this->_params);//phpcs:ignore
             $this->_model->validate($item);
         }
 
@@ -211,9 +206,12 @@ class ValidatorTest extends TestCase
         ];
     }
 
+    /**
+     */
     public function testValidateParamWithNullForRequiredParamThrowsException()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->_model->validateParam('title', null);
     }
 
@@ -227,9 +225,12 @@ class ValidatorTest extends TestCase
         }
     }
 
+    /**
+     */
     public function testValidateParamValidatesPrimitiveValues()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->_model->validateParam('toolTip', '/:');
     }
 

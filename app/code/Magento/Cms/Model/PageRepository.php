@@ -19,7 +19,6 @@ use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\App\ObjectManager;
-use Magento\Framework\EntityManager\HydratorInterface;
 use Magento\Framework\App\Route\Config;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
@@ -27,10 +26,10 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\EntityManager\HydratorInterface;
 
 /**
  * Cms page repository
- *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class PageRepository implements PageRepositoryInterface
@@ -86,14 +85,14 @@ class PageRepository implements PageRepositoryInterface
     private $identityMap;
 
     /**
-     * @var HydratorInterface
-     */
-    private $hydrator;
-
-    /**
      * @var Config
      */
     private $routeConfig;
+
+    /**
+     * @var HydratorInterface
+     */
+    private $hydrator;
 
     /**
      * @param ResourcePage $resource
@@ -106,8 +105,8 @@ class PageRepository implements PageRepositoryInterface
      * @param StoreManagerInterface $storeManager
      * @param CollectionProcessorInterface $collectionProcessor
      * @param IdentityMap|null $identityMap
-     * @param HydratorInterface|null $hydrator
      * @param Config|null $routeConfig
+     * @param HydratorInterface|null $hydrator
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -121,8 +120,8 @@ class PageRepository implements PageRepositoryInterface
         StoreManagerInterface $storeManager,
         CollectionProcessorInterface $collectionProcessor = null,
         ?IdentityMap $identityMap = null,
-        ?HydratorInterface $hydrator = null,
-        ?Config $routeConfig = null
+        ?Config $routeConfig = null,
+        ?HydratorInterface $hydrator = null
     ) {
         $this->resource = $resource;
         $this->pageFactory = $pageFactory;
@@ -135,10 +134,9 @@ class PageRepository implements PageRepositoryInterface
         $this->collectionProcessor = $collectionProcessor ?: $this->getCollectionProcessor();
         $this->identityMap = $identityMap ?? ObjectManager::getInstance()
                 ->get(IdentityMap::class);
-        $this->hydrator = $hydrator ?: ObjectManager::getInstance()
-            ->get(HydratorInterface::class);
         $this->routeConfig = $routeConfig ?? ObjectManager::getInstance()
                 ->get(Config::class);
+        $this->hydrator = $hydrator ?: ObjectManager::getInstance()->get(HydratorInterface::class);
     }
 
     /**

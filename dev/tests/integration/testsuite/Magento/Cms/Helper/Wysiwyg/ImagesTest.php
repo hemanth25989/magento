@@ -82,7 +82,7 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
     public function providerGetImageHtmlDeclaration()
     {
         return [
-            [true, 'wysiwyg/hello.png', true, '<img src="http://example.com/media/wysiwyg/hello.png" alt="" />'],
+            [true, 'wysiwyg/hello.png', true, '<img src="http://example.com/pub/media/wysiwyg/hello.png" alt="" />'],
             [
                 false,
                 'wysiwyg/hello.png',
@@ -92,11 +92,10 @@ class ImagesTest extends \PHPUnit\Framework\TestCase
                         '/backend/cms/wysiwyg/directive/___directive/' .
                         'e3ttZWRpYSB1cmw9Ind5c2l3eWcvaGVsbG8ucG5nIn19/'
                     );
-
-                    $this->assertStringContainsString($expectedResult, parse_url($actualResult, PHP_URL_PATH));
+                    $this->assertStringContainsString($expectedResult,parse_url($actualResult, PHP_URL_PATH));
                 }
             ],
-            [true, 'wysiwyg/hello.png', false, 'http://example.com/media/wysiwyg/hello.png'],
+            [true, 'wysiwyg/hello.png', false, 'http://example.com/pub/media/wysiwyg/hello.png'],
             [false, 'wysiwyg/hello.png', true, '<img src="{{media url=&quot;wysiwyg/hello.png&quot;}}" alt="" />'],
         ];
     }

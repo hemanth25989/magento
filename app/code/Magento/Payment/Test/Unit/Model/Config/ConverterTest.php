@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * \Magento\Payment\Model\Config\Converter
  *
@@ -7,13 +7,10 @@
  */
 namespace Magento\Payment\Test\Unit\Model\Config;
 
-use Magento\Payment\Model\Config\Converter;
-use PHPUnit\Framework\TestCase;
-
-class ConverterTest extends TestCase
+class ConverterTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Converter
+     * @var \Magento\Payment\Model\Config\Converter
      */
     protected $_model;
 
@@ -22,7 +19,7 @@ class ConverterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->_model = new Converter();
+        $this->_model = new \Magento\Payment\Model\Config\Converter();
     }
 
     public function testConvert()
@@ -36,6 +33,6 @@ class ConverterTest extends TestCase
             'groups' => ['any_payment' => 'Any Payment'],
             'methods' => ['checkmo' => ['allow_multiple_address' => 1]],
         ];
-        $this->assertEquals($expectedResult, $this->_model->convert($dom), '');
+        $this->assertEquals($expectedResult, $this->_model->convert($dom), '', 0, 20);
     }
 }

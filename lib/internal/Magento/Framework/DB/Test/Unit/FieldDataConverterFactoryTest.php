@@ -3,27 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\DB\Test\Unit;
 
-use Magento\Framework\DB\DataConverter\DataConverterInterface;
-use Magento\Framework\DB\FieldDataConverter;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\DB\FieldDataConverterFactory;
 use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\DB\FieldDataConverter;
+use Magento\Framework\DB\DataConverter\DataConverterInterface;
 
-class FieldDataConverterFactoryTest extends TestCase
+class FieldDataConverterFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $objectManagerMock;
 
     /**
-     * @var DataConverterInterface|MockObject
+     * @var DataConverterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $dataConverterMock;
 

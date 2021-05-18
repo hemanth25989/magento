@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Shipping\Test\Unit\Controller\Adminhtml\Order\Shipment;
 
@@ -24,18 +23,16 @@ use Magento\Sales\Model\Order\Shipment;
 use Magento\Sales\Model\Order\Shipment\Track;
 use Magento\Shipping\Controller\Adminhtml\Order\Shipment\AddTrack;
 use Magento\Shipping\Controller\Adminhtml\Order\ShipmentLoader;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class AddTrackTest covers AddTrack controller.
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AddTrackTest extends TestCase
+class AddTrackTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ShipmentLoader|MockObject
+     * @var ShipmentLoader|\PHPUnit\Framework\MockObject\MockObject
      */
     private $shipmentLoader;
 
@@ -45,47 +42,47 @@ class AddTrackTest extends TestCase
     private $controller;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit\Framework\MockObject\MockObject
      */
     private $context;
 
     /**
-     * @var Http|MockObject
+     * @var Http|\PHPUnit\Framework\MockObject\MockObject
      */
     private $request;
 
     /**
-     * @var ResponseInterface|MockObject
+     * @var ResponseInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $response;
 
     /**
-     * @var  ViewInterface|MockObject
+     * @var  ViewInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $view;
 
     /**
-     * @var Page|MockObject
+     * @var Page|\PHPUnit\Framework\MockObject\MockObject
      */
     private $resultPageMock;
 
     /**
-     * @var Config|MockObject
+     * @var Config|\PHPUnit\Framework\MockObject\MockObject
      */
     private $pageConfigMock;
 
     /**
-     * @var Title|MockObject
+     * @var Title|\PHPUnit\Framework\MockObject\MockObject
      */
     private $pageTitleMock;
 
     /**
-     * @var ShipmentTrackInterfaceFactory|MockObject
+     * @var ShipmentTrackInterfaceFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $trackFactory;
 
     /**
-     * @var ResultInterface|MockObject
+     * @var ResultInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $rawResult;
 
@@ -101,25 +98,24 @@ class AddTrackTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods(['setShipmentId', 'setOrderId', 'setShipment', 'setTracking', 'load'])
             ->getMock();
-        $this->context = $this->getMockBuilder(Context::class)
-            ->addMethods(['getTitle'])
-            ->onlyMethods([
+        $this->context = $this->createPartialMock(
+            Context::class,
+            [
                 'getRequest',
                 'getResponse',
                 'getRedirect',
                 'getObjectManager',
+                'getTitle',
                 'getView',
                 'getResultFactory'
-            ])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->response = $this->getMockBuilder(ResponseInterface::class)
-            ->addMethods(['setRedirect', 'setBody'])
-            ->onlyMethods(['sendResponse'])
-            ->getMockForAbstractClass();
+            ]
+        );
+        $this->response = $this->createPartialMock(
+            ResponseInterface::class,
+            ['setRedirect', 'sendResponse', 'setBody']
+        );
         $this->request = $this->getMockBuilder(Http::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->disableOriginalConstructor()->getMock();
         $this->view = $this->getMockForAbstractClass(ViewInterface::class);
         $this->resultPageMock = $this->getMockBuilder(Page::class)
             ->disableOriginalConstructor()
@@ -189,21 +185,25 @@ class AddTrackTest extends TestCase
         $this->request->expects($this->any())
             ->method('getParam')
             ->willReturnMap(
-                [
-                    ['order_id', null, $orderId],
-                    ['shipment_id', null, $shipmentId],
-                    ['shipment', null, $shipmentData],
-                    ['tracking', null, $tracking],
-                ]
+                
+                    [
+                        ['order_id', null, $orderId],
+                        ['shipment_id', null, $shipmentId],
+                        ['shipment', null, $shipmentData],
+                        ['tracking', null, $tracking],
+                    ]
+                
             );
         $this->request->expects($this->any())
             ->method('getPost')
             ->willReturnMap(
-                [
-                    ['carrier', null, $carrier],
-                    ['number', null, $number],
-                    ['title', null, $title],
-                ]
+                
+                    [
+                        ['carrier', null, $carrier],
+                        ['number', null, $number],
+                        ['title', null, $title],
+                    ]
+                
             );
         $this->shipmentLoader->expects($this->any())
             ->method('setShipmentId')
@@ -229,15 +229,19 @@ class AddTrackTest extends TestCase
             ->willReturn($track);
         $track->expects($this->once())
             ->method('setNumber')
-            ->with($number)->willReturnSelf();
+            ->with($number)
+            ->willReturnSelf();
         $track->expects($this->once())
             ->method('setCarrierCode')
-            ->with($carrier)->willReturnSelf();
+            ->with($carrier)
+            ->willReturnSelf();
         $track->expects($this->once())
             ->method('setTitle')
-            ->with($title)->willReturnSelf();
+            ->with($title)
+            ->willReturnSelf();
         $this->view->expects($this->once())
-            ->method('loadLayout')->willReturnSelf();
+            ->method('loadLayout')
+            ->willReturnSelf();
         $layout = $this->getMockForAbstractClass(LayoutInterface::class);
         $menuBlock = $this->createPartialMock(BlockInterface::class, ['toHtml']);
         $html = 'html string';
@@ -253,9 +257,11 @@ class AddTrackTest extends TestCase
             ->willReturn($html);
         $shipment->expects($this->once())
             ->method('addTrack')
-            ->with($track)->willReturnSelf();
+            ->with($this->equalTo($track))
+            ->willReturnSelf();
         $shipment->expects($this->any())
-            ->method('save')->willReturnSelf();
+            ->method('save')
+            ->willReturnSelf();
         $this->view->expects($this->any())
             ->method('getPage')
             ->willReturn($this->resultPageMock);

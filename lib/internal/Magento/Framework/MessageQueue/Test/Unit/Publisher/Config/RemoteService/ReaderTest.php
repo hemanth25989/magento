@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\MessageQueue\Test\Unit\Publisher\Config\RemoteService;
 
 use Magento\Framework\Communication\Config\ReflectionGenerator;
@@ -13,10 +11,8 @@ use Magento\Framework\MessageQueue\Publisher\Config\RemoteService\Reader;
 use Magento\Framework\ObjectManager\ConfigInterface as ObjectManagerConfig;
 use Magento\Framework\Reflection\MethodsMap as ServiceMethodsMap;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ReaderTest extends TestCase
+class ReaderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Reader
@@ -24,22 +20,22 @@ class ReaderTest extends TestCase
     private $reader;
 
     /**
-     * @var DefaultValueProvider|MockObject
+     * @var DefaultValueProvider|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $defaultValueProvider;
 
     /**
-     * @var ObjectManagerConfig|MockObject
+     * @var ObjectManagerConfig|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $objectManagerConfig;
 
     /**
-     * @var ReflectionGenerator|MockObject
+     * @var ReflectionGenerator|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $reflectionGenerator;
 
     /**
-     * @var ServiceMethodsMap|MockObject
+     * @var ServiceMethodsMap|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $serviceMethodsMap;
 
@@ -103,10 +99,13 @@ class ReaderTest extends TestCase
         $this->assertEquals($expectedResult, $this->reader->read());
     }
 
+    /**
+     */
     public function testReadInvalidService()
     {
-        $this->expectException('LogicException');
-        $this->expectExceptionMessage('Service interface was expected, "Some\Service\NameInterface" given');
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Service interface was expected, "Some\\Service\\NameInterface" given');
+
         $this->defaultValueProvider->expects($this->any())->method('getConnection')->willReturn('amqp');
         $this->defaultValueProvider->expects($this->any())->method('getExchange')->willReturn('magento');
 

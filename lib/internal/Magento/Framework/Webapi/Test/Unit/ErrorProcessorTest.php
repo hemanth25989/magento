@@ -5,56 +5,44 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Webapi\Test\Unit;
 
-use Magento\Framework\App\State;
+use \Magento\Framework\Webapi\ErrorProcessor;
+
 use Magento\Framework\Exception\AuthorizationException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Json\Encoder;
-use Magento\Framework\Phrase;
-use Magento\Framework\Webapi\ErrorProcessor;
-
 use Magento\Framework\Webapi\Exception as WebapiException;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
+use Magento\Framework\Phrase;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class ErrorProcessorTest extends TestCase
+class ErrorProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ErrorProcessor */
     protected $_errorProcessor;
 
-    /** @var Encoder */
+    /** @var \Magento\Framework\Json\Encoder */
     protected $encoderMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit\Framework\MockObject\MockObject */
     protected $_appStateMock;
 
-    /** @var LoggerInterface */
+    /** @var \Psr\Log\LoggerInterface */
     protected $_loggerMock;
 
     protected function setUp(): void
     {
         /** Set up mocks for SUT. */
-        $this->encoderMock = $this->getMockBuilder(Encoder::class)
+        $this->encoderMock = $this->getMockBuilder(\Magento\Framework\Json\Encoder::class)
             ->disableOriginalConstructor()
             ->setMethods(['encode'])
             ->getMock();
 
-        $this->_appStateMock = $this->getMockBuilder(State::class)
+        $this->_appStateMock = $this->getMockBuilder(\Magento\Framework\App\State::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->_loggerMock = $this->getMockBuilder(LoggerInterface::class)
-        ->getMock();
+        $this->_loggerMock = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)->getMock();
 
-        $filesystemMock = $this->getMockBuilder(Filesystem::class)
+        $filesystemMock = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -91,7 +79,8 @@ class ErrorProcessorTest extends TestCase
         )->method(
             'encode'
         )->willReturnCallback(
-            [$this, 'callbackJsonEncode'], $this->returnArgument(0)
+            [$this, 'callbackJsonEncode'],
+            $this->returnArgument(0)
         );
         /** Init output buffering to catch output via echo function. */
         ob_start();
@@ -131,7 +120,8 @@ class ErrorProcessorTest extends TestCase
         )->method(
             'encode'
         )->willReturnCallback(
-            [$this, 'callbackJsonEncode'], $this->returnArgument(0)
+            [$this, 'callbackJsonEncode'],
+            $this->returnArgument(0)
         );
         ob_start();
         $this->_errorProcessor->renderErrorMessage('Message', 'Message trace.', 401);
@@ -247,11 +237,9 @@ class ErrorProcessorTest extends TestCase
         $this->_loggerMock->expects($this->once())
             ->method('critical')
             ->willReturnCallback(
-                
-                    function (\Exception $loggedException) use ($thrownException) {
-                        $this->assertSame($thrownException, $loggedException->getPrevious());
-                    }
-                
+                function (\Exception $loggedException) use ($thrownException) {
+                    $this->assertSame($thrownException, $loggedException->getPrevious());
+                }
             );
         $this->_errorProcessor->maskException($thrownException);
     }

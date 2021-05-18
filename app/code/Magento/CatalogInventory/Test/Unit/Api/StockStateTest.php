@@ -3,62 +3,52 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogInventory\Test\Unit\Api;
 
-use Magento\CatalogInventory\Api\Data\StockInterface;
-use Magento\CatalogInventory\Api\Data\StockItemInterface;
-use Magento\CatalogInventory\Api\Data\StockStatusInterface;
-use Magento\CatalogInventory\Api\StockStateInterface;
-use Magento\CatalogInventory\Model\Spi\StockRegistryProviderInterface;
-use Magento\CatalogInventory\Model\Spi\StockStateProviderInterface;
-use Magento\CatalogInventory\Model\StockState;
-use Magento\Framework\DataObject;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class StockStateTest
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class StockStateTest extends TestCase
+class StockStateTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
     /**
-     * @var StockStateInterface
+     * @var \Magento\CatalogInventory\Api\StockStateInterface
      */
     protected $stockState;
 
     /**
-     * @var StockStateProviderInterface|MockObject
+     * @var \Magento\CatalogInventory\Model\Spi\StockStateProviderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $stockStateProvider;
 
     /**
-     * @var StockRegistryProviderInterface|MockObject
+     * @var \Magento\CatalogInventory\Model\Spi\StockRegistryProviderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $stockRegistryProvider;
 
     /**
-     * @var StockInterface|MockObject
+     * @var \Magento\CatalogInventory\Api\Data\StockInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $stock;
 
     /**
-     * @var StockItemInterface|MockObject
+     * @var \Magento\CatalogInventory\Api\Data\StockItemInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $stockItem;
 
     /**
-     * @var StockStatusInterface|MockObject
+     * @var \Magento\CatalogInventory\Api\Data\StockStatusInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $stockStatus;
 
     /**
-     * @var DataObject|MockObject
+     * @var \Magento\Framework\DataObject|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $objectResult;
 
@@ -70,13 +60,13 @@ class StockStateTest extends TestCase
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
 
-        $this->stock = $this->getMockForAbstractClass(StockInterface::class);
-        $this->stockItem = $this->getMockForAbstractClass(StockItemInterface::class);
-        $this->stockStatus = $this->getMockForAbstractClass(StockStatusInterface::class);
-        $this->objectResult = $this->createMock(DataObject::class);
+        $this->stock = $this->createMock(\Magento\CatalogInventory\Api\Data\StockInterface::class);
+        $this->stockItem = $this->createMock(\Magento\CatalogInventory\Api\Data\StockItemInterface::class);
+        $this->stockStatus = $this->createMock(\Magento\CatalogInventory\Api\Data\StockStatusInterface::class);
+        $this->objectResult = $this->createMock(\Magento\Framework\DataObject::class);
 
         $this->stockStateProvider = $this->createPartialMock(
-            StockStateProviderInterface::class,
+            \Magento\CatalogInventory\Model\Spi\StockStateProviderInterface::class,
             [
                 'verifyStock',
                 'verifyNotification',
@@ -96,7 +86,7 @@ class StockStateTest extends TestCase
         $this->stockStateProvider->expects($this->any())->method('checkQuoteItemQty')->willReturn($this->objectResult);
 
         $this->stockRegistryProvider = $this->createPartialMock(
-            StockRegistryProviderInterface::class,
+            \Magento\CatalogInventory\Model\Spi\StockRegistryProviderInterface::class,
             ['getStock', 'getStockItem', 'getStockStatus']
         );
         $this->stockRegistryProvider->expects($this->any())
@@ -110,7 +100,7 @@ class StockStateTest extends TestCase
             ->willReturn($this->stockStatus);
 
         $this->stockState = $this->objectManagerHelper->getObject(
-            StockState::class,
+            \Magento\CatalogInventory\Model\StockState::class,
             [
                 'stockStateProvider' => $this->stockStateProvider,
                 'stockRegistryProvider' => $this->stockRegistryProvider

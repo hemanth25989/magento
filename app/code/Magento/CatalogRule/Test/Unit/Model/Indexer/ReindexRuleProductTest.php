@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 
 namespace Magento\CatalogRule\Test\Unit\Model\Indexer;
 
@@ -17,9 +15,8 @@ use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Store\Model\ScopeInterface;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ReindexRuleProductTest extends TestCase
+class ReindexRuleProductTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ReindexRuleProduct

@@ -27,28 +27,24 @@
                        class="bundle-option-<?= $block->escapeHtmlAttr($_option->getId()) ?>  product bundle option"
                        name="bundle_option[<?= $block->escapeHtml($_option->getId()) ?>]"
                        value="<?= $block->escapeHtmlAttr($_selections[0]->getSelectionId()) ?>"/>
-            <?php else: ?>
+            <?php else:?>
                 <?php foreach ($_selections as $selection): ?>
                     <?php $sectionId = $selection->getSelectionId() ?>
                     <div class="field choice">
-                        <input class="<?=/* @noEscape */ $inputClass ?> change-container-classname"
-                               id="<?=/* @noEscape */ $inputId . '-' . $block->escapeHtmlAttr($sectionId)?>"
+                        <input class="<?= /* @noEscape */ $inputClass ?> change-container-classname"
+                               id="<?= /* @noEscape */ $inputId . '-' . $block->escapeHtmlAttr($sectionId) ?>"
                                type="checkbox"
                                <?php if ($_option->getRequired()): ?>
                                     <?= /* @noEscape */ $dataValidation ?>
-                               <?php endif;?>
-                               name="<?=/* @noEscape */ $inputName .'['. $block->escapeHtmlAttr($sectionId)?>]"
+                                <?php endif; ?>
+                               name="<?= /* @noEscape */ $inputName . '[' . $block->escapeHtmlAttr($sectionId) ?>]"
                                data-selector="<?= /* @noEscape */ $inputName.'['.$block->escapeHtmlAttr($sectionId)?>]"
-                                <?php if ($block->isSelected($selection)): ?>
-                                    <?= ' checked="checked"' ?>
-                                <?php endif; ?>
-                                <?php if (!$selection->isSaleable()): ?>
-                                    <?= ' disabled="disabled"' ?>
-                                <?php endif; ?>
-                               value="<?= $block->escapeHtmlAttr($sectionId) ?>"
+                               <?php if ($block->isSelected($selection)) { echo ' checked="checked"'; } ?>
+                               <?php if (!$selection->isSaleable()) { echo ' disabled="disabled"'; } ?>
+                               value="<?= $block->escapeHtmlAttr($selection->getSelectionId()) ?>"
                                data-errors-message-box="#validation-message-box"/>
                         <label class="label"
-                               for="<?= /* @noEscape */ $inputId . '-' . $block->escapeHtmlAttr($sectionId) ?>">
+                               for="<?=/* @noEscape */ $inputId . '-' . $block->escapeHtmlAttr($sectionId) ?>">
                             <span><?= /* @noEscape */ $block->getSelectionQtyTitlePrice($selection) ?></span>
                             <br/>
                             <?= /* @noEscape */ $block->getTierPriceRenderer()->renderTierPrice($selection) ?>

@@ -13,7 +13,7 @@ use Magento\Framework\App\RequestInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test verifies modifier for configurable associated product
+ * AssociatedProductsTest
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */

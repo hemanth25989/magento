@@ -3,19 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Block\Adminhtml\Store;
 
+use Magento\Paypal\Block\Adminhtml\Store\SwitcherPlugin as StoreSwitcherBlockPlugin;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Backend\Block\Store\Switcher as StoreSwitcherBlock;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Paypal\Block\Adminhtml\Store\SwitcherPlugin as StoreSwitcherBlockPlugin;
 use Magento\Paypal\Model\Config\StructurePlugin as ConfigStructurePlugin;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SwitcherPluginTest extends TestCase
+class SwitcherPluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var StoreSwitcherBlockPlugin
@@ -28,12 +24,12 @@ class SwitcherPluginTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var StoreSwitcherBlock|MockObject
+     * @var StoreSwitcherBlock|\PHPUnit\Framework\MockObject\MockObject
      */
     private $subjectMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $requestMock;
 

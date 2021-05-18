@@ -3,14 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\EntityManager\Test\Unit;
 
-use Magento\Framework\EntityManager\Operation\Read;
-use Magento\Framework\EntityManager\OperationPool;
-use Magento\Framework\ObjectManagerInterface;
 use PHPUnit\Framework\TestCase;
+use Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\EntityManager\OperationPool;
 
 class OperationPoolTest extends TestCase
 {
@@ -24,7 +21,7 @@ class OperationPoolTest extends TestCase
 
         $objectManagerMock->expects($this->once())
             ->method('get')
-            ->with(Read::class);
+            ->with(\Magento\Framework\EntityManager\Operation\Read::class);
         $operationPool->getOperation('entity_type', 'read');
     }
 

@@ -3,22 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Reports\Test\Unit\Model\ResourceModel\Report;
 
 use Magento\Framework\Data\Collection\EntityFactory;
-use Magento\Framework\DataObject;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Reports\Model\ResourceModel\Report\Collection;
 use Magento\Reports\Model\ResourceModel\Report\Collection\Factory as ReportCollectionFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
+ * Class CollectionTest
+ *
  * @covers \Magento\Reports\Model\ResourceModel\Report\Collection
  */
-class CollectionTest extends TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Collection
@@ -26,17 +24,17 @@ class CollectionTest extends TestCase
     protected $collection;
 
     /**
-     * @var EntityFactory|MockObject
+     * @var EntityFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $entityFactoryMock;
 
     /**
-     * @var TimezoneInterface|MockObject
+     * @var TimezoneInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $timezoneMock;
 
     /**
-     * @var ReportCollectionFactory|MockObject
+     * @var ReportCollectionFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $factoryMock;
 
@@ -119,12 +117,12 @@ class CollectionTest extends TestCase
         $this->collection->setInterval($fromDate, $toDate);
         $reports = $this->collection->getReports();
         foreach ($reports as $report) {
-            $this->assertInstanceOf(DataObject::class, $report);
+            $this->assertInstanceOf(\Magento\Framework\DataObject::class, $report);
             $reportData = $report->getData();
             $this->assertEmpty($reportData['children']);
             $this->assertTrue($reportData['is_empty']);
         }
-        $this->assertCount($size, $reports);
+        $this->assertEquals($size, count($reports));
     }
 
     /**

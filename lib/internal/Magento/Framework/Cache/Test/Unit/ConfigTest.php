@@ -3,31 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Cache\Test\Unit;
 
-use Magento\Framework\Cache\Config;
-use Magento\Framework\Cache\Config\Data;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Data|MockObject
+     * @var \Magento\Framework\Cache\Config\Data|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_storage;
 
     /**
-     * @var MockObject|Config
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\Cache\Config
      */
     protected $_model;
 
     protected function setUp(): void
     {
-        $this->_storage = $this->createPartialMock(Data::class, ['get']);
-        $this->_model = new Config($this->_storage);
+        $this->_storage = $this->createPartialMock(\Magento\Framework\Cache\Config\Data::class, ['get']);
+        $this->_model = new \Magento\Framework\Cache\Config($this->_storage);
     }
 
     public function testGetTypes()

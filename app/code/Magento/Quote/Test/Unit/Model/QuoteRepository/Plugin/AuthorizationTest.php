@@ -3,45 +3,42 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Quote\Test\Unit\Model\QuoteRepository\Plugin;
 
-use Magento\Authorization\Model\UserContextInterface;
-use Magento\Quote\Api\CartRepositoryInterface;
-use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\QuoteRepository\Plugin\Authorization;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Authorization\Model\UserContextInterface;
 
-class AuthorizationTest extends TestCase
+/**
+ * Class AuthorizationTest
+ */
+class AuthorizationTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Authorization
+     * @var \Magento\Quote\Model\QuoteRepository\Plugin\Authorization
      */
     private $authorization;
 
     /**
-     * @var MockObject|UserContextInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject | \Magento\Authorization\Model\UserContextInterface
      */
     private $userContextMock;
 
     protected function setUp(): void
     {
-        $this->userContextMock = $this->getMockForAbstractClass(UserContextInterface::class);
+        $this->userContextMock = $this->createMock(\Magento\Authorization\Model\UserContextInterface::class);
         $this->authorization = new Authorization($this->userContextMock);
     }
 
+    /**
+     */
     public function testAfterGetActiveThrowsExceptionIfQuoteIsNotAllowedForCurrentUserContext()
     {
-        $this->expectException('Magento\Framework\Exception\NoSuchEntityException');
+        $this->expectException(\Magento\Framework\Exception\NoSuchEntityException::class);
         $this->expectExceptionMessage('No such entity');
+
         // Quote without customer ID
-        $quoteMock = $this->getMockBuilder(Quote::class)
-            ->addMethods(['getCustomerId'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $quoteRepositoryMock = $this->getMockForAbstractClass(CartRepositoryInterface::class);
+        $quoteMock = $this->createPartialMock(\Magento\Quote\Model\Quote::class, ['getCustomerId']);
+        $quoteRepositoryMock = $this->createMock(\Magento\Quote\Api\CartRepositoryInterface::class);
         $this->userContextMock->expects($this->any())
             ->method('getUserType')
             ->willReturn(UserContextInterface::USER_TYPE_CUSTOMER);
@@ -52,24 +49,24 @@ class AuthorizationTest extends TestCase
 
     public function testAfterGetActiveReturnsQuoteIfQuoteIsAllowedForCurrentUserContext()
     {
-        $quoteMock = $this->createMock(Quote::class);
-        $quoteRepositoryMock = $this->getMockForAbstractClass(CartRepositoryInterface::class);
+        $quoteMock = $this->createMock(\Magento\Quote\Model\Quote::class);
+        $quoteRepositoryMock = $this->createMock(\Magento\Quote\Api\CartRepositoryInterface::class);
         $this->userContextMock->expects($this->any())
             ->method('getUserType')
             ->willReturn(UserContextInterface::USER_TYPE_GUEST);
         $this->assertEquals($quoteMock, $this->authorization->afterGetActive($quoteRepositoryMock, $quoteMock));
     }
 
+    /**
+     */
     public function testAfterGetActiveForCustomerThrowsExceptionIfQuoteIsNotAllowedForCurrentUserContext()
     {
-        $this->expectException('Magento\Framework\Exception\NoSuchEntityException');
+        $this->expectException(\Magento\Framework\Exception\NoSuchEntityException::class);
         $this->expectExceptionMessage('No such entity');
+
         // Quote without customer ID
-        $quoteMock = $this->getMockBuilder(Quote::class)
-            ->addMethods(['getCustomerId'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $quoteRepositoryMock = $this->getMockForAbstractClass(CartRepositoryInterface::class);
+        $quoteMock = $this->createPartialMock(\Magento\Quote\Model\Quote::class, ['getCustomerId']);
+        $quoteRepositoryMock = $this->createMock(\Magento\Quote\Api\CartRepositoryInterface::class);
         $this->userContextMock->expects($this->any())->method('getUserType')->willReturn(
             UserContextInterface::USER_TYPE_CUSTOMER
         );
@@ -80,8 +77,8 @@ class AuthorizationTest extends TestCase
 
     public function testAfterGetActiveForCustomerReturnsQuoteIfQuoteIsAllowedForCurrentUserContext()
     {
-        $quoteMock = $this->createMock(Quote::class);
-        $quoteRepositoryMock = $this->getMockForAbstractClass(CartRepositoryInterface::class);
+        $quoteMock = $this->createMock(\Magento\Quote\Model\Quote::class);
+        $quoteRepositoryMock = $this->createMock(\Magento\Quote\Api\CartRepositoryInterface::class);
         $this->userContextMock->expects($this->any())
             ->method('getUserType')
             ->willReturn(UserContextInterface::USER_TYPE_GUEST);

@@ -3,32 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
- * Tests for \Magento\Framework\Data\Form\Field\Image
+ * Test for \Magento\Framework\Data\Form\Field\Image.
  */
 namespace Magento\Config\Test\Unit\Block\System\Config\Form\Field;
 
-use Magento\Config\Block\System\Config\Form\Field\Image;
-use Magento\Framework\DataObject;
-use Magento\Framework\Escaper;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\Url;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Magento\Framework\Math\Random;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
-
-class ImageTest extends TestCase
+class ImageTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Url|MockObject
+     * @var \Magento\Framework\Url|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlBuilderMock;
 
     /**
-     * @var Image
+     * @var \Magento\Config\Block\System\Config\Form\Field\Image
      */
     protected $image;
 
@@ -37,26 +26,24 @@ class ImageTest extends TestCase
      */
     protected $testData;
 
+    /**
+     * @var \Magento\Framework\Escaper|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $escaperMock;
+
+    /**
+     * @inheritdoc
+     */
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
-        $this->urlBuilderMock = $this->createMock(Url::class);
-        $randomMock = $this->createMock(Random::class);
-        $randomMock->method('getRandomString')->willReturn('some-rando-string');
-        $secureRendererMock = $this->createMock(SecureHtmlRenderer::class);
-        $secureRendererMock->method('renderEventListenerAsTag')
-            ->willReturnCallback(
-                function (string $event, string $listener, string $selector): string {
-                    return "<script>document.querySelector('{$selector}').{$event} = () => { {$listener} };</script>";
-                }
-            );
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->urlBuilderMock = $this->createMock(\Magento\Framework\Url::class);
+        $this->escaperMock = $this->createMock(\Magento\Framework\Escaper::class);
         $this->image = $objectManager->getObject(
-            Image::class,
+            \Magento\Config\Block\System\Config\Form\Field\Image::class,
             [
                 'urlBuilder' => $this->urlBuilderMock,
-                '_escaper' => $objectManager->getObject(Escaper::class),
-                'random' => $randomMock,
-                'secureRenderer' => $secureRendererMock
+                '_escaper' => $this->escaperMock,
             ]
         );
 
@@ -68,13 +55,15 @@ class ImageTest extends TestCase
             'value'          => 'test_value',
         ];
 
-        $formMock = new DataObject();
+        $formMock = new \Magento\Framework\DataObject();
         $formMock->setHtmlIdPrefix($this->testData['html_id_prefix']);
         $formMock->setHtmlIdSuffix($this->testData['html_id_suffix']);
         $this->image->setForm($formMock);
     }
 
     /**
+     * Get element with value and check data.
+     *
      * @covers \Magento\Config\Block\System\Config\Form\Field\Image::_getUrl
      */
     public function testGetElementHtmlWithValue()
@@ -115,21 +104,27 @@ class ImageTest extends TestCase
             . $this->testData['html_id']
             . $this->testData['html_id_suffix'];
 
+        $this->escaperMock->expects($this->once())
+            ->method('escapeUrl')
+            ->with($url . $this->testData['path'] . '/' . $this->testData['value'])
+            ->willReturn($url . $this->testData['path'] . '/' . $this->testData['value']);
+        $this->escaperMock->expects($this->exactly(3))
+            ->method('escapeHtmlAttr')
+            ->with($this->testData['value'])
+            ->willReturn($this->testData['value']);
+        $this->escaperMock->expects($this->atLeastOnce())->method('escapeHtml')->willReturn($expectedHtmlId);
         $html = $this->image->getElementHtml();
+
         $this->assertStringContainsString('class="input-file"', $html);
         $this->assertStringContainsString('<input', $html);
         $this->assertStringContainsString('type="file"', $html);
         $this->assertStringContainsString('value="test_value"', $html);
-        $this->assertStringContainsString(
-            '<a previewlinkid="linkIdsome-rando-string" href="'
+        $this->assertStringContainsString('<a href="'
             . $url
             . $this->testData['path']
             . '/'
             . $this->testData['value']
-            . '"',
-            $html
-        );
-        $this->assertStringContainsString("imagePreview('{$expectedHtmlId}_image');\nreturn false;", $html);
+            . '" onclick="imagePreview(\'' . $expectedHtmlId . '_image\'); return false;"', $html);
         $this->assertStringContainsString('<input type="checkbox"', $html);
     }
 }

@@ -3,67 +3,61 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Console\Command;
 
-use Magento\Framework\App\DeploymentConfig;
+use Magento\Setup\Console\Command\InstallStoreConfigurationCommand;
+use Symfony\Component\Console\Tester\CommandTester;
+use Magento\Setup\Model\Installer;
 use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Validator\Currency as CurrencyValidator;
+use Magento\Setup\Model\StoreConfigurationDataMapper;
+use Magento\Framework\Validator\Url as UrlValidator;
 use Magento\Framework\Validator\Locale as LocaleValidator;
 use Magento\Framework\Validator\Timezone as TimezoneValidator;
-use Magento\Framework\Validator\Url as UrlValidator;
-use Magento\Setup\Console\Command\InstallStoreConfigurationCommand;
-use Magento\Setup\Model\Installer;
-use Magento\Setup\Model\InstallerFactory;
-use Magento\Setup\Model\ObjectManagerProvider;
-use Magento\Setup\Model\StoreConfigurationDataMapper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Tester\CommandTester;
+use Magento\Framework\Validator\Currency as CurrencyValidator;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class InstallStoreConfigurationCommandTest extends TestCase
+class InstallStoreConfigurationCommandTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DeploymentConfig|MockObject
+     * @var \Magento\Framework\App\DeploymentConfig|\PHPUnit\Framework\MockObject\MockObject
      */
     private $deploymentConfig;
 
     /**
-     * @var InstallerFactory|MockObject
+     * @var \Magento\Setup\Model\InstallerFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $installerFactory;
 
     /**
-     * @var Installer|MockObject
+     * @var Installer|\PHPUnit\Framework\MockObject\MockObject
      */
     private $installer;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $objectManager;
 
     /**
-     * @var LocaleValidator|MockObject
+     * @var LocaleValidator|\PHPUnit\Framework\MockObject\MockObject
      */
     private $localeValidatorMock;
 
     /**
-     * @var TimezoneValidator|MockObject
+     * @var TimezoneValidator|\PHPUnit\Framework\MockObject\MockObject
      */
     private $timezoneValidatorMock;
 
     /**
-     * @var CurrencyValidator|MockObject
+     * @var CurrencyValidator|\PHPUnit\Framework\MockObject\MockObject
      */
     private $currencyValidatorMock;
 
     /**
-     * @var UrlValidator|MockObject
+     * @var UrlValidator|\PHPUnit\Framework\MockObject\MockObject
      */
     private $urlValidatorMock;
 
@@ -79,12 +73,12 @@ class InstallStoreConfigurationCommandTest extends TestCase
         $this->timezoneValidatorMock = $this->createMock(TimezoneValidator::class);
         $this->currencyValidatorMock = $this->createMock(CurrencyValidator::class);
 
-        $this->installerFactory = $this->createMock(InstallerFactory::class);
-        $this->deploymentConfig = $this->createMock(DeploymentConfig::class);
-        $this->installer = $this->createMock(Installer::class);
-        $objectManagerProvider = $this->createMock(ObjectManagerProvider::class);
+        $this->installerFactory = $this->createMock(\Magento\Setup\Model\InstallerFactory::class);
+        $this->deploymentConfig = $this->createMock(\Magento\Framework\App\DeploymentConfig::class);
+        $this->installer = $this->createMock(\Magento\Setup\Model\Installer::class);
+        $objectManagerProvider = $this->createMock(\Magento\Setup\Model\ObjectManagerProvider::class);
         $this->objectManager = $this->getMockForAbstractClass(
-            ObjectManagerInterface::class,
+            \Magento\Framework\ObjectManagerInterface::class,
             [],
             '',
             false

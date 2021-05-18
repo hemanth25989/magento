@@ -91,7 +91,7 @@ class CreatePostTest extends AbstractController
         $this->assertCustomerNotExists('test1@email.com');
         $this->assertRedirect($this->stringEndsWith('customer/account/create/'));
         $this->assertSessionMessages(
-            $this->stringContains((string)__('Invalid Form Key. Please refresh the page.')),
+            $this->containsEqual(__('Invalid Form Key. Please refresh the page.')),
             MessageInterface::TYPE_ERROR
         );
     }
@@ -99,7 +99,7 @@ class CreatePostTest extends AbstractController
     /**
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture current_website customer/create_account/confirm 0
+     * @magentoDataFixture Magento/Customer/_files/customer_confirmation_config_disable.php
      * @magentoConfigFixture current_store customer/create_account/default_group 1
      * @magentoConfigFixture current_store customer/create_account/generate_human_friendly_id 0
      *
@@ -126,7 +126,7 @@ class CreatePostTest extends AbstractController
     /**
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture current_website customer/create_account/confirm 0
+     * @magentoDataFixture Magento/Customer/_files/customer_confirmation_config_disable.php
      * @magentoConfigFixture current_store customer/create_account/default_group 2
      * @magentoConfigFixture current_store customer/create_account/generate_human_friendly_id 1
      * @return void
@@ -153,7 +153,7 @@ class CreatePostTest extends AbstractController
     /**
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture current_website customer/create_account/confirm 1
+     * @magentoDataFixture Magento/Customer/_files/customer_confirmation_config_enable.php
      *
      * @return void
      */
@@ -192,8 +192,7 @@ class CreatePostTest extends AbstractController
     /**
      * Register Customer with email confirmation.
      *
-     * @magentoAppArea frontend
-     * @magentoConfigFixture current_website customer/create_account/confirm 1
+     * @magentoDataFixture Magento/Customer/_files/customer_confirmation_config_enable.php
      *
      * @return void
      */
@@ -206,7 +205,7 @@ class CreatePostTest extends AbstractController
         $message = 'You must confirm your account.'
             . ' Please check your email for the confirmation link or <a href="%1">click here</a> for a new link.';
         $url = $this->urlBuilder->getUrl('customer/account/confirmation', ['_query' => ['email' => $email]]);
-        $this->assertSessionMessages($this->containsEqual((string)__($message, $url)), MessageInterface::TYPE_SUCCESS);
+        $this->assertSessionMessages($this->equalTo([(string)__($message, $url)]), MessageInterface::TYPE_SUCCESS);
         /** @var CustomerInterface $customer */
         $customer = $this->customerRepository->get($email);
         $confirmation = $customer->getConfirmation();
@@ -293,11 +292,11 @@ class CreatePostTest extends AbstractController
      *
      * @return void
      */
-    protected function resetRequest(): void
+    private function resetRequest(): void
     {
-        parent::resetRequest();
         $this->cookieManager->deleteCookie(MessagePlugin::MESSAGES_COOKIES_NAME);
         $this->_objectManager->removeSharedInstance(Http::class);
         $this->_objectManager->removeSharedInstance(Request::class);
+        $this->_request = null;
     }
 }

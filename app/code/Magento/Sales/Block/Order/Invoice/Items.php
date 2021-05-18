@@ -13,7 +13,6 @@ namespace Magento\Sales\Block\Order\Invoice;
 
 /**
  * Sales order invoice items block
- *
  * @api
  * @since 100.0.2
  */

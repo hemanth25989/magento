@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\MessageQueue\Test\Unit\Model\ResourceModel;
 
 use Magento\Framework\App\ResourceConnection;
@@ -13,13 +11,11 @@ use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\MessageQueue\Model\LockFactory;
 use Magento\MessageQueue\Model\ResourceModel\Lock as LockResourceModel;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for lock resource model
  */
-class LockTest extends TestCase
+class LockTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ObjectManager */
     private $objectManager;
@@ -30,17 +26,17 @@ class LockTest extends TestCase
     private $lockResourceModel;
 
     /**
-     * @var DateTime|MockObject
+     * @var DateTime|\PHPUnit\Framework\MockObject\MockObject
      */
     private $dateTimeMock;
 
     /**
-     * @var LockFactory|MockObject
+     * @var LockFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $lockFactoryMock;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit\Framework\MockObject\MockObject
      */
     private $resourceConnectionMock;
 
@@ -50,12 +46,8 @@ class LockTest extends TestCase
     protected function setUp(): void
     {
         $this->objectManager = new ObjectManager($this);
-        $this->dateTimeMock = $this->getMockBuilder(DateTime::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->lockFactoryMock = $this->getMockBuilder(LockFactory::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->dateTimeMock = $this->getMockBuilder(DateTime::class)->disableOriginalConstructor()->getMock();
+        $this->lockFactoryMock = $this->getMockBuilder(LockFactory::class)->disableOriginalConstructor()->getMock();
         $this->resourceConnectionMock = $this->getMockBuilder(ResourceConnection::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -72,10 +64,8 @@ class LockTest extends TestCase
 
     public function testReleaseOutdatedLocks()
     {
-        /** @var AdapterInterface|MockObject $adapterMock */
-        $adapterMock = $this->getMockBuilder(AdapterInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+        /** @var \Magento\Framework\DB\Adapter\AdapterInterface|\PHPUnit\Framework\MockObject\MockObject $adapterMock */
+        $adapterMock = $this->getMockBuilder(AdapterInterface::class)->disableOriginalConstructor()->getMockForAbstractClass();
         $this->resourceConnectionMock->expects($this->once())->method('getConnection')->willReturn($adapterMock);
         $tableName = 'queue_lock_mock';
         $this->resourceConnectionMock->expects($this->once())->method('getTableName')->willReturn($tableName);

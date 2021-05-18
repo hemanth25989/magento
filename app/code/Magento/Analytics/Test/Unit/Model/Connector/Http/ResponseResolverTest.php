@@ -11,10 +11,8 @@ use Magento\Analytics\Model\Connector\Http\ConverterInterface;
 use Magento\Analytics\Model\Connector\Http\ResponseHandlerInterface;
 use Magento\Analytics\Model\Connector\Http\ResponseResolver;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ResponseResolverTest extends TestCase
+class ResponseResolverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -22,17 +20,17 @@ class ResponseResolverTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var ConverterInterface|MockObject
+     * @var ConverterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $converterMock;
 
     /**
-     * @var ResponseHandlerInterface|MockObject
+     * @var ResponseHandlerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $successResponseHandlerMock;
 
     /**
-     * @var ResponseHandlerInterface|MockObject
+     * @var ResponseHandlerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $notFoundResponseHandlerMock;
 
@@ -47,7 +45,9 @@ class ResponseResolverTest extends TestCase
     protected function setUp(): void
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
-        $this->converterMock = $this->getMockForAbstractClass(ConverterInterface::class);
+        $this->converterMock = $this->getMockBuilder(ConverterInterface::class)
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
         $this->successResponseHandlerMock = $this->getMockBuilder(ResponseHandlerInterface::class)
             ->getMockForAbstractClass();
         $this->notFoundResponseHandlerMock = $this->getMockBuilder(ResponseHandlerInterface::class)

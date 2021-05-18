@@ -3,18 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Shipment\Validation;
 
+use Magento\Sales\Model\Order\Shipment\Validation\QuantityValidator;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Sales\Api\Data\ShipmentInterface;
 use Magento\Sales\Api\Data\ShipmentItemInterface;
-use Magento\Sales\Model\Order\Shipment\Validation\QuantityValidator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class QuantityValidatorTest extends TestCase
+/**
+ * Class QuantityValidatorTest
+ */
+class QuantityValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var QuantityValidator
@@ -22,12 +21,12 @@ class QuantityValidatorTest extends TestCase
     private $validator;
 
     /**
-     * @var ShipmentInterface|MockObject
+     * @var ShipmentInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $shipmentMock;
 
     /**
-     * @var ShipmentItemInterface|MockObject
+     * @var ShipmentItemInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $shipmentItemMock;
 

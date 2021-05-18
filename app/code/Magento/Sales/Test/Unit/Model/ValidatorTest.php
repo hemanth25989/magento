@@ -16,13 +16,11 @@ use Magento\Sales\Model\Validator;
 use Magento\Sales\Model\ValidatorInterface;
 use Magento\Sales\Model\ValidatorResultInterface;
 use Magento\Sales\Model\ValidatorResultInterfaceFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Magento\Sales\Model\Validator
  */
-class ValidatorTest extends TestCase
+class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Testable Object
@@ -39,27 +37,27 @@ class ValidatorTest extends TestCase
     private $objectManager;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $objectManagerMock;
 
     /**
-     * @var ValidatorResultInterfaceFactory|MockObject
+     * @var ValidatorResultInterfaceFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $validatorResultFactoryMock;
 
     /**
-     * @var ValidatorResultInterface|MockObject
+     * @var ValidatorResultInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $validatorResultMock;
 
     /**
-     * @var ValidatorInterface|MockObject
+     * @var ValidatorInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $validatorMock;
 
     /**
-     * @var OrderInterface|MockObject
+     * @var OrderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $entityMock;
 
@@ -74,8 +72,7 @@ class ValidatorTest extends TestCase
         $this->entityMock = $this->getMockForAbstractClass(OrderInterface::class);
         $this->validatorMock = $this->getMockForAbstractClass(ValidatorInterface::class);
         $this->validatorResultFactoryMock = $this->getMockBuilder(ValidatorResultInterfaceFactory::class)
-            ->setMethods(['create'])->disableOriginalConstructor()
-            ->getMock();
+            ->setMethods(['create'])->disableOriginalConstructor()->getMock();
         $this->validatorResultMock = $this->getMockForAbstractClass(ValidatorResultInterface::class);
         $this->validatorResultFactoryMock->expects($this->any())->method('create')
             ->willReturn($this->validatorResultMock);

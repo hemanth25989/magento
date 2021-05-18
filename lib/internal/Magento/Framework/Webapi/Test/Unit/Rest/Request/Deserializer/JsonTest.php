@@ -3,48 +3,39 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Webapi\Test\Unit\Rest\Request\Deserializer;
 
-use Magento\Framework\App\State;
-use Magento\Framework\Json\Decoder;
-use Magento\Framework\Webapi\Exception;
-use Magento\Framework\Webapi\Rest\Request\Deserializer\Json;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class JsonTest extends TestCase
+class JsonTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var MockObject */
+    /** @var \PHPUnit\Framework\MockObject\MockObject */
     protected $_helperFactoryMock;
 
-    /** @var Json */
+    /** @var \Magento\Framework\Webapi\Rest\Request\Deserializer\Json */
     protected $_jsonDeserializer;
 
-    /** @var Decoder */
+    /** @var \Magento\Framework\Json\Decoder */
     protected $decoderMock;
 
-    /** @var MockObject */
+    /** @var \PHPUnit\Framework\MockObject\MockObject */
     protected $_appStateMock;
 
-    /** @var \Magento\Framework\Serialize\Serializer\Json|MockObject */
+    /** @var \Magento\Framework\Serialize\Serializer\Json|\PHPUnit\Framework\MockObject\MockObject */
     private $serializerMock;
 
     protected function setUp(): void
     {
         /** Prepare mocks for SUT constructor. */
-        $this->decoderMock = $this->getMockBuilder(Decoder::class)
+        $this->decoderMock = $this->getMockBuilder(\Magento\Framework\Json\Decoder::class)
             ->disableOriginalConstructor()
             ->setMethods(['decode'])
             ->getMock();
         $this->_appStateMock = $this->createMock(
-            State::class
+            \Magento\Framework\App\State::class
         );
         $this->serializerMock = $this->getMockBuilder(\Magento\Framework\Serialize\Serializer\Json::class)
             ->getMock();
         /** Initialize SUT. */
-        $this->_jsonDeserializer = new Json(
+        $this->_jsonDeserializer = new \Magento\Framework\Webapi\Rest\Request\Deserializer\Json(
             $this->decoderMock,
             $this->_appStateMock,
             $this->serializerMock
@@ -97,7 +88,7 @@ class JsonTest extends TestCase
         $this->serializerMock
             ->expects($this->once())
             ->method('unserialize')
-            ->will($this->throwException(new \InvalidArgumentException()));
+            ->will($this->throwException(new \InvalidArgumentException));
         $this->_appStateMock->expects($this->once())
             ->method('getMode')
             ->willReturn('production');
@@ -106,11 +97,11 @@ class JsonTest extends TestCase
         try {
             $this->_jsonDeserializer->deserialize($inputInvalidJson);
             $this->fail("Exception is expected to be raised");
-        } catch (Exception $e) {
-            $this->assertInstanceOf(Exception::class, $e, 'Exception type is invalid');
+        } catch (\Magento\Framework\Webapi\Exception $e) {
+            $this->assertInstanceOf(\Magento\Framework\Webapi\Exception::class, $e, 'Exception type is invalid');
             $this->assertEquals('Decoding error.', $e->getMessage(), 'Exception message is invalid');
             $this->assertEquals(
-                Exception::HTTP_BAD_REQUEST,
+                \Magento\Framework\Webapi\Exception::HTTP_BAD_REQUEST,
                 $e->getHttpCode(),
                 'HTTP code is invalid'
             );
@@ -136,11 +127,11 @@ class JsonTest extends TestCase
         try {
             $this->_jsonDeserializer->deserialize($inputInvalidJson);
             $this->fail("Exception is expected to be raised");
-        } catch (Exception $e) {
-            $this->assertInstanceOf(Exception::class, $e, 'Exception type is invalid');
+        } catch (\Magento\Framework\Webapi\Exception $e) {
+            $this->assertInstanceOf(\Magento\Framework\Webapi\Exception::class, $e, 'Exception type is invalid');
             $this->assertStringContainsString('Decoding error:', $e->getMessage(), 'Exception message is invalid');
             $this->assertEquals(
-                Exception::HTTP_BAD_REQUEST,
+                \Magento\Framework\Webapi\Exception::HTTP_BAD_REQUEST,
                 $e->getHttpCode(),
                 'HTTP code is invalid'
             );

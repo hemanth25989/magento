@@ -3,17 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Category\Attribute\Source;
 
-use Magento\Catalog\Model\Category\Attribute\Source\Page;
 use Magento\Cms\Model\ResourceModel\Block\CollectionFactory;
-use Magento\Framework\Data\Collection;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
-class PageTest extends TestCase
+class PageTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var array
@@ -21,7 +16,7 @@ class PageTest extends TestCase
     private $testArray = ['test1', ['test1']];
 
     /**
-     * @var Page
+     * @var \Magento\Catalog\Model\Category\Attribute\Source\Page
      */
     private $model;
 
@@ -36,7 +31,7 @@ class PageTest extends TestCase
     {
         $helper = new ObjectManager($this);
         $this->model = $helper->getObject(
-            Page::class,
+            \Magento\Catalog\Model\Category\Attribute\Source\Page::class,
             [
                 'blockCollectionFactory' => $this->getMockedBlockCollectionFactory()
             ]
@@ -44,13 +39,13 @@ class PageTest extends TestCase
     }
 
     /**
-     * @return CollectionFactory
+     * @return \Magento\Cms\Model\ResourceModel\Block\CollectionFactory
      */
     private function getMockedBlockCollectionFactory()
     {
         $mockedCollection = $this->getMockedCollection();
 
-        $mockBuilder = $this->getMockBuilder(CollectionFactory::class);
+        $mockBuilder = $this->getMockBuilder(\Magento\Cms\Model\ResourceModel\Block\CollectionFactory::class);
         $mock = $mockBuilder->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -63,11 +58,11 @@ class PageTest extends TestCase
     }
 
     /**
-     * @return Collection
+     * @return \Magento\Framework\Data\Collection
      */
     private function getMockedCollection()
     {
-        $mockBuilder = $this->getMockBuilder(Collection::class);
+        $mockBuilder = $this->getMockBuilder(\Magento\Framework\Data\Collection::class);
         $mock = $mockBuilder->disableOriginalConstructor()
             ->getMock();
 

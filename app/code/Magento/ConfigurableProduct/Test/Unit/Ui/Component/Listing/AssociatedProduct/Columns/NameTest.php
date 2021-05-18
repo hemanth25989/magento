@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\ConfigurableProduct\Test\Unit\Ui\Component\Listing\AssociatedProduct\Columns;
 
 use Magento\ConfigurableProduct\Ui\Component\Listing\AssociatedProduct\Columns\Name as NameColumn;
@@ -12,10 +10,8 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHe
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponent\Processor as UiElementProcessor;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class NameTest extends TestCase
+class NameTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var NameColumn
@@ -28,17 +24,17 @@ class NameTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var UrlInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $urlBuilderMock;
 
     /**
-     * @var ContextInterface|MockObject
+     * @var ContextInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $contextMock;
 
     /**
-     * @var UiElementProcessor|MockObject
+     * @var UiElementProcessor|\PHPUnit\Framework\MockObject\MockObject
      */
     private $uiElementProcessorMock;
 

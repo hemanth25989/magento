@@ -130,7 +130,7 @@ class CouponUsagesTest extends TestCase
         $quote->load($reservedOrderId, 'reserved_order_id');
 
         /** @var OrderManagementInterface|MockObject $orderManagement */
-        $orderManagement = $this->createMock(OrderManagementInterface::class);
+        $orderManagement = $this->getMockForAbstractClass(OrderManagementInterface::class);
         $orderManagement->expects($this->once())
             ->method('place')
             ->willThrowException(new \Exception($exceptionMessage));

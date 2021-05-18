@@ -3,15 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\ObjectManager\Environment;
 
-use Magento\Framework\App\EnvironmentFactory;
 use Magento\Framework\App\ObjectManager\Environment\Compiled;
-use PHPUnit\Framework\TestCase;
 
-class CompiledTest extends TestCase
+class CompiledTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Compiled
@@ -20,7 +16,7 @@ class CompiledTest extends TestCase
 
     protected function setUp(): void
     {
-        $envFactoryMock = $this->createMock(EnvironmentFactory::class);
+        $envFactoryMock = $this->createMock(\Magento\Framework\App\EnvironmentFactory::class);
         $this->_compiled = new CompiledTesting($envFactoryMock);
     }
 

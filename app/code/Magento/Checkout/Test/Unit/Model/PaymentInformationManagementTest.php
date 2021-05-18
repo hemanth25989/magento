@@ -23,7 +23,6 @@ use Magento\Quote\Api\PaymentMethodManagementInterface;
 use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\Quote\Address;
 use Magento\Quote\Model\Quote\Address\Rate;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -33,17 +32,17 @@ use Psr\Log\LoggerInterface;
 class PaymentInformationManagementTest extends TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $billingAddressManagementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $paymentMethodManagementMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $cartManagementMock;
 
@@ -53,22 +52,22 @@ class PaymentInformationManagementTest extends TestCase
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $loggerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $cartRepositoryMock;
 
     /**
-     * @var PaymentProcessingRateLimiterInterface|MockObject
+     * @var PaymentProcessingRateLimiterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $rateLimiterMock;
 
     /**
-     * @var PaymentSavingRateLimiterInterface|MockObject
+     * @var PaymentSavingRateLimiterInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $saveLimiterMock;
 
@@ -125,9 +124,12 @@ class PaymentInformationManagementTest extends TestCase
         $this->placeOrder();
     }
 
+    /**
+     */
     public function testSavePaymentInformationAndPlaceOrderException()
     {
-        $this->expectException('Magento\Framework\Exception\CouldNotSaveException');
+        $this->expectException(\Magento\Framework\Exception\CouldNotSaveException::class);
+
         $cartId = 100;
         $paymentMock = $this->getMockForAbstractClass(PaymentInterface::class);
         $billingAddressMock = $this->getMockForAbstractClass(AddressInterface::class);
@@ -188,10 +190,13 @@ class PaymentInformationManagementTest extends TestCase
         $this->assertTrue($this->model->savePaymentInformation($cartId, $paymentMock));
     }
 
+    /**
+     */
     public function testSavePaymentInformationAndPlaceOrderWithLocolizedException()
     {
-        $this->expectException('Magento\Framework\Exception\CouldNotSaveException');
+        $this->expectException(\Magento\Framework\Exception\CouldNotSaveException::class);
         $this->expectExceptionMessage('DB exception');
+
         $cartId = 100;
         $paymentMock = $this->getMockForAbstractClass(PaymentInterface::class);
         $billingAddressMock = $this->getMockForAbstractClass(AddressInterface::class);
@@ -233,7 +238,7 @@ class PaymentInformationManagementTest extends TestCase
 
     /**
      * @param int $cartId
-     * @param MockObject $billingAddressMock
+     * @param \PHPUnit\Framework\MockObject\MockObject $billingAddressMock
      */
     private function getMockForAssignBillingAddress($cartId, $billingAddressMock)
     {
@@ -242,11 +247,10 @@ class PaymentInformationManagementTest extends TestCase
         $quoteBillingAddress = $this->createMock(Address::class);
         $shippingRate = $this->createPartialMock(Rate::class, []);
         $shippingRate->setCarrier('flatrate');
-        $quoteShippingAddress = $this->getMockBuilder(Address::class)
-            ->addMethods(['setLimitCarrier'])
-            ->onlyMethods(['getShippingMethod', 'getShippingRateByCode'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $quoteShippingAddress = $this->createPartialMock(
+            Address::class,
+            ['setLimitCarrier', 'getShippingMethod', 'getShippingRateByCode']
+        );
         $this->cartRepositoryMock->expects($this->any())->method('getActive')->with($cartId)->willReturn($quoteMock);
         $quoteMock->method('getBillingAddress')->willReturn($quoteBillingAddress);
         $quoteMock->expects($this->any())->method('getShippingAddress')->willReturn($quoteShippingAddress);

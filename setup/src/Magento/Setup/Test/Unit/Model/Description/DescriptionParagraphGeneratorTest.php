@@ -3,24 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Setup\Test\Unit\Model\Description;
 
-use Magento\Setup\Model\Description\DescriptionParagraphGenerator;
-use Magento\Setup\Model\Description\DescriptionSentenceGenerator;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class DescriptionParagraphGeneratorTest extends TestCase
+class DescriptionParagraphGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|DescriptionSentenceGenerator
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Setup\Model\Description\DescriptionSentenceGenerator
      */
     private $sentenceGeneratorMock;
 
     /**
-     * @var DescriptionParagraphGenerator
+     * @var \Magento\Setup\Model\Description\DescriptionParagraphGenerator
      */
     private $paragraphGenerator;
 
@@ -37,13 +30,16 @@ class DescriptionParagraphGeneratorTest extends TestCase
     protected function setUp(): void
     {
         $this->sentenceGeneratorMock =
-            $this->createMock(DescriptionSentenceGenerator::class);
-        $this->paragraphGenerator = new DescriptionParagraphGenerator(
+            $this->createMock(\Magento\Setup\Model\Description\DescriptionSentenceGenerator::class);
+        $this->paragraphGenerator = new \Magento\Setup\Model\Description\DescriptionParagraphGenerator(
             $this->sentenceGeneratorMock,
             $this->paragraphConfig
         );
     }
 
+    /**
+     *
+     */
     public function testParagraphGeneration()
     {
         // @codingStandardsIgnoreStart

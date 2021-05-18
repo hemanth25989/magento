@@ -3,26 +3,21 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Webapi\Test\Unit\Model\Soap\Wsdl;
 
-use Laminas\Soap\Wsdl;
-use Magento\Framework\Reflection\TypeProcessor;
-use Magento\Webapi\Model\Soap\Wsdl\ComplexTypeStrategy;
-use PHPUnit\Framework\MockObject\MockObject;
+use \Magento\Webapi\Model\Soap\Wsdl\ComplexTypeStrategy;
 
-use PHPUnit\Framework\TestCase;
+use Zend\Soap\Wsdl;
 
 /**
  * Complex type strategy tests.
  */
-class ComplexTypeStrategyTest extends TestCase
+class ComplexTypeStrategyTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var TypeProcessor|MockObject */
+    /** @var \Magento\Framework\Reflection\TypeProcessor|\PHPUnit\Framework\MockObject\MockObject */
     protected $_typeProcessor;
 
-    /** @var \Magento\Webapi\Model\Soap\Wsdl|MockObject */
+    /** @var \Magento\Webapi\Model\Soap\Wsdl|\PHPUnit\Framework\MockObject\MockObject */
     protected $_wsdl;
 
     /** @var ComplexTypeStrategy */
@@ -34,17 +29,15 @@ class ComplexTypeStrategyTest extends TestCase
     protected function setUp(): void
     {
         $this->_typeProcessor = $this->getMockBuilder(
-            TypeProcessor::class
+            \Magento\Framework\Reflection\TypeProcessor::class
         )->setMethods(
             ['getTypeData']
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
         $this->_wsdl = $this->getMockBuilder(
             \Magento\Webapi\Model\Soap\Wsdl::class
         )->setMethods(
             ['toDomDocument', 'getTypes', 'getSchema']
-        )->disableOriginalConstructor()
-            ->getMock();
+        )->disableOriginalConstructor()->getMock();
         $this->_strategy = new ComplexTypeStrategy($this->_typeProcessor);
         $this->_strategy->setContext($this->_wsdl);
         parent::setUp();

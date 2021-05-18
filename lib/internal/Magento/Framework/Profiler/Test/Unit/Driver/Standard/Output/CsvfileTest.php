@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Test class for \Magento\Framework\Profiler\Driver\Standard\Output\Csvfile
  *
@@ -7,10 +7,7 @@
  */
 namespace Magento\Framework\Profiler\Test\Unit\Driver\Standard\Output;
 
-use Magento\Framework\Profiler\Driver\Standard\Output\Csvfile;
-use PHPUnit\Framework\TestCase;
-
-class CsvfileTest extends TestCase
+class CsvfileTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider constructorProvider
@@ -18,15 +15,16 @@ class CsvfileTest extends TestCase
      * @param string $expectedFilePath
      * @param string $expectedDelimiter
      * @param string $expectedEnclosure
+     * @SuppressWarnings(PHPMD)
      */
     public function testConstructor($config, $expectedFilePath, $expectedDelimiter, $expectedEnclosure)
     {
         $this->markTestSkipped('Skipped in #27500 due to testing protected/private methods and properties');
 
-        $output = new Csvfile($config);
-        $this->assertAttributeEquals($expectedFilePath, '_filePath', $output);
-        $this->assertAttributeEquals($expectedDelimiter, '_delimiter', $output);
-        $this->assertAttributeEquals($expectedEnclosure, '_enclosure', $output);
+        $output = new \Magento\Framework\Profiler\Driver\Standard\Output\Csvfile($config);
+        //$this->assertAttributeEquals($expectedFilePath, '_filePath', $output);
+        //$this->assertAttributeEquals($expectedDelimiter, '_delimiter', $output);
+        //$this->assertAttributeEquals($expectedEnclosure, '_enclosure', $output);
     }
 
     /**

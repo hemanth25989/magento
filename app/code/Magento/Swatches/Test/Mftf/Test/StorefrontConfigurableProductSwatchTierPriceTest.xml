@@ -14,8 +14,8 @@
             <title value="Swatch option should show the tier price on product page"/>
             <description value="Configurable product with swatch attribute should show the tier price on product page"/>
             <severity value="CRITICAL"/>
-            <testCaseId value="MC-34033"/>
-            <useCaseId value="MC-33147"/>
+            <testCaseId value="MC-33488"/>
+            <useCaseId value="MC-33118"/>
             <group value="Swatches"/>
         </annotations>
         <before>
@@ -25,21 +25,21 @@
                 <requiredEntity createDataKey="createCategory"/>
             </createData>
             <!-- Login as Admin -->
-            <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="loginAsAdmin"/>
         </before>
         <after>
             <!-- Delete configurable product -->
             <deleteData createDataKey="createConfigurableProduct" stepKey="deleteConfigurableProduct"/>
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
             <!-- Delete color attribute -->
-            <actionGroup ref="DeleteProductAttributeActionGroup" stepKey="deleteColorAttribute">
+            <actionGroup ref="deleteProductAttribute" stepKey="deleteColorAttribute">
                 <argument name="ProductAttribute" value="ProductColorAttribute"/>
             </actionGroup>
             <!-- Logout -->
-            <actionGroup ref="AdminLogoutActionGroup" stepKey="adminLogout"/>
+            <actionGroup ref="logout" stepKey="amOnLogoutPage"/>
         </after>
 
-        <!-- Create text swatch attribute with 3 options: Black, White and Blue -->
+        <!-- Create text swatch attribute with 3 options:  Black, White and Blue -->
         <actionGroup ref="AddTextSwatchToProductActionGroup" stepKey="addColorAttribute">
             <argument name="attributeName" value="{{ProductColorAttribute.frontend_label}}"/>
             <argument name="attributeCode" value="{{ProductColorAttribute.attribute_code}}"/>
@@ -55,10 +55,10 @@
         </actionGroup>
         <actionGroup ref="SaveConfigurableProductAddToCurrentAttributeSetActionGroup" stepKey="saveConfigurableProduct"/>
         <!-- Set Tier Price to one of configuration product -->
-        <actionGroup ref="FilterAndSelectProductActionGroup" stepKey="filterProduct">
+        <actionGroup ref="filterAndSelectProduct" stepKey="filterProduct">
             <argument name="productSku" value="$$createConfigurableProduct.sku$$-White"/>
         </actionGroup>
-        <actionGroup ref="ProductSetAdvancedPricingActionGroup" stepKey="addTierPriceToSimpleProduct">
+        <actionGroup ref="ProductSetAdvancedPricing" stepKey="addTierPriceToSimpleProduct">
             <argument name="group" value="ALL GROUPS"/>
             <argument name="quantity" value="5"/>
             <argument name="price" value="Discount"/>
@@ -71,7 +71,7 @@
         </actionGroup>
         <waitForPageLoad stepKey="waitForConfigurableProductPage"/>
         <!-- Select White configuration -->
-        <actionGroup ref="StorefrontSelectSwatchOptionOnProductPageActionGroup" stepKey="selectWhiteOption">
+        <actionGroup ref="StorefrontSelectSwatchOptionOnProductPage" stepKey="selectWhiteOption">
             <argument name="optionName" value="White"/>
         </actionGroup>
         <!-- Assert tier price on selected configuration -->

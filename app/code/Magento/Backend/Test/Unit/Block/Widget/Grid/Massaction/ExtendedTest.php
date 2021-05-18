@@ -3,69 +3,56 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 /**
  * Test class for \Magento\Backend\Block\Widget\Grid\Massaction\Extended
  */
 namespace Magento\Backend\Test\Unit\Block\Widget\Grid\Massaction;
 
-use Magento\Backend\Block\Widget\Grid;
-use Magento\Backend\Block\Widget\Grid\Massaction;
-use Magento\Backend\Block\Widget\Grid\Massaction\Extended;
-use Magento\Backend\Model\Url;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\Data\Collection;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Layout;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ExtendedTest extends TestCase
+class ExtendedTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Massaction
+     * @var \Magento\Backend\Block\Widget\Grid\Massaction
      */
     protected $_block;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_layoutMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_gridMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_eventManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_urlModelMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_requestMock;
 
     protected function setUp(): void
     {
         $this->_gridMock = $this->createPartialMock(
-            Grid::class,
+            \Magento\Backend\Block\Widget\Grid::class,
             ['getId', 'getCollection']
         );
         $this->_gridMock->expects($this->any())->method('getId')->willReturn('test_grid');
 
-        $this->_layoutMock = $this->getMockBuilder(Layout::class)
-            ->addMethods(['helper'])
-            ->onlyMethods(['getParentName', 'getBlock'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->_layoutMock = $this->createPartialMock(
+            \Magento\Framework\View\Layout::class,
+            ['getParentName', 'getBlock', 'helper']
+        );
 
         $this->_layoutMock->expects(
             $this->any()
@@ -86,9 +73,9 @@ class ExtendedTest extends TestCase
             $this->_gridMock
         );
 
-        $this->_requestMock = $this->createMock(Http::class);
+        $this->_requestMock = $this->createMock(\Magento\Framework\App\Request\Http::class);
 
-        $this->_urlModelMock = $this->createMock(Url::class);
+        $this->_urlModelMock = $this->createMock(\Magento\Backend\Model\Url::class);
 
         $arguments = [
             'layout' => $this->_layoutMock,
@@ -97,9 +84,9 @@ class ExtendedTest extends TestCase
             'data' => ['massaction_id_field' => 'test_id', 'massaction_id_filter' => 'test_id'],
         ];
 
-        $objectManagerHelper = new ObjectManager($this);
+        $objectManagerHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->_block = $objectManagerHelper->getObject(
-            Extended::class,
+            \Magento\Backend\Block\Widget\Grid\Massaction\Extended::class,
             $arguments
         );
         $this->_block->setNameInLayout('test_grid_massaction');
@@ -138,14 +125,14 @@ class ExtendedTest extends TestCase
     public function testGetGridIdsJsonWithUseSelectAll(array $items, $result)
     {
         $this->_block->setUseSelectAll(true);
-
+        
         if ($this->_block->getMassactionIdField()) {
             $massActionIdField = $this->_block->getMassactionIdField();
         } else {
             $massActionIdField = $this->_block->getParentBlock()->getMassactionIdField();
         }
-
-        $collectionMock = $this->getMockBuilder(Collection::class)
+        
+        $collectionMock = $this->getMockBuilder(\Magento\Framework\Data\Collection::class)
             ->disableOriginalConstructor()
             ->getMock();
 

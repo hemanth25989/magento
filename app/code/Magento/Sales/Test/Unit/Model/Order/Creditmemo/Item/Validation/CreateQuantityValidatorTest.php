@@ -3,42 +3,41 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Creditmemo\Item\Validation;
 
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderItemRepositoryInterface;
 use Magento\Sales\Model\Order\Creditmemo\Item\Validation\CreationQuantityValidator;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order\Item;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CreateQuantityValidatorTest extends TestCase
+/**
+ * Class CreateQuantityValidatorTest
+ */
+class CreateQuantityValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var OrderItemRepositoryInterface|MockObject
+     * @var OrderItemRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $orderItemRepositoryMock;
 
     /**
-     * @var Item|MockObject
+     * @var Item|\PHPUnit\Framework\MockObject\MockObject
      */
     private $orderItemMock;
 
     /**
-     * @var CreationQuantityValidator|MockObject
+     * @var CreationQuantityValidator|\PHPUnit\Framework\MockObject\MockObject
      */
     private $createQuantityValidator;
 
     /**
-     * @var OrderInterface|MockObject
+     * @var OrderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $contexMock;
 
     /**
-     * @var \stdClass|MockObject
+     * @var \stdClass|\PHPUnit\Framework\MockObject\MockObject
      */
     private $entity;
 

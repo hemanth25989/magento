@@ -42,6 +42,8 @@ class GroupedProductViewTest extends GraphQlAbstract
   products(filter: {sku: {eq: "{$productSku}"}}) {
     items {
       id
+      attribute_set_id
+      created_at
       name
       sku
       type_id

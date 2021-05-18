@@ -3,28 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Block\Adminhtml\Items\Column;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Sales\Block\Adminhtml\Items\Column\DefaultColumn;
-use Magento\Sales\Model\Order\Item;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class DefaultColumnTest extends TestCase
+class DefaultColumnTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ObjectManagerHelper */
     protected $objectManagerHelper;
 
     /**
-     * @var DefaultColumn
+     * @var \Magento\Sales\Block\Adminhtml\Items\Column\DefaultColumn
      */
     protected $defaultColumn;
 
     /**
-     * @var Item|MockObject
+     * @var \Magento\Sales\Model\Order\Item|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $itemMock;
 
@@ -32,11 +26,11 @@ class DefaultColumnTest extends TestCase
     {
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->defaultColumn = $this->objectManagerHelper->getObject(
-            DefaultColumn::class
+            \Magento\Sales\Block\Adminhtml\Items\Column\DefaultColumn::class
         );
-        $this->itemMock = $this->getMockBuilder(Item::class)
+        $this->itemMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Item::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getRowTotal', 'getDiscountAmount', 'getBaseRowTotal', 'getBaseDiscountAmount'])
+            ->setMethods(['getRowTotal', 'getDiscountAmount', 'getBaseRowTotal', 'getBaseDiscountAmount', '__wakeup'])
             ->getMock();
     }
 

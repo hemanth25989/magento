@@ -17,6 +17,7 @@ use Magento\Catalog\Model\Product\Type\Virtual;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Eav\Model\Config;
 use Magento\Framework\App\Request\Http as HttpRequest;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Message\MessageInterface;
 use Magento\Framework\Registry;
 use Magento\Framework\Serialize\SerializerInterface;
@@ -369,7 +370,7 @@ class ProductTest extends AbstractBackendController
             foreach ($options as $option) {
                 $attribute = $this->getAttribute($option->getAttributeId());
                 foreach ($childProducts as $childProduct) {
-                    $this->assertContains($attribute->getAttributeCode(), array_keys($childProduct['attributes']));
+                    $this->assertContains($attribute->getAttributeCode(),array_keys($childProduct['attributes']));
                 }
             }
         }

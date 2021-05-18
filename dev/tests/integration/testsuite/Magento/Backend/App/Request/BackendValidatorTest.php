@@ -27,7 +27,7 @@ use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\Bootstrap as TestBootstrap;
 use Magento\Framework\App\Request\Http as HttpRequest;
 use Magento\Framework\App\Response\Http as HttpResponse;
-use Laminas\Stdlib\Parameters;
+use Zend\Stdlib\Parameters;
 use Magento\Backend\Model\UrlInterface as BackendUrl;
 use Magento\Framework\App\Response\HttpFactory as HttpResponseFactory;
 
@@ -269,14 +269,12 @@ class BackendValidatorTest extends TestCase
     }
 
     /**
-     *
      * @magentoConfigFixture admin/security/use_form_key 1
      * @magentoAppArea adminhtml
      */
     public function testValidateWithInvalidKey()
     {
         $this->expectException(\Magento\Framework\App\Request\InvalidRequestException::class);
-
         $invalidKey = $this->url->getSecretKey() .'Invalid';
         $this->request->setParams([
             BackendUrl::SECRET_KEY_PARAM_NAME => $invalidKey,
@@ -294,14 +292,12 @@ class BackendValidatorTest extends TestCase
     }
 
     /**
-     *
      * @magentoConfigFixture admin/security/use_form_key 0
      * @magentoAppArea adminhtml
      */
     public function testValidateWithInvalidFormKey()
     {
         $this->expectException(\Magento\Framework\App\Request\InvalidRequestException::class);
-
         $this->request->setPost(
             new Parameters(['form_key' => $this->formKey->getFormKey() .'1'])
         );

@@ -3,18 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Amqp\Test\Unit\Topology;
 
-use Magento\Framework\Amqp\Topology\BindingInstallerInterface;
 use Magento\Framework\Amqp\Topology\ExchangeInstaller;
-use Magento\Framework\MessageQueue\Topology\Config\ExchangeConfigItem\BindingInterface;
+use Magento\Framework\Amqp\Topology\BindingInstallerInterface;
 use Magento\Framework\MessageQueue\Topology\Config\ExchangeConfigItemInterface;
 use PhpAmqpLib\Channel\AMQPChannel;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\MessageQueue\Topology\Config\ExchangeConfigItem\BindingInterface;
 
-class ExchangeInstallerTest extends TestCase
+class ExchangeInstallerTest extends \PHPUnit\Framework\TestCase
 {
     public function testInstall()
     {

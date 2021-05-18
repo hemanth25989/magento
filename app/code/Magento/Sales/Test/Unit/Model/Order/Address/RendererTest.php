@@ -3,22 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Model\Order\Address;
 
-use Magento\Customer\Block\Address\Renderer\RendererInterface as CustomerAddressBlockRenderer;
-use Magento\Customer\Model\Address\Config as CustomerAddressConfig;
-use Magento\Framework\DataObject;
-use Magento\Framework\Event\ManagerInterface as EventManager;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Address as OrderAddress;
 use Magento\Sales\Model\Order\Address\Renderer as OrderAddressRenderer;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\Customer\Model\Address\Config as CustomerAddressConfig;
+use Magento\Framework\Event\ManagerInterface as EventManager;
+use Magento\Sales\Model\Order\Address as OrderAddress;
+use Magento\Sales\Model\Order;
+use Magento\Customer\Block\Address\Renderer\RendererInterface as CustomerAddressBlockRenderer;
+use Magento\Framework\DataObject;
 
-class RendererTest extends TestCase
+class RendererTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var OrderAddressRenderer
@@ -31,27 +27,27 @@ class RendererTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var CustomerAddressConfig|MockObject
+     * @var CustomerAddressConfig|\PHPUnit\Framework\MockObject\MockObject
      */
     private $customerAddressConfigMock;
 
     /**
-     * @var EventManager|MockObject
+     * @var EventManager|\PHPUnit\Framework\MockObject\MockObject
      */
     private $eventManagerMock;
 
     /**
-     * @var OrderAddress|MockObject
+     * @var OrderAddress|\PHPUnit\Framework\MockObject\MockObject
      */
     private $orderAddressMock;
 
     /**
-     * @var Order|MockObject
+     * @var Order|\PHPUnit\Framework\MockObject\MockObject
      */
     private $orderMock;
 
     /**
-     * @var CustomerAddressBlockRenderer|MockObject
+     * @var CustomerAddressBlockRenderer|\PHPUnit\Framework\MockObject\MockObject
      */
     private $customerAddressBlockRendererMock;
 

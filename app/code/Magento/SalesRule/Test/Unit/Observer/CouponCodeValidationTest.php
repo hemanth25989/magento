@@ -16,9 +16,12 @@ use Magento\Quote\Model\Quote;
 use Magento\SalesRule\Api\Exception\CodeRequestLimitException;
 use Magento\SalesRule\Model\Spi\CodeLimitManagerInterface;
 use Magento\SalesRule\Observer\CouponCodeValidation;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
+/**
+ * Class CouponCodeValidationTest
+ */
 class CouponCodeValidationTest extends TestCase
 {
     /**
@@ -27,32 +30,32 @@ class CouponCodeValidationTest extends TestCase
     private $couponCodeValidation;
 
     /**
-     * @var MockObject|CodeLimitManagerInterface
+     * @var PHPUnit\Framework\MockObject\MockObject|CodeLimitManagerInterface
      */
     private $codeLimitManagerMock;
 
     /**
-     * @var MockObject|CartRepositoryInterface
+     * @var PHPUnit\Framework\MockObject\MockObject|CartRepositoryInterface
      */
     private $cartRepositoryMock;
 
     /**
-     * @var MockObject|SearchCriteriaBuilder
+     * @var PHPUnit\Framework\MockObject\MockObject|SearchCriteriaBuilder
      */
     private $searchCriteriaBuilderMock;
 
     /**
-     * @var MockObject|Observer
+     * @var PHPUnit\Framework\MockObject\MockObject|Observer
      */
     private $observerMock;
 
     /**
-     * @var MockObject
+     * @var PHPUnit\Framework\MockObject\MockObject
      */
     private $searchCriteriaMock;
 
     /**
-     * @var MockObject
+     * @var PHPUnit\Framework\MockObject\MockObject
      */
     private $quoteMock;
 
@@ -64,21 +67,17 @@ class CouponCodeValidationTest extends TestCase
         $this->codeLimitManagerMock = $this->getMockForAbstractClass(CodeLimitManagerInterface::class);
         $this->observerMock = $this->createMock(Observer::class);
         $this->searchCriteriaMock = $this->getMockBuilder(SearchCriteria::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->disableOriginalConstructor()->getMockForAbstractClass();
         $this->cartRepositoryMock = $this->getMockBuilder(CartRepositoryInterface::class)
             ->setMethods(['getItems'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->disableOriginalConstructor()->getMockForAbstractClass();
         $this->searchCriteriaBuilderMock = $this->getMockBuilder(SearchCriteriaBuilder::class)
             ->setMethods(['addFilter', 'create'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->quoteMock = $this->getMockBuilder(Quote::class)
-            ->addMethods(['getCouponCode', 'setCouponCode'])
-            ->onlyMethods(['getId'])
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->disableOriginalConstructor()->getMockForAbstractClass();
+        $this->quoteMock = $this->createPartialMock(
+            Quote::class,
+            ['getCouponCode', 'setCouponCode', 'getId']
+        );
 
         $this->couponCodeValidation = new CouponCodeValidation(
             $this->codeLimitManagerMock,
@@ -134,11 +133,13 @@ class CouponCodeValidationTest extends TestCase
 
     /**
      * Testing the coupon code that reached the request limit
+     *
      */
     public function testReachingLimitForCouponCode()
     {
-        $this->expectException('Magento\SalesRule\Api\Exception\CodeRequestLimitException');
+        $this->expectException(\Magento\SalesRule\Api\Exception\CodeRequestLimitException::class);
         $this->expectExceptionMessage('Too many coupon code requests, please try again later.');
+
         $couponCode = 'AB123';
         $this->observerMock->expects($this->once())->method('getData')->with('quote')
             ->willReturn($this->quoteMock);

@@ -3,43 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\Cache\Type;
 
-use Magento\Framework\App\Cache\Type\Config;
 use Magento\Framework\App\Cache\Type\FrontendPool;
-use Magento\Framework\Cache\FrontendInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\TestFramework\Unit\Helper\ProxyTesting;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ConfigTest extends TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Config
+     * @var \Magento\Framework\App\Cache\Type\Config
      */
     protected $model;
 
     /**
-     * @var FrontendInterface|MockObject
+     * @var \Magento\Framework\Cache\FrontendInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $frontendMock;
 
     protected function setUp(): void
     {
-        $cacheFrontendPoolMock = $this->getMockBuilder(FrontendPool::class)
+        $cacheFrontendPoolMock = $this->getMockBuilder(\Magento\Framework\App\Cache\Type\FrontendPool::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->model = (new ObjectManager($this))->getObject(
-            Config::class,
+            \Magento\Framework\App\Cache\Type\Config::class,
             ['cacheFrontendPool' => $cacheFrontendPoolMock]
         );
-        $this->frontendMock = $this->getMockForAbstractClass(FrontendInterface::class);
+        $this->frontendMock = $this->createMock(\Magento\Framework\Cache\FrontendInterface::class);
         $cacheFrontendPoolMock->expects($this->once())
             ->method('get')
-            ->with(Config::TYPE_IDENTIFIER)
+            ->with(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER)
             ->willReturn($this->frontendMock);
     }
 
@@ -51,7 +44,7 @@ class ConfigTest extends TestCase
      */
     public function testProxyMethod($method, $params, $expectedResult)
     {
-        $helper = new ProxyTesting();
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ProxyTesting();
         $result = $helper->invokeWithExpectations($this->model, $this->frontendMock, $method, $params, $expectedResult);
         $this->assertSame($expectedResult, $result);
     }
@@ -80,7 +73,7 @@ class ConfigTest extends TestCase
         )->with(
             'test_value',
             'test_id',
-            ['test_tag_one', 'test_tag_two', Config::CACHE_TAG],
+            ['test_tag_one', 'test_tag_two', \Magento\Framework\App\Cache\Type\Config::CACHE_TAG],
             111
         )->willReturn(
             $expectedResult
@@ -98,7 +91,7 @@ class ConfigTest extends TestCase
             'clean'
         )->with(
             \Zend_Cache::CLEANING_MODE_MATCHING_TAG,
-            [Config::CACHE_TAG]
+            [\Magento\Framework\App\Cache\Type\Config::CACHE_TAG]
         )->willReturn(
             $expectedResult
         );
@@ -118,7 +111,7 @@ class ConfigTest extends TestCase
             'clean'
         )->with(
             \Zend_Cache::CLEANING_MODE_MATCHING_TAG,
-            ['test_tag_one', 'test_tag_two', Config::CACHE_TAG]
+            ['test_tag_one', 'test_tag_two', \Magento\Framework\App\Cache\Type\Config::CACHE_TAG]
         )->willReturn(
             $expectedResult
         );
@@ -143,7 +136,7 @@ class ConfigTest extends TestCase
             'clean'
         )->with(
             \Zend_Cache::CLEANING_MODE_MATCHING_TAG,
-            ['test_tag_one', Config::CACHE_TAG]
+            ['test_tag_one', \Magento\Framework\App\Cache\Type\Config::CACHE_TAG]
         )->willReturn(
             $fixtureResultOne
         );
@@ -153,7 +146,7 @@ class ConfigTest extends TestCase
             'clean'
         )->with(
             \Zend_Cache::CLEANING_MODE_MATCHING_TAG,
-            ['test_tag_two', Config::CACHE_TAG]
+            ['test_tag_two', \Magento\Framework\App\Cache\Type\Config::CACHE_TAG]
         )->willReturn(
             $fixtureResultTwo
         );

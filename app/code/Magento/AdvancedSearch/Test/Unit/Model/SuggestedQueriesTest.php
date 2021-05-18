@@ -3,47 +3,33 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\AdvancedSearch\Test\Unit\Model;
 
-use InvalidArgumentException;
-use Magento\AdvancedSearch\Model\SuggestedQueries;
-use Magento\AdvancedSearch\Model\SuggestedQueriesInterface;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Search\EngineResolverInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Search\Model\EngineResolver;
-use Magento\Search\Model\QueryInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\ObjectManagerInterface;
 
-/**
- * @covers \Magento\AdvancedSearch\Model\SuggestedQueries
- */
-class SuggestedQueriesTest extends TestCase
+class SuggestedQueriesTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Testable Object
-     *
-     * @var SuggestedQueries;
+     * @var \Magento\AdvancedSearch\Model\SuggestedQueries;
      */
-    private $model;
+    protected $model;
 
     /**
-     * @var EngineResolverInterface|MockObject
+     * @var EngineResolverInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    private $engineResolverMock;
+    protected $engineResolverMock;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    private $objectManagerMock;
+    protected $objectManagerMock;
 
     /**
      * @var ObjectManagerHelper
      */
-    private $objectManagerHelper;
+    protected $objectManagerHelper;
 
     /**
      * Set up test environment.
@@ -52,7 +38,7 @@ class SuggestedQueriesTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->engineResolverMock = $this->getMockBuilder(EngineResolver::class)
+        $this->engineResolverMock = $this->getMockBuilder(\Magento\Search\Model\EngineResolver::class)
             ->setMethods(['getCurrentSearchEngine'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -60,17 +46,21 @@ class SuggestedQueriesTest extends TestCase
             ->method('getCurrentSearchEngine')
             ->willReturn('my_engine');
 
-        /** @var SuggestedQueriesInterface|MockObject $suggestedQueriesMock */
-        $suggestedQueriesMock = $this->getMockForAbstractClass(SuggestedQueriesInterface::class);
+        /**
+         * @var \Magento\AdvancedSearch\Model\SuggestedQueriesInterface|
+         *     \PHPUnit\Framework\MockObject\MockObject
+         */
+        $suggestedQueriesMock = $this->createMock(\Magento\AdvancedSearch\Model\SuggestedQueriesInterface::class);
         $suggestedQueriesMock->expects($this->any())
             ->method('isResultsCountEnabled')
             ->willReturn(true);
         $suggestedQueriesMock->expects($this->any())
             ->method('getItems')
             ->willReturn([]);
-        $this->objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+
+        $this->objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $this->objectManagerMock->expects($this->any())
             ->method('create')
             ->with('search_engine')
@@ -78,7 +68,7 @@ class SuggestedQueriesTest extends TestCase
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->model = $this->objectManagerHelper->getObject(
-            SuggestedQueries::class,
+            \Magento\AdvancedSearch\Model\SuggestedQueries::class,
             [
                 'engineResolver' => $this->engineResolverMock,
                 'objectManager' => $this->objectManagerMock,
@@ -92,7 +82,7 @@ class SuggestedQueriesTest extends TestCase
      *
      * @return void
      */
-    public function testIsResultsCountEnabled(): void
+    public function testIsResultsCountEnabled()
     {
         $result = $this->model->isResultsCountEnabled();
         $this->assertTrue($result);
@@ -103,26 +93,27 @@ class SuggestedQueriesTest extends TestCase
      *
      * @return void
      */
-    public function testIsResultsCountEnabledException(): void
+    public function testIsResultsCountEnabledException()
     {
-        $objectManagerMock = $this->getMockBuilder(ObjectManagerInterface::class)
+        $this->expectException(\InvalidArgumentException::class);
+
+        $objectManagerMock = $this->getMockBuilder(\Magento\Framework\ObjectManagerInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $objectManagerMock->expects($this->once())
             ->method('create')
             ->willReturn(null);
 
         $objectManagerHelper = new ObjectManagerHelper($this);
-        /* @var SuggestedQueries $model */
+        /* @var $model \Magento\AdvancedSearch\Model\SuggestedQueries */
         $model = $objectManagerHelper->getObject(
-            SuggestedQueries::class,
+            \Magento\AdvancedSearch\Model\SuggestedQueries::class,
             [
                 'engineResolver' => $this->engineResolverMock,
                 'objectManager' => $objectManagerMock,
                 'data' => ['my_engine' => 'search_engine']
             ]
         );
-        $this->expectException(InvalidArgumentException::class);
         $model->isResultsCountEnabled();
     }
 
@@ -131,10 +122,10 @@ class SuggestedQueriesTest extends TestCase
      *
      * @return void
      */
-    public function testGetItems(): void
+    public function testGetItems()
     {
-        /** @var QueryInterface|MockObject $queryInterfaceMock */
-        $queryInterfaceMock = $this->getMockForAbstractClass(QueryInterface::class);
+        /** @var $queryInterfaceMock \Magento\Search\Model\QueryInterface */
+        $queryInterfaceMock = $this->createMock(\Magento\Search\Model\QueryInterface::class);
         $result = $this->model->getItems($queryInterfaceMock);
         $this->assertEquals([], $result);
     }

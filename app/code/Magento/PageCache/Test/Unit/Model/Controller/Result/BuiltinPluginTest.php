@@ -3,27 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\PageCache\Test\Unit\Model\Controller\Result;
 
-use Laminas\Http\Header\HeaderInterface as HttpHeaderInterface;
-use Magento\Framework\App\PageCache\Kernel;
-use Magento\Framework\App\Response\Http as ResponseHttp;
-use Magento\Framework\App\State as AppState;
-use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\PageCache\Model\Cache\Type as CacheType;
-use Magento\PageCache\Model\Config;
 use Magento\PageCache\Model\Controller\Result\BuiltinPlugin;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
+use Magento\PageCache\Model\Config;
+use Magento\Framework\App\PageCache\Kernel;
+use Magento\Framework\App\State as AppState;
+use Magento\Framework\Registry;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\App\Response\Http as ResponseHttp;
+use Zend\Http\Header\HeaderInterface as HttpHeaderInterface;
+use Magento\PageCache\Model\Cache\Type as CacheType;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class BuiltinPluginTest extends TestCase
+class BuiltinPluginTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var BuiltinPlugin
@@ -36,37 +32,37 @@ class BuiltinPluginTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var Config|MockObject
+     * @var Config|\PHPUnit\Framework\MockObject\MockObject
      */
     private $configMock;
 
     /**
-     * @var Kernel|MockObject
+     * @var Kernel|\PHPUnit\Framework\MockObject\MockObject
      */
     private $kernelMock;
 
     /**
-     * @var AppState|MockObject
+     * @var AppState|\PHPUnit\Framework\MockObject\MockObject
      */
     private $stateMock;
 
     /**
-     * @var Registry|MockObject
+     * @var Registry|\PHPUnit\Framework\MockObject\MockObject
      */
     private $registryMock;
 
     /**
-     * @var ResultInterface|MockObject
+     * @var ResultInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $resultMock;
 
     /**
-     * @var ResponseHttp|MockObject
+     * @var ResponseHttp|\PHPUnit\Framework\MockObject\MockObject
      */
     private $responseMock;
 
     /**
-     * @var HttpHeaderInterface|MockObject
+     * @var HttpHeaderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $httpHeaderMock;
 

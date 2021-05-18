@@ -3,24 +3,20 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogUrlRewrite\Test\Unit\Model\Category\Plugin;
 
-use Magento\CatalogUrlRewrite\Model\Category\Plugin\Storage as CategoryStoragePlugin;
-use Magento\CatalogUrlRewrite\Model\Category\Product;
-use Magento\CatalogUrlRewrite\Model\ResourceModel\Category\Product as ProductResourceModel;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\UrlRewrite\Model\StorageInterface;
-use Magento\UrlRewrite\Model\UrlFinderInterface;
+use Magento\CatalogUrlRewrite\Model\Category\Plugin\Storage as CategoryStoragePlugin;
 use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\UrlRewrite\Model\UrlFinderInterface;
+use Magento\CatalogUrlRewrite\Model\Category\Product;
+use Magento\CatalogUrlRewrite\Model\ResourceModel\Category\Product as ProductResourceModel;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class StorageTest extends TestCase
+class StorageTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CategoryStoragePlugin
@@ -28,27 +24,27 @@ class StorageTest extends TestCase
     private $plugin;
 
     /**
-     * @var UrlFinderInterface|MockObject
+     * @var UrlFinderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $urlFinder;
 
     /**
-     * @var StorageInterface|MockObject
+     * @var StorageInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $storage;
 
     /**
-     * @var Product|MockObject
+     * @var Product|\PHPUnit\Framework\MockObject\MockObject
      */
     private $product;
 
     /**
-     * @var ProductResourceModel|MockObject
+     * @var ProductResourceModel|\PHPUnit\Framework\MockObject\MockObject
      */
     private $productResourceModel;
 
     /**
-     * @var UrlRewrite|MockObject
+     * @var UrlRewrite|\PHPUnit\Framework\MockObject\MockObject
      */
     private $urlRewrite;
 

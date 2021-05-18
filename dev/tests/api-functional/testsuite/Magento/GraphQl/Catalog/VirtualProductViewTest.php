@@ -30,16 +30,21 @@ class VirtualProductViewTest extends GraphQlAbstract
    {
        items{
            id
+           attribute_set_id    
+           created_at
            name
            sku
            type_id
+           updated_at
            ... on PhysicalProductInterface {
              weight
-           }
+           }  
            ... on VirtualProduct {
+            attribute_set_id
             name
             id
             sku
+          
            }
        }
    }
@@ -79,20 +84,24 @@ QUERY;
    {
        items{
            id
+           attribute_set_id    
+           created_at
            name
            sku
            type_id
+           updated_at
            ... on PhysicalProductInterface {
              weight
-           }
+           }  
            ... on VirtualProduct {
+            attribute_set_id
             name
             weight
             id
-            sku
+            sku          
            }
        }
-   }
+   }   
 }
 QUERY;
 
@@ -110,6 +119,7 @@ QUERY;
     private function assertBaseFields($product, $actualResponse)
     {
         $assertionMap = [
+            ['response_field' => 'attribute_set_id', 'expected_value' => $product->getAttributeSetId()],
             ['response_field' => 'id', 'expected_value' => $product->getId()],
             ['response_field' => 'name', 'expected_value' => $product->getName()],
             ['response_field' => 'sku', 'expected_value' => $product->getSku()],

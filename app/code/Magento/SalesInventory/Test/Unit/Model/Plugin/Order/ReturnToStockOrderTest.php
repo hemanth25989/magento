@@ -4,70 +4,69 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\SalesInventory\Test\Unit\Model\Plugin\Order;
 
 use Magento\CatalogInventory\Api\StockConfigurationInterface;
+use Magento\SalesInventory\Model\Order\ReturnProcessor;
+use Magento\SalesInventory\Model\Plugin\Order\ReturnToStockOrder;
 use Magento\Sales\Api\CreditmemoRepositoryInterface;
-use Magento\Sales\Api\Data\CreditmemoCreationArgumentsExtensionInterface;
 use Magento\Sales\Api\Data\CreditmemoCreationArgumentsInterface;
+use Magento\Sales\Api\Data\CreditmemoCreationArgumentsExtensionInterface;
 use Magento\Sales\Api\Data\CreditmemoInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\RefundOrderInterface;
-use Magento\SalesInventory\Model\Order\ReturnProcessor;
-use Magento\SalesInventory\Model\Plugin\Order\ReturnToStockOrder;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ReturnToStockOrderTest extends TestCase
+/**
+ * Class ReturnToStockOrderTest
+ */
+class ReturnToStockOrderTest extends \PHPUnit\Framework\TestCase
 {
     /** @var  ReturnToStockOrder */
     private $returnTOStock;
 
     /**
-     * @var MockObject|ReturnProcessor
+     * @var \PHPUnit\Framework\MockObject\MockObject|ReturnProcessor
      */
     private $returnProcessorMock;
 
     /**
-     * @var MockObject|CreditmemoRepositoryInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|CreditmemoRepositoryInterface
      */
     private $creditmemoRepositoryMock;
 
     /**
-     * @var MockObject|OrderRepositoryInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|OrderRepositoryInterface
      */
     private $orderRepositoryMock;
 
     /**
-     * @var MockObject|RefundOrderInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|RefundOrderInterface
      */
     private $refundOrderMock;
 
     /**
-     * @var MockObject|CreditmemoCreationArgumentsInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|CreditmemoCreationArgumentsInterface
      */
     private $creditmemoCreationArgumentsMock;
 
     /**
-     * @var MockObject|OrderInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|OrderInterface
      */
     private $orderMock;
 
     /**
-     * @var MockObject|CreditmemoInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|CreditmemoInterface
      */
     private $creditmemoMock;
 
     /**
-     * @var MockObject|StockConfigurationInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|StockConfigurationInterface
      */
     private $stockConfigurationMock;
 
     /**
-     * @var MockObject|CreditmemoCreationArgumentsInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|CreditmemoCreationArgumentsInterface
      */
     private $extensionAttributesMock;
 

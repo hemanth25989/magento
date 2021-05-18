@@ -3,21 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model;
 
-use Magento\Directory\Helper\Data;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Payment\Model\Source\CctypeFactory;
-use Magento\Paypal\Model\CertFactory;
 use Magento\Paypal\Model\Config;
 use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
-class ConfigTest extends TestCase
+/**
+ * Class ConfigTest
+ */
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Config
@@ -25,45 +20,45 @@ class ConfigTest extends TestCase
     private $model;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $scopeConfig;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Directory\Helper\Data|\PHPUnit\Framework\MockObject\MockObject
      */
     private $directoryHelper;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $storeManager;
 
     /**
-     * @var CctypeFactory|MockObject
+     * @var \Magento\Payment\Model\Source\CctypeFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $ccTypeFactory;
 
     /**
-     * @var CertFactory|MockObject
+     * @var \Magento\Paypal\Model\CertFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $certFactory;
 
     protected function setUp(): void
     {
-        $this->scopeConfig = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $this->scopeConfig = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
 
-        $this->directoryHelper = $this->getMockBuilder(Data::class)
+        $this->directoryHelper = $this->getMockBuilder(\Magento\Directory\Helper\Data::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->storeManager = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $this->storeManager = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
 
-        $this->ccTypeFactory = $this->getMockBuilder(CctypeFactory::class)
+        $this->ccTypeFactory = $this->getMockBuilder(\Magento\Payment\Model\Source\CctypeFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->certFactory = $this->getMockBuilder(CertFactory::class)
+        $this->certFactory = $this->getMockBuilder(\Magento\Paypal\Model\CertFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -371,11 +366,13 @@ class ConfigTest extends TestCase
         $this->scopeConfig->expects($this->any())
             ->method('getValue')
             ->willReturnMap(
-                [
-                    ['payment/' . Config::METHOD_WPP_BML . '/' . $section . '_display', 'store', 1, $expectedValue],
-                    ['payment/' . Config::METHOD_WPP_BML . '/active', 'store', 1, $expectedValue],
-                    ['payment/' . Config::METHOD_WPP_PE_BML . '/active', 'store', 1, $expectedValue],
-                ]
+                
+                    [
+                        ['payment/' . Config::METHOD_WPP_BML . '/' . $section . '_display', 'store', 1, $expectedValue],
+                        ['payment/' . Config::METHOD_WPP_BML . '/active', 'store', 1, $expectedValue],
+                        ['payment/' . Config::METHOD_WPP_PE_BML . '/active', 'store', 1, $expectedValue],
+                    ]
+                
             );
         $this->assertEquals($expected, $this->model->getBmlDisplay($section));
     }

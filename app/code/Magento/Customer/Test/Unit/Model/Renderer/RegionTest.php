@@ -3,44 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Customer\Test\Unit\Model\Renderer;
 
-use Magento\Customer\Model\Renderer\Region;
-use Magento\Directory\Helper\Data;
-use Magento\Directory\Model\Country;
-use Magento\Directory\Model\CountryFactory;
-use Magento\Framework\Data\Form;
-use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Framework\DataObject;
-use Magento\Framework\Escaper;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\MockObject\MockObject;
 
-class RegionTest extends TestCase
+/**
+ * Class RegionTest
+ * Test for Region
+ */
+class RegionTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Simulate "serialize" method of a form element.
-     *
-     * @param string[] $keys
-     * @param array $data
-     * @return string
-     */
-    private function mockSerialize(array $keys, array $data): string
-    {
-        $attributes = [];
-        foreach ($keys as $key) {
-            if (empty($data[$key])) {
-                continue;
-            }
-            $attributes[] = $key .'="' .$data[$key] .'"';
-        }
-
-        return implode(' ', $attributes);
-    }
-
     /**
      * @param array $regionCollection
      * @dataProvider renderDataProvider
@@ -48,42 +20,29 @@ class RegionTest extends TestCase
     public function testRender($regionCollection)
     {
         $countryFactoryMock = $this->createMock(
-            CountryFactory::class
+            \Magento\Directory\Model\CountryFactory::class
         );
         $directoryHelperMock = $this->createPartialMock(
-            Data::class,
+            \Magento\Directory\Helper\Data::class,
             ['isRegionRequired']
         );
-        $escaperMock = $this->createMock(Escaper::class);
-        /** @var MockObject|AbstractElement $elementMock */
+        $escaperMock = $this->createMock(\Magento\Framework\Escaper::class);
         $elementMock = $this->createPartialMock(
-            AbstractElement::class,
-            ['getForm', 'getHtmlAttributes', 'serialize']
+            \Magento\Framework\Data\Form\Element\AbstractElement::class,
+            ['getForm', 'getHtmlAttributes']
         );
-        $elementMock->method('serialize')->willReturnCallback(
-            function (array $attributes) use ($elementMock): string {
-                return $this->mockSerialize($attributes, $elementMock->getData());
-            }
-        );
-        $countryMock = $this->getMockBuilder(AbstractElement::class)
-            ->onlyMethods(['serialize'])
-            ->addMethods(['getValue'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $countryMock->method('serialize')->willReturnCallback(
-            function (array $attributes) use ($countryMock): string {
-                return $this->mockSerialize($attributes, $countryMock->getData());
-            }
+        $countryMock = $this->createPartialMock(
+            \Magento\Framework\Data\Form\Element\AbstractElement::class,
+            ['getValue']
         );
         $regionMock = $this->createMock(
-            AbstractElement::class
+            \Magento\Framework\Data\Form\Element\AbstractElement::class
         );
-        $countryModelMock = $this->getMockBuilder(Country::class)
-            ->addMethods(['toOptionArray'])
-            ->onlyMethods(['setId', 'getLoadedRegionCollection', '__wakeup'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $formMock = $this->createPartialMock(Form::class, ['getElement']);
+        $countryModelMock = $this->createPartialMock(
+            \Magento\Directory\Model\Country::class,
+            ['setId', 'getLoadedRegionCollection', 'toOptionArray', '__wakeup']
+        );
+        $formMock = $this->createPartialMock(\Magento\Framework\Data\Form::class, ['getElement']);
 
         $elementMock->expects($this->any())->method('getForm')->willReturn($formMock);
         $elementMock->expects(
@@ -105,7 +64,7 @@ class RegionTest extends TestCase
         );
 
         $objectManager = new ObjectManager($this);
-        $escaper = $objectManager->getObject(Escaper::class);
+        $escaper = $objectManager->getObject(\Magento\Framework\Escaper::class);
         $reflection = new \ReflectionClass($elementMock);
         $reflection_property = $reflection->getProperty('_escaper');
         $reflection_property->setAccessible(true);
@@ -131,9 +90,9 @@ class RegionTest extends TestCase
         $countryModelMock->expects($this->any())->method('getLoadedRegionCollection')->willReturnSelf();
         $countryModelMock->expects($this->any())->method('toOptionArray')->willReturn($regionCollection);
 
-        $model = new Region($countryFactoryMock, $directoryHelperMock, $escaperMock);
+        $model = new \Magento\Customer\Model\Renderer\Region($countryFactoryMock, $directoryHelperMock, $escaperMock);
 
-        $static = new \ReflectionProperty(Region::class, '_regionCollections');
+        $static = new \ReflectionProperty(\Magento\Customer\Model\Renderer\Region::class, '_regionCollections');
         $static->setAccessible(true);
         $static->setValue([]);
 
@@ -152,8 +111,8 @@ class RegionTest extends TestCase
             'with no defined regions' => [[]],
             'with defined regions' => [
                 [
-                    new DataObject(['value' => 'Bavaria']),
-                    new DataObject(['value' => 'Saxony']),
+                    new \Magento\Framework\DataObject(['value' => 'Bavaria']),
+                    new \Magento\Framework\DataObject(['value' => 'Saxony']),
                 ],
             ]
         ];

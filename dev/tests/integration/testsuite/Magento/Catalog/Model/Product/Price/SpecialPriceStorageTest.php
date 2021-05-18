@@ -52,16 +52,10 @@ class SpecialPriceStorageTest extends TestCase
             ->setStoreId(0)
             ->setPrice(5.0)
             ->setPriceFrom($date->format('Y-m-d H:i:s'))
-            ->setPriceTo(
-                $date->modify('+1 day')
-                    ->format('Y-m-d H:i:s')
-            );
+            ->setPriceTo($date->modify('+1 day')->format('Y-m-d H:i:s'));
         $result = $this->model->update([$price]);
         $this->assertCount(1, $result);
-        $this->assertStringContainsString(
-            'The product that was requested doesn\'t exist.',
-            (string) $result[0]->getMessage()
-        );
+        $this->assertStringContainsString('The product that was requested doesn\'t exist.', (string)$result[0]->getMessage());
         $price->setSku('simple333');
         $result = $this->model->update([$price]);
         $this->assertCount(0, $result);

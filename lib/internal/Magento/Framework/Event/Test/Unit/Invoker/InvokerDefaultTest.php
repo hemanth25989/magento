@@ -3,45 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Event\Test\Unit\Invoker;
-
-use Magento\Framework\App\State;
-use Magento\Framework\Event\Invoker\InvokerDefault;
-use Magento\Framework\Event\Observer;
-use Magento\Framework\Event\ObserverFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * Test for Magento\Framework\Event\Invoker\InvokerDefault.
  */
-class InvokerDefaultTest extends TestCase
+class InvokerDefaultTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_observerFactoryMock;
 
     /**
-     * @var Observer|MockObject
+     * @var \Magento\Framework\Event\Observer|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_observerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_listenerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_appStateMock;
 
     /**
-     * @var InvokerDefault
+     * @var \Magento\Framework\Event\Invoker\InvokerDefault
      */
     protected $_invokerDefault;
 
@@ -52,16 +42,16 @@ class InvokerDefaultTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->_observerFactoryMock = $this->createMock(ObserverFactory::class);
-        $this->_observerMock = $this->createMock(Observer::class);
+        $this->_observerFactoryMock = $this->createMock(\Magento\Framework\Event\ObserverFactory::class);
+        $this->_observerMock = $this->createMock(\Magento\Framework\Event\Observer::class);
         $this->_listenerMock = $this->createPartialMock(
-            ObserverExample::class,
+            \Magento\Framework\Event\Test\Unit\Invoker\ObserverExample::class,
             ['execute']
         );
-        $this->_appStateMock = $this->createMock(State::class);
-        $this->loggerMock = $this->getMockForAbstractClass(LoggerInterface::class);
+        $this->_appStateMock = $this->createMock(\Magento\Framework\App\State::class);
+        $this->loggerMock = $this->createMock(\Psr\Log\LoggerInterface::class);
 
-        $this->_invokerDefault = new InvokerDefault(
+        $this->_invokerDefault = new \Magento\Framework\Event\Invoker\InvokerDefault(
             $this->_observerFactoryMock,
             $this->_appStateMock,
             $this->loggerMock
@@ -122,9 +112,9 @@ class InvokerDefaultTest extends TestCase
      */
     public function testWrongInterfaceCallWithEnabledDeveloperMode($shared)
     {
-        $this->expectException('LogicException');
-        $notObserver = $this->getMockBuilder('NotObserver')
-            ->getMock();
+        $this->expectException(\LogicException::class);
+
+        $notObserver = $this->getMockBuilder('NotObserver')->getMock();
         $this->_observerFactoryMock->expects(
             $this->any()
         )->method(
@@ -148,7 +138,7 @@ class InvokerDefaultTest extends TestCase
         )->method(
             'getMode'
         )->willReturn(
-            State::MODE_DEVELOPER
+            \Magento\Framework\App\State::MODE_DEVELOPER
         );
 
         $this->_invokerDefault->dispatch(
@@ -167,8 +157,7 @@ class InvokerDefaultTest extends TestCase
      */
     public function testWrongInterfaceCallWithDisabledDeveloperMode($shared)
     {
-        $notObserver = $this->getMockBuilder('NotObserver')
-            ->getMock();
+        $notObserver = $this->getMockBuilder('NotObserver')->getMock();
         $this->_observerFactoryMock->expects(
             $this->any()
         )->method(
@@ -192,7 +181,7 @@ class InvokerDefaultTest extends TestCase
         )->method(
             'getMode'
         )->willReturn(
-            State::MODE_PRODUCTION
+            \Magento\Framework\App\State::MODE_PRODUCTION
         );
 
         $this->loggerMock->expects($this->once())->method('warning');

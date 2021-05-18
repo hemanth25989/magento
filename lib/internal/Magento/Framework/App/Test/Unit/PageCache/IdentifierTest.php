@@ -3,19 +3,16 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit\PageCache;
 
 use Magento\Framework\App\Http\Context;
 use Magento\Framework\App\PageCache\Identifier;
+use Magento\Framework\App\Response\Http;
 use Magento\Framework\App\Request\Http as HttpRequest;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class IdentifierTest extends TestCase
+class IdentifierTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test value for cache vary string
@@ -23,17 +20,17 @@ class IdentifierTest extends TestCase
     const VARY = '123';
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     private $objectManager;
 
     /**
-     * @var Context|MockObject
+     * @var Context|\PHPUnit\Framework\MockObject\MockObject
      */
     private $contextMock;
 
     /**
-     * @var HttpRequest|MockObject
+     * @var HttpRequest|\PHPUnit\Framework\MockObject\MockObject
      */
     private $requestMock;
 
@@ -43,12 +40,12 @@ class IdentifierTest extends TestCase
     private $model;
 
     /**
-     * @var Json|MockObject
+     * @var Json|\PHPUnit\Framework\MockObject\MockObject
      */
     private $serializerMock;
 
     /**
-     * @return ObjectManager
+     * @return \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected function setUp(): void
     {
@@ -68,9 +65,11 @@ class IdentifierTest extends TestCase
         $this->serializerMock->expects($this->any())
             ->method('serialize')
             ->willReturnCallback(
-                function ($value) {
-                    return json_encode($value);
-                }
+                
+                    function ($value) {
+                        return json_encode($value);
+                    }
+                
             );
 
         $this->model = $this->objectManager->getObject(

@@ -4,30 +4,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Multishipping\Test\Unit\Block\Checkout;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Multishipping\Block\Checkout\State as StateBlock;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Multishipping\Block\Checkout\State;
 
-class StateTest extends TestCase
+class StateTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var StateBlock
+     * @var State
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $mShippingStateMock;
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->mShippingStateMock =
             $this->createMock(\Magento\Multishipping\Model\Checkout\Type\Multishipping\State::class);
         $this->model = $objectManager->getObject(

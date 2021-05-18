@@ -3,15 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\User\Test\Unit\Model;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\User\Helper\Data as UserHelper;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\User\Model\User;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\User\Model\User testing
@@ -19,12 +16,12 @@ use PHPUnit\Framework\TestCase;
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.TooManyFields)
  */
-class UserTest extends TestCase
+class UserTest extends \PHPUnit\Framework\TestCase
 {
     /** @var User */
     private $model;
 
-    /** @var UserHelper|MockObject */
+    /** @var UserHelper|\PHPUnit\Framework\MockObject\MockObject */
     private $userDataMock;
 
     /**
@@ -83,7 +80,8 @@ class UserTest extends TestCase
             $this->model->changeResetPasswordLinkToken($token)
         );
         $this->assertEquals($token, $this->model->getRpToken());
-        $this->assertIsString($this->model->getRpTokenCreatedAt());
+        $this->assertIsString($this->model->getRpTokenCreatedAt()
+        );
     }
 
     /**

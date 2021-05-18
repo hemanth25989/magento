@@ -3,43 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogSearch\Test\Unit\Model\Indexer\Fulltext\Plugin;
 
-use Magento\Catalog\Model\Product;
-use Magento\CatalogSearch\Model\Indexer\Fulltext;
 use Magento\CatalogSearch\Model\Indexer\Fulltext\Plugin\Attribute;
-use Magento\Eav\Model\Config as EavConfig;
-use Magento\Framework\Indexer\IndexerInterface;
-use Magento\Framework\Indexer\IndexerRegistry;
-use Magento\Framework\Search\Request\Config;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-/**
- * Unit tests for @see \Magento\CatalogSearch\Model\Indexer\Fulltext\Plugin\Attribute.
- */
-class AttributeTest extends TestCase
+class AttributeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|IndexerInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\Indexer\IndexerInterface
      */
     protected $indexerMock;
 
     /**
-     * @var MockObject|\Magento\Catalog\Model\ResourceModel\Attribute
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Catalog\Model\ResourceModel\Attribute
      */
     protected $subjectMock;
 
     /**
-     * @var IndexerRegistry|MockObject
+     * @var \Magento\Framework\Indexer\IndexerRegistry|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $indexerRegistryMock;
 
     /**
-     * @var \Magento\Catalog\Model\ResourceModel\Attribute|MockObject
+     * @var \Magento\Catalog\Model\ResourceModel\Attribute|\PHPUnit\Framework\MockObject\MockObject
      */
     private $attributeMock;
 
@@ -54,24 +41,16 @@ class AttributeTest extends TestCase
     private $objectManager;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Framework\Search\Request\Config|\PHPUnit\Framework\MockObject\MockObject
      */
     private $config;
 
-    /**
-     * @var EavConfig
-     */
-    private $eavConfig;
-
-    /**
-     * @inheridoc
-     */
     protected function setUp(): void
     {
         $this->objectManager = new ObjectManager($this);
         $this->subjectMock = $this->createMock(\Magento\Catalog\Model\ResourceModel\Attribute::class);
         $this->indexerMock = $this->getMockForAbstractClass(
-            IndexerInterface::class,
+            \Magento\Framework\Indexer\IndexerInterface::class,
             [],
             '',
             false,
@@ -80,27 +59,22 @@ class AttributeTest extends TestCase
             ['getId', 'getState', '__wakeup']
         );
         $this->indexerRegistryMock = $this->createPartialMock(
-            IndexerRegistry::class,
+            \Magento\Framework\Indexer\IndexerRegistry::class,
             ['get']
         );
         $this->attributeMock = $this->createPartialMock(
             \Magento\Catalog\Model\ResourceModel\Eav\Attribute::class,
             ['dataHasChangedFor', 'isObjectNew', 'getIsSearchable', 'getData']
         );
-        $this->config =  $this->getMockBuilder(Config::class)
+        $this->config =  $this->getMockBuilder(\Magento\Framework\Search\Request\Config::class)
             ->disableOriginalConstructor()
             ->setMethods(['reset'])
             ->getMock();
-        $this->eavConfig = $this->createPartialMock(
-            EavConfig::class,
-            ['getEntityType']
-        );
         $this->model = $this->objectManager->getObject(
             Attribute::class,
             [
                 'indexerRegistry' => $this->indexerRegistryMock,
-                'config' => $this->config,
-                'eavConfig' => $this->eavConfig
+                'config' => $this->config
             ]
         );
     }
@@ -141,24 +115,19 @@ class AttributeTest extends TestCase
             [
                 'indexerRegistry' => $this->indexerRegistryMock,
                 'config' => $this->config,
-                'eavConfig' => $this->eavConfig,
                 'saveNeedInvalidation' => $saveNeedInvalidation,
                 'saveIsNew' => $saveIsNew,
             ]
         );
-        if ($saveIsNew || $saveNeedInvalidation) {
-            $this->config->expects($this->once())
-                ->method('reset');
-            $catalogProductEntity = $this->createMock(Product::class);
-            $this->eavConfig->expects($this->once())
-                ->method('getEntityType')
-                ->with(Product::ENTITY)
-                ->willReturn($catalogProductEntity);
-        }
 
         if ($saveNeedInvalidation) {
             $this->indexerMock->expects($this->once())->method('invalidate');
             $this->prepareIndexer();
+        }
+
+        if ($saveIsNew || $saveNeedInvalidation) {
+            $this->config->expects($this->once())
+                ->method('reset');
         }
 
         $this->assertEquals(
@@ -225,7 +194,7 @@ class AttributeTest extends TestCase
     {
         $this->indexerRegistryMock->expects($this->once())
             ->method('get')
-            ->with(Fulltext::INDEXER_ID)
+            ->with(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)
             ->willReturn($this->indexerMock);
     }
 }

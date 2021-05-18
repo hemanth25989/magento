@@ -3,38 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Structure\Element;
 
-use Magento\Config\Model\Config\Structure\AbstractElement;
-use Magento\Config\Model\Config\Structure\Element\Section;
-use Magento\Config\Model\Config\Structure\ElementVisibilityInterface;
-use Magento\Framework\AuthorizationInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\StoreManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Config\Model\Config\Structure\ElementVisibilityInterface;
 
-class SectionTest extends TestCase
+class SectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Section
+     * @var \Magento\Config\Model\Config\Structure\Element\Section
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_storeManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_authorizationMock;
 
     /**
-     * @var ElementVisibilityInterface|MockObject
+     * @var ElementVisibilityInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $elementVisibilityMock;
 
@@ -43,11 +35,11 @@ class SectionTest extends TestCase
         $objectManager = new ObjectManager($this);
         $this->elementVisibilityMock = $this->getMockBuilder(ElementVisibilityInterface::class)
             ->getMockForAbstractClass();
-        $this->_storeManagerMock = $this->createMock(StoreManager::class);
-        $this->_authorizationMock = $this->getMockForAbstractClass(AuthorizationInterface::class);
+        $this->_storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManager::class);
+        $this->_authorizationMock = $this->createMock(\Magento\Framework\AuthorizationInterface::class);
 
         $this->_model = $objectManager->getObject(
-            Section::class,
+            \Magento\Config\Model\Config\Structure\Element\Section::class,
             [
                 'storeManager' => $this->_storeManagerMock,
                 'authorization' => $this->_authorizationMock,
@@ -57,7 +49,7 @@ class SectionTest extends TestCase
             $this->_model,
             'elementVisibility',
             $this->elementVisibilityMock,
-            AbstractElement::class
+            \Magento\Config\Model\Config\Structure\AbstractElement::class
         );
     }
 

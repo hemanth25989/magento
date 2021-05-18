@@ -9,21 +9,18 @@ declare(strict_types=1);
 namespace Magento\Framework\Serialize\Test\Unit\Serializer;
 
 use Magento\Framework\DataObject;
-use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\Serialize\Serializer\JsonHexTag;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\TestCase;
 
-class JsonHexTagTest extends TestCase
+class JsonHexTagTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Json
+     * @var \Magento\Framework\Serialize\Serializer\Json
      */
     private $json;
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->json = $objectManager->getObject(JsonHexTag::class);
     }
 
@@ -90,10 +87,13 @@ class JsonHexTagTest extends TestCase
         ];
     }
 
+    /**
+     */
     public function testSerializeException()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unable to serialize value.');
+
         $this->json->serialize(STDOUT);
     }
 
@@ -102,8 +102,9 @@ class JsonHexTagTest extends TestCase
      */
     public function testUnserializeException($value)
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unable to unserialize value.');
+
         $this->json->unserialize($value);
     }
 

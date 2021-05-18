@@ -3,21 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Block\Product;
 
-use Magento\Catalog\Block\Product\ListProduct;
-use Magento\Framework\DataObject;
-use PHPUnit\Framework\TestCase;
-
-class ListTest extends TestCase
+class ListTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetMode()
     {
-        $childBlock = new DataObject();
+        $childBlock = new \Magento\Framework\DataObject();
 
-        $block = $this->createPartialMock(ListProduct::class, ['getChildBlock']);
+        $block = $this->createPartialMock(\Magento\Catalog\Block\Product\ListProduct::class, ['getChildBlock']);
         $block->expects(
             $this->atLeastOnce()
         )->method(

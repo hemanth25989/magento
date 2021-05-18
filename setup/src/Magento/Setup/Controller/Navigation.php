@@ -5,15 +5,13 @@
  */
 namespace Magento\Setup\Controller;
 
-use Laminas\Mvc\Controller\AbstractActionController;
-use Laminas\View\Model\JsonModel;
-use Laminas\View\Model\ViewModel;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Setup\Model\Navigation as NavModel;
-use Magento\Setup\Model\ObjectManagerProvider;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
+use Zend\View\Model\ViewModel;
 
 /**
- * Navigation controller
+ * Class Navigation builds the navigation view
  */
 class Navigation extends AbstractActionController
 {
@@ -28,31 +26,24 @@ class Navigation extends AbstractActionController
     protected $view;
 
     /**
-     * @var ObjectManagerInterface
+     * @param NavModel $navigation
      */
-    private $objectManagerProvider;
-
-    /**
-     * @param NavModel              $navigation
-     * @param ObjectManagerProvider $objectManagerProvider
-     */
-    public function __construct(NavModel $navigation, ObjectManagerProvider $objectManagerProvider)
+    public function __construct(NavModel $navigation)
     {
         $this->navigation = $navigation;
-        $this->objectManagerProvider = $objectManagerProvider->get();
-        $this->view = new ViewModel();
+        $this->view = new ViewModel;
         $this->view->setVariable('menu', $this->navigation->getMenuItems());
         $this->view->setVariable('main', $this->navigation->getMainItems());
     }
 
     /**
-     * Index action
+     * Set values for the index action
      *
      * @return JsonModel
      */
     public function indexAction()
     {
-        $json = new JsonModel();
+        $json = new JsonModel;
         $json->setVariable('nav', $this->navigation->getData());
         $json->setVariable('menu', $this->navigation->getMenuItems());
         $json->setVariable('main', $this->navigation->getMainItems());
@@ -61,7 +52,7 @@ class Navigation extends AbstractActionController
     }
 
     /**
-     * Menu action
+     * Set values for the view action
      *
      * @return array|ViewModel
      */

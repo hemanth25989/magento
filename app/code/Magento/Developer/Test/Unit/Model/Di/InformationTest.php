@@ -1,37 +1,35 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Developer\Test\Unit\Model\Di;
 
-use Magento\Developer\Model\Di\Information;
-use Magento\Developer\Model\Di\PluginList;
 use Magento\Framework\ObjectManager\ConfigInterface;
 use Magento\Framework\ObjectManager\DefinitionInterface;
+use Magento\Developer\Model\Di\PluginList;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Developer\Model\Di\Information;
 
-class InformationTest extends TestCase
+class InformationTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Information
+     * @var \Magento\Developer\Model\Di\Information
      */
     private $object;
 
     /**
-     * @var MockObject|ConfigInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Framework\ObjectManager\ConfigInterface
      */
     private $objectManagerConfig;
 
     /**
-     * @var DefinitionInterface
+     * @var \Magento\Framework\ObjectManager\DefinitionInterface
      */
     private $definitions;
 
     /**
-     * @var PluginList
+     * @var \Magento\Developer\Model\Di\PluginList
      */
     private $pluginList;
 

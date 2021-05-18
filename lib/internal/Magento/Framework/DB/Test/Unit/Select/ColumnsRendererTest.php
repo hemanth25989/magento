@@ -3,31 +3,28 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\DB\Test\Unit\Select;
 
-use Magento\Framework\DB\Platform\Quote;
 use Magento\Framework\DB\Select;
-use Magento\Framework\DB\Select\ColumnsRenderer;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ColumnsRendererTest extends TestCase
+/**
+ * Class ColumnsRendererTest
+ */
+class ColumnsRendererTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ColumnsRenderer
+     * @var \Magento\Framework\DB\Select\ColumnsRenderer
      */
     protected $model;
 
     /**
-     * @var Quote|MockObject
+     * @var \Magento\Framework\DB\Platform\Quote|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $quoteMock;
 
     /**
-     * @var Select|MockObject
+     * @var \Magento\Framework\DB\Select|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $selectMock;
 
@@ -43,11 +40,11 @@ class ColumnsRendererTest extends TestCase
      */
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
-        $this->quoteMock = $this->createPartialMock(Quote::class, ['quoteColumnAs']);
-        $this->selectMock = $this->createPartialMock(Select::class, ['getPart']);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $this->quoteMock = $this->createPartialMock(\Magento\Framework\DB\Platform\Quote::class, ['quoteColumnAs']);
+        $this->selectMock = $this->createPartialMock(\Magento\Framework\DB\Select::class, ['getPart']);
         $this->model = $objectManager->getObject(
-            ColumnsRenderer::class,
+            \Magento\Framework\DB\Select\ColumnsRenderer::class,
             ['quote' => $this->quoteMock]
         );
         $this->sqlWildcard = new \Zend_Db_Expr(Select::SQL_WILDCARD);

@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\BundleImportExport\Test\Unit\Model\Import\Product\Type\Bundle;
 
@@ -11,11 +10,11 @@ use Magento\BundleImportExport\Model\Import\Product\Type\Bundle\RelationsDataSav
 use Magento\Catalog\Model\ResourceModel\Product\Relation;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class RelationsDataSaverTest extends TestCase
+/**
+ * Class RelationsDataSaverTest
+ */
+class RelationsDataSaverTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var RelationsDataSaver
@@ -23,23 +22,23 @@ class RelationsDataSaverTest extends TestCase
     private $relationsDataSaver;
 
     /**
-     * @var ResourceConnection|MockObject
+     * @var ResourceConnection|\PHPUnit\Framework\MockObject\MockObject
      */
     private $resourceMock;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var AdapterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $connectionMock;
 
     /**
-     * @var Relation|MockObject
+     * @var Relation|\PHPUnit\Framework\MockObject\MockObject
      */
     private $productRelationMock;
 
     protected function setUp(): void
     {
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->resourceMock = $this->getMockBuilder(ResourceConnection::class)
             ->disableOriginalConstructor()
             ->getMock();

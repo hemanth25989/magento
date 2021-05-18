@@ -3,53 +3,44 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Customer\Test\Unit\Model;
 
-use Magento\Customer\Model\Address;
-use Magento\Customer\Model\Customer;
-use Magento\Customer\Model\CustomerFactory;
-use Magento\Eav\Model\Entity\Type;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class AddressTest extends TestCase
+class AddressTest extends \PHPUnit\Framework\TestCase
 {
     const ORIG_CUSTOMER_ID = 1;
     const ORIG_PARENT_ID = 2;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var Address
+     * @var \Magento\Customer\Model\Address
      */
     protected $address;
 
     /**
-     * @var Customer|MockObject
+     * @var \Magento\Customer\Model\Customer | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $customer;
 
     /**
-     * @var CustomerFactory|MockObject
+     * @var \Magento\Customer\Model\CustomerFactory | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $customerFactory;
 
     /**
-     * @var \Magento\Customer\Model\ResourceModel\Address|MockObject
+     * @var \Magento\Customer\Model\ResourceModel\Address | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $resource;
 
     protected function setUp(): void
     {
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->customer = $this->getMockBuilder(Customer::class)
+        $this->customer = $this->getMockBuilder(\Magento\Customer\Model\Customer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->customer->expects($this->any())
@@ -59,7 +50,7 @@ class AddressTest extends TestCase
             ->method('load')
             ->willReturnSelf();
 
-        $this->customerFactory = $this->getMockBuilder(CustomerFactory::class)
+        $this->customerFactory = $this->getMockBuilder(\Magento\Customer\Model\CustomerFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -72,7 +63,7 @@ class AddressTest extends TestCase
             ->getMock();
 
         $this->address = $this->objectManager->getObject(
-            Address::class,
+            \Magento\Customer\Model\Address::class,
             [
                 'customerFactory' => $this->customerFactory,
                 'resource' => $this->resource,
@@ -99,8 +90,8 @@ class AddressTest extends TestCase
         $customer = $this->address->getCustomer();
         $this->assertEquals(self::ORIG_CUSTOMER_ID, $customer->getId());
 
-        /** @var Customer $customer */
-        $customer = $this->getMockBuilder(Customer::class)
+        /** @var \Magento\Customer\Model\Customer $customer */
+        $customer = $this->getMockBuilder(\Magento\Customer\Model\Customer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $customer->expects($this->any())
@@ -133,7 +124,7 @@ class AddressTest extends TestCase
 
     public function testGetEntityTypeId()
     {
-        $mockEntityType = $this->getMockBuilder(Type::class)
+        $mockEntityType = $this->getMockBuilder(\Magento\Eav\Model\Entity\Type::class)
             ->disableOriginalConstructor()
             ->getMock();
         $mockEntityType->expects($this->any())

@@ -3,25 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Catalog\Test\Unit\Model\ResourceModel\Product\Indexer\Price;
 
-use Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\BatchSizeCalculator;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\Indexer\BatchSizeManagementInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class BatchSizeCalculatorTest extends TestCase
+class BatchSizeCalculatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var BatchSizeCalculator
+     * @var \Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\BatchSizeCalculator
      */
     private $model;
 
     /**
-     * @var BatchSizeManagementInterface|MockObject
+     * @var \Magento\Framework\Indexer\BatchSizeManagementInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $estimatorMock;
 
@@ -32,9 +25,9 @@ class BatchSizeCalculatorTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->estimatorMock = $this->getMockForAbstractClass(BatchSizeManagementInterface::class);
+        $this->estimatorMock = $this->createMock(\Magento\Framework\Indexer\BatchSizeManagementInterface::class);
         $this->batchRowsCount = 200;
-        $this->model = new BatchSizeCalculator(
+        $this->model = new \Magento\Catalog\Model\ResourceModel\Product\Indexer\Price\BatchSizeCalculator(
             ['default' => $this->batchRowsCount],
             ['default' => $this->estimatorMock],
             []
@@ -43,7 +36,7 @@ class BatchSizeCalculatorTest extends TestCase
 
     public function testEstimateBatchSize()
     {
-        $connectionMock = $this->getMockForAbstractClass(AdapterInterface::class);
+        $connectionMock = $this->createMock(\Magento\Framework\DB\Adapter\AdapterInterface::class);
         $typeId = 'default';
         $batchSize = 100500;
 

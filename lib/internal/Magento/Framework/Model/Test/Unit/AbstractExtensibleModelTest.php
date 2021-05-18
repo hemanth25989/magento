@@ -3,67 +3,49 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\Model\Test\Unit;
 
-use Magento\Framework\Api\AttributeInterface;
 use Magento\Framework\Api\AttributeValue;
-use Magento\Framework\Api\AttributeValueFactory;
-use Magento\Framework\Api\CustomAttributesDataInterface;
-use Magento\Framework\Api\ExtensionAttributesFactory;
-use Magento\Framework\Api\MetadataServiceInterface;
-use Magento\Framework\App\CacheInterface;
-use Magento\Framework\App\State;
-use Magento\Framework\DataObject;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Model\AbstractExtensibleModel;
-use Magento\Framework\Model\ActionValidator\RemoveAction;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\Registry;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AbstractExtensibleModelTest extends TestCase
+class AbstractExtensibleModelTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AbstractExtensibleModel
+     * @var \Magento\Framework\Model\AbstractExtensibleModel
      */
     protected $model;
 
     /**
-     * @var Context|MockObject
+     * @var \Magento\Framework\Model\Context|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $contextMock;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $registryMock;
 
     /**
-     * @var AbstractDb|MockObject
+     * @var \Magento\Framework\Model\ResourceModel\Db\AbstractDb|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resourceMock;
 
     /**
-     * @var \Magento\Framework\Data\Collection\AbstractDb|MockObject
+     * @var \Magento\Framework\Data\Collection\AbstractDb|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $resourceCollectionMock;
 
-    /** @var MetadataServiceInterface|MockObject */
+    /** @var \Magento\Framework\Api\MetadataServiceInterface|\PHPUnit\Framework\MockObject\MockObject */
     protected $metadataServiceMock;
 
-    /** @var AttributeValueFactory|MockObject */
+    /** @var \Magento\Framework\Api\AttributeValueFactory|\PHPUnit\Framework\MockObject\MockObject */
     protected $attributeValueFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $actionValidatorMock;
 
@@ -74,51 +56,51 @@ class AbstractExtensibleModelTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->actionValidatorMock = $this->createMock(RemoveAction::class);
-        $this->contextMock = new Context(
-            $this->getMockForAbstractClass(LoggerInterface::class),
-            $this->getMockForAbstractClass(ManagerInterface::class),
-            $this->getMockForAbstractClass(CacheInterface::class),
-            $this->createMock(State::class),
+        $this->actionValidatorMock = $this->createMock(\Magento\Framework\Model\ActionValidator\RemoveAction::class);
+        $this->contextMock = new \Magento\Framework\Model\Context(
+            $this->createMock(\Psr\Log\LoggerInterface::class),
+            $this->createMock(\Magento\Framework\Event\ManagerInterface::class),
+            $this->createMock(\Magento\Framework\App\CacheInterface::class),
+            $this->createMock(\Magento\Framework\App\State::class),
             $this->actionValidatorMock
         );
-        $this->registryMock = $this->createMock(Registry::class);
-        $this->resourceMock = $this->createPartialMock(AbstractDb::class, [
-            '_construct',
-            'getConnection',
-            '__wakeup',
-            'commit',
-            'delete',
-            'getIdFieldName',
-            'rollBack'
-        ]);
+        $this->registryMock = $this->createMock(\Magento\Framework\Registry::class);
+        $this->resourceMock = $this->createPartialMock(\Magento\Framework\Model\ResourceModel\Db\AbstractDb::class, [
+                '_construct',
+                'getConnection',
+                '__wakeup',
+                'commit',
+                'delete',
+                'getIdFieldName',
+                'rollBack'
+            ]);
         $this->resourceCollectionMock = $this->getMockBuilder(\Magento\Framework\Data\Collection\AbstractDb::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $this->metadataServiceMock = $this->getMockBuilder(MetadataServiceInterface::class)
+        $this->metadataServiceMock = $this->getMockBuilder(\Magento\Framework\Api\MetadataServiceInterface::class)
             ->getMock();
         $this->metadataServiceMock
             ->expects($this->any())
             ->method('getCustomAttributesMetadata')
             ->willReturn(
                 [
-                    new DataObject(['attribute_code' => 'attribute1']),
-                    new DataObject(['attribute_code' => 'attribute2']),
-                    new DataObject(['attribute_code' => 'attribute3']),
+                    new \Magento\Framework\DataObject(['attribute_code' => 'attribute1']),
+                    new \Magento\Framework\DataObject(['attribute_code' => 'attribute2']),
+                    new \Magento\Framework\DataObject(['attribute_code' => 'attribute3']),
                 ]
             );
-        $extensionAttributesFactory = $this->getMockBuilder(ExtensionAttributesFactory::class)
+        $extensionAttributesFactory = $this->getMockBuilder(\Magento\Framework\Api\ExtensionAttributesFactory::class)
             ->setMethods(['extractExtensionAttributes'])
             ->disableOriginalConstructor()
             ->getMock();
         $extensionAttributesFactory->expects($this->any())
             ->method('extractExtensionAttributes')
             ->willReturnArgument(1);
-        $this->attributeValueFactoryMock = $this->getMockBuilder(AttributeValueFactory::class)
+        $this->attributeValueFactoryMock = $this->getMockBuilder(\Magento\Framework\Api\AttributeValueFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->model = $this->getMockForAbstractClass(
-            AbstractExtensibleModel::class,
+            \Magento\Framework\Model\AbstractExtensibleModel::class,
             [
                 $this->contextMock,
                 $this->registryMock,
@@ -227,10 +209,13 @@ class AbstractExtensibleModelTest extends TestCase
         }
     }
 
+    /**
+     */
     public function testRestrictedCustomAttributesGet()
     {
-        $this->expectException('LogicException');
-        $this->model->getData(CustomAttributesDataInterface::CUSTOM_ATTRIBUTES);
+        $this->expectException(\LogicException::class);
+
+        $this->model->getData(\Magento\Framework\Api\CustomAttributesDataInterface::CUSTOM_ATTRIBUTES);
     }
 
     public function testSetCustomAttributesAsLiterals()
@@ -238,27 +223,29 @@ class AbstractExtensibleModelTest extends TestCase
         $this->model->expects($this->any())->method('getCustomAttributesCodes')->willReturn([]);
         $attributeCode = 'attribute2';
         $attributeValue = 'attribute_value';
-        $attributeMock = $this->getMockBuilder(AttributeValue::class)
+        $attributeMock = $this->getMockBuilder(\Magento\Framework\Api\AttributeValue::class)
             ->disableOriginalConstructor()
             ->getMock();
         $attributeMock->expects($this->never())
             ->method('setAttributeCode')
-            ->with($attributeCode)->willReturnSelf();
+            ->with($attributeCode)
+            ->willReturnSelf();
         $attributeMock->expects($this->never())
             ->method('setValue')
-            ->with($attributeValue)->willReturnSelf();
+            ->with($attributeValue)
+            ->willReturnSelf();
         $this->attributeValueFactoryMock->expects($this->never())->method('create')
             ->willReturn($attributeMock);
         $this->model->setData(
-            CustomAttributesDataInterface::CUSTOM_ATTRIBUTES,
+            \Magento\Framework\Api\CustomAttributesDataInterface::CUSTOM_ATTRIBUTES,
             [$attributeCode => $attributeValue]
         );
     }
 
     /**
      * @param string[] $attributesAsArray
-     * @param AbstractExtensibleModel $model
-     * @return AttributeInterface[]
+     * @param \Magento\Framework\Model\AbstractExtensibleModel $model
+     * @return \Magento\Framework\Api\AttributeInterface[]
      */
     protected function addCustomAttributesToModel($attributesAsArray, $model)
     {
@@ -274,7 +261,7 @@ class AbstractExtensibleModelTest extends TestCase
         $model->setData(
             array_merge(
                 $model->getData(),
-                [CustomAttributesDataInterface::CUSTOM_ATTRIBUTES => $addedAttributes]
+                [\Magento\Framework\Api\CustomAttributesDataInterface::CUSTOM_ATTRIBUTES => $addedAttributes]
             )
         );
         return $addedAttributes;

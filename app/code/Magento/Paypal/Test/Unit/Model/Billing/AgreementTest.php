@@ -3,20 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Model\Billing;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Payment\Helper\Data;
-use Magento\Payment\Model\Method\AbstractMethod;
-use Magento\Paypal\Model\Billing\Agreement;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Payment;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AgreementTest extends TestCase
+class AgreementTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Agreement
@@ -24,12 +15,12 @@ class AgreementTest extends TestCase
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $paymentDataMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $paymentMethodInstanceMock;
 
@@ -37,12 +28,12 @@ class AgreementTest extends TestCase
     {
         $objectManager = new ObjectManager($this);
 
-        $this->paymentDataMock = $this->getMockBuilder(Data::class)
+        $this->paymentDataMock = $this->getMockBuilder(\Magento\Payment\Helper\Data::class)
             ->disableOriginalConstructor()
             ->setMethods(['getMethodInstance'])
             ->getMock();
 
-        $this->paymentMethodInstanceMock = $this->getMockBuilder(AbstractMethod::class)
+        $this->paymentMethodInstanceMock = $this->getMockBuilder(\Magento\Payment\Model\Method\AbstractMethod::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'setStore',
@@ -57,7 +48,7 @@ class AgreementTest extends TestCase
             ->getMock();
 
         $this->model = $objectManager->getObject(
-            Agreement::class,
+            \Magento\Paypal\Model\Billing\Agreement::class,
             ['paymentData' => $this->paymentDataMock]
         );
     }
@@ -108,11 +99,11 @@ class AgreementTest extends TestCase
 
     /**
      * @param $baData
-     * @return Data|MockObject
+     * @return \Magento\Payment\Helper\Data|\PHPUnit\Framework\MockObject\MockObject|
      */
     private function importOrderPaymentCommonPart($baData)
     {
-        $paymentMock = $this->getMockBuilder(Payment::class)
+        $paymentMock = $this->getMockBuilder(\Magento\Sales\Model\Order\Payment::class)
             ->disableOriginalConstructor()
             ->setMethods(['getBillingAgreementData', 'getMethodInstance', 'getOrder'])
             ->getMock();
@@ -120,7 +111,7 @@ class AgreementTest extends TestCase
         $storeId = null;
         $customerId = 2;
 
-        $order = $this->getMockBuilder(Order::class)
+        $order = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->setMethods(['getCustomerId'])
             ->getMock();

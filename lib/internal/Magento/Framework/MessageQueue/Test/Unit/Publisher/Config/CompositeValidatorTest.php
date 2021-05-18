@@ -3,16 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\MessageQueue\Test\Unit\Publisher\Config;
 
 use Magento\Framework\MessageQueue\Publisher\Config\CompositeValidator;
 use Magento\Framework\MessageQueue\Publisher\Config\ValidatorInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CompositeValidatorTest extends TestCase
+class CompositeValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CompositeValidator
@@ -20,12 +16,12 @@ class CompositeValidatorTest extends TestCase
     private $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $validatorOneMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $validatorTwoMock;
 
@@ -48,10 +44,13 @@ class CompositeValidatorTest extends TestCase
         $this->model->validate($expectedValidationData);
     }
 
+    /**
+     */
     public function testValidatorThrowsException()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('test');
+
         $expectedValidationData = include __DIR__ . '/../../_files/queue_publisher/data_to_validate.php';
         $this->validatorOneMock
             ->expects($this->once())

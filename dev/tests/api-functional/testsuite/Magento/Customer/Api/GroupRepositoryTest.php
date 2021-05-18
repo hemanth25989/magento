@@ -774,11 +774,7 @@ class GroupRepositoryTest extends WebapiAbstract
         try {
             $this->_webApiCall($serviceInfo, $requestData);
         } catch (\SoapFault $e) {
-            $this->assertStringContainsString(
-                $expectedMessage,
-                $e->getMessage(),
-                "SoapFault does not contain expected message."
-            );
+            $this->assertStringContainsString($expectedMessage, $e->getMessage(), "SoapFault does not contain expected message.");
         } catch (\Exception $e) {
             $errorObj = $this->processRestExceptionResult($e);
             $this->assertEquals($expectedMessage, $errorObj['message']);

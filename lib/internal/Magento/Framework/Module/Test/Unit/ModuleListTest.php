@@ -3,20 +3,11 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Module\Test\Unit;
 
-use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\Module\ModuleList;
-use Magento\Framework\Module\ModuleList\Loader;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Module\ModuleList;
 
-/**
- * Test for module list
- */
-class ModuleListTest extends TestCase
+class ModuleListTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Fixture for all modules' meta-information
@@ -33,12 +24,12 @@ class ModuleListTest extends TestCase
     private static $enabledFixture = ['foo' => 1, 'bar' => 0];
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $config;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $loader;
 
@@ -49,8 +40,8 @@ class ModuleListTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->config = $this->createMock(DeploymentConfig::class);
-        $this->loader = $this->createMock(Loader::class);
+        $this->config = $this->createMock(\Magento\Framework\App\DeploymentConfig::class);
+        $this->loader = $this->createMock(\Magento\Framework\Module\ModuleList\Loader::class);
         $this->model = new ModuleList($this->config, $this->loader);
     }
 

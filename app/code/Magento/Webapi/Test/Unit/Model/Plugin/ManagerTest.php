@@ -3,90 +3,78 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Webapi\Test\Unit\Model\Plugin;
 
-use Magento\Framework\DataObject;
-use Magento\Integration\Api\AuthorizationServiceInterface;
-use Magento\Integration\Api\IntegrationServiceInterface;
-use Magento\Integration\Model\ConfigBasedIntegrationManager;
 use Magento\Integration\Model\Integration;
-use Magento\Integration\Model\IntegrationConfig;
-use Magento\Webapi\Model\Plugin\Manager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ManagerTest extends TestCase
+class ManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Integration service mock
      *
-     * @var IntegrationServiceInterface|MockObject
+     * @var \Magento\Integration\Api\IntegrationServiceInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $integrationServiceMock;
 
     /**
      * Authorization service mock
      *
-     * @var AuthorizationServiceInterface|MockObject
+     * @var \Magento\Integration\Api\AuthorizationServiceInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $integrationAuthorizationServiceMock;
 
     /**
      * API setup plugin
      *
-     * @var Manager
+     * @var \Magento\Webapi\Model\Plugin\Manager
      */
     protected $apiSetupPlugin;
 
     /**
-     * @var ConfigBasedIntegrationManager|MockObject
+     * @var \Magento\Integration\Model\ConfigBasedIntegrationManager|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $subjectMock;
 
     /**
-     * @var IntegrationConfig|MockObject
+     * @var \Magento\Integration\Model\IntegrationConfig|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $integrationConfigMock;
 
     protected function setUp(): void
     {
         $this->integrationServiceMock = $this->getMockBuilder(
-            IntegrationServiceInterface::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                [
-                    'findByName',
-                    'update',
-                    'create',
-                    'get',
-                    'findByConsumerId',
-                    'findActiveIntegrationByConsumerId',
-                    'delete',
-                    'getSelectedResources'
-                ]
-            )->getMock();
+            \Magento\Integration\Api\IntegrationServiceInterface::class
+        )->disableOriginalConstructor()->setMethods(
+            [
+                'findByName',
+                'update',
+                'create',
+                'get',
+                'findByConsumerId',
+                'findActiveIntegrationByConsumerId',
+                'delete',
+                'getSelectedResources'
+            ]
+        )->getMock();
 
         $this->integrationAuthorizationServiceMock = $this->getMockBuilder(
-            AuthorizationServiceInterface::class
-        )->disableOriginalConstructor()
-            ->setMethods(
-                [
-                    'grantPermissions',
-                    'grantAllPermissions',
-                    'removePermissions'
-                ]
-            )->getMock();
+            \Magento\Integration\Api\AuthorizationServiceInterface::class
+        )->disableOriginalConstructor()->setMethods(
+            [
+                'grantPermissions',
+                'grantAllPermissions',
+                'removePermissions'
+            ]
+        )->getMock();
 
-        $this->subjectMock = $this->createMock(ConfigBasedIntegrationManager::class);
+        $this->subjectMock = $this->createMock(\Magento\Integration\Model\ConfigBasedIntegrationManager::class);
 
-        $this->integrationConfigMock = $this->getMockBuilder(IntegrationConfig::class)
+        $this->integrationConfigMock = $this->getMockBuilder(\Magento\Integration\Model\IntegrationConfig::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
-        $this->apiSetupPlugin = new Manager(
+        $this->apiSetupPlugin = new \Magento\Webapi\Model\Plugin\Manager(
             $this->integrationAuthorizationServiceMock,
             $this->integrationServiceMock,
             $this->integrationConfigMock
@@ -118,13 +106,15 @@ class ManagerTest extends TestCase
         )->method(
             'getIntegrations'
         )->willReturn(
-            [
-                'TestIntegration1' => ['resource' => $testIntegration1Resource],
-                'TestIntegration2' => ['resource' => $testIntegration2Resource],
-            ]
+            
+                [
+                    'TestIntegration1' => ['resource' => $testIntegration1Resource],
+                    'TestIntegration2' => ['resource' => $testIntegration2Resource],
+                ]
+            
         );
         $firstIntegrationId = 1;
-        $integrationsData1 = new DataObject(
+        $integrationsData1 = new \Magento\Framework\DataObject(
             [
                 'id' => $firstIntegrationId,
                 Integration::NAME => 'TestIntegration1',
@@ -134,7 +124,7 @@ class ManagerTest extends TestCase
             ]
         );
         $secondIntegrationId = 2;
-        $integrationsData2 = new DataObject(
+        $integrationsData2 = new \Magento\Framework\DataObject(
             [
                 'id' => $secondIntegrationId,
                 Integration::NAME => 'TestIntegration2',
@@ -192,7 +182,7 @@ class ManagerTest extends TestCase
                 'Magento_SalesRule::quote',
             ]
         ];
-        $integrationsData1Object = new DataObject($integrationsData1);
+        $integrationsData1Object = new \Magento\Framework\DataObject($integrationsData1);
 
         $secondIntegrationId = 2;
         $integrationsData2 = [
@@ -202,7 +192,7 @@ class ManagerTest extends TestCase
             Integration::SETUP_TYPE => 1,
             'resource' => ['Magento_Catalog::product_read']
         ];
-        $integrationsData2Object = new DataObject($integrationsData2);
+        $integrationsData2Object = new \Magento\Framework\DataObject($integrationsData2);
 
         $this->integrationServiceMock->expects(
             $this->at(0)

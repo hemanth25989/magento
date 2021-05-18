@@ -3,44 +3,38 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Config\Test\Unit\Model\Config\Structure\Element;
 
-use Magento\Config\Model\Config\Structure\AbstractElement;
-use Magento\Config\Model\Config\Structure\Element\AbstractComposite;
-use Magento\Config\Model\Config\Structure\Element\Iterator;
 use Magento\Config\Model\Config\Structure\ElementVisibilityInterface;
-use Magento\Framework\Module\Manager;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Store\Model\StoreManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class AbstractCompositeTest extends TestCase
+/**
+ * Abstract composite test.
+ */
+class AbstractCompositeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var AbstractComposite
+     * @var \Magento\Config\Model\Config\Structure\Element\AbstractComposite
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_storeManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_iteratorMock;
 
     /**
-     * @var Manager|MockObject
+     * @var \Magento\Framework\Module\Manager | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $moduleManagerMock;
 
     /**
-     * @var ElementVisibilityInterface|MockObject
+     * @var ElementVisibilityInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $elementVisibilityMock;
 
@@ -60,11 +54,11 @@ class AbstractCompositeTest extends TestCase
     {
         $this->elementVisibilityMock = $this->getMockBuilder(ElementVisibilityInterface::class)
             ->getMockForAbstractClass();
-        $this->_iteratorMock = $this->createMock(Iterator::class);
-        $this->_storeManagerMock = $this->createMock(StoreManager::class);
-        $this->moduleManagerMock = $this->createMock(Manager::class);
+        $this->_iteratorMock = $this->createMock(\Magento\Config\Model\Config\Structure\Element\Iterator::class);
+        $this->_storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManager::class);
+        $this->moduleManagerMock = $this->createMock(\Magento\Framework\Module\Manager::class);
         $this->_model = $this->getMockForAbstractClass(
-            AbstractComposite::class,
+            \Magento\Config\Model\Config\Structure\Element\AbstractComposite::class,
             [$this->_storeManagerMock, $this->moduleManagerMock, $this->_iteratorMock]
         );
         $objectManagerHelper = new ObjectManagerHelper($this);
@@ -72,7 +66,7 @@ class AbstractCompositeTest extends TestCase
             $this->_model,
             'elementVisibility',
             $this->elementVisibilityMock,
-            AbstractElement::class
+            \Magento\Config\Model\Config\Structure\AbstractElement::class
         );
     }
 

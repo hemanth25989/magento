@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * test Magento\Customer\Model\Metadata\Form\Date
  *
@@ -6,10 +6,6 @@
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Test\Unit\Model\Metadata\Form;
-
-use Magento\Customer\Api\Data\ValidationRuleInterface;
-use Magento\Customer\Model\Metadata\Form\Date;
-use Magento\Framework\App\RequestInterface;
 
 class DateTest extends AbstractFormTestCase
 {
@@ -43,7 +39,7 @@ class DateTest extends AbstractFormTestCase
         )->willReturn(
             'date'
         );
-        $this->date = new Date(
+        $this->date = new \Magento\Customer\Model\Metadata\Form\Date(
             $this->localeMock,
             $this->loggerMock,
             $this->attributeMetadataMock,
@@ -58,9 +54,9 @@ class DateTest extends AbstractFormTestCase
      */
     public function testExtractValue()
     {
-        $requestMock = $this->getMockBuilder(RequestInterface::class)
+        $requestMock = $this->getMockBuilder(\Magento\Framework\App\RequestInterface::class)
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $requestMock->expects($this->once())->method('getParam')->willReturn('1999-1-2');
 
         // yyyy-MM-dd
@@ -79,7 +75,7 @@ class DateTest extends AbstractFormTestCase
     public function testValidateValue($value, $validation, $required, $expected)
     {
         $validationRules = [];
-        $validationRule = $this->getMockBuilder(ValidationRuleInterface::class)
+        $validationRule = $this->getMockBuilder(\Magento\Customer\Api\Data\ValidationRuleInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getName', 'getValue'])
             ->getMockForAbstractClass();
@@ -93,7 +89,7 @@ class DateTest extends AbstractFormTestCase
         $validationRules[] = $validationRule;
         if (is_array($validation)) {
             foreach ($validation as $ruleName => $ruleValue) {
-                $validationRule = $this->getMockBuilder(ValidationRuleInterface::class)
+                $validationRule = $this->getMockBuilder(\Magento\Customer\Api\Data\ValidationRuleInterface::class)
                     ->disableOriginalConstructor()
                     ->setMethods(['getName', 'getValue'])
                     ->getMockForAbstractClass();
@@ -207,7 +203,7 @@ class DateTest extends AbstractFormTestCase
     public function testOutputValue()
     {
         $this->assertNull($this->date->outputValue());
-        $date = new Date(
+        $date = new \Magento\Customer\Model\Metadata\Form\Date(
             $this->localeMock,
             $this->loggerMock,
             $this->attributeMetadataMock,

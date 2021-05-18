@@ -3,35 +3,26 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Framework\MessageQueue\Test\Unit\Bulk;
-
-use Magento\Framework\Amqp\Bulk\Exchange;
-use Magento\Framework\MessageQueue\Bulk\ExchangeFactory;
-use Magento\Framework\MessageQueue\Bulk\ExchangeInterface;
-use Magento\Framework\MessageQueue\ConnectionTypeResolver;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for ExchangeFactory.
  */
-class ExchangeFactoryTest extends TestCase
+class ExchangeFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ConnectionTypeResolver|MockObject
+     * @var \Magento\Framework\MessageQueue\ConnectionTypeResolver|\PHPUnit\Framework\MockObject\MockObject
      */
     private $connectionTypeResolver;
 
     /**
-     * @var ExchangeInterface|MockObject
+     * @var \Magento\Framework\MessageQueue\Bulk\ExchangeInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $amqpExchangeFactory;
 
     /**
-     * @var ExchangeFactory
+     * @var \Magento\Framework\MessageQueue\Bulk\ExchangeFactory
      */
     private $exchangeFactory;
 
@@ -43,18 +34,17 @@ class ExchangeFactoryTest extends TestCase
     protected function setUp(): void
     {
         $this->connectionTypeResolver = $this
-            ->getMockBuilder(ConnectionTypeResolver::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->getMockBuilder(\Magento\Framework\MessageQueue\ConnectionTypeResolver::class)
+            ->disableOriginalConstructor()->getMock();
 
         $this->amqpExchangeFactory = $this
             ->getMockBuilder(\Magento\Framework\Amqp\ExchangeFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->exchangeFactory = $objectManager->getObject(
-            ExchangeFactory::class,
+            \Magento\Framework\MessageQueue\Bulk\ExchangeFactory::class,
             [
                 'connectionTypeResolver' => $this->connectionTypeResolver,
                 'exchangeFactories' => ['amqp' => $this->amqpExchangeFactory],
@@ -74,9 +64,8 @@ class ExchangeFactoryTest extends TestCase
         $this->connectionTypeResolver->expects($this->once())
             ->method('getConnectionType')->with($connectionName)->willReturn($connectionName);
         $exchange = $this
-            ->getMockBuilder(Exchange::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->getMockBuilder(\Magento\Framework\Amqp\Bulk\Exchange::class)
+            ->disableOriginalConstructor()->getMock();
         $this->amqpExchangeFactory->expects($this->once())
             ->method('create')->with($connectionName, $data)->willReturn($exchange);
         $this->assertEquals($exchange, $this->exchangeFactory->create($connectionName, $data));
@@ -89,8 +78,9 @@ class ExchangeFactoryTest extends TestCase
      */
     public function testCreateWithUndefinedConnectionType()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Not found exchange for connection name \'db\' in config');
+
         $connectionName = 'db';
         $data = ['key1' => 'value1'];
         $this->connectionTypeResolver->expects($this->once())
@@ -106,16 +96,16 @@ class ExchangeFactoryTest extends TestCase
      */
     public function testCreateWithWrongExchangeType()
     {
-        $this->expectException('LogicException');
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Exchange for connection name \'amqp\' does not implement interface');
+
         $connectionName = 'amqp';
         $data = ['key1' => 'value1'];
         $this->connectionTypeResolver->expects($this->once())
             ->method('getConnectionType')->with($connectionName)->willReturn($connectionName);
         $exchange = $this
             ->getMockBuilder(\Magento\Framework\Amqp\Exchange::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+            ->disableOriginalConstructor()->getMock();
         $this->amqpExchangeFactory->expects($this->once())
             ->method('create')->with($connectionName, $data)->willReturn($exchange);
         $this->exchangeFactory->create($connectionName, $data);

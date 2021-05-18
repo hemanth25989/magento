@@ -26,6 +26,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * Class TransportBuilderTest
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
@@ -42,32 +43,32 @@ class TransportBuilderTest extends TestCase
     protected $builder;
 
     /**
-     * @var FactoryInterface|MockObject
+     * @var FactoryInterface | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $templateFactoryMock;
 
     /**
-     * @var Message|MockObject
+     * @var Message | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $messageMock;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var ObjectManagerInterface | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $objectManagerMock;
 
     /**
-     * @var SenderResolverInterface|MockObject
+     * @var SenderResolverInterface | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $senderResolverMock;
 
     /**
-     * @var MessageInterfaceFactory|MockObject
+     * @var MessageInterfaceFactory| \PHPUnit\Framework\MockObject\MockObject
      */
     private $messageFactoryMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $mailTransportFactoryMock;
 
@@ -148,15 +149,15 @@ class TransportBuilderTest extends TestCase
             ->willReturn($emailMessage);
 
         $template = $this->getMockForAbstractClass(TemplateInterface::class);
-        $template->expects($this->once())->method('setVars')->with($vars)->willReturnSelf();
-        $template->expects($this->once())->method('setOptions')->with($options)->willReturnSelf();
+        $template->expects($this->once())->method('setVars')->with($this->equalTo($vars))->willReturnSelf();
+        $template->expects($this->once())->method('setOptions')->with($this->equalTo($options))->willReturnSelf();
         $template->expects($this->once())->method('getSubject')->willReturn('Email Subject');
         $template->expects($this->once())->method('getType')->willReturn($templateType);
         $template->expects($this->once())->method('processTemplate')->willReturn($bodyText);
 
         $this->templateFactoryMock->expects($this->once())
             ->method('get')
-            ->with('identifier', $templateNamespace)
+            ->with($this->equalTo('identifier'), $this->equalTo($templateNamespace))
             ->willReturn($template);
 
         $transport = $this->getMockForAbstractClass(TransportInterface::class);
@@ -173,23 +174,25 @@ class TransportBuilderTest extends TestCase
 
     /**
      * Test get transport with exception
+     *
      */
     public function testGetTransportWithException()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Unknown template type');
+
         $this->builder->setTemplateModel('Test\Namespace\Template');
 
         $vars = ['reason' => 'Reason', 'customer' => 'Customer'];
         $options = ['area' => 'frontend', 'store' => 1];
 
         $template = $this->getMockForAbstractClass(TemplateInterface::class);
-        $template->expects($this->once())->method('setVars')->with($vars)->willReturnSelf();
-        $template->expects($this->once())->method('setOptions')->with($options)->willReturnSelf();
+        $template->expects($this->once())->method('setVars')->with($this->equalTo($vars))->willReturnSelf();
+        $template->expects($this->once())->method('setOptions')->with($this->equalTo($options))->willReturnSelf();
         $template->expects($this->once())->method('getType')->willReturn('Unknown');
         $this->templateFactoryMock->expects($this->once())
             ->method('get')
-            ->with('identifier', 'Test\Namespace\Template')
+            ->with($this->equalTo('identifier'), $this->equalTo('Test\Namespace\Template'))
             ->willReturn($template);
 
         $this->builder->setTemplateIdentifier('identifier')->setTemplateVars($vars)->setTemplateOptions($options);

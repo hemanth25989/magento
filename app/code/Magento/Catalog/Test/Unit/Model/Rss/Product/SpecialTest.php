@@ -3,25 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Rss\Product;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\ProductFactory;
-use Magento\Catalog\Model\ResourceModel\Product\Collection;
-use Magento\Catalog\Model\Rss\Product\Special;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManager;
-use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class SpecialTest extends TestCase
+/**
+ * Class SpecialTest
+ * @package Magento\Catalog\Model\Rss\Product
+ */
+class SpecialTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Special
+     * @var \Magento\Catalog\Model\Rss\Product\Special
      */
     protected $special;
 
@@ -31,30 +24,30 @@ class SpecialTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $productFactory;
 
     /**
-     * @var MockObject|Product
+     * @var \PHPUnit\Framework\MockObject\MockObject|\Magento\Catalog\Model\Product
      */
     protected $product;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var \Magento\Store\Model\StoreManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeManager;
 
     protected function setUp(): void
     {
-        $this->product = $this->createMock(Product::class);
-        $this->productFactory = $this->createPartialMock(ProductFactory::class, ['create']);
+        $this->product = $this->createMock(\Magento\Catalog\Model\Product::class);
+        $this->productFactory = $this->createPartialMock(\Magento\Catalog\Model\ProductFactory::class, ['create']);
         $this->productFactory->expects($this->any())->method('create')->willReturn($this->product);
-        $this->storeManager = $this->createMock(StoreManager::class);
+        $this->storeManager = $this->createMock(\Magento\Store\Model\StoreManager::class);
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->special = $this->objectManagerHelper->getObject(
-            Special::class,
+            \Magento\Catalog\Model\Rss\Product\Special::class,
             [
                 'productFactory' => $this->productFactory,
                 'storeManager' => $this->storeManager
@@ -65,16 +58,16 @@ class SpecialTest extends TestCase
     public function testGetProductsCollection()
     {
         $storeId = 1;
-        $store = $this->createMock(Store::class);
+        $store = $this->createMock(\Magento\Store\Model\Store::class);
         $this->storeManager->expects($this->once())->method('getStore')->with($storeId)->willReturn(
             $store
         );
         $websiteId = 1;
         $store->expects($this->once())->method('getWebsiteId')->willReturn($websiteId);
 
-        /** @var Collection $productCollection */
+        /** @var \Magento\Catalog\Model\ResourceModel\Product\Collection $productCollection */
         $productCollection =
-            $this->createMock(Collection::class);
+            $this->createMock(\Magento\Catalog\Model\ResourceModel\Product\Collection::class);
         $this->product->expects($this->once())->method('getResourceCollection')->willReturn(
             $productCollection
         );

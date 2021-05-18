@@ -3,31 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\GroupedProduct\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductLinkExtensionInterface;
 use Magento\Catalog\Api\Data\ProductLinkInterface;
-use Magento\Catalog\Api\Data\ProductLinkInterfaceFactory;
 use Magento\Catalog\Api\ProductLinkRepositoryInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Helper\Image as ImageHelper;
 use Magento\Catalog\Model\Locator\LocatorInterface;
-use Magento\Catalog\Model\Product;
 use Magento\Catalog\Test\Unit\Ui\DataProvider\Product\Form\Modifier\AbstractModifierTest;
 use Magento\Eav\Api\AttributeSetRepositoryInterface;
 use Magento\Eav\Api\Data\AttributeSetInterface;
 use Magento\Framework\Locale\CurrencyInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\GroupedProduct\Model\Product\Link\CollectionProvider\Grouped as GroupedProducts;
 use Magento\GroupedProduct\Model\Product\Type\Grouped as GroupedProductType;
 use Magento\GroupedProduct\Ui\DataProvider\Product\Form\Modifier\Grouped;
 use Magento\Store\Api\Data\StoreInterface;
-use PHPUnit\Framework\MockObject\MockObject;
+use Magento\Catalog\Model\Product;
+use Magento\GroupedProduct\Model\Product\Link\CollectionProvider\Grouped as GroupedProducts;
+use Magento\Catalog\Api\Data\ProductLinkInterfaceFactory;
 
 /**
+ * Class GroupedTest
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class GroupedTest extends AbstractModifierTest
@@ -42,57 +41,57 @@ class GroupedTest extends AbstractModifierTest
     const LINKED_PRODUCT_PRICE = '1';
 
     /**
-     * @var ProductInterface|MockObject
+     * @var ProductInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $linkedProductMock;
 
     /**
-     * @var ProductLinkRepositoryInterface|MockObject
+     * @var ProductLinkRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $linkRepositoryMock;
 
     /**
-     * @var ProductLinkInterface|MockObject
+     * @var ProductLinkInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $linkMock;
 
     /**
-     * @var ProductRepositoryInterface|MockObject
+     * @var ProductRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $productRepositoryMock;
 
     /**
-     * @var ProductLinkExtensionInterface|MockObject
+     * @var ProductLinkExtensionInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $linkExtensionMock;
 
     /**
-     * @var CurrencyInterface|MockObject
+     * @var CurrencyInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $currencyMock;
 
     /**
-     * @var ImageHelper|MockObject
+     * @var ImageHelper|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $imageHelperMock;
 
     /**
-     * @var AttributeSetRepositoryInterface|MockObject
+     * @var AttributeSetRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $attributeSetRepositoryMock;
 
     /**
-     * @var StoreInterface|MockObject
+     * @var StoreInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeMock;
 
     /**
-     * @var GroupedProducts|MockObject
+     * @var GroupedProducts|\PHPUnit\Framework\MockObject\MockObject
      */
     private $groupedProductsMock;
 
     /**
-     * @var ProductLinkInterfaceFactory|MockObject
+     * @var ProductLinkInterfaceFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $productLinkFactoryMock;
 

@@ -3,61 +3,50 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Catalog\Test\Unit\Model\Product\CopyConstructor;
 
-use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\CopyConstructor\CrossSell;
-use Magento\Catalog\Model\Product\Link;
-use Magento\Catalog\Model\ResourceModel\Product\Link\Collection;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CrossSellTest extends TestCase
+class CrossSellTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CrossSell
+     * @var \Magento\Catalog\Model\Product\CopyConstructor\CrossSell
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_productMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_duplicateMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_linkMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_linkCollectionMock;
 
     protected function setUp(): void
     {
-        $this->_model = new CrossSell();
+        $this->_model = new \Magento\Catalog\Model\Product\CopyConstructor\CrossSell();
 
-        $this->_productMock = $this->createMock(Product::class);
+        $this->_productMock = $this->createMock(\Magento\Catalog\Model\Product::class);
 
-        $this->_duplicateMock = $this->getMockBuilder(Product::class)
-            ->addMethods(['setCrossSellLinkData'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->_duplicateMock = $this->createPartialMock(
+            \Magento\Catalog\Model\Product::class,
+            ['setCrossSellLinkData', '__wakeup']
+        );
 
-        $this->_linkMock = $this->getMockBuilder(Link::class)
-            ->addMethods(['getCrossSellLinkCollection'])
-            ->onlyMethods([ 'getAttributes', 'useCrossSellLinks'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->_linkMock = $this->createPartialMock(
+            \Magento\Catalog\Model\Product\Link::class,
+            ['__wakeup', 'getAttributes', 'getCrossSellLinkCollection', 'useCrossSellLinks']
+        );
 
         $this->_productMock->expects(
             $this->any()
@@ -70,7 +59,7 @@ class CrossSellTest extends TestCase
 
     public function testBuild()
     {
-        $helper = new ObjectManager($this);
+        $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $expectedData = ['100500' => ['some' => 'data']];
 
         $attributes = ['attributeOne' => ['code' => 'one'], 'attributeTwo' => ['code' => 'two']];
@@ -79,10 +68,10 @@ class CrossSellTest extends TestCase
 
         $this->_linkMock->expects($this->once())->method('getAttributes')->willReturn($attributes);
 
-        $productLinkMock = $this->getMockBuilder(\Magento\Catalog\Model\ResourceModel\Product\Link::class)
-            ->addMethods(['getLinkedProductId', 'toArray'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $productLinkMock = $this->createPartialMock(
+            \Magento\Catalog\Model\ResourceModel\Product\Link::class,
+            ['__wakeup', 'getLinkedProductId', 'toArray']
+        );
 
         $productLinkMock->expects($this->once())->method('getLinkedProductId')->willReturn('100500');
         $productLinkMock->expects(
@@ -96,7 +85,7 @@ class CrossSellTest extends TestCase
         );
 
         $collectionMock = $helper->getCollectionMock(
-            Collection::class,
+            \Magento\Catalog\Model\ResourceModel\Product\Link\Collection::class,
             [$productLinkMock]
         );
         $this->_productMock->expects(

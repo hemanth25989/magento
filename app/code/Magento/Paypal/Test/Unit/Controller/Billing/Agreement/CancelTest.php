@@ -3,24 +3,9 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Paypal\Test\Unit\Controller\Billing\Agreement;
 
-use Magento\Customer\Model\Session;
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\Response\RedirectInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\Registry;
-use Magento\Paypal\Controller\Billing\Agreement\Cancel;
-use Magento\Paypal\Model\Billing\Agreement as BillingAgreement;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CancelTest extends TestCase
+class CancelTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Paypal\Controller\Billing\Agreement
@@ -28,85 +13,84 @@ class CancelTest extends TestCase
     protected $_controller;
 
     /**
-     * @var ObjectManagerInterface|MockObject
+     * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_objectManager;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_request;
 
     /**
-     * @var Registry|MockObject
+     * @var \Magento\Framework\Registry|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_registry;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Customer\Model\Session|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_session;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Message\ManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_messageManager;
 
     /**
-     * @var BillingAgreement|MockObject
+     * @var \Magento\Paypal\Model\Billing\Agreement|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $_agreement;
 
     protected function setUp(): void
     {
-        $this->_session = $this->createMock(Session::class);
+        $this->_session = $this->createMock(\Magento\Customer\Model\Session::class);
 
-        $this->_agreement = $this->getMockBuilder(BillingAgreement::class)
-            ->addMethods(['getCustomerId', 'getReferenceId'])
-            ->onlyMethods(['load', 'getId', 'canCancel', 'cancel', '__wakeup'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->_agreement = $this->createPartialMock(
+            \Magento\Paypal\Model\Billing\Agreement::class,
+            ['load', 'getId', 'getCustomerId', 'getReferenceId', 'canCancel', 'cancel', '__wakeup']
+        );
         $this->_agreement->expects($this->once())->method('load')->with(15)->willReturnSelf();
         $this->_agreement->expects($this->once())->method('getId')->willReturn(15);
         $this->_agreement->expects($this->once())->method('getCustomerId')->willReturn(871);
 
-        $this->_objectManager = $this->getMockForAbstractClass(ObjectManagerInterface::class);
+        $this->_objectManager = $this->createMock(\Magento\Framework\ObjectManagerInterface::class);
         $this->_objectManager->expects(
             $this->atLeastOnce()
         )->method(
             'get'
         )->willReturnMap(
-            [[Session::class, $this->_session]]
+            [[\Magento\Customer\Model\Session::class, $this->_session]]
         );
         $this->_objectManager->expects(
             $this->once()
         )->method(
             'create'
         )->with(
-            BillingAgreement::class
+            \Magento\Paypal\Model\Billing\Agreement::class
         )->willReturn(
             $this->_agreement
         );
 
-        $this->_request = $this->getMockForAbstractClass(RequestInterface::class);
+        $this->_request = $this->createMock(\Magento\Framework\App\RequestInterface::class);
         $this->_request->expects($this->once())->method('getParam')->with('agreement')->willReturn(15);
 
-        $response = $this->getMockForAbstractClass(ResponseInterface::class);
+        $response = $this->createMock(\Magento\Framework\App\ResponseInterface::class);
 
-        $redirect = $this->getMockForAbstractClass(RedirectInterface::class);
+        $redirect = $this->createMock(\Magento\Framework\App\Response\RedirectInterface::class);
 
-        $this->_messageManager = $this->getMockForAbstractClass(ManagerInterface::class);
+        $this->_messageManager = $this->createMock(\Magento\Framework\Message\ManagerInterface::class);
 
-        $context = $this->createMock(Context::class);
+        $context = $this->createMock(\Magento\Framework\App\Action\Context::class);
         $context->expects($this->any())->method('getObjectManager')->willReturn($this->_objectManager);
         $context->expects($this->any())->method('getRequest')->willReturn($this->_request);
         $context->expects($this->any())->method('getResponse')->willReturn($response);
         $context->expects($this->any())->method('getRedirect')->willReturn($redirect);
         $context->expects($this->any())->method('getMessageManager')->willReturn($this->_messageManager);
 
-        $this->_registry = $this->createMock(Registry::class);
+        $this->_registry = $this->createMock(\Magento\Framework\Registry::class);
 
-        $this->_controller = new Cancel(
+        $this->_controller = new \Magento\Paypal\Controller\Billing\Agreement\Cancel(
             $context,
             $this->_registry
         );

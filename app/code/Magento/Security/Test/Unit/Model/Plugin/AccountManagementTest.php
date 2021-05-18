@@ -3,24 +3,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Security\Test\Unit\Model\Plugin;
 
 use Magento\Customer\Model\AccountManagement;
 use Magento\Framework\App\Area;
-use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Config\ScopeInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Security\Model\PasswordResetRequestEvent;
-use Magento\Security\Model\SecurityManager;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for \Magento\Security\Model\Plugin\AccountManagement testing
  */
-class AccountManagementTest extends TestCase
+class AccountManagementTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var  \Magento\Security\Model\Plugin\AccountManagement
@@ -28,27 +23,27 @@ class AccountManagementTest extends TestCase
     protected $model;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var \Magento\Framework\App\RequestInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $request;
 
     /**
-     * @var SecurityManager|MockObject
+     * @var \Magento\Security\Model\SecurityManager|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $securityManager;
 
     /**
-     * @var AccountManagement|MockObject
+     * @var AccountManagement|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $accountManagement;
 
     /**
-     * @var ScopeInterface|MockObject
+     * @var ScopeInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $scope;
 
     /**
-     * @var  ObjectManager
+     * @var  \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
@@ -60,10 +55,10 @@ class AccountManagementTest extends TestCase
     {
         $this->objectManager = new ObjectManager($this);
 
-        $this->request =  $this->getMockForAbstractClass(RequestInterface::class);
+        $this->request =  $this->createMock(\Magento\Framework\App\RequestInterface::class);
 
         $this->securityManager = $this->createPartialMock(
-            SecurityManager::class,
+            \Magento\Security\Model\SecurityManager::class,
             ['performSecurityCheck']
         );
 

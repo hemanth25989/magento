@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Test class for \Magento\Store\Model\Store\StoresConfig
  *
@@ -8,48 +8,41 @@
 
 namespace Magento\Store\Test\Unit\Model;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Store\Model\StoresConfig;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class StoresConfigTest extends TestCase
+class StoresConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var StoresConfig
+     * @var \Magento\Store\Model\StoresConfig
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_storeManager;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_storeOne;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_storeTwo;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_config;
 
     protected function setUp(): void
     {
-        $this->_storeOne = $this->createMock(Store::class);
-        $this->_storeTwo = $this->createMock(Store::class);
-        $this->_storeManager = $this->getMockForAbstractClass(StoreManagerInterface::class);
-        $this->_config = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $this->_storeOne = $this->createMock(\Magento\Store\Model\Store::class);
+        $this->_storeTwo = $this->createMock(\Magento\Store\Model\Store::class);
+        $this->_storeManager = $this->createMock(\Magento\Store\Model\StoreManagerInterface::class);
+        $this->_config = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
 
-        $this->_model = new StoresConfig(
+        $this->_model = new \Magento\Store\Model\StoresConfig(
             $this->_storeManager,
             $this->_config
         );

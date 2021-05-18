@@ -13,18 +13,17 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Swagger\Api\Data\SchemaTypeInterface;
 use Magento\Swagger\Block\Index;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\SwaggerWebapi\Model\SchemaType\Rest;
 
-class IndexTest extends TestCase
+class IndexTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var SchemaTypeInterface|MockObject
+     * @var SchemaTypeInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $schemaTypeMock;
 
     /**
-     * @var RequestInterface|MockObject
+     * @var RequestInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $requestMock;
 
@@ -38,10 +37,8 @@ class IndexTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->requestMock = $this->getMockBuilder(RequestInterface::class)
-            ->getMock();
-        $this->schemaTypeMock = $this->getMockBuilder(SchemaTypeInterface::class)
-            ->getMock();
+        $this->requestMock = $this->getMockBuilder(RequestInterface::class)->getMock();
+        $this->schemaTypeMock = $this->getMockBuilder(SchemaTypeInterface::class)->getMock();
 
         $this->index = (new ObjectManager($this))->getObject(
             Index::class,

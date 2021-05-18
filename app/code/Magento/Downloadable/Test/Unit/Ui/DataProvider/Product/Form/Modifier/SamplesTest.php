@@ -3,27 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Downloadable\Test\Unit\Ui\DataProvider\Product\Form\Modifier;
 
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\Locator\LocatorInterface;
-use Magento\Downloadable\Model\Source\TypeUpload;
-use Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Data\Samples as SamplesData;
-use Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Samples;
-use Magento\Framework\Stdlib\ArrayManager;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use Magento\Framework\UrlInterface;
+use Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Samples;
+use Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Data\Samples as SamplesData;
+use Magento\Catalog\Model\Locator\LocatorInterface;
+use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Magento\Downloadable\Model\Source\TypeUpload;
+use Magento\Framework\UrlInterface;
+use Magento\Framework\Stdlib\ArrayManager;
 
 /**
  * Test for class Magento\Downloadable\Ui\DataProvider\Product\Form\Modifier\Samples
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SamplesTest extends TestCase
+class SamplesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ObjectManagerHelper
@@ -31,37 +27,37 @@ class SamplesTest extends TestCase
     protected $objectManagerHelper;
 
     /**
-     * @var LocatorInterface|MockObject
+     * @var LocatorInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $locatorMock;
 
     /**
-     * @var ProductInterface|MockObject
+     * @var ProductInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $productMock;
 
     /**
-     * @var SamplesData|MockObject
+     * @var SamplesData|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $samplesDataMock;
 
     /**
-     * @var StoreManagerInterface|MockObject
+     * @var StoreManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $storeManagerMock;
 
     /**
-     * @var TypeUpload|MockObject
+     * @var TypeUpload|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $typeUploadMock;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var UrlInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlBuilderMock;
 
     /**
-     * @var ArrayManager|MockObject
+     * @var ArrayManager|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $arrayManagerMock;
 

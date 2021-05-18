@@ -3,74 +3,63 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\CatalogInventory\Test\Unit\Model\Product\CopyConstructor;
 
-use Magento\Catalog\Model\Product;
-use Magento\CatalogInventory\Api\Data\StockItemInterface;
-use Magento\CatalogInventory\Api\StockRegistryInterface;
-use Magento\CatalogInventory\Model\Product\CopyConstructor\CatalogInventory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Store\Model\Store;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class CatalogInventoryTest extends TestCase
+class CatalogInventoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var CatalogInventory
+     * @var \Magento\CatalogInventory\Model\Product\CopyConstructor\CatalogInventory
      */
     protected $model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $productMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $duplicateMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $stockItemDoMock;
 
     /**
-     * @var ObjectManager
+     * @var \Magento\Framework\TestFramework\Unit\Helper\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @var StockRegistryInterface|MockObject
+     * @var \Magento\CatalogInventory\Api\StockRegistryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $stockRegistry;
 
     protected function setUp(): void
     {
-        $this->productMock = $this->createPartialMock(Product::class, ['__wakeup', 'getStore']);
-        $store = $this->createPartialMock(Store::class, ['getWebsiteId', '__wakeup']);
+        $this->productMock = $this->createPartialMock(\Magento\Catalog\Model\Product::class, ['__wakeup', 'getStore']);
+        $store = $this->createPartialMock(\Magento\Store\Model\Store::class, ['getWebsiteId', '__wakeup']);
         $store->expects($this->any())->method('getWebsiteId')->willReturn(0);
         $this->productMock->expects($this->any())->method('getStore')->willReturn($store);
 
         $this->duplicateMock = $this->createPartialMock(
-            Product::class,
-            ['setStockData']
+            \Magento\Catalog\Model\Product::class,
+            ['setStockData', '__wakeup']
         );
 
-        $this->stockItemDoMock = $this->getMockForAbstractClass(
-            StockItemInterface::class
+        $this->stockItemDoMock = $this->createMock(
+            \Magento\CatalogInventory\Api\Data\StockItemInterface::class
         );
 
-        $this->stockRegistry = $this->getMockForAbstractClass(
-            StockRegistryInterface::class
+        $this->stockRegistry = $this->createMock(
+            \Magento\CatalogInventory\Api\StockRegistryInterface::class
         );
 
-        $this->objectManager = new ObjectManager($this);
+        $this->objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
         $this->model = $this->objectManager->getObject(
-            CatalogInventory::class,
+            \Magento\CatalogInventory\Model\Product\CopyConstructor\CatalogInventory::class,
             ['stockRegistry' => $this->stockRegistry]
         );
     }

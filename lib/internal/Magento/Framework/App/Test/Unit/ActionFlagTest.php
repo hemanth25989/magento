@@ -3,31 +3,24 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\App\Test\Unit;
 
-use Magento\Framework\App\ActionFlag;
-use Magento\Framework\App\Request\Http;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class ActionFlagTest extends TestCase
+class ActionFlagTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ActionFlag
+     * @var \Magento\Framework\App\ActionFlag
      */
     protected $_actionFlag;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_requestMock;
 
     protected function setUp(): void
     {
-        $this->_requestMock = $this->createMock(Http::class);
-        $this->_actionFlag = new ActionFlag($this->_requestMock);
+        $this->_requestMock = $this->createMock(\Magento\Framework\App\Request\Http::class);
+        $this->_actionFlag = new \Magento\Framework\App\ActionFlag($this->_requestMock);
     }
 
     public function testSetIfActionNotExist()

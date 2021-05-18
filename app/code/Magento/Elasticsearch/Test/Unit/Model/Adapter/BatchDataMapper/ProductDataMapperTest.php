@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Elasticsearch\Test\Unit\Model\Adapter\BatchDataMapper;
 
@@ -216,7 +215,7 @@ class ProductDataMapperTest extends TestCase
             ]
         );
 
-        $sourceMock = $this->createMock(SourceInterface::class);
+        $sourceMock = $this->getMockForAbstractClass(SourceInterface::class);
         $attributeMock->method('getSource')->willReturn($sourceMock);
         $sourceMock->method('getAllOptions')->willReturn($attributeData['options'] ?? []);
         $options = [];

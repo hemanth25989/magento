@@ -3,39 +3,36 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
 
 namespace Magento\Setup\Test\Unit\Model;
 
-use Laminas\ServiceManager\ServiceLocatorInterface;
-use Magento\Framework\App\ObjectManagerFactory;
-use Magento\Framework\Console\CommandListInterface;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Setup\Model\Bootstrap;
 use Magento\Setup\Model\ObjectManagerProvider;
+use Magento\Setup\Model\Bootstrap;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Magento\Setup\Mvc\Bootstrap\InitParamListener;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Application;
+use Magento\Framework\App\ObjectManagerFactory;
+use Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\Console\CommandListInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Application;
 
 /**
- * Test for \Magento\Setup\Model\ObjectManagerProvider
+ * Class ObjectManagerProviderTest
  */
-class ObjectManagerProviderTest extends TestCase
+class ObjectManagerProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ServiceLocatorInterface|MockObject
+     * @var ServiceLocatorInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $serviceLocatorMock;
 
     /**
-     * @var Bootstrap|MockObject
+     * @var Bootstrap|\PHPUnit\Framework\MockObject\MockObject
      */
     private $bootstrapMock;
 
     /**
-     * @var ObjectManagerProvider|MockObject
+     * @var ObjectManagerProvider|\PHPUnit\Framework\MockObject\MockObject
      */
     private $model;
 

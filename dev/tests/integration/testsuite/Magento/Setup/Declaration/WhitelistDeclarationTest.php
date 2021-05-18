@@ -19,9 +19,7 @@ use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\ObjectManager;
 
 /**
- * Checks whitelisted tables behaviour
- *
- * @magentoDbIsolation disabled
+ * Class WhitelistDeclarationTest
  */
 class WhitelistDeclarationTest extends \PHPUnit\Framework\TestCase
 {

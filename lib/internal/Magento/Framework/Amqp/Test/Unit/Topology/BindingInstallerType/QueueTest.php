@@ -3,16 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Amqp\Test\Unit\Topology\BindingInstallerType;
 
 use Magento\Framework\Amqp\Topology\BindingInstallerType\Queue;
-use Magento\Framework\MessageQueue\Topology\Config\ExchangeConfigItem\BindingInterface;
 use PhpAmqpLib\Channel\AMQPChannel;
-use PHPUnit\Framework\TestCase;
+use Magento\Framework\MessageQueue\Topology\Config\ExchangeConfigItem\BindingInterface;
 
-class QueueTest extends TestCase
+class QueueTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Queue

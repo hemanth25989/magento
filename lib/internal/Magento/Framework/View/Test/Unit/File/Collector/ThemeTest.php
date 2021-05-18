@@ -3,22 +3,13 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\View\Test\Unit\File\Collector;
 
 use Magento\Framework\Component\ComponentRegistrar;
-use Magento\Framework\Component\ComponentRegistrarInterface;
-use Magento\Framework\Filesystem\Directory\ReadFactory;
-use Magento\Framework\Filesystem\Directory\ReadInterface;
-use Magento\Framework\View\Design\ThemeInterface;
-use Magento\Framework\View\File;
 use Magento\Framework\View\File\Collector\Theme;
 use Magento\Framework\View\File\Factory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class ThemeTest extends TestCase
+class ThemeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Theme path
@@ -27,6 +18,9 @@ class ThemeTest extends TestCase
      */
     private $themePath = 'frontend/Magento/theme';
 
+    /**
+     * Full theme path
+     */
     const FULL_THEME_PATH = '/full/theme/path';
 
     /**
@@ -35,49 +29,49 @@ class ThemeTest extends TestCase
     private $themeFileCollector;
 
     /**
-     * @var Factory|MockObject
+     * @var Factory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $fileFactoryMock;
 
     /**
-     * @var ReadInterface|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\ReadInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $themeDirectoryMock;
 
     /**
-     * @var ThemeInterface|MockObject
+     * @var \Magento\Framework\View\Design\ThemeInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $themeMock;
 
     /**
-     * @var ReadFactory|MockObject
+     * @var \Magento\Framework\Filesystem\Directory\ReadFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private $readDirFactory;
 
     /**
-     * @var ComponentRegistrarInterface|MockObject
+     * @var \Magento\Framework\Component\ComponentRegistrarInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $componentRegistrar;
 
     protected function setup(): void
     {
-        $this->themeDirectoryMock = $this->getMockBuilder(ReadInterface::class)
+        $this->themeDirectoryMock = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\ReadInterface::class)
             ->getMock();
-        $this->fileFactoryMock = $this->getMockBuilder(Factory::class)
+        $this->fileFactoryMock = $this->getMockBuilder(\Magento\Framework\View\File\Factory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->themeMock = $this->getMockBuilder(ThemeInterface::class)
+        $this->themeMock = $this->getMockBuilder(\Magento\Framework\View\Design\ThemeInterface::class)
             ->getMock();
         $this->themeMock->expects($this->once())
             ->method('getFullPath')
             ->willReturn($this->themePath);
 
-        $this->readDirFactory = $this->createMock(ReadFactory::class);
+        $this->readDirFactory = $this->createMock(\Magento\Framework\Filesystem\Directory\ReadFactory::class);
         $this->readDirFactory->expects($this->any())
             ->method('create')
             ->willReturn($this->themeDirectoryMock);
         $this->componentRegistrar = $this->getMockForAbstractClass(
-            ComponentRegistrarInterface::class
+            \Magento\Framework\Component\ComponentRegistrarInterface::class
         );
         $this->themeFileCollector = new Theme(
             $this->fileFactoryMock,
@@ -118,7 +112,7 @@ class ThemeTest extends TestCase
             ->method('getPath')
             ->with(ComponentRegistrar::THEME, $this->themePath)
             ->willReturn(self::FULL_THEME_PATH);
-        $fileMock = $this->getMockBuilder(File::class)
+        $fileMock = $this->getMockBuilder(\Magento\Framework\View\File::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -148,7 +142,7 @@ class ThemeTest extends TestCase
             ->method('getPath')
             ->with(ComponentRegistrar::THEME, $this->themePath)
             ->willReturn(self::FULL_THEME_PATH);
-        $fileMock = $this->getMockBuilder(File::class)
+        $fileMock = $this->getMockBuilder(\Magento\Framework\View\File::class)
             ->disableOriginalConstructor()
             ->getMock();
 

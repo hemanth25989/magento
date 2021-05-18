@@ -3,48 +3,35 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Directory\Test\Unit\Model\Currency;
 
-use Magento\Backend\Helper\Data;
-use Magento\Directory\Model\Currency\DefaultLocator;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\RequestInterface;
-use Magento\Store\Model\Group;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManager;
-use Magento\Store\Model\Website;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-
-class DefaultLocatorTest extends TestCase
+class DefaultLocatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DefaultLocator
+     * @var \Magento\Directory\Model\Currency\DefaultLocator
      */
     protected $_model;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_configMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_storeManagerMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $_requestMock;
 
     protected function setUp(): void
     {
-        $backendData = $this->createMock(Data::class);
+        $backendData = $this->createMock(\Magento\Backend\Helper\Data::class);
         $this->_requestMock = $this->getMockForAbstractClass(
-            RequestInterface::class,
+            \Magento\Framework\App\RequestInterface::class,
             [$backendData],
             '',
             false,
@@ -52,9 +39,9 @@ class DefaultLocatorTest extends TestCase
             true,
             ['getParam']
         );
-        $this->_configMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
-        $this->_storeManagerMock = $this->createMock(StoreManager::class);
-        $this->_model = new DefaultLocator(
+        $this->_configMock = $this->createMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+        $this->_storeManagerMock = $this->createMock(\Magento\Store\Model\StoreManager::class);
+        $this->_model = new \Magento\Directory\Model\Currency\DefaultLocator(
             $this->_configMock,
             $this->_storeManagerMock
         );
@@ -77,7 +64,7 @@ class DefaultLocatorTest extends TestCase
         )->willReturn(
             'someStore'
         );
-        $storeMock = $this->createMock(Store::class);
+        $storeMock = $this->createMock(\Magento\Store\Model\Store::class);
         $storeMock->expects($this->once())->method('getBaseCurrencyCode')->willReturn('storeCurrency');
         $this->_storeManagerMock->expects(
             $this->once()
@@ -100,7 +87,7 @@ class DefaultLocatorTest extends TestCase
         )->willReturnMap(
             [['store', null, ''], ['website', null, 'someWebsite']]
         );
-        $websiteMock = $this->createMock(Website::class);
+        $websiteMock = $this->createMock(\Magento\Store\Model\Website::class);
         $websiteMock->expects(
             $this->once()
         )->method(
@@ -127,9 +114,11 @@ class DefaultLocatorTest extends TestCase
         )->method(
             'getParam'
         )->willReturnMap(
-            [['store', null, ''], ['website', null, ''], ['group', null, 'someGroup']]
+            
+                [['store', null, ''], ['website', null, ''], ['group', null, 'someGroup']]
+            
         );
-        $websiteMock = $this->createMock(Website::class);
+        $websiteMock = $this->createMock(\Magento\Store\Model\Website::class);
         $websiteMock->expects(
             $this->once()
         )->method(
@@ -138,7 +127,7 @@ class DefaultLocatorTest extends TestCase
             'websiteCurrency'
         );
 
-        $groupMock = $this->createMock(Group::class);
+        $groupMock = $this->createMock(\Magento\Store\Model\Group::class);
         $groupMock->expects($this->once())->method('getWebsite')->willReturn($websiteMock);
 
         $this->_storeManagerMock->expects(

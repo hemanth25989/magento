@@ -3,21 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Sales\Test\Unit\Block\Adminhtml\Order\Status\Assign;
 
-use Magento\Framework\Data\Form\Element\Fieldset;
-use Magento\Framework\Data\FormFactory;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Sales\Block\Adminhtml\Order\Status\Assign\Form;
-use Magento\Sales\Model\Order\Config;
-use Magento\Sales\Model\ResourceModel\Order\Status\Collection;
-use Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class FormTest extends TestCase
+/**
+ * Class FormTest
+ * @package Magento\Sales\Block\Adminhtml\Order\Status\Assign
+ */
+class FormTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Form
@@ -25,33 +19,33 @@ class FormTest extends TestCase
     protected $block;
 
     /**
-     * @var FormFactory|MockObject
+     * @var \Magento\Framework\Data\FormFactory | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $formFactory;
 
     /**
-     * @var CollectionFactory|MockObject
+     * @var \Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $collectionFactory;
 
     /**
-     * @var Config|MockObject
+     * @var \Magento\Sales\Model\Order\Config | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $orderConfig;
 
     protected function setUp(): void
     {
-        $objectManager = new ObjectManager($this);
+        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->formFactory = $this->createPartialMock(FormFactory::class, ['create']);
+        $this->formFactory = $this->createPartialMock(\Magento\Framework\Data\FormFactory::class, ['create']);
         $this->collectionFactory = $this->createPartialMock(
-            CollectionFactory::class,
+            \Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory::class,
             ['create']
         );
-        $this->orderConfig = $this->createMock(Config::class);
+        $this->orderConfig = $this->createMock(\Magento\Sales\Model\Order\Config::class);
 
         $this->block = $objectManager->getObject(
-            Form::class,
+            \Magento\Sales\Block\Adminhtml\Order\Status\Assign\Form::class,
             [
                 'formFactory' => $this->formFactory,
                 'collectionFactory' => $this->collectionFactory,
@@ -71,8 +65,8 @@ class FormTest extends TestCase
         $statesForField = array_merge(['' => ''], $states);
 
         $form = $this->createMock(\Magento\Framework\Data\Form::class);
-        $fieldset = $this->createMock(Fieldset::class);
-        $collection = $this->createMock(Collection::class);
+        $fieldset = $this->createMock(\Magento\Framework\Data\Form\Element\Fieldset::class);
+        $collection = $this->createMock(\Magento\Sales\Model\ResourceModel\Order\Status\Collection::class);
 
         $form->expects($this->once())
             ->method('addFieldset')

@@ -17,10 +17,8 @@ use Magento\Catalog\Model\Product\Url;
 use Magento\Catalog\Model\ResourceModel\Product\Compare\Item\Collection;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-class CompareProductsTest extends TestCase
+class CompareProductsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CompareProducts
@@ -28,17 +26,17 @@ class CompareProductsTest extends TestCase
     private $model;
 
     /**
-     * @var Compare|MockObject
+     * @var Compare|\PHPUnit\Framework\MockObject\MockObject
      */
     private $helperMock;
 
     /**
-     * @var Url|MockObject
+     * @var Url|\PHPUnit\Framework\MockObject\MockObject
      */
     private $productUrlMock;
 
     /**
-     * @var Output|MockObject
+     * @var Output|\PHPUnit\Framework\MockObject\MockObject
      */
     private $outputHelperMock;
 
@@ -48,7 +46,7 @@ class CompareProductsTest extends TestCase
     private $objectManagerHelper;
 
     /**
-     * @var ScopeConfigInterface|MockObject
+     * @var ScopeConfigInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $scopeConfigMock;
 
@@ -94,9 +92,9 @@ class CompareProductsTest extends TestCase
      * Prepare compare items collection.
      *
      * @param array $items
-     * @return MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
-    private function getItemCollectionMock(array $items) : MockObject
+    private function getItemCollectionMock(array $items) : \PHPUnit\Framework\MockObject\MockObject
     {
         $itemCollectionMock = $this->getMockBuilder(Collection::class)
             ->disableOriginalConstructor()
@@ -154,9 +152,9 @@ class CompareProductsTest extends TestCase
      * Prepare mock of product object.
      *
      * @param array $data
-     * @return MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
-    private function getProductMock(array $data) : MockObject
+    private function getProductMock(array $data) : \PHPUnit\Framework\MockObject\MockObject
     {
         $product = $this->getMockBuilder(Product::class)
             ->disableOriginalConstructor()

@@ -3,16 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Framework\Filesystem\Test\Unit\File;
 
-use Magento\Framework\Filesystem\DriverInterface;
-use Magento\Framework\Filesystem\File\Read;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use \Magento\Framework\Filesystem\File\Read;
 
-class ReadTest extends TestCase
+/**
+ * Class ReadTest
+ */
+class ReadTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Read
@@ -35,13 +33,13 @@ class ReadTest extends TestCase
     protected $mode = 'r';
 
     /**
-     * @var DriverInterface|MockObject
+     * @var \Magento\Framework\Filesystem\DriverInterface | \PHPUnit\Framework\MockObject\MockObject
      */
     protected $driver;
 
     protected function setUp(): void
     {
-        $this->driver = $this->getMockForAbstractClass(DriverInterface::class);
+        $this->driver = $this->getMockForAbstractClass(\Magento\Framework\Filesystem\DriverInterface::class);
         $this->driver->expects($this->any())
             ->method('isExists')
             ->with($this->path)
@@ -59,16 +57,19 @@ class ReadTest extends TestCase
         $this->driver = null;
     }
 
+    /**
+     */
     public function testInstanceFileNotExists()
     {
-        $this->expectException('Magento\Framework\Exception\FileSystemException');
-        $driver = $this->getMockForAbstractClass(DriverInterface::class);
+        $this->expectException(\Magento\Framework\Exception\FileSystemException::class);
+
+        $driver = $this->getMockForAbstractClass(\Magento\Framework\Filesystem\DriverInterface::class);
         $driver->expects($this->once())
             ->method('isExists')
             ->with($this->path)
             ->willReturn(false);
         $file = new Read($this->path, $driver);
-        $this->assertInstanceOf(Read::class, $file);
+        $this->assertInstanceOf(\Magento\Framework\Filesystem\File\Read::class, $file);
     }
 
     public function testRead()

@@ -12,7 +12,6 @@ use Magento\Cron\Model\DeadlockRetrierInterface;
 use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Adapter\DeadlockException;
-use PHPUnit\Framework\MockObject\MockObject;
 
 class DeadlockRetrierTest extends \PHPUnit\Framework\TestCase
 {
@@ -23,12 +22,12 @@ class DeadlockRetrierTest extends \PHPUnit\Framework\TestCase
     private $retrier;
 
     /**
-     * @var AdapterInterface|MockObject
+     * @var AdapterInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $adapterMock;
 
     /**
-     * @var AbstractModel|MockObject
+     * @var AbstractModel|\PHPUnit\Framework\MockObject\MockObject
      */
     private $modelMock;
 

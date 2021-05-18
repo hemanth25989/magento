@@ -3,15 +3,12 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Backend\Test\Unit\Model\Search\Config\Result;
 
-use Magento\Backend\Model\Search\Config\Result\Builder;
 use Magento\Backend\Model\Search\Config\Structure\ElementBuilderInterface;
 use Magento\Backend\Model\UrlInterface;
+use Magento\Backend\Model\Search\Config\Result\Builder;
 use Magento\Config\Model\Config\StructureElementInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -25,17 +22,17 @@ class BuilderTest extends TestCase
     protected $model;
 
     /**
-     * @var StructureElementInterface|MockObject
+     * @var StructureElementInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $structureElementMock;
 
     /**
-     * @var UrlInterface|MockObject
+     * @var UrlInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlBuilderMock;
 
     /**
-     * @var ElementBuilderInterface|MockObject
+     * @var ElementBuilderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $structureElementUrlParamsBuilderMock;
 

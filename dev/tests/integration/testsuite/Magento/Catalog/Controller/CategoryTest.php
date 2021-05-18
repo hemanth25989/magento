@@ -53,12 +53,6 @@ class CategoryTest extends AbstractController
         parent::setUp();
 
         $this->objectManager = Bootstrap::getObjectManager();
-        $this->objectManager->configure([
-            'preferences' => [
-                \Magento\Catalog\Model\Category\Attribute\LayoutUpdateManager::class
-                => \Magento\TestFramework\Catalog\Model\CategoryLayoutUpdateManager::class
-            ]
-        ]);
         $this->registry = $this->objectManager->get(Registry::class);
         $this->layout = $this->objectManager->get(LayoutInterface::class);
         $this->session = $this->objectManager->get(Session::class);
@@ -132,7 +126,7 @@ class CategoryTest extends AbstractController
         /* Layout updates */
         $handles = $this->layout->getUpdate()->getHandles();
         foreach ($expectedHandles as $expectedHandleName) {
-            $this->assertContains($expectedHandleName, $handles);
+            $this->assertContains($expectedHandleName,$handles);
         }
 
         $responseBody = $this->getResponse()->getBody();

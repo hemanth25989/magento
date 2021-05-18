@@ -5,10 +5,6 @@
  */
 namespace Magento\Setup\Model;
 
-use Magento\Framework\Component\ComponentRegistrarInterface;
-use Magento\Setup\Validator\DbValidator;
-use Laminas\ServiceManager\ServiceLocatorInterface;
-
 class ConfigOptionsListCollectorTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -18,7 +14,7 @@ class ConfigOptionsListCollectorTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp(): void
     {
-        $this->objectManagerProvider = $this->createMock(ObjectManagerProvider::class);
+        $this->objectManagerProvider = $this->createMock(\Magento\Setup\Model\ObjectManagerProvider::class);
         $this->objectManagerProvider
             ->expects($this->any())
             ->method('get')
@@ -28,13 +24,11 @@ class ConfigOptionsListCollectorTest extends \PHPUnit\Framework\TestCase
     public function testCollectOptionsLists()
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-        $componentRegistrar = $this->createMock(ComponentRegistrarInterface::class);
-        $componentRegistrar->expects($this->once())
-            ->method('getPaths')
-            ->willReturn(['Magento_Backend'=>'app/code/Magento/Backend']);
+        $fullModuleListMock = $this->createMock(\Magento\Framework\Module\FullModuleList::class);
+        $fullModuleListMock->expects($this->once())->method('getNames')->willReturn(['Magento_Backend']);
 
-        $dbValidator = $this->createMock(DbValidator::class);
-        $configGenerator = $this->createMock(ConfigGenerator::class);
+        $dbValidator = $this->createMock(\Magento\Setup\Validator\DbValidator::class);
+        $configGenerator = $this->createMock(\Magento\Setup\Model\ConfigGenerator::class);
 
         $setupOptions = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->create(
@@ -45,7 +39,7 @@ class ConfigOptionsListCollectorTest extends \PHPUnit\Framework\TestCase
                 ]
             );
 
-        $serviceLocator = $this->getMockForAbstractClass(ServiceLocatorInterface::class);
+        $serviceLocator = $this->getMockForAbstractClass(\Zend\ServiceManager\ServiceLocatorInterface::class);
 
         $serviceLocator->expects($this->once())
             ->method('get')
@@ -57,7 +51,7 @@ class ConfigOptionsListCollectorTest extends \PHPUnit\Framework\TestCase
             \Magento\Setup\Model\ConfigOptionsListCollector::class,
             [
                 'objectManagerProvider' => $this->objectManagerProvider,
-                'componentRegistrar' => $componentRegistrar,
+                'fullModuleList' => $fullModuleListMock,
                 'serviceLocator' => $serviceLocator
             ]
         );

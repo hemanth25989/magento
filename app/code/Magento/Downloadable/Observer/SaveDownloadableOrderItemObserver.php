@@ -3,8 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Downloadable\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
@@ -90,7 +88,7 @@ class SaveDownloadableOrderItemObserver implements ObserverInterface
             return $this;
         }
         $productType = $orderItem->getRealProductType() ?: $orderItem->getProductType();
-        if ($productType !== \Magento\Downloadable\Model\Product\Type::TYPE_DOWNLOADABLE) {
+        if ($productType != \Magento\Downloadable\Model\Product\Type::TYPE_DOWNLOADABLE) {
             return $this;
         }
         $product = $orderItem->getProduct();
