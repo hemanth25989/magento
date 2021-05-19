@@ -11,8 +11,6 @@ namespace Magento\FunctionalTestingFramework\ObjectManager;
  */
 interface ObjectHandlerInterface
 {
-    const OBJ_DEPRECATED = 'deprecated';
-
     /**
      * Function to enforce singleton design pattern
      *

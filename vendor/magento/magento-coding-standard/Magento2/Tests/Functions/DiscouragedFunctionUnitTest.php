@@ -7,6 +7,9 @@ namespace Magento2\Tests\Functions;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
+/**
+ * Class DiscouragedFunctionUnitTest
+ */
 class DiscouragedFunctionUnitTest extends AbstractSniffUnitTest
 {
     /**

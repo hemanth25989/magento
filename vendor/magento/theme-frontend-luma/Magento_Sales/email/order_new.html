@@ -20,7 +20,6 @@
 "var order":"Order",
 "var order_data.is_not_virtual":"Order Type",
 "var order_data.customer_name":"Customer Name",
-"var order_id": "Order DB Id",
 "var this.getUrl($store,'customer/account/',[_nosid:1])":"Customer Account URL"
 } @-->
 
@@ -86,7 +85,7 @@
                     {{/depend}}
                 </tr>
             </table>
-            {{layout handle="sales_email_order_items" order_id=$order_id area="frontend"}}
+            {{layout handle="sales_email_order_items" order=$order area="frontend"}}
         </td>
     </tr>
 </table>

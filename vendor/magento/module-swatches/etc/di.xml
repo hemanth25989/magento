@@ -60,8 +60,4 @@
             </argument>
         </arguments>
     </type>
-    <type name="Magento\Catalog\Api\ProductAttributeRepositoryInterface">
-        <plugin name="swatch_attribute"
-                type="Magento\Swatches\Plugin\Catalog\Api\ProductAttributeRepositoryInterfacePlugin"/>
-    </type>
 </config>

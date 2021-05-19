@@ -155,11 +155,7 @@ EOT
         $renderer = new Table($output);
         $renderer->setStyle('compact');
         $rendererStyle = $renderer->getStyle();
-        if (method_exists($rendererStyle, 'setVerticalBorderChars')) {
-            $rendererStyle->setVerticalBorderChars('');
-        } else {
-            $rendererStyle->setVerticalBorderChar('');
-        }
+        $rendererStyle->setVerticalBorderChar('');
         $rendererStyle->setCellRowContentFormat('%s  ');
         $renderer->setRows($table)->render();
     }

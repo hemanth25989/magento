@@ -18,6 +18,7 @@ define(
         'Magento_Vault/js/view/payment/vault-enabler',
         'Magento_Braintree/js/view/payment/kount',
         'mage/translate',
+        'prototype',
         'domReady!'
     ],
     function (
@@ -91,12 +92,7 @@ define(
                     })
                     .then(function (hostedFieldsInstance) {
                         self.hostedFieldsInstance = hostedFieldsInstance;
-
-                        if ($('#billing-address-same-as-shipping-braintree').is(':checked')) {
-                            self.isPlaceOrderActionAllowed(true);
-                        } else {
-                            self.isPlaceOrderActionAllowed(false);
-                        }
+                        self.isPlaceOrderActionAllowed(true);
                         self.initFormValidationEvents(hostedFieldsInstance);
 
                         return self.hostedFieldsInstance;

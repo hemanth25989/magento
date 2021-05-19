@@ -16,6 +16,7 @@
             <title value="User views the image details"/>
             <description value="Admin should be able to see images attributes in the image preview"/>
             <severity value="BLOCKER"/>
+            <group value="adobe_stock_integration_preview"/>
             <group value="adobe_stock_integration"/>
         </annotations>
         <before>
@@ -30,16 +31,16 @@
         <actionGroup ref="AdminAdobeStockExpandImagePreviewActionGroup" stepKey="expandImagePreview"/>
 
         <!-- Assert that image attributes visible "-->
-        <actionGroup ref="AssertAdminAdobeStockImagePreviewAttributeVisibleActionGroup" stepKey="verifyAttributeDimension">
+        <actionGroup ref="AssertVisibleImagePreviewAttributesActionGroup" stepKey="verifyAttributeDimension">
             <argument name="attributeName" value="Dimensions"/>
         </actionGroup>
-        <actionGroup ref="AssertAdminAdobeStockImagePreviewAttributeVisibleActionGroup" stepKey="verifyAttributeFileType">
+        <actionGroup ref="AssertVisibleImagePreviewAttributesActionGroup" stepKey="verifyAttributeFileType">
             <argument name="attributeName" value="File type"/>
         </actionGroup>
-        <actionGroup ref="AssertAdminAdobeStockImagePreviewAttributeVisibleActionGroup" stepKey="verifyAttributeCategory">
+        <actionGroup ref="AssertVisibleImagePreviewAttributesActionGroup" stepKey="verifyAttributeCategory">
             <argument name="attributeName" value="Category"/>
         </actionGroup>
-        <actionGroup ref="AssertAdminAdobeStockImagePreviewAttributeVisibleActionGroup" stepKey="verifyAttributeFile">
+        <actionGroup ref="AssertVisibleImagePreviewAttributesActionGroup" stepKey="verifyAttributeFile">
             <argument name="attributeName" value="File #"/>
         </actionGroup>
         <grabTextFrom selector="{{AdobeStockImagePreviewSection.attribute('File #')}}" stepKey="getFileAttributeValue"/>
@@ -47,9 +48,8 @@
         <waitForLoadingMaskToDisappear stepKey="waitForNextImageToLoad"/>
 
         <!-- Assert that file # attribute changed "-->
-        <assertNotContains stepKey="assertAttributeFileChanged">
-            <actualResult type="string">{$getFileAttributeValue}</actualResult>
-            <expectedResult type="string">AdobeStockImagePreviewSection.attribute('File #')</expectedResult>
-        </assertNotContains>
+        <assertNotContains actual="$getFileAttributeValue"
+                           expected="AdobeStockImagePreviewSection.attribute('File #')" expectedType="string"
+                           stepKey="assertAttributeFileChanged"/>
     </test>
 </tests>

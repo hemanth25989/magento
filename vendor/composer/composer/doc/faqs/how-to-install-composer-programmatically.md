@@ -1,7 +1,7 @@
 # How do I install Composer programmatically?
 
 As noted on the download page, the installer script contains a
-checksum which changes when the installer code changes and as such
+signature which changes when the installer code changes and as such
 it should not be relied upon in the long term.
 
 An alternative is to use this script which only works with UNIX utilities:
@@ -9,13 +9,13 @@ An alternative is to use this script which only works with UNIX utilities:
 ```bash
 #!/bin/sh
 
-EXPECTED_CHECKSUM="$(wget -q -O - https://composer.github.io/installer.sig)"
+EXPECTED_SIGNATURE="$(wget -q -O - https://composer.github.io/installer.sig)"
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-ACTUAL_CHECKSUM="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
+ACTUAL_SIGNATURE="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
 
-if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]
+if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]
 then
-    >&2 echo 'ERROR: Invalid installer checksum'
+    >&2 echo 'ERROR: Invalid installer signature'
     rm composer-setup.php
     exit 1
 fi

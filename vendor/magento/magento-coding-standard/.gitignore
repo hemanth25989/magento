@@ -1,8 +1,2 @@
 /vendor/*
 /bin/*
-
-# IDE files
-.idea/
-.project/
-.settings/
-.vscode/

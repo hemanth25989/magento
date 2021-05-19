@@ -9,12 +9,10 @@ declare(strict_types=1);
 namespace Magento\Framework\Filter\VariableResolver;
 
 use Magento\Email\Model\AbstractTemplate;
-use Magento\Framework\Data\Collection;
 use Magento\Framework\DataObject;
 use Magento\Framework\Filter\Template;
 use Magento\Framework\Filter\Template\Tokenizer\VariableFactory;
 use Magento\Framework\Filter\VariableResolverInterface;
-use Magento\Framework\Phrase;
 
 /**
  * Resolves variables allowing only scalar values
@@ -59,8 +57,11 @@ class StrictResolver implements VariableResolverInterface
             }
         }
 
-        if (isset($stackArgs[$last]['variable'])) {
-            $result = $this->assignResolvedVariable($stackArgs[$last]['variable']);
+        if (isset($stackArgs[$last]['variable'])
+            && (is_scalar($stackArgs[$last]['variable']) || is_array($stackArgs[$last]['variable']))
+        ) {
+            // If value for construction exists set it
+            $result = $stackArgs[$last]['variable'];
         }
 
         return $result;
@@ -166,26 +167,5 @@ class StrictResolver implements VariableResolverInterface
                 || $stackArgs[$i - 1]['variable'] instanceof AbstractTemplate
                 || is_array($stackArgs[$i - 1]['variable'])
             );
-    }
-
-    /**
-     * Assign resolved variable
-     *
-     * @param mixed $stackArg
-     * @return mixed|null
-     */
-    private function assignResolvedVariable($stackArg)
-    {
-        $result = null;
-        if (isset($stackArg) && (
-            is_scalar($stackArg) || is_array($stackArg) ||
-            $stackArg instanceof Collection || $stackArg instanceof Phrase
-            )
-        ) {
-            // If value for construction exists set it
-            $result = $stackArg;
-        }
-
-        return $result;
     }
 }

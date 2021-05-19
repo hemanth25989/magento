@@ -14,7 +14,6 @@ class Constants
      * @var array Query params
      */
     protected static $_queryParamsProps = [
-        'IDS' => 'ids',
         'LOCALE' => 'locale',
         'SEARCH_PARAMETERS' => 'search_parameters',
         'RESULT_COLUMNS' => 'result_columns',
@@ -34,7 +33,6 @@ class Constants
         'user_profile' => 'https://stock.adobe.io/Rest/Libraries/1/Member/Profile',
         'abandon' => 'https://stock.adobe.io/Rest/Libraries/1/Member/Abandon',
         'license_history' => 'https://stock.adobe.io/Rest/Libraries/1/Member/LicenseHistory',
-        'files' => 'https://stock.adobe.io/Rest/Media/1/Files'
     ];
 
     /**

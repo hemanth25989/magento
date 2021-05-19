@@ -16,7 +16,6 @@ modules:
         - \Magento\FunctionalTestingFramework\Helper\MagentoFakerData
         - \Magento\FunctionalTestingFramework\Module\MagentoSequence
         - \Magento\FunctionalTestingFramework\Module\MagentoAssert
-        - \Magento\FunctionalTestingFramework\Module\MagentoActionProxies
         - Asserts
     config:
         \Magento\FunctionalTestingFramework\Module\MagentoWebDriver:
@@ -28,7 +27,7 @@ modules:
             window_size: 1280x1024
             username: "%MAGENTO_ADMIN_USERNAME%"
             password: "%MAGENTO_ADMIN_PASSWORD%"
-            pageload_timeout: "%WAIT_TIMEOUT%"
+            pageload_timeout: 30
             host: "%SELENIUM_HOST%"
             port: "%SELENIUM_PORT%"
             protocol: "%SELENIUM_PROTOCOL%"

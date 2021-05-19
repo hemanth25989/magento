@@ -10,6 +10,7 @@ use Magento\Catalog\Api\Data\ProductAttributeMediaGalleryEntryInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\ProductLinkRepositoryInterface;
 use Magento\Catalog\Model\Product\Attribute\Backend\Media\EntryConverterPool;
+use Magento\Catalog\Model\FilterProductCustomAttribute;
 use Magento\Framework\Api\AttributeValueFactory;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\ObjectManager;
@@ -71,9 +72,9 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
     const STORE_ID = 'store_id';
 
     /**
-     * @var string|bool
+     * @var string
      */
-    protected $_cacheTag = false;
+    protected $_cacheTag = self::CACHE_TAG;
 
     /**
      * @var string
@@ -873,6 +874,7 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
      */
     public function beforeSave()
     {
+        $this->cleanCache();
         $this->setTypeHasOptions(false);
         $this->setTypeHasRequiredOptions(false);
         $this->setHasOptions(false);
@@ -970,17 +972,6 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
         $this->reloadPriceInfo();
 
         return $result;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getCacheTags()
-    {
-        $identities = $this->getIdentities();
-        $cacheTags = !empty($identities) ? (array) $identities : parent::getCacheTags();
-
-        return $cacheTags;
     }
 
     /**
@@ -1173,7 +1164,7 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
     /**
      * Get formatted by currency product price
      *
-     * @return array|double
+     * @return  array|double
      * @since 102.0.6
      */
     public function getFormattedPrice()
@@ -2172,7 +2163,6 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
      */
     public function getCacheIdTags()
     {
-        // phpstan:ignore "Call to an undefined static method"
         $tags = parent::getCacheIdTags();
         $affectedCategoryIds = $this->getAffectedCategoryIds();
         if (!$affectedCategoryIds) {
@@ -2353,8 +2343,6 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
     public function getImage()
     {
         $this->getTypeInstance()->setImageFromChildProduct($this);
-
-        // phpstan:ignore "Call to an undefined static method"
         return parent::getImage();
     }
 
@@ -2418,8 +2406,6 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
         }
     }
 
-    //phpcs:disable PHPCompatibility.FunctionNameRestrictions.ReservedFunctionNames.MethodDoubleUnderscore
-
     /**
      * Return Data Object data in array format.
      *
@@ -2446,8 +2432,6 @@ class Product extends \Magento\Catalog\Model\AbstractModel implements
         }
         return $data;
     }
-
-    //phpcs:enable PHPCompatibility.FunctionNameRestrictions.ReservedFunctionNames.MethodDoubleUnderscore
 
     /**
      * Convert Category model into flat array.

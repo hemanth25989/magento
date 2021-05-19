@@ -112,18 +112,10 @@ class ProcessExecutor
             return;
         }
 
-        if (method_exists($this->io, 'writeRaw')) {
-            if (Process::ERR === $type) {
-                $this->io->writeErrorRaw($buffer, false);
-            } else {
-                $this->io->writeRaw($buffer, false);
-            }
+        if (Process::ERR === $type) {
+            $this->io->writeError($buffer, false);
         } else {
-            if (Process::ERR === $type) {
-                $this->io->writeError($buffer, false);
-            } else {
-                $this->io->write($buffer, false);
-            }
+            $this->io->write($buffer, false);
         }
     }
 
@@ -163,7 +155,7 @@ class ProcessExecutor
         //@see https://bugs.php.net/bug.php?id=43784
         //@see https://bugs.php.net/bug.php?id=49446
         if ('\\' === DIRECTORY_SEPARATOR) {
-            if ((string) $argument === '') {
+            if ('' === $argument) {
                 return escapeshellarg($argument);
             }
 

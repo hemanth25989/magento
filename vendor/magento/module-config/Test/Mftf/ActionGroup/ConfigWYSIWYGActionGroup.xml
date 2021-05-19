@@ -8,10 +8,6 @@
 
 <actionGroups xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/actionGroupSchema.xsd">
-    <!--
-    NOTICE: EnabledWYSIWYG is deprecated.
-            Please use EnabledWYSIWYGActionGroup instead.
-    -->
     <actionGroup name="EnabledWYSIWYG">
         <annotations>
             <description>Enables the WYSIWYG Editor via the CLI.</description>
@@ -20,12 +16,9 @@
         <magentoCLI stepKey="enableWYSIWYG" command="config:set cms/wysiwyg/enabled enabled"/>
     </actionGroup>
 
-    <!--
-    NOTICE: SwitchToTinyMCE3 is deprecated.
-    -->
-    <actionGroup name="SwitchToTinyMCE3" deprecated="This version of TinyMCE is no longer supported">
+    <actionGroup name="SwitchToTinyMCE3">
         <annotations>
-            <description>DEPRECATED. Goes to the 'Configuration' page for 'Content Management'. Sets 'WYSIWYG Editor' to 'TinyMCE 3'. Clicks on the Save button. PLEASE NOTE: The value is Hardcoded.</description>
+            <description>Goes to the 'Configuration' page for 'Content Management'. Sets 'WYSIWYG Editor' to 'TinyMCE 3'. Clicks on the Save button. PLEASE NOTE: The value is Hardcoded.</description>
         </annotations>
 
         <comment userInput="Choose TinyMCE3 as the default editor" stepKey="chooseTinyMCE3AsEditor"/>
@@ -39,10 +32,6 @@
         <see selector="{{AdminMessagesSection.success}}" userInput="You saved the configuration." stepKey="seeConfigurationSuccessMessage"/>
     </actionGroup>
 
-    <!--
-    NOTICE: DisabledWYSIWYG is deprecated.
-            Please use DisabledWYSIWYGActionGroup instead.
-    -->
     <actionGroup name="DisabledWYSIWYG">
         <annotations>
             <description>Disables the WYSIWYG Editor via the CLI.</description>
@@ -58,7 +47,7 @@
         <arguments>
             <argument name="value" defaultValue="Yes" type="string"/>
         </arguments>
-
+        
         <amOnPage url="{{ConfigurationStoresPage.url}}" stepKey="navigateToWYSIWYGConfigPage1"/>
         <waitForPageLoad stepKey="waitForPageLoad1"/>
         <conditionalClick stepKey="expandWYSIWYGOptions" selector="{{ContentManagementSection.WYSIWYGOptions}}" dependentSelector="{{ContentManagementSection.CheckIfTabExpand}}" visible="true"/>
@@ -73,7 +62,7 @@
         <annotations>
             <description>Goes to the 'Configuration' page for 'Content Management'. Sets 'Enable WYSIWYG Editor' to 'Enabled by Default'. Clicks on the Save button. PLEASE NOTE: The value is Hardcoded.</description>
         </annotations>
-
+        
         <amOnPage url="{{AdminContentManagementPage.url}}" stepKey="navigateToConfigurationPage"/>
         <waitForPageLoad stepKey="waitForPageLoad"/>
         <conditionalClick selector="{{ContentManagementSection.WYSIWYGOptions}}" dependentSelector="{{ContentManagementSection.EnableWYSIWYG}}" visible="false" stepKey="expandWYSIWYGOptionsTab"/>

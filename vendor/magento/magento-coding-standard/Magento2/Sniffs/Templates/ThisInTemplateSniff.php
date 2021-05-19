@@ -14,32 +14,18 @@ use PHP_CodeSniffer\Files\File;
 class ThisInTemplateSniff implements Sniff
 {
     /**
-     * Warning violation code.
-     *
-     * @var string
-     */
-    protected $warningCodeFoundHelper = 'FoundHelper';
-
-    /**
      * String representation of warning.
      *
      * @var string
      */
-    protected $warningMessageFoundHelper = 'The use of helpers in templates is discouraged. Use ViewModel instead.';
+    protected $warningMessage = 'Usage of $this in template files is deprecated.';
 
     /**
      * Warning violation code.
      *
      * @var string
      */
-    protected $warningCodeFoundThis = 'FoundThis';
-
-    /**
-     * String representation of warning.
-     *
-     * @var string
-     */
-    protected $warningMessageFoundThis = 'The use of $this in templates is deprecated. Use $block instead.';
+    protected $warningCode = 'FoundThis';
 
     /**
      * @inheritdoc
@@ -56,12 +42,7 @@ class ThisInTemplateSniff implements Sniff
     {
         $tokens = $phpcsFile->getTokens();
         if ($tokens[$stackPtr]['content'] === '$this') {
-            $position = $phpcsFile->findNext(T_STRING, $stackPtr, null, false, 'helper', true);
-            if ($position !== false) {
-                $phpcsFile->addWarning($this->warningMessageFoundHelper, $position, $this->warningCodeFoundHelper);
-            } else {
-                $phpcsFile->addWarning($this->warningMessageFoundThis, $stackPtr, $this->warningCodeFoundThis);
-            }
+            $phpcsFile->addWarning($this->warningMessage, $stackPtr, $this->warningCode);
         }
     }
 }

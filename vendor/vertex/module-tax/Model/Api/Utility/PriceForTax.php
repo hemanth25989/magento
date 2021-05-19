@@ -28,14 +28,11 @@ class PriceForTax
         $this->calculationTool = $calculationTool;
         $this->taxHelper = $taxHelper;
     }
-
+    
     public function getPriceForTaxCalculationFromQuoteItem(QuoteDetailsItemInterface $item, float $price): float
     {
-        if ($this->taxHelper->applyTaxOnOriginalPrice($item->getExtensionAttributes()->getStoreId())
-            && $item->getExtensionAttributes()->getPriceForTaxCalculation()) {
-            // Due to bugs with bundled products (magento/magento2#27700) only use price_for_tax_calc when we're only
-            // supposed to apply tax on the original price.
-            $priceForTaxCalculation = (float)$this->calculationTool->round(
+        if ($item->getExtensionAttributes() && $item->getExtensionAttributes()->getPriceForTaxCalculation()) {
+            $priceForTaxCalculation = (float) $this->calculationTool->round(
                 $item->getExtensionAttributes()->getPriceForTaxCalculation()
             );
         } else {
@@ -45,12 +42,9 @@ class PriceForTax
         return $priceForTaxCalculation;
     }
 
-    public function getOriginalItemPriceOnQuote(
-        QuoteDetailsItemInterface $item,
-        float $unitPrice,
-        float $parentQty = 1.0
-    ): float {
-        return (float)$this->calculationTool->round($item->getUnitPrice() * $item->getQuantity() * $parentQty);
+    public function getOriginalItemPriceOnQuote(QuoteDetailsItemInterface $item, float $unitPrice): float
+    {
+        return (float) $this->calculationTool->round($item->getUnitPrice() * $item->getQuantity());
     }
 
     public function getPriceForTaxCalculationFromOrderItem(OrderItemInterface $orderItem, float $price): float
@@ -58,7 +52,7 @@ class PriceForTax
         $originalPrice = $orderItem->getOriginalPrice();
         $storeId = $orderItem->getStoreId();
         if ($originalPrice > $price && $this->taxHelper->applyTaxOnOriginalPrice($storeId)) {
-            return (float)$originalPrice;
+            return (float) $originalPrice;
         }
 
         return $price;

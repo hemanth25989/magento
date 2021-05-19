@@ -6,8 +6,6 @@
 
 namespace Magento\FunctionalTestingFramework\DataGenerator\Persist\Curl;
 
-use Magento\FunctionalTestingFramework\Page\Objects\PageObject;
-use Magento\FunctionalTestingFramework\Provider\UrlProvider;
 use Magento\FunctionalTestingFramework\Util\Protocol\CurlInterface;
 use Magento\FunctionalTestingFramework\Util\Protocol\CurlTransport;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
@@ -61,11 +59,11 @@ class AdminExecutor extends AbstractExecutor implements CurlInterface
     /**
      * Returns base URL for Magento backend instance
      * @return string
-     * @throws TestFrameworkException
      */
     public function getBaseUrl(): string
     {
-        return UrlProvider::getBaseUrl(PageObject::ADMIN_AREA);
+        $backendHost = getenv('MAGENTO_BACKEND_BASE_URL') ?: parent::getBaseUrl();
+        return $backendHost . getenv('MAGENTO_BACKEND_NAME') . '/';
     }
 
     /**

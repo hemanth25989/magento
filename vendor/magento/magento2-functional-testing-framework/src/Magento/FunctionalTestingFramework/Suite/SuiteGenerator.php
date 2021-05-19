@@ -6,7 +6,6 @@
 
 namespace Magento\FunctionalTestingFramework\Suite;
 
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
 use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 use Magento\FunctionalTestingFramework\Suite\Generators\GroupClassGenerator;
@@ -16,14 +15,9 @@ use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
 use Magento\FunctionalTestingFramework\Util\Filesystem\DirSetupUtil;
 use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 use Magento\FunctionalTestingFramework\Util\Manifest\BaseTestManifest;
-use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 use Magento\FunctionalTestingFramework\Util\TestGenerator;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * Class SuiteGenerator
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class SuiteGenerator
 {
     const YAML_CODECEPTION_DIST_FILENAME = 'codeception.dist.yml';
@@ -95,14 +89,6 @@ class SuiteGenerator
         $suites = $testManifest->getSuiteConfig();
 
         foreach ($suites as $suiteName => $suiteContent) {
-            if (empty($suiteContent)) {
-                LoggingUtil::getInstance()->getLogger(self::class)->notification(
-                    "Suite '" . $suiteName . "' contains no tests and won't be generated." . PHP_EOL,
-                    [],
-                    true
-                );
-                continue;
-            }
             $firstElement = array_values($suiteContent)[0];
 
             // if the first element is a string we know that we simply have an array of tests
@@ -142,12 +128,11 @@ class SuiteGenerator
      * @return void
      * @throws TestReferenceException
      * @throws XmlException
-     * @throws TestFrameworkException
      */
     private function generateSuiteFromTest($suiteName, $tests = [], $originalSuiteName = null)
     {
         $relativePath = TestGenerator::GENERATED_DIR . DIRECTORY_SEPARATOR . $suiteName;
-        $fullPath = FilePathFormatter::format(TESTS_MODULE_PATH) . $relativePath . DIRECTORY_SEPARATOR;
+        $fullPath = TESTS_MODULE_PATH . DIRECTORY_SEPARATOR . $relativePath . DIRECTORY_SEPARATOR;
 
         DirSetupUtil::createGroupDir($fullPath);
 
@@ -186,14 +171,12 @@ class SuiteGenerator
     {
         $suiteRef = $originalSuiteName ?? $suiteName;
         $possibleTestRef = SuiteObjectHandler::getInstance()->getObject($suiteRef)->getTests();
-        $errorMsg = "Cannot reference tests which are not declared as part of suite";
+        $errorMsg = "Cannot reference tests whcih are not declared as part of suite.";
 
         $invalidTestRef = array_diff($testsReferenced, array_keys($possibleTestRef));
 
         if (!empty($invalidTestRef)) {
-            $testList = implode("\", \"", $invalidTestRef);
-            $fullError = $errorMsg . " (Suite: \"{$suiteRef}\" Tests: \"{$testList}\")";
-            throw new TestReferenceException($fullError, ['suite' => $suiteRef, 'test' => $invalidTestRef]);
+            throw new TestReferenceException($errorMsg, ['suite' => $suiteRef, 'test' => $invalidTestRef]);
         }
     }
 
@@ -365,10 +348,9 @@ class SuiteGenerator
      * Static getter for the Config yml filepath (as path cannot be stored in a const)
      *
      * @return string
-     * @throws TestFrameworkException
      */
     private static function getYamlConfigFilePath()
     {
-        return FilePathFormatter::format(TESTS_BP);
+        return TESTS_BP . DIRECTORY_SEPARATOR;
     }
 }

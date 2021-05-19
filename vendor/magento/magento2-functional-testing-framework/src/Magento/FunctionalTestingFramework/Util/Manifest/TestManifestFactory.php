@@ -6,9 +6,7 @@
 
 namespace Magento\FunctionalTestingFramework\Util\Manifest;
 
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
-use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 use Magento\FunctionalTestingFramework\Util\TestGenerator;
 
 class TestManifestFactory
@@ -28,11 +26,11 @@ class TestManifestFactory
      * @param array  $suiteConfiguration
      * @param string $testPath
      * @return BaseTestManifest
-     * @throws TestFrameworkException
      */
     public static function makeManifest($runConfig, $suiteConfiguration, $testPath = TestGenerator::DEFAULT_DIR)
     {
-        $testDirFullPath = FilePathFormatter::format(TESTS_MODULE_PATH)
+        $testDirFullPath = TESTS_MODULE_PATH
+        . DIRECTORY_SEPARATOR
         . TestGenerator::GENERATED_DIR
         . DIRECTORY_SEPARATOR
         . $testPath;

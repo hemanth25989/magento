@@ -104,7 +104,6 @@ class ArrayDumper
                 'keywords',
                 'repositories',
                 'support',
-                'funding',
             );
 
             $data = $this->dumpValues($package, $keys, $data);

@@ -7,6 +7,9 @@ namespace Magento2\Tests\Strings;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
+/**
+ * Class StringConcatUnitTest
+ */
 class StringConcatUnitTest extends AbstractSniffUnitTest
 {
     /**

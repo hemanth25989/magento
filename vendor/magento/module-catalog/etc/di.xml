@@ -238,11 +238,6 @@
             <argument name="imageUploader" xsi:type="object">Magento\Catalog\CategoryImageUpload</argument>
         </arguments>
     </type>
-    <type name="Magento\Catalog\Model\Category\Attribute\Backend\Image">
-        <arguments>
-            <argument name="imageUploader" xsi:type="object">Magento\Catalog\CategoryImageUpload</argument>
-        </arguments>
-    </type>
     <type name="Magento\Catalog\Model\Session">
         <arguments>
             <argument name="storage" xsi:type="object">Magento\Catalog\Model\Session\Storage</argument>
@@ -888,11 +883,6 @@
                     <item name="Magento\Catalog\Api\Data\ProductInterface" xsi:type="array">
                         <item name="create" xsi:type="string">Magento\Catalog\Model\ResourceModel\CreateHandler</item>
                         <item name="update" xsi:type="string">Magento\Catalog\Model\ResourceModel\UpdateHandler</item>
-                    </item>
-                </item>
-                <item name="websites" xsi:type="array">
-                    <item name="Magento\Catalog\Api\Data\ProductInterface" xsi:type="array">
-                        <item name="create" xsi:type="string">Magento\Catalog\Model\ResourceModel\ProductWebsiteAssignmentHandler</item>
                     </item>
                 </item>
             </argument>

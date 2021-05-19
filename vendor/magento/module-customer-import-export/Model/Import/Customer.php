@@ -11,8 +11,6 @@ use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\ImportExport\Model\Import;
 use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregatorInterface;
 use Magento\ImportExport\Model\Import\AbstractSource;
-use Magento\Customer\Model\Indexer\Processor;
-use Magento\Framework\App\ObjectManager;
 
 /**
  * Customer entity import
@@ -171,11 +169,6 @@ class Customer extends AbstractCustomer
     ];
 
     /**
-     * @var Processor
-     */
-    private $indexerProcessor;
-
-    /**
      * @param \Magento\Framework\Stdlib\StringUtils $string
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\ImportExport\Model\ImportFactory $importFactory
@@ -189,7 +182,6 @@ class Customer extends AbstractCustomer
      * @param \Magento\Customer\Model\ResourceModel\Attribute\CollectionFactory $attrCollectionFactory
      * @param \Magento\Customer\Model\CustomerFactory $customerFactory
      * @param array $data
-     * @param Processor $indexerProcessor
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -205,8 +197,7 @@ class Customer extends AbstractCustomer
         \Magento\CustomerImportExport\Model\ResourceModel\Import\Customer\StorageFactory $storageFactory,
         \Magento\Customer\Model\ResourceModel\Attribute\CollectionFactory $attrCollectionFactory,
         \Magento\Customer\Model\CustomerFactory $customerFactory,
-        array $data = [],
-        ?Processor $indexerProcessor = null
+        array $data = []
     ) {
         $this->_resourceHelper = $resourceHelper;
 
@@ -263,7 +254,6 @@ class Customer extends AbstractCustomer
         /** @var $customerResource \Magento\Customer\Model\ResourceModel\Customer */
         $customerResource = $this->_customerModel->getResource();
         $this->_entityTable = $customerResource->getEntityTable();
-        $this->indexerProcessor = $indexerProcessor ?: ObjectManager::getInstance()->get(Processor::class);
     }
 
     /**
@@ -420,7 +410,7 @@ class Customer extends AbstractCustomer
             $createdAt = (new \DateTime())->setTimestamp(strtotime($rowData['created_at']));
         }
 
-        $emailInLowercase = strtolower(trim($rowData[self::COLUMN_EMAIL]));
+        $emailInLowercase = strtolower($rowData[self::COLUMN_EMAIL]);
         $newCustomer = false;
         $entityId = $this->_getCustomerId($emailInLowercase, $rowData[self::COLUMN_WEBSITE]);
         if (!$entityId) {
@@ -490,8 +480,6 @@ class Customer extends AbstractCustomer
             $entityRow['updated_at'] = $now->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT);
             if (!empty($rowData[self::COLUMN_STORE])) {
                 $entityRow['store_id'] = $this->_storeCodeToId[$rowData[self::COLUMN_STORE]];
-            } else {
-                $entityRow['store_id'] = $this->getCustomerStoreId($emailInLowercase, $rowData[self::COLUMN_WEBSITE]);
             }
             $entitiesToUpdate[] = $entityRow;
         }
@@ -562,7 +550,7 @@ class Customer extends AbstractCustomer
                 $this->_deleteCustomerEntities($entitiesToDelete);
             }
         }
-        $this->indexerProcessor->markIndexerAsInvalid();
+
         return true;
     }
 
@@ -679,23 +667,5 @@ class Customer extends AbstractCustomer
                 $this->customerFields
             )
         );
-    }
-
-    /**
-     * Get customer store ID by email and website ID.
-     *
-     * @param string $email
-     * @param string $websiteCode
-     * @return bool|int
-     */
-    private function getCustomerStoreId(string $email, string $websiteCode)
-    {
-        $websiteId = (int) $this->getWebsiteId($websiteCode);
-        $storeId = $this->getCustomerStorage()->getCustomerStoreId($email, $websiteId);
-        if ($storeId === null || $storeId === false) {
-            $defaultStore = $this->_storeManager->getWebsite($websiteId)->getDefaultStore();
-            $storeId = $defaultStore ? $defaultStore->getId() : \Magento\Store\Model\Store::DEFAULT_STORE_ID;
-        }
-        return $storeId;
     }
 }

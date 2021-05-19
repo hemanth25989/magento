@@ -7,25 +7,9 @@
 
 namespace Magento\Persistent\Test\Unit\Model;
 
-use Magento\Checkout\Model\Session;
-use Magento\Customer\Model\GroupManagement;
-use Magento\Eav\Model\Entity\Collection\AbstractCollection;
-use Magento\Persistent\Helper\Data;
 use Magento\Persistent\Model\QuoteManager;
-use Magento\Quote\Api\CartRepositoryInterface;
-use Magento\Quote\Api\Data\CartExtensionFactory;
-use Magento\Quote\Api\Data\CartExtensionInterface;
-use Magento\Quote\Api\Data\ShippingAssignmentInterface;
-use Magento\Quote\Model\Quote;
-use Magento\Quote\Model\Quote\Address;
-use Magento\Quote\Model\Quote\ShippingAssignment\ShippingAssignmentProcessor;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
-class QuoteManagerTest extends TestCase
+class QuoteManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var QuoteManager
@@ -33,47 +17,39 @@ class QuoteManagerTest extends TestCase
     protected $model;
 
     /**
-     * @var \Magento\Persistent\Helper\Session|MockObject
+     * @var \Magento\Persistent\Helper\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $persistentSessionMock;
 
     /**
-     * @var Data|MockObject
+     * @var \Magento\Persistent\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $persistentDataMock;
 
     /**
-     * @var Session|MockObject
+     * @var \Magento\Checkout\Model\Session|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $checkoutSessionMock;
 
     /**
-     * @var Quote|MockObject
+     * @var \Magento\Quote\Model\Quote|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $sessionMock;
 
     /**
-     * @var MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $abstractCollectionMock;
 
     /**
-     * @var CartRepositoryInterface|MockObject
+     * @var \Magento\Quote\Api\CartRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $quoteRepositoryMock;
-    /**
-     * @var CartExtensionFactory|MockObject
-     */
-    private $cartExtensionFactory;
-    /**
-     * @var ShippingAssignmentProcessor|MockObject
-     */
-    private $shippingAssignmentProcessor;
 
     protected function setUp()
     {
@@ -91,15 +67,15 @@ class QuoteManagerTest extends TestCase
                     '__wakeup',
                 ]
             );
-        $this->persistentDataMock = $this->createMock(Data::class);
-        $this->checkoutSessionMock = $this->createMock(Session::class);
+        $this->persistentDataMock = $this->createMock(\Magento\Persistent\Helper\Data::class);
+        $this->checkoutSessionMock = $this->createMock(\Magento\Checkout\Model\Session::class);
 
         $this->abstractCollectionMock =
-            $this->createMock(AbstractCollection::class);
+            $this->createMock(\Magento\Eav\Model\Entity\Collection\AbstractCollection::class);
 
-        $this->quoteRepositoryMock = $this->createMock(CartRepositoryInterface::class);
+        $this->quoteRepositoryMock = $this->createMock(\Magento\Quote\Api\CartRepositoryInterface::class);
         $this->quoteMock = $this->createPartialMock(
-            Quote::class,
+            \Magento\Quote\Model\Quote::class,
             [
                 'getId',
                 'getIsPersistent',
@@ -118,24 +94,15 @@ class QuoteManagerTest extends TestCase
                 'removeAllAddresses',
                 'getIsActive',
                 'getCustomerId',
-                'isVirtual',
-                'getItemsQty',
-                'getExtensionAttributes',
-                'setExtensionAttributes',
                 '__wakeup'
             ]
         );
-
-        $this->cartExtensionFactory = $this->createPartialMock(CartExtensionFactory::class, ['create']);
-        $this->shippingAssignmentProcessor = $this->createPartialMock(ShippingAssignmentProcessor::class, ['create']);
 
         $this->model = new QuoteManager(
             $this->persistentSessionMock,
             $this->persistentDataMock,
             $this->checkoutSessionMock,
-            $this->quoteRepositoryMock,
-            $this->cartExtensionFactory,
-            $this->shippingAssignmentProcessor
+            $this->quoteRepositoryMock
         );
     }
 
@@ -206,13 +173,13 @@ class QuoteManagerTest extends TestCase
         $this->quoteMock->expects($this->once())
             ->method('setCustomerLastname')->with(null)->will($this->returnValue($this->quoteMock));
         $this->quoteMock->expects($this->once())->method('setCustomerGroupId')
-            ->with(GroupManagement::NOT_LOGGED_IN_ID)
+            ->with(\Magento\Customer\Model\GroupManagement::NOT_LOGGED_IN_ID)
             ->will($this->returnValue($this->quoteMock));
         $this->quoteMock->expects($this->once())
             ->method('setIsPersistent')->with(false)->will($this->returnValue($this->quoteMock));
         $this->quoteMock->expects($this->once())
             ->method('removeAllAddresses')->will($this->returnValue($this->quoteMock));
-        $quoteAddressMock = $this->createMock(Address::class);
+        $quoteAddressMock = $this->createMock(\Magento\Quote\Model\Quote\Address::class);
         $this->quoteMock->expects($this->once())
             ->method('getShippingAddress')->will($this->returnValue($quoteAddressMock));
         $this->quoteMock->expects($this->once())
@@ -223,32 +190,7 @@ class QuoteManagerTest extends TestCase
             ->method('getSession')->will($this->returnValue($this->sessionMock));
         $this->sessionMock->expects($this->once())
             ->method('removePersistentCookie')->will($this->returnValue($this->sessionMock));
-        $this->quoteMock->expects($this->once())->method('isVirtual')->willReturn(false);
-        $this->quoteMock->expects($this->once())->method('getItemsQty')->willReturn(1);
-        $extensionAttributes = $this->createPartialMock(
-            CartExtensionInterface::class,
-            [
-                'setShippingAssignments',
-                'getShippingAssignments'
-            ]
-        );
-        $shippingAssignment = $this->createMock(ShippingAssignmentInterface::class);
-        $extensionAttributes->expects($this->once())
-            ->method('setShippingAssignments')
-            ->with([$shippingAssignment]);
-        $this->shippingAssignmentProcessor->expects($this->once())
-            ->method('create')
-            ->with($this->quoteMock)
-            ->willReturn($shippingAssignment);
-        $this->cartExtensionFactory->expects($this->once())
-            ->method('create')
-            ->willReturn($extensionAttributes);
-        $this->quoteMock->expects($this->once())
-            ->method('getExtensionAttributes')
-            ->willReturn(null);
-        $this->quoteMock->expects($this->once())
-            ->method('setExtensionAttributes')
-            ->with($extensionAttributes);
+
         $this->model->setGuest(false);
     }
 
@@ -295,7 +237,7 @@ class QuoteManagerTest extends TestCase
             ->will($this->returnValue($this->quoteMock));
         $this->quoteMock->expects($this->once())
             ->method('setCustomerGroupId')
-            ->with(GroupManagement::NOT_LOGGED_IN_ID)
+            ->with(\Magento\Customer\Model\GroupManagement::NOT_LOGGED_IN_ID)
             ->will($this->returnValue($this->quoteMock));
 
         $this->model->expire();
@@ -360,7 +302,7 @@ class QuoteManagerTest extends TestCase
     {
         $this->checkoutSessionMock->expects($this->once())
             ->method('getQuoteId')->willReturn(1);
-        $quoteWithNoId = $this->quoteMock = $this->createMock(Quote::class);
+        $quoteWithNoId = $this->quoteMock = $this->createMock(\Magento\Quote\Model\Quote::class);
         $quoteWithNoId->expects($this->once())->method('getId')->willReturn(null);
         $this->quoteRepositoryMock->expects($this->once())->method('get')->with(1)->willReturn($quoteWithNoId);
         $this->quoteMock->expects($this->once())->method('getId')->willReturn(1);

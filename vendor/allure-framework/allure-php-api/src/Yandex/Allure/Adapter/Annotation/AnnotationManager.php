@@ -2,6 +2,7 @@
 
 namespace Yandex\Allure\Adapter\Annotation;
 
+use Doctrine\Common\Annotations\Annotation;
 use Yandex\Allure\Adapter\Event\TestCaseStartedEvent;
 use Yandex\Allure\Adapter\Event\TestSuiteStartedEvent;
 use Yandex\Allure\Adapter\Model;
@@ -39,9 +40,7 @@ class AnnotationManager
     private function processAnnotations(array $annotations)
     {
         foreach ($annotations as $annotation) {
-            if ($annotation instanceof AllureId) {
-                $this->labels[] = Model\Label::id($annotation->value);
-            } elseif ($annotation instanceof Title) {
+            if ($annotation instanceof Title) {
                 $this->title = $annotation->value;
             } elseif ($annotation instanceof Description) {
                 $this->description = new Model\Description(
@@ -84,12 +83,6 @@ class AnnotationManager
                         $parameter->kind
                     );
                 }
-            } elseif ($annotation instanceof Label) {
-                $this->labels[] = Model\Label::label($annotation->name, $annotation->value);
-            } elseif ($annotation instanceof Labels) {
-                foreach ($annotation -> labels as $label) {
-                    $this->labels[] = Model\Label::label($label->name, $label->value);
-                }
             }
         }
     }
@@ -122,7 +115,7 @@ class AnnotationManager
         }
 
         if ($this->areLabelsPresent()) {
-            $event->setLabels(array_merge($event->getLabels(), $this->getLabels()));
+            $event->setLabels($this->getLabels());
         }
 
         if ($this->areParametersPresent()) {

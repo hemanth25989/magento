@@ -257,7 +257,7 @@ class StringUtils extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         ];
 
         if ($row = $connection->fetchRow($select, $bind)) {
-            $original = $this->escaper->escapeHtml($string);
+            $original = $string;
             if (strpos($original, '::') !== false) {
                 list(, $original) = explode('::', $original);
             }

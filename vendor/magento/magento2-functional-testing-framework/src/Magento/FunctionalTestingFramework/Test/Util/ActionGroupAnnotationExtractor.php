@@ -64,8 +64,7 @@ class ActionGroupAnnotationExtractor extends AnnotationExtractor
             $message = "Action Group File {$filename} is missing required annotations.";
             LoggingUtil::getInstance()->getLogger(ActionObject::class)->deprecation(
                 $message,
-                ["actionGroup" => $filename, "missingAnnotations" => implode(", ", $missingAnnotations)],
-                true
+                ["actionGroup" => $filename, "missingAnnotations" => implode(", ", $missingAnnotations)]
             );
         }
     }

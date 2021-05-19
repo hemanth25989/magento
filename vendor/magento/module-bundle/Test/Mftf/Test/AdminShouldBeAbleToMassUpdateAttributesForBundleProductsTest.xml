@@ -55,11 +55,9 @@
         <actionGroup ref="AdminUpdateProductNameAndDescriptionAttributes" stepKey="updateProductAttribute">
             <argument name="product" value="UpdateAttributeNameAndDescription"/>
         </actionGroup>
-        <comment userInput="Apply changes" stepKey="cronRun"/>
-        <actionGroup ref="CliConsumerStartActionGroup" stepKey="cronRunTwice">
-            <argument name="consumerName" value="{{AdminProductAttributeUpdateMessageConsumerData.consumerName}}"/>
-            <argument name="maxMessages" value="{{AdminProductAttributeUpdateMessageConsumerData.messageLimit}}"/>
-        </actionGroup>
+        <!--Run cron twice-->
+        <magentoCLI command="cron:run" stepKey="cronRun"/>
+        <magentoCLI command="cron:run" stepKey="cronRunTwice"/>
         <!-- Search for a product with a new name and Open Product -->
         <actionGroup ref="filterProductGridByName" stepKey="searchWithNewProductName">
             <argument name="product" value="UpdateAttributeNameAndDescription"/>

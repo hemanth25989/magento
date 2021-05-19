@@ -99,9 +99,8 @@
     </section>
     <section name="ProductWYSIWYGSection">
         <element name="Switcher" type="button" selector="//select[@id='dropdown-switcher']"/>
-        <element name="v436" type ="button" selector="//select[@id='dropdown-switcher']/option[text()='TinyMCE 4.3.6']" deprecated="New element was introduced. Please use 'ProductWYSIWYGSection.v4910'"/>
-        <element name="v3" type ="button" selector="//select[@id='dropdown-switcher']/option[text()='TinyMCE 3.6(Deprecated)']" deprecated="This version of tinymce is no longer supported. Please use 'ProductWYSIWYGSection.v4910'"/>
-        <element name="v4910" type ="button" selector="//select[@id='dropdown-switcher']/option[text()='TinyMCE 4.9.10']" />
+        <element name="v436" type ="button" selector="//select[@id='dropdown-switcher']/option[text()='TinyMCE 4.3.6']" />
+        <element name="v3" type ="button" selector="//select[@id='dropdown-switcher']/option[text()='TinyMCE 3.6(Deprecated)']" />
         <element name="TinymceDescription3" type ="button" selector="//span[text()='Description']" />
         <element name="SaveConfig" type ="button" selector="#save" />
         <element name="v4" type="button" selector="#category_form_description_v4"/>
@@ -219,6 +218,7 @@
         <element name="textAttributeByName" type="text" selector="//div[@data-index='attributes']//fieldset[contains(@class, 'admin__field') and .//*[contains(.,'{{var}}')]]//input" parameterized="true"/>
         <element name="dropDownAttribute" type="select" selector="//select[@name='product[{{arg}}]']" parameterized="true" timeout="30"/>
         <element name="attributeSection" type="block" selector="//div[@data-index='attributes']/div[contains(@class, 'admin__collapsible-content _show')]" timeout="30"/>
+        <element name="customAttribute" type="text" selector="product[{{attributecode}}]" timeout="30" parameterized="true"/>
         <element name="attributeGroupByName" type="button" selector="//div[@class='fieldset-wrapper-title']//span[text()='{{group}}']" parameterized="true"/>
         <element name="attributeByGroupAndName" type="text" selector="//div[@class='fieldset-wrapper-title']//span[text()='{{group}}']/../../following-sibling::div//span[contains(text(),'attribute')]" parameterized="true"/>
     </section>

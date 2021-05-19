@@ -129,7 +129,7 @@ class JsonFile
         $retries = 3;
         while ($retries--) {
             try {
-                $this->filePutContentsIfModified($this->path, static::encode($hash, $options). ($options & self::JSON_PRETTY_PRINT ? "\n" : ''));
+                file_put_contents($this->path, static::encode($hash, $options). ($options & self::JSON_PRETTY_PRINT ? "\n" : ''));
                 break;
             } catch (\Exception $e) {
                 if ($retries) {
@@ -140,19 +140,6 @@ class JsonFile
                 throw $e;
             }
         }
-    }
-
-    /**
-     * modify file properties only if content modified
-     */
-    private function filePutContentsIfModified($path, $content)
-    {
-        $currentContent = @file_get_contents($path);
-        if (!$currentContent || ($currentContent != $content)) {
-            return file_put_contents($path, $content);
-        }
-
-        return 0;
     }
 
     /**

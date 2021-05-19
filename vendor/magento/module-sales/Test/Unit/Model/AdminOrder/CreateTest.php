@@ -30,14 +30,13 @@ use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Item as OrderItem;
 use Magento\Sales\Model\ResourceModel\Order\Item\Collection as ItemCollection;
 use Magento\Store\Api\Data\StoreInterface;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.TooManyFields)
  */
-class CreateTest extends TestCase
+class CreateTest extends \PHPUnit\Framework\TestCase
 {
     const CUSTOMER_ID = 1;
 
@@ -47,12 +46,12 @@ class CreateTest extends TestCase
     private $adminOrderCreate;
 
     /**
-     * @var CartRepositoryInterface|MockObject
+     * @var CartRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteRepository;
 
     /**
-     * @var QuoteFactory|MockObject
+     * @var QuoteFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $quoteFactory;
 
@@ -112,7 +111,7 @@ class CreateTest extends TestCase
             ->setMethods(['getForCustomer'])
             ->getMockForAbstractClass();
 
-        $this->sessionQuote = $this->getMockBuilder(SessionQuote::class)
+        $this->sessionQuote = $this->getMockBuilder(\Magento\Backend\Model\Session\Quote::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -228,7 +227,6 @@ class CreateTest extends TestCase
                 'customer_tax_class_id' => $taxClassId
             ]
         );
-        $quote->method('getStoreId')->willReturn(1);
         $this->dataObjectHelper->method('populateWithArray')
             ->with(
                 $customer,
@@ -246,10 +244,6 @@ class CreateTest extends TestCase
 
         $this->groupRepository->method('getById')
             ->willReturn($customerGroup);
-
-        $customer->expects($this->once())
-            ->method('setStoreId')
-            ->with(1);
 
         $this->adminOrderCreate->setAccountData(['group_id' => 1]);
     }

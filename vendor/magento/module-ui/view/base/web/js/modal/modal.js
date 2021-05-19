@@ -15,7 +15,6 @@ define([
     'text!ui/template/modal/modal-custom.html',
     'Magento_Ui/js/lib/key-codes',
     'jquery-ui-modules/widget',
-    'jquery-ui-modules/core',
     'mage/translate'
 ], function ($, _, template, popupTpl, slideTpl, customTpl, keyCodes) {
     'use strict';
@@ -192,7 +191,7 @@ define([
          * @param {String} title
          */
         setTitle: function (title) {
-            var $title = this.modal.find(this.options.modalTitle),
+            var $title = $(this.options.modalTitle),
                 $subTitle = this.modal.find(this.options.modalSubTitle);
 
             $title.text(title);

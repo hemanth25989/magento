@@ -8,7 +8,6 @@ namespace Magento\FunctionalTestingFramework\DataGenerator\Objects;
 
 /**
  * Class OperationDefinitionObject
- * @SuppressWarnings(PHPMD)
  */
 class OperationDefinitionObject
 {
@@ -119,29 +118,21 @@ class OperationDefinitionObject
     private $removeBackend;
 
     /**
-     * Deprecated message.
-     *
-     * @var string
-     */
-    private $deprecated;
-
-    /**
      * OperationDefinitionObject constructor.
-     * @param string      $name
-     * @param string      $operation
-     * @param string      $dataType
-     * @param string      $apiMethod
-     * @param string      $apiUri
-     * @param string      $auth
-     * @param array       $headers
-     * @param array       $params
-     * @param array       $metaData
-     * @param string      $contentType
-     * @param boolean     $removeBackend
-     * @param string      $successRegex
-     * @param string      $returnRegex
-     * @param string      $returnIndex
-     * @param string|null $deprecated
+     * @param string  $name
+     * @param string  $operation
+     * @param string  $dataType
+     * @param string  $apiMethod
+     * @param string  $apiUri
+     * @param string  $auth
+     * @param array   $headers
+     * @param array   $params
+     * @param array   $metaData
+     * @param string  $contentType
+     * @param boolean $removeBackend
+     * @param string  $successRegex
+     * @param string  $returnRegex
+     * @param string  $returnIndex
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -158,8 +149,7 @@ class OperationDefinitionObject
         $removeBackend,
         $successRegex = null,
         $returnRegex = null,
-        $returnIndex = null,
-        $deprecated = null
+        $returnIndex = null
     ) {
         $this->name = $name;
         $this->operation = $operation;
@@ -174,7 +164,6 @@ class OperationDefinitionObject
         $this->returnRegex = $returnRegex;
         $this->returnIndex = $returnIndex;
         $this->removeBackend = $removeBackend;
-        $this->deprecated = $deprecated;
         $this->apiUrl = null;
 
         if (!empty($contentType)) {
@@ -185,16 +174,6 @@ class OperationDefinitionObject
 
         // add content type as a header
         $this->headers[] = self::HTTP_CONTENT_TYPE_HEADER . ': ' . $this->contentType;
-    }
-
-    /**
-     * Getter for the deprecated attr of the section
-     *
-     * @return string
-     */
-    public function getDeprecated()
-    {
-        return $this->deprecated;
     }
 
     /**

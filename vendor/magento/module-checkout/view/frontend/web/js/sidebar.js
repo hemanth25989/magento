@@ -260,12 +260,7 @@ define([
 
             if (!_.isUndefined(productData)) {
                 $(document).trigger('ajax:removeFromCart', {
-                    productIds: [productData['product_id']],
-                    productInfo: [
-                        {
-                            'id': productData['product_id']
-                        }
-                    ]
+                    productIds: [productData['product_id']]
                 });
 
                 if (window.location.href.indexOf(this.shoppingCartUrl) === 0) {

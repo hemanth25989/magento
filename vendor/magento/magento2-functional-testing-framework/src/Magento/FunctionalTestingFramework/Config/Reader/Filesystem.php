@@ -235,8 +235,7 @@ class Filesystem implements \Magento\FunctionalTestingFramework\Config\ReaderInt
                     $error = str_replace(PHP_EOL, "", $error);
                     LoggingUtil::getInstance()->getLogger(Filesystem::class)->criticalFailure(
                         "Schema validation error ",
-                        ($filename ? [ "file"=> $filename, "error" => $error]: ["error" => $error]),
-                        true
+                        ($filename ? [ "file"=> $filename, "error" => $error]: ["error" => $error])
                     );
                 }
                 throw new \Exception("Schema validation errors found in xml file(s)" . $filename);

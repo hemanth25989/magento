@@ -7,6 +7,9 @@ namespace Magento2\Tests\Legacy;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
+/**
+ * Class MageEntityUnitTest
+ */
 class MageEntityUnitTest extends AbstractSniffUnitTest
 {
     /**

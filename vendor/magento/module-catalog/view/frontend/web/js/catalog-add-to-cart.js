@@ -8,9 +8,8 @@ define([
     'mage/translate',
     'underscore',
     'Magento_Catalog/js/product/view/product-ids-resolver',
-    'Magento_Catalog/js/product/view/product-info-resolver',
     'jquery-ui-modules/widget'
-], function ($, $t, _, idsResolver, productInfoResolver) {
+], function ($, $t, _, idsResolver) {
     'use strict';
 
     $.widget('mage.catalogAddToCart', {
@@ -25,8 +24,7 @@ define([
             addToCartButtonDisabledClass: 'disabled',
             addToCartButtonTextWhileAdding: '',
             addToCartButtonTextAdded: '',
-            addToCartButtonTextDefault: '',
-            productInfoResolver: productInfoResolver
+            addToCartButtonTextDefault: ''
         },
 
         /** @inheritdoc */
@@ -92,7 +90,6 @@ define([
         ajaxSubmit: function (form) {
             var self = this,
                 productIds = idsResolver(form),
-                productInfo = self.options.productInfoResolver(form),
                 formData;
 
             $(self.options.minicartSelector).trigger('contentLoading');
@@ -122,7 +119,6 @@ define([
                     $(document).trigger('ajax:addToCart', {
                         'sku': form.data().productSku,
                         'productIds': productIds,
-                        'productInfo': productInfo,
                         'form': form,
                         'response': res
                     });
@@ -176,7 +172,6 @@ define([
                     $(document).trigger('ajax:addToCart:error', {
                         'sku': form.data().productSku,
                         'productIds': productIds,
-                        'productInfo': productInfo,
                         'form': form,
                         'response': res
                     });

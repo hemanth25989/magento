@@ -55,6 +55,7 @@ class PersistedObjectHandler
      * Return the singleton instance of this class. Initialize it if needed.
      *
      * @return PersistedObjectHandler
+     * @throws \Exception
      */
     public static function getInstance()
     {
@@ -89,24 +90,14 @@ class PersistedObjectHandler
 
         foreach ($overrideFields as $index => $field) {
             try {
-                $decrptedField = CredentialStore::getInstance()->decryptAllSecretsInString($field);
-                if ($decrptedField !== false) {
-                    $overrideFields[$index] = $decrptedField;
-                }
+                $overrideFields[$index] = CredentialStore::getInstance()->decryptAllSecretsInString($field);
             } catch (TestFrameworkException $e) {
-                //catch exception if Credentials are not defined
+                //do not rethrow if Credentials are not defined
+                $overrideFields[$index] = $field;
             }
         }
         
         $retrievedEntity = DataObjectHandler::getInstance()->getObject($entity);
-
-        if ($retrievedEntity === null) {
-            throw new TestReferenceException(
-                "Entity \"" . $entity . "\" does not exist." .
-                "\nException occurred executing action at StepKey \"" . $key . "\""
-            );
-        }
-
         $persistedObject = new DataPersistenceHandler(
             $retrievedEntity,
             $retrievedDependentObjects,

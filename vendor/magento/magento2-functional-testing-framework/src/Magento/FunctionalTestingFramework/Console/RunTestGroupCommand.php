@@ -79,9 +79,6 @@ class RunTestGroupCommand extends BaseGenerateCommand
             $allowSkipped
         );
 
-        $this->setOutputStyle($input, $output);
-        $this->showMftfNotices($output);
-
         if (!$skipGeneration) {
             $testConfiguration = $this->getGroupAndSuiteConfiguration($groups);
             $command = $this->getApplication()->find('generate:tests');
@@ -97,31 +94,49 @@ class RunTestGroupCommand extends BaseGenerateCommand
             $command->run(new ArrayInput($args), $output);
         }
 
-        $commandString = realpath(PROJECT_ROOT . '/vendor/bin/codecept') . ' run functional --verbose --steps';
+        $codeceptionCommand = realpath(PROJECT_ROOT . '/vendor/bin/codecept') . ' run functional --verbose --steps';
 
-        $exitCode = -1;
-        $returnCodes = [];
         foreach ($groups as $group) {
-            $codeceptionCommandString = $commandString . " -g {$group}";
+            $codeceptionCommand .= " -g {$group}";
+        }
 
-            $process = new Process($codeceptionCommandString);
-            $process->setWorkingDirectory(TESTS_BP);
-            $process->setIdleTimeout(600);
-            $process->setTimeout(0);
+        $process = new Process($codeceptionCommand);
+        $process->setWorkingDirectory(TESTS_BP);
+        $process->setIdleTimeout(600);
+        $process->setTimeout(0);
 
-            $returnCodes[] = $process->run(
-                function ($type, $buffer) use ($output) {
-                    $output->write($buffer);
-                }
+        return $process->run(
+            function ($type, $buffer) use ($output) {
+                $output->write($buffer);
+            }
+        );
+    }
+
+    /**
+     * Returns a json string to be used as an argument for generation of a group or suite
+     *
+     * @param array $groups
+     * @return string
+     * @throws \Magento\FunctionalTestingFramework\Exceptions\XmlException
+     */
+    private function getGroupAndSuiteConfiguration(array $groups)
+    {
+        $testConfiguration['tests'] = [];
+        $testConfiguration['suites'] = null;
+        $availableSuites = SuiteObjectHandler::getInstance()->getAllObjects();
+
+        foreach ($groups as $group) {
+            if (array_key_exists($group, $availableSuites)) {
+                $testConfiguration['suites'][$group] = [];
+            }
+
+            $testConfiguration['tests'] = array_merge(
+                $testConfiguration['tests'],
+                array_keys(TestObjectHandler::getInstance()->getTestsByGroup($group))
             );
         }
 
-        foreach ($returnCodes as $returnCode) {
-            if ($returnCode != 0) {
-                return $returnCode;
-            }
-            $exitCode = 0;
-        }
-        return $exitCode;
+        $testConfigurationJson = json_encode($testConfiguration);
+        return $testConfigurationJson;
     }
 }

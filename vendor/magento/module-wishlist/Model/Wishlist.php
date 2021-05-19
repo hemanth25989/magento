@@ -379,7 +379,7 @@ class Wishlist extends AbstractModel implements IdentityInterface
                 $this
             )->addStoreFilter(
                 $this->getSharedStoreIds()
-            )->setVisibilityFilter($this->_useCurrentWebsite);
+            )->setVisibilityFilter();
         }
 
         return $this->_itemCollection;

@@ -8,7 +8,6 @@ declare(strict_types = 1);
 namespace Magento\FunctionalTestingFramework\Console;
 
 use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 use Magento\FunctionalTestingFramework\Util\TestGenerator;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
@@ -84,9 +83,6 @@ class RunTestCommand extends BaseGenerateCommand
             $allowSkipped
         );
 
-        $this->setOutputStyle($input, $output);
-        $this->showMftfNotices($output);
-
         $testConfiguration = $this->getTestAndSuiteConfiguration($tests);
 
         if (!$skipGeneration) {
@@ -126,7 +122,8 @@ class RunTestCommand extends BaseGenerateCommand
     private function runTests(array $tests, OutputInterface $output)
     {
         $codeceptionCommand = realpath(PROJECT_ROOT . '/vendor/bin/codecept') . ' run functional ';
-        $testsDirectory = FilePathFormatter::format(TESTS_MODULE_PATH) .
+        $testsDirectory = TESTS_MODULE_PATH .
+            DIRECTORY_SEPARATOR .
             TestGenerator::GENERATED_DIR .
             DIRECTORY_SEPARATOR .
             TestGenerator::DEFAULT_DIR .

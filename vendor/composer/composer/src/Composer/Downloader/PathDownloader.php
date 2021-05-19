@@ -75,7 +75,7 @@ class PathDownloader extends FileDownloader implements VcsCapableDownloaderInter
         }
 
         // Get the transport options with default values
-        $transportOptions = $package->getTransportOptions() + array('symlink' => null, 'relative' => true);
+        $transportOptions = $package->getTransportOptions() + array('symlink' => null);
 
         // When symlink transport option is null, both symlink and mirror are allowed
         $currentStrategy = self::STRATEGY_SYMLINK;
@@ -126,11 +126,7 @@ class PathDownloader extends FileDownloader implements VcsCapableDownloaderInter
                     $shortestPath = $this->filesystem->findShortestPath($absolutePath, $realUrl);
                     $path = rtrim($path, "/");
                     $this->io->writeError(sprintf('Symlinking from %s', $url), false);
-                    if ($transportOptions['relative']) {
-                        $fileSystem->symlink($shortestPath, $path);
-                    } else {
-                        $fileSystem->symlink($realUrl, $path);
-                    }
+                    $fileSystem->symlink($shortestPath, $path);
                 }
             } catch (IOException $e) {
                 if (in_array(self::STRATEGY_MIRROR, $allowedStrategies)) {

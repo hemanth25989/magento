@@ -33,25 +33,16 @@ class SectionObject
     private $filename;
 
     /**
-     * Deprecated message.
-     *
-     * @var string
-     */
-    private $deprecated;
-
-    /**
      * SectionObject constructor.
-     * @param string      $name
-     * @param array       $elements
-     * @param string|null $filename
-     * @param string|null $deprecated
+     * @param string $name
+     * @param array  $elements
+     * @param string $filename
      */
-    public function __construct($name, $elements, $filename = null, $deprecated = null)
+    public function __construct($name, $elements, $filename = null)
     {
         $this->name = $name;
         $this->elements = $elements;
         $this->filename = $filename;
-        $this->deprecated = $deprecated;
     }
 
     /**
@@ -62,16 +53,6 @@ class SectionObject
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Getter for the deprecated attr of the section
-     *
-     * @return string
-     */
-    public function getDeprecated()
-    {
-        return $this->deprecated;
     }
 
     /**

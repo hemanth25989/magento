@@ -287,7 +287,7 @@ class Form extends Link implements \ArrayAccess
      *
      * @param string $name The field name
      *
-     * @return FormField|FormField[]|FormField[][] The value of the field
+     * @return FormField The field instance
      *
      * @throws \InvalidArgumentException When field is not present in this form
      */
@@ -331,7 +331,7 @@ class Form extends Link implements \ArrayAccess
      *
      * @param string $name The field name
      *
-     * @return FormField|FormField[]|FormField[][] The value of the field
+     * @return FormField The associated Field instance
      *
      * @throws \InvalidArgumentException if the field does not exist
      */

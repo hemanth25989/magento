@@ -66,33 +66,17 @@ class PageObject
     private $filename;
 
     /**
-     * Deprecated message.
-     *
-     * @var string
-     */
-    private $deprecated;
-
-    /**
      * PageObject constructor.
-     * @param string      $name
-     * @param string      $url
-     * @param string      $module
-     * @param array       $sections
-     * @param boolean     $parameterized
-     * @param string      $area
-     * @param string|null $filename
-     * @param string|null $deprecated
+     * @param string  $name
+     * @param string  $url
+     * @param string  $module
+     * @param array   $sections
+     * @param boolean $parameterized
+     * @param string  $area
+     * @param string  $filename
      */
-    public function __construct(
-        $name,
-        $url,
-        $module,
-        $sections,
-        $parameterized,
-        $area,
-        $filename = null,
-        $deprecated = null
-    ) {
+    public function __construct($name, $url, $module, $sections, $parameterized, $area, $filename = null)
+    {
         $this->name = $name;
         $this->url = $url;
         $this->module = $module;
@@ -100,17 +84,6 @@ class PageObject
         $this->parameterized = $parameterized;
         $this->area = $area;
         $this->filename = $filename;
-        $this->deprecated = $deprecated;
-    }
-
-    /**
-     * Getter for the deprecated attr of the section
-     *
-     * @return string
-     */
-    public function getDeprecated()
-    {
-        return $this->deprecated;
     }
 
     /**

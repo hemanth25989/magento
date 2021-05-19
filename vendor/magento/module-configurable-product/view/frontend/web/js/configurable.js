@@ -32,7 +32,7 @@ define([
             mediaGallerySelector: '[data-gallery-role=gallery-placeholder]',
             mediaGalleryInitial: null,
             slyOldPriceSelector: '.sly-old-price',
-            normalPriceLabelSelector: '.product-info-main .normal-price .price-label',
+            normalPriceLabelSelector: '.normal-price .price-label',
 
             /**
              * Defines the mechanism of how images of a gallery should be
@@ -443,10 +443,6 @@ define([
                 }
 
                 for (i = 0; i < options.length; i++) {
-                    if (prevConfig && typeof allowedProductsByOption[i] === 'undefined') {
-                        continue; //jscs:ignore disallowKeywords
-                    }
-
                     allowedProducts = prevConfig ? allowedProductsByOption[i] : options[i].products.slice(0);
                     optionPriceDiff = 0;
 

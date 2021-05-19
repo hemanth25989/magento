@@ -13,7 +13,6 @@ use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
 use Magento\FunctionalTestingFramework\Test\Util\BaseObjectExtractor;
 use Magento\FunctionalTestingFramework\Test\Util\TestHookObjectExtractor;
 use Magento\FunctionalTestingFramework\Test\Util\TestObjectExtractor;
-use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 use Magento\FunctionalTestingFramework\Util\Validation\NameValidationUtil;
 
 class SuiteObjectExtractor extends BaseObjectExtractor
@@ -260,7 +259,8 @@ class SuiteObjectExtractor extends BaseObjectExtractor
     {
         $filepath = $filename;
         if (!strstr($filepath, DIRECTORY_SEPARATOR)) {
-            $filepath = FilePathFormatter::format(TESTS_MODULE_PATH) .
+            $filepath = TESTS_MODULE_PATH .
+                DIRECTORY_SEPARATOR .
                 $moduleName .
                 DIRECTORY_SEPARATOR .
                 'Test' .
@@ -293,7 +293,8 @@ class SuiteObjectExtractor extends BaseObjectExtractor
     {
         $testObjects = [];
         $xmlFiles = glob(
-            FilePathFormatter::format(TESTS_MODULE_PATH) .
+            TESTS_MODULE_PATH .
+            DIRECTORY_SEPARATOR .
             $moduleName .
             DIRECTORY_SEPARATOR .
             'Test' .

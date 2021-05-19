@@ -81,24 +81,16 @@ class EntityDataObject
     private $filename;
 
     /**
-     * Deprecated message.
-     *
-     * @var string
-     */
-    private $deprecated;
-
-    /**
      * Constructor
      *
-     * @param string      $name
-     * @param string      $type
-     * @param string[]    $data
-     * @param string[]    $linkedEntities
-     * @param string[]    $uniquenessData
-     * @param string[]    $vars
-     * @param string      $parentEntity
-     * @param string      $filename
-     * @param string|null $deprecated
+     * @param string   $name
+     * @param string   $type
+     * @param string[] $data
+     * @param string[] $linkedEntities
+     * @param string[] $uniquenessData
+     * @param string[] $vars
+     * @param string   $parentEntity
+     * @param string   $filename
      */
     public function __construct(
         $name,
@@ -108,8 +100,7 @@ class EntityDataObject
         $uniquenessData,
         $vars = [],
         $parentEntity = null,
-        $filename = null,
-        $deprecated = null
+        $filename = null
     ) {
         $this->name = $name;
         $this->type = $type;
@@ -122,17 +113,6 @@ class EntityDataObject
         $this->vars = $vars;
         $this->parentEntity = $parentEntity;
         $this->filename = $filename;
-        $this->deprecated = $deprecated;
-    }
-
-    /**
-     * Getter for the deprecated attr of the section.
-     *
-     * @return string
-     */
-    public function getDeprecated()
-    {
-        return $this->deprecated;
     }
 
     /**

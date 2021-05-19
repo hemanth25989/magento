@@ -18,7 +18,6 @@ use Composer\CaBundle\CaBundle;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 use Seld\PharUtils\Timestamps;
-use Seld\PharUtils\Linter;
 
 /**
  * The Compiler class compiles composer into a phar
@@ -163,8 +162,6 @@ class Compiler
         $util = new Timestamps($pharFile);
         $util->updateTimestamps($this->versionDate);
         $util->save($pharFile, \Phar::SHA1);
-
-        Linter::lint($pharFile);
     }
 
     /**

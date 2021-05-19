@@ -7,24 +7,17 @@
 namespace Magento\FunctionalTestingFramework\Extension;
 
 use Codeception\Events;
-use Magento\FunctionalTestingFramework\Allure\AllureHelper;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\PersistedObjectHandler;
 
 /**
  * Class TestContextExtension
  * @SuppressWarnings(PHPMD.UnusedPrivateField)
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class TestContextExtension extends BaseExtension
 {
     const TEST_PHASE_AFTER = "_after";
-    const TEST_PHASE_BEFORE = "_before";
-
+    const CODECEPT_AFTER_VERSION = "2.3.9";
     const TEST_FAILED_FILE = 'failed';
-    const TEST_HOOKS = [
-        self::TEST_PHASE_AFTER => 'AfterHook',
-        self::TEST_PHASE_BEFORE => 'BeforeHook'
-    ];
 
     /**
      * Codeception Events Mapping to methods
@@ -42,6 +35,7 @@ class TestContextExtension extends BaseExtension
     {
         $events = [
             Events::TEST_START => 'testStart',
+            Events::TEST_FAIL => 'testFail',
             Events::STEP_AFTER => 'afterStep',
             Events::TEST_END => 'testEnd',
             Events::RESULT_PRINT_AFTER => 'saveFailed'
@@ -62,7 +56,23 @@ class TestContextExtension extends BaseExtension
     }
 
     /**
-     * Codeception event listener function, triggered on test ending naturally or by errors/failures.
+     * Codeception event listener function, triggered on test failure.
+     * @param \Codeception\Event\FailEvent $e
+     * @return void
+     */
+    public function testFail(\Codeception\Event\FailEvent $e)
+    {
+        $cest = $e->getTest();
+        $context = $this->extractContext($e->getFail()->getTrace(), $cest->getTestMethod());
+        // Do not attempt to run _after if failure was in the _after block
+        // Try to run _after but catch exceptions to prevent them from overwriting original failure.
+        if ($context != TestContextExtension::TEST_PHASE_AFTER) {
+            $this->runAfterBlock($e, $cest);
+        }
+    }
+
+    /**
+     * Codeception event listener function, triggered on test ending (naturally or by error).
      * @param \Codeception\Event\TestEvent $e
      * @return void
      * @throws \Exception
@@ -71,33 +81,55 @@ class TestContextExtension extends BaseExtension
     {
         $cest = $e->getTest();
 
-        //Access private TestResultObject to find stack and if there are any errors/failures
+        //Access private TestResultObject to find stack and if there are any errors (as opposed to failures)
         $testResultObject = call_user_func(\Closure::bind(
             function () use ($cest) {
                 return $cest->getTestResultObject();
             },
             $cest
         ));
-
-        // check for errors in all test hooks and attach in allure
-        if (!empty($testResultObject->errors())) {
-            foreach ($testResultObject->errors() as $error) {
-                if ($error->failedTest()->getTestMethod() == $cest->getTestMethod()) {
-                    $this->attachExceptionToAllure($error->thrownException(), $cest->getTestMethod());
-                }
-            }
-        }
-
-        // check for failures in all test hooks and attach in allure
-        if (!empty($testResultObject->failures())) {
-            foreach ($testResultObject->failures() as $failure) {
-                if ($failure->failedTest()->getTestMethod() == $cest->getTestMethod()) {
-                    $this->attachExceptionToAllure($failure->thrownException(), $cest->getTestMethod());
+        $errors = $testResultObject->errors();
+        if (!empty($errors)) {
+            foreach ($errors as $error) {
+                if ($error->failedTest()->getTestMethod() == $cest->getName()) {
+                    $stack = $errors[0]->thrownException()->getTrace();
+                    $context = $this->extractContext($stack, $cest->getTestMethod());
+                    // Do not attempt to run _after if failure was in the _after block
+                    // Try to run _after but catch exceptions to prevent them from overwriting original failure.
+                    if ($context != TestContextExtension::TEST_PHASE_AFTER) {
+                        $this->runAfterBlock($e, $cest);
+                    }
+                    continue;
                 }
             }
         }
         // Reset Session and Cookies after all Test Runs, workaround due to functional.suite.yml restart: true
         $this->getDriver()->_runAfter($e->getTest());
+    }
+
+    /**
+     * Runs cest's after block, if necessary.
+     * @param \Symfony\Component\EventDispatcher\Event $e
+     * @param \Codeception\TestInterface               $cest
+     * @return void
+     */
+    private function runAfterBlock($e, $cest)
+    {
+        try {
+            $actorClass = $e->getTest()->getMetadata()->getCurrent('actor');
+            $I = new $actorClass($cest->getScenario());
+            if (version_compare(\Codeception\Codecept::VERSION, TestContextExtension::CODECEPT_AFTER_VERSION, "<=")) {
+                call_user_func(\Closure::bind(
+                    function () use ($cest, $I) {
+                        $cest->executeHook($I, 'after');
+                    },
+                    null,
+                    $cest
+                ));
+            }
+        } catch (\Exception $e) {
+            // Do not rethrow Exception
+        }
     }
 
     /**
@@ -115,46 +147,6 @@ class TestContextExtension extends BaseExtension
             }
         }
         return null;
-    }
-
-    /**
-     * Attach stack trace of exceptions thrown in each test hook to allure.
-     * @param  \Exception $exception
-     * @param  string     $testMethod
-     * @return mixed
-     */
-    public function attachExceptionToAllure($exception, $testMethod)
-    {
-        if (is_subclass_of($exception, \PHPUnit\Framework\Exception::class)) {
-            $trace = $exception->getSerializableTrace();
-        } else {
-            $trace = $exception->getTrace();
-        }
-
-        $context = $this->extractContext($trace, $testMethod);
-
-        if (isset(self::TEST_HOOKS[$context])) {
-            $context = self::TEST_HOOKS[$context];
-        } else {
-            $context = 'TestMethod';
-        }
-
-        AllureHelper::addAttachmentToCurrentStep($exception, $context . 'Exception');
-
-        //pop suppressed exceptions and attach to allure
-        $change = function () {
-            if ($this instanceof \PHPUnit\Framework\ExceptionWrapper) {
-                return $this->previous;
-            } else {
-                return $this->getPrevious();
-            }
-        };
-
-        $previousException = $change->call($exception);
-
-        if ($previousException !== null) {
-            $this->attachExceptionToAllure($previousException, $testMethod);
-        }
     }
 
     /**
@@ -181,16 +173,7 @@ class TestContextExtension extends BaseExtension
      */
     public function afterStep(\Codeception\Event\StepEvent $e)
     {
-        $browserLog = $this->getDriver()->webDriver->manage()->getLog("browser");
-        if (getenv('ENABLE_BROWSER_LOG') === 'true') {
-            foreach (explode(',', getenv('BROWSER_LOG_BLACKLIST')) as $source) {
-                $browserLog = BrowserLogUtil::filterLogsOfType($browserLog, $source);
-            }
-            if (!empty($browserLog)) {
-                AllureHelper::addAttachmentToCurrentStep(json_encode($browserLog, JSON_PRETTY_PRINT), "Browser Log");
-            }
-        }
-        BrowserLogUtil::logErrors($browserLog, $this->getDriver(), $e);
+        ErrorLogger::getInstance()->logErrors($this->getDriver(), $e);
     }
 
     /**

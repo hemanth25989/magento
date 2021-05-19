@@ -12,7 +12,6 @@ use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregatorI
 use Magento\Store\Model\Store;
 use Magento\CustomerImportExport\Model\ResourceModel\Import\Address\Storage as AddressStorage;
 use Magento\ImportExport\Model\Import\AbstractSource;
-use Magento\Customer\Model\Indexer\Processor;
 
 /**
  * Customer address import
@@ -52,8 +51,6 @@ class Address extends AbstractCustomer
     const COLUMN_POSTCODE = 'postcode';
 
     /**#@-*/
-
-    const COLUMN_REGION_ID = 'region_id';
 
     /**#@+
      * Particular columns that contains of customer default addresses
@@ -253,11 +250,6 @@ class Address extends AbstractCustomer
     private $addressStorage;
 
     /**
-     * @var Processor
-     */
-    private $indexerProcessor;
-
-    /**
      * @param \Magento\Framework\Stdlib\StringUtils $string
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\ImportExport\Model\ImportFactory $importFactory
@@ -277,7 +269,6 @@ class Address extends AbstractCustomer
      * @param array $data
      * @param CountryWithWebsitesSource|null $countryWithWebsites
      * @param AddressStorage|null $addressStorage
-     * @param Processor $indexerProcessor
      *
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -300,9 +291,8 @@ class Address extends AbstractCustomer
         \Magento\Framework\Stdlib\DateTime $dateTime,
         \Magento\Customer\Model\Address\Validator\Postcode $postcodeValidator,
         array $data = [],
-        ?CountryWithWebsitesSource $countryWithWebsites = null,
-        ?AddressStorage $addressStorage = null,
-        ?Processor $indexerProcessor = null
+        CountryWithWebsitesSource $countryWithWebsites = null,
+        AddressStorage $addressStorage = null
     ) {
         $this->_customerFactory = $customerFactory;
         $this->_addressFactory = $addressFactory;
@@ -352,9 +342,6 @@ class Address extends AbstractCustomer
         );
         $this->addressStorage = $addressStorage
             ?: ObjectManager::getInstance()->get(AddressStorage::class);
-
-        $this->indexerProcessor = $indexerProcessor
-            ?: ObjectManager::getInstance()->get(Processor::class);
 
         $this->_initAttributes();
         $this->_initCountryRegions();
@@ -488,7 +475,7 @@ class Address extends AbstractCustomer
 
         $ids = [];
         foreach ($customersPresent as $customerData) {
-            $id = $this->getCustomerStorage()->getLoadedCustomerId(
+            $id = $this->getCustomerStorage()->getCustomerId(
                 $customerData['email'],
                 $customerData['website_id']
             );
@@ -569,7 +556,6 @@ class Address extends AbstractCustomer
 
             $this->_deleteAddressEntities($deleteRowIds);
         }
-        $this->indexerProcessor->markIndexerAsInvalid();
         return true;
     }
 
@@ -614,10 +600,9 @@ class Address extends AbstractCustomer
         $newAddress = true;
         // get address id
         if ($rowData[self::COLUMN_ADDRESS_ID]
-            && $customerId
             && $this->addressStorage->doesExist(
-                (int) $rowData[self::COLUMN_ADDRESS_ID],
-                $customerId
+                $rowData[self::COLUMN_ADDRESS_ID],
+                (string)$customerId
             )
         ) {
             $newAddress = false;
@@ -661,18 +646,14 @@ class Address extends AbstractCustomer
                 $defaults[$table][$customerId][$attributeCode] = $addressId;
             }
         }
+        // let's try to find region ID
+        $entityRow['region_id'] = null;
 
-        if (!empty($entityRow[self::COLUMN_REGION]) && !empty($entityRow[self::COLUMN_COUNTRY_ID])) {
-            $entityRow[self::COLUMN_REGION_ID] = $this->getCountryRegionId(
-                $entityRow[self::COLUMN_COUNTRY_ID],
-                $entityRow[self::COLUMN_REGION]
-            );
-            // override the region name with its proper name if region ID is found
-            $entityRow[self::COLUMN_REGION] = $entityRow[self::COLUMN_REGION_ID] !== null
-                ? $this->_regions[$entityRow[self::COLUMN_REGION_ID]]
-                : $entityRow[self::COLUMN_REGION];
-        } elseif ($newAddress) {
-            $entityRow[self::COLUMN_REGION_ID] = null;
+        if (!empty($rowData[self::COLUMN_REGION])
+            && $this->getCountryRegionId($rowData[self::COLUMN_COUNTRY_ID], $rowData[self::COLUMN_REGION]) !== false) {
+            $regionId = $this->getCountryRegionId($rowData[self::COLUMN_COUNTRY_ID], $rowData[self::COLUMN_REGION]);
+            $entityRow[self::COLUMN_REGION] = $this->_regions[$regionId];
+            $entityRow['region_id'] = $regionId;
         }
         if ($newAddress) {
             $entityRowNew = $entityRow;
@@ -869,7 +850,7 @@ class Address extends AbstractCustomer
         if ($this->_checkUniqueKey($rowData, $rowNumber)) {
             $email = strtolower($rowData[self::COLUMN_EMAIL]);
             $website = $rowData[self::COLUMN_WEBSITE];
-            $addressId = (int) $rowData[self::COLUMN_ADDRESS_ID];
+            $addressId = $rowData[self::COLUMN_ADDRESS_ID];
             $customerId = $this->_getCustomerId($email, $website);
 
             if ($customerId === false) {
@@ -894,15 +875,15 @@ class Address extends AbstractCustomer
                         );
                     } elseif ($attributeParams['is_required']
                         && !$this->addressStorage->doesExist(
-                            $addressId,
-                            $customerId
+                            (string)$addressId,
+                            (string)$customerId
                         )
                     ) {
                         $this->addRowError(self::ERROR_VALUE_IS_REQUIRED, $rowNumber, $attributeCode);
                     }
                 }
 
-                if (!empty($rowData[self::COLUMN_COUNTRY_ID])) {
+                if (isset($rowData[self::COLUMN_COUNTRY_ID])) {
                     if (isset($rowData[self::COLUMN_POSTCODE])
                         && !$this->postcodeValidator->isValid(
                             $rowData[self::COLUMN_COUNTRY_ID],
@@ -912,9 +893,9 @@ class Address extends AbstractCustomer
                         $this->addRowError(self::ERROR_VALUE_IS_REQUIRED, $rowNumber, self::COLUMN_POSTCODE);
                     }
 
-                    if (!empty($rowData[self::COLUMN_REGION])
-                        && count($this->getCountryRegions($rowData[self::COLUMN_COUNTRY_ID])) > 0
-                        && null === $this->getCountryRegionId(
+                    if (isset($rowData[self::COLUMN_REGION])
+                        && !empty($rowData[self::COLUMN_REGION])
+                        && false === $this->getCountryRegionId(
                             $rowData[self::COLUMN_COUNTRY_ID],
                             $rowData[self::COLUMN_REGION]
                         )
@@ -938,16 +919,16 @@ class Address extends AbstractCustomer
         if ($this->_checkUniqueKey($rowData, $rowNumber)) {
             $email = strtolower($rowData[self::COLUMN_EMAIL]);
             $website = $rowData[self::COLUMN_WEBSITE];
-            $addressId = (int) $rowData[self::COLUMN_ADDRESS_ID];
+            $addressId = $rowData[self::COLUMN_ADDRESS_ID];
 
             $customerId = $this->_getCustomerId($email, $website);
             if ($customerId === false) {
                 $this->addRowError(self::ERROR_CUSTOMER_NOT_FOUND, $rowNumber);
-            } elseif (!$addressId) {
+            } elseif (!strlen($addressId)) {
                 $this->addRowError(self::ERROR_ADDRESS_ID_IS_EMPTY, $rowNumber);
             } elseif (!$this->addressStorage->doesExist(
-                $addressId,
-                $customerId
+                (string)$addressId,
+                (string)$customerId
             )) {
                 $this->addRowError(self::ERROR_ADDRESS_NOT_FOUND, $rowNumber);
             }
@@ -961,11 +942,11 @@ class Address extends AbstractCustomer
      * @param int $addressId
      * @return bool
      */
-    protected function _checkRowDuplicate(int $customerId, int $addressId)
+    protected function _checkRowDuplicate($customerId, $addressId)
     {
         $isAddressExists = $this->addressStorage->doesExist(
-            $addressId,
-            $customerId
+            (string)$addressId,
+            (string)$customerId
         );
 
         $isPkRowSet = isset($this->_importedRowPks[$customerId][$addressId]);
@@ -994,22 +975,18 @@ class Address extends AbstractCustomer
      *
      * @param string $countryId
      * @param string $region
-     * @return int|null
+     * @return bool|int
      */
-    private function getCountryRegionId(string $countryId, string $region): ?int
+    private function getCountryRegionId(string $countryId, string $region)
     {
-        $countryRegions = $this->getCountryRegions($countryId);
-        return $countryRegions[strtolower($region)] ?? null;
-    }
+        $countryNormalized = strtolower($countryId);
+        $regionNormalized = strtolower($region);
 
-    /**
-     * Get country regions
-     *
-     * @param string $countryId
-     * @return array
-     */
-    private function getCountryRegions(string $countryId): array
-    {
-        return $this->_countryRegions[strtolower($countryId)] ?? [];
+        if (isset($this->_countryRegions[$countryNormalized])
+            && isset($this->_countryRegions[$countryNormalized][$regionNormalized])) {
+            return $this->_countryRegions[$countryNormalized][$regionNormalized];
+        }
+
+        return false;
     }
 }

@@ -3,7 +3,6 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Magento\Elasticsearch6\Model\Client;
 
 use Magento\Framework\Exception\LocalizedException;
@@ -11,8 +10,6 @@ use Magento\AdvancedSearch\Model\Client\ClientInterface;
 
 /**
  * Elasticsearch client
- *
- * @deprecated in favor of Elasticsearch 7.
  */
 class Elasticsearch implements ClientInterface
 {
@@ -44,10 +41,8 @@ class Elasticsearch implements ClientInterface
         $options = [],
         $elasticsearchClient = null
     ) {
-        if (empty($options['hostname'])
-            || ((!empty($options['enableAuth']) && ($options['enableAuth'] == 1))
-                && (empty($options['username']) || empty($options['password'])))
-        ) {
+        if (empty($options['hostname']) || ((!empty($options['enableAuth']) &&
+                    ($options['enableAuth'] == 1)) && (empty($options['username']) || empty($options['password'])))) {
             throw new LocalizedException(
                 __('The search failed because of a search engine misconfiguration.')
             );
@@ -263,7 +258,7 @@ class Elasticsearch implements ClientInterface
                 $entityType => [
                     'properties' => [
                         '_search' => [
-                            'type' => 'text',
+                            'type' => 'text'
                         ],
                     ],
                     'dynamic_templates' => [
@@ -272,7 +267,7 @@ class Elasticsearch implements ClientInterface
                                 'match' => 'price_*',
                                 'match_mapping_type' => 'string',
                                 'mapping' => [
-                                    'type' => 'double',
+                                    'type' => 'float',
                                     'store' => true,
                                 ],
                             ],
@@ -294,15 +289,7 @@ class Elasticsearch implements ClientInterface
                                 'mapping' => [
                                     'type' => 'text',
                                     'index' => true,
-                                    'copy_to' => '_search',
-                                ],
-                            ],
-                        ],
-                        [
-                            'integer_mapping' => [
-                                'match_mapping_type' => 'long',
-                                'mapping' => [
-                                    'type' => 'integer',
+                                    'copy_to' => '_search'
                                 ],
                             ],
                         ],

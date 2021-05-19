@@ -9,7 +9,7 @@ use Magento\Customer\Api\CustomerMetadataInterface;
 use Magento\Framework\Api\ArrayObjectSearch;
 
 /**
- * Customer date of birth attribute block
+ * Class Dob
  *
  * @SuppressWarnings(PHPMD.DepthOfInheritance)
  */
@@ -267,9 +267,7 @@ class Dob extends AbstractWidget
         $validators['validate-date'] = [
             'dateFormat' => $this->getDateFormat()
         ];
-        $validators['validate-dob'] = [
-            'dateFormat' => $this->getDateFormat()
-        ];
+        $validators['validate-dob'] = true;
 
         return 'data-validate="' . $this->_escaper->escapeHtml(json_encode($validators)) . '"';
     }

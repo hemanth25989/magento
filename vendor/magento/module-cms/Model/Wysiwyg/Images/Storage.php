@@ -225,8 +225,6 @@ class Storage extends \Magento\Framework\DataObject
      *
      * @param string $path
      * @return void
-     * @throws \Magento\Framework\Exception\FileSystemException
-     * @throws \Magento\Framework\Exception\ValidatorException
      */
     protected function createSubDirectories($path)
     {
@@ -297,7 +295,6 @@ class Storage extends \Magento\Framework\DataObject
      *
      * @param string $path Parent directory path
      * @return \Magento\Framework\Data\Collection\Filesystem
-     * @throws \Exception
      */
     public function getDirsCollection($path)
     {
@@ -396,7 +393,6 @@ class Storage extends \Magento\Framework\DataObject
      *
      * @param string $path Path to the directory
      * @return \Magento\Cms\Model\Wysiwyg\Images\Storage\Collection
-     * @throws \Exception
      */
     public function getCollection($path = null)
     {
@@ -489,9 +485,6 @@ class Storage extends \Magento\Framework\DataObject
      *
      * @param string $path
      * @return void
-     * @throws \Magento\Framework\Exception\FileSystemException
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\ValidatorException
      */
     protected function _deleteByPath($path)
     {
@@ -507,8 +500,6 @@ class Storage extends \Magento\Framework\DataObject
      *
      * @param string $target File path to be deleted
      * @return $this
-     * @throws \Magento\Framework\Exception\FileSystemException
-     * @throws \Magento\Framework\Exception\ValidatorException
      */
     public function deleteFile($target)
     {
@@ -570,22 +561,16 @@ class Storage extends \Magento\Framework\DataObject
     /**
      * Thumbnail path getter
      *
-     * @param string $filePath original file path
-     * @param bool $checkFile OPTIONAL is it necessary to check file availability
+     * @param  string $filePath original file path
+     * @param  bool $checkFile OPTIONAL is it necessary to check file availability
      * @return string|false
-     * @throws \Magento\Framework\Exception\FileSystemException
-     * @throws \Magento\Framework\Exception\ValidatorException
      */
     public function getThumbnailPath($filePath, $checkFile = false)
     {
         $mediaRootDir = $this->_cmsWysiwygImages->getStorageRoot();
 
         if (strpos($filePath, (string) $mediaRootDir) === 0) {
-            $relativeFilePath = substr($filePath, strlen($mediaRootDir));
-            // phpcs:ignore Magento2.Functions.DiscouragedFunction
-            $thumbPath = $relativeFilePath === basename($filePath)
-                ? $this->getThumbnailRoot() . DIRECTORY_SEPARATOR . $relativeFilePath
-                : $this->getThumbnailRoot() . $relativeFilePath;
+            $thumbPath = $this->getThumbnailRoot() . substr($filePath, strlen($mediaRootDir));
 
             if (!$checkFile || $this->_directory->isExist($this->_directory->getRelativePath($thumbPath))) {
                 return $thumbPath;
@@ -598,20 +583,27 @@ class Storage extends \Magento\Framework\DataObject
     /**
      * Thumbnail URL getter
      *
-     * @param string $filePath original file path
-     * @param bool $checkFile OPTIONAL is it necessary to check file availability
+     * @param  string $filePath original file path
+     * @param  bool $checkFile OPTIONAL is it necessary to check file availability
      * @return string|false
-     * @throws \Magento\Framework\Exception\FileSystemException
-     * @throws \Magento\Framework\Exception\ValidatorException
      */
     public function getThumbnailUrl($filePath, $checkFile = false)
     {
-        $thumbPath = $this->getThumbnailPath($filePath, $checkFile);
-        if ($thumbPath) {
-            $thumbRelativePath = ltrim($this->_directory->getRelativePath($thumbPath), '/\\');
-            $baseUrl = rtrim($this->_cmsWysiwygImages->getBaseUrl(), '/');
-            $randomIndex = '?rand=' . time();
-            return str_replace('\\', '/', $baseUrl . '/' . $thumbRelativePath) . $randomIndex;
+        $mediaRootDir = $this->_cmsWysiwygImages->getStorageRoot();
+
+        if (strpos($filePath, (string) $mediaRootDir) === 0) {
+            $thumbSuffix = self::THUMBS_DIRECTORY_NAME . substr($filePath, strlen($mediaRootDir));
+            if (!$checkFile || $this->_directory->isExist(
+                $this->_directory->getRelativePath($mediaRootDir . '/' . $thumbSuffix)
+            )
+            ) {
+                $thumbSuffix = substr(
+                    $mediaRootDir,
+                    strlen($this->_directory->getAbsolutePath())
+                ) . '/' . $thumbSuffix;
+                $randomIndex = '?rand=' . time();
+                return str_replace('\\', '/', $this->_cmsWysiwygImages->getBaseUrl() . $thumbSuffix) . $randomIndex;
+            }
         }
 
         return false;
@@ -623,8 +615,6 @@ class Storage extends \Magento\Framework\DataObject
      * @param string $source Image path to be resized
      * @param bool $keepRatio Keep aspect ratio or not
      * @return bool|string Resized filepath or false if errors were occurred
-     * @throws \Magento\Framework\Exception\FileSystemException
-     * @throws \Magento\Framework\Exception\ValidatorException
      */
     public function resizeFile($source, $keepRatio = true)
     {
@@ -658,9 +648,6 @@ class Storage extends \Magento\Framework\DataObject
      *
      * @param string $filename File basename
      * @return bool|string Thumbnail path or false for errors
-     * @throws \Magento\Framework\Exception\FileSystemException
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\ValidatorException
      */
     public function resizeOnTheFly($filename)
     {
@@ -676,18 +663,14 @@ class Storage extends \Magento\Framework\DataObject
      *
      * @param bool|string $filePath Path to the file
      * @return string
-     * @throws \Magento\Framework\Exception\FileSystemException
-     * @throws \Magento\Framework\Exception\ValidatorException
      */
     public function getThumbsPath($filePath = false)
     {
+        $mediaRootDir = $this->_cmsWysiwygImages->getStorageRoot();
         $thumbnailDir = $this->getThumbnailRoot();
 
-        if ($filePath) {
-            $thumbPath = $this->getThumbnailPath($filePath, false);
-            if ($thumbPath) {
-                $thumbnailDir = $this->file->getParentDirectory($thumbPath);
-            }
+        if ($filePath && strpos($filePath, (string) $mediaRootDir) === 0) {
+            $thumbnailDir .= $this->file->getParentDirectory(substr($filePath, strlen($mediaRootDir)));
         }
 
         return $thumbnailDir;
@@ -802,20 +785,10 @@ class Storage extends \Magento\Framework\DataObject
      *
      * @param string $path
      * @return string
-     * @throws \Magento\Framework\Exception\ValidatorException
      */
     protected function _sanitizePath($path)
     {
-        return rtrim(
-            preg_replace(
-                '~[/\\\]+~',
-                '/',
-                $this->_directory->getDriver()->getRealPathSafety(
-                    $this->_directory->getAbsolutePath($path)
-                )
-            ),
-            '/'
-        );
+        return rtrim(preg_replace('~[/\\\]+~', '/', $this->_directory->getDriver()->getRealPathSafety($path)), '/');
     }
 
     /**
@@ -823,7 +796,6 @@ class Storage extends \Magento\Framework\DataObject
      *
      * @param string $path
      * @return string|bool
-     * @throws \Magento\Framework\Exception\ValidatorException
      */
     protected function _getRelativePathToRoot($path)
     {

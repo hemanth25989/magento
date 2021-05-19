@@ -13,7 +13,6 @@ use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 use Magento\FunctionalTestingFramework\ObjectManager\ObjectHandlerInterface;
 use Magento\FunctionalTestingFramework\ObjectManagerFactory;
 use Magento\FunctionalTestingFramework\DataGenerator\Util\DataExtensionUtil;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 
 class DataObjectHandler implements ObjectHandlerInterface
 {
@@ -120,7 +119,6 @@ class DataObjectHandler implements ObjectHandlerInterface
      * @param string[] $parserOutput Primitive array output from the Magento parser.
      * @return EntityDataObject[]
      * @throws XmlException
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     private function processParserOutput($parserOutput)
     {
@@ -134,7 +132,6 @@ class DataObjectHandler implements ObjectHandlerInterface
 
             $type = $rawEntity[self::_TYPE] ?? null;
             $data = [];
-            $deprecated = null;
             $linkedEntities = [];
             $uniquenessData = [];
             $vars = [];
@@ -166,14 +163,6 @@ class DataObjectHandler implements ObjectHandlerInterface
                 $parentEntity = $rawEntity[self::_EXTENDS];
             }
 
-            if (array_key_exists(self::OBJ_DEPRECATED, $rawEntity)) {
-                $deprecated = $rawEntity[self::OBJ_DEPRECATED];
-                LoggingUtil::getInstance()->getLogger(self::class)->deprecation(
-                    $deprecated,
-                    ["dataName" => $filename, "deprecatedEntity" => $deprecated]
-                );
-            }
-
             $entityDataObject = new EntityDataObject(
                 $name,
                 $type,
@@ -182,8 +171,7 @@ class DataObjectHandler implements ObjectHandlerInterface
                 $uniquenessData,
                 $vars,
                 $parentEntity,
-                $filename,
-                $deprecated
+                $filename
             );
 
             $entityDataObjects[$entityDataObject->getName()] = $entityDataObject;

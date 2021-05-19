@@ -36,8 +36,8 @@
         <requiredEntity type="custom_attribute_array">CustomAttributeCategoryIds</requiredEntity>
     </entity>
     <entity name="ApiSimpleProductWithSpecCharInName" type="product" extends="ApiSimpleProduct">
-        <data key="name" unique="suffix">Pursuit Lumaflex™ Tone Band</data>
-        <data key="sku" unique="suffix">x™</data>
+        <data key="name">Pursuit Lumaflex&#38;trade; Tone Band</data>
+        <data key="sku" unique="suffix">x&#38;trade;</data>
     </entity>
     <entity name="SimpleProduct_25" type="product" extends="SimpleProduct2">
         <data key="quantity">25</data>
@@ -376,24 +376,6 @@
         <data key="title" unique="suffix">test_image</data>
         <data key="file">test_image.jpg</data>
         <data key="filename">test_image</data>
-    </entity>
-    <entity name="Magento2Image" type="image">
-        <data key="title" unique="suffix">Magento2</data>
-        <data key="price">1.00</data>
-        <data key="file_type">Upload File</data>
-        <data key="shareable">Yes</data>
-        <data key="file">magento2.jpg</data>
-        <data key="filename">magento2</data>
-        <data key="file_extension">jpg</data>
-    </entity>
-    <entity name="Magento3Image" type="image">
-        <data key="title" unique="suffix">Magento3</data>
-        <data key="price">1.00</data>
-        <data key="file_type">Upload File</data>
-        <data key="shareable">Yes</data>
-        <data key="file">magento3.jpg</data>
-        <data key="filename">magento3</data>
-        <data key="file_extension">jpg</data>
     </entity>
     <entity name="ProductWithUnicode" type="product">
         <data key="sku" unique="suffix">&#38657;&#20135;&#21697;</data>

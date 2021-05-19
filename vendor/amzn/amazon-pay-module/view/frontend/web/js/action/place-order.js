@@ -23,10 +23,9 @@ define(
         'Magento_Customer/js/model/customer',
         'Magento_Checkout/js/model/full-screen-loader',
         'Amazon_Payment/js/model/storage',
-        'Amazon_Payment/js/model/amazonPaymentConfig',
-        'Magento_Customer/js/customer-data'
+        'Amazon_Payment/js/model/amazonPaymentConfig'
     ],
-    function (quote, urlBuilder, storage, url, errorProcessor, customer, fullScreenLoader, amazonStorage, amazonPaymentConfig, customerData) {
+    function (quote, urlBuilder, storage, url, errorProcessor, customer, fullScreenLoader, amazonStorage, amazonPaymentConfig) {
         'use strict';
 
         return function (paymentData, redirectOnSuccess) {
@@ -40,7 +39,6 @@ define(
                     quoteId: quote.getQuoteId()
                 });
                 payload = {
-                    confirmOrder: true,
                     cartId: quote.getQuoteId(),
                     email: quote.guestEmail,
                     paymentMethod: paymentData,
@@ -49,7 +47,6 @@ define(
             } else {
                 serviceUrl = urlBuilder.createUrl('/carts/mine/set-payment-information', {});
                 payload = {
-                    confirmOrder: true,
                     cartId: quote.getQuoteId(),
                     paymentMethod: paymentData,
                     billingAddress: quote.billingAddress()
@@ -57,7 +54,6 @@ define(
             }
 
             fullScreenLoader.startLoader();
-            customerData.invalidate(['cart']);
             if(amazonPaymentConfig.getValue('scaRegions').indexOf(amazonPaymentConfig.getValue('region')) !== -1) {
                 console.log('SCA enabled for region: ' + amazonPaymentConfig.getValue('region'));
                 return OffAmazonPayments.initConfirmationFlow(amazonPaymentConfig.getValue('merchantId'), amazonStorage.getOrderReference(), function(confirmationFlow) {

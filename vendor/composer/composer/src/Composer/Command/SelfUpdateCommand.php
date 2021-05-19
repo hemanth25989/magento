@@ -51,8 +51,6 @@ class SelfUpdateCommand extends BaseCommand
                 new InputOption('stable', null, InputOption::VALUE_NONE, 'Force an update to the stable channel'),
                 new InputOption('preview', null, InputOption::VALUE_NONE, 'Force an update to the preview channel'),
                 new InputOption('snapshot', null, InputOption::VALUE_NONE, 'Force an update to the snapshot channel'),
-                new InputOption('1', null, InputOption::VALUE_NONE, 'Force an update to the stable channel, but only use 1.x versions'),
-                new InputOption('2', null, InputOption::VALUE_NONE, 'Force an update to the stable channel, but only use 2.x versions'),
                 new InputOption('set-channel-only', null, InputOption::VALUE_NONE, 'Only store the channel as the default one and then exit'),
             ))
             ->setHelp(
@@ -84,12 +82,9 @@ EOT
         $versionsUtil = new Versions($config, $remoteFilesystem);
 
         // switch channel if requested
-        $requestedChannel = null;
-        foreach (Versions::$channels as $channel) {
+        foreach (array('stable', 'preview', 'snapshot') as $channel) {
             if ($input->getOption($channel)) {
-                $requestedChannel = $channel;
                 $versionsUtil->setChannel($channel);
-                break;
             }
         }
 
@@ -128,13 +123,8 @@ EOT
         }
 
         $latest = $versionsUtil->getLatest();
-        $latestStable = $versionsUtil->getLatest('stable');
         $latestVersion = $latest['version'];
         $updateVersion = $input->getArgument('version') ?: $latestVersion;
-
-        if ($requestedChannel && is_numeric($requestedChannel) && substr($latestStable['version'], 0, 1) !== $requestedChannel) {
-            $io->writeError('<warning>Warning: You forced the install of '.$latestVersion.' via --'.$requestedChannel.', but '.$latestStable['version'].' is the latest stable version. Updating to it via composer self-update --stable is recommended.</warning>');
-        }
 
         if (preg_match('{^[0-9a-f]{40}$}', $updateVersion) && $updateVersion !== $latestVersion) {
             $io->writeError('<error>You can not update to a specific SHA-1 as those phars are not available for download</error>');

@@ -82,12 +82,6 @@
         </arguments>
     </type>
 
-    <type name="Vertex\Tax\Block\Adminhtml\Config\Form\Field\FieldSource\OptionProvider">
-        <arguments>
-            <argument name="authSession" xsi:type="object">Magento\Backend\Model\Auth\Session\Proxy</argument>
-        </arguments>
-    </type>
-
     <!-- Workaround for issue discovered in Magento 2.1.8 where preference doesn't exist for CustomerExtensionInterface -->
     <preference for="Magento\Customer\Api\Data\CustomerExtensionInterface" type="Magento\Customer\Api\Data\CustomerExtension"/>
 
@@ -113,6 +107,13 @@
     </type>
     <type name="Magento\Tax\Model\Sales\Total\Quote\Tax">
         <plugin name="vertexOrderLevelMap" type="Vertex\Tax\Model\Plugin\TaxPlugin" sortOrder="1"/>
+    </type>
+
+    <type name="Magento\Sales\Block\Adminhtml\Order\Create\Form">
+        <plugin name="PrepareVertexResponseMessages" type="Vertex\Tax\Block\Plugin\OrderCreateFormPlugin" sortOrder="1"/>
+    </type>
+    <type name="Magento\Sales\Block\Adminhtml\Order\Create\Totals">
+        <plugin name="PrepareVertexResponseMessages" type="Vertex\Tax\Block\Plugin\OrderCreateTotalsPlugin" sortOrder="1"/>
     </type>
     <type name="Magento\Quote\Model\Cart\TotalsConverter">
         <plugin name="vertex_calculation_message" type="Vertex\Tax\Model\Plugin\TotalsCalculationMessagePlugin"/>

@@ -57,13 +57,6 @@ class ElementObject
     private $parameterized;
 
     /**
-     * Deprecated message.
-     *
-     * @var string
-     */
-    private $deprecated;
-
-    /**
      * ElementObject constructor.
      * @param string  $name
      * @param string  $type
@@ -73,7 +66,7 @@ class ElementObject
      * @param boolean $parameterized
      * @throws XmlException
      */
-    public function __construct($name, $type, $selector, $locatorFunction, $timeout, $parameterized, $deprecated = null)
+    public function __construct($name, $type, $selector, $locatorFunction, $timeout, $parameterized)
     {
         if ($selector != null && $locatorFunction != null) {
             throw new XmlException("Element '{$name}' cannot have both a selector and a locatorFunction.");
@@ -90,17 +83,6 @@ class ElementObject
         }
         $this->timeout = $timeout;
         $this->parameterized = $parameterized;
-        $this->deprecated = $deprecated;
-    }
-
-    /**
-     * Getter for the deprecated attr
-     *
-     * @return string
-     */
-    public function getDeprecated()
-    {
-        return $this->deprecated;
     }
 
     /**

@@ -40,7 +40,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\CollectionFactory as AttributeCollectionFactory;
 
 /**
- * Class Eav data provider for product editing form
+ * Class Eav
  *
  * @api
  *
@@ -789,9 +789,7 @@ class Eav extends AbstractModifier
                 \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 $this->storeManager->getStore()
             );
-            if ($defaultValue !== null) {
-                $attribute->setDefaultValue($defaultValue);
-            }
+            $attribute->setDefaultValue($defaultValue);
         }
         return $attribute->getDefaultValue();
     }

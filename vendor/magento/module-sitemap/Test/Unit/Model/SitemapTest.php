@@ -5,14 +5,11 @@
  */
 namespace Magento\Sitemap\Test\Unit\Model;
 
-use Magento\Framework\App\Request\Http;
 use Magento\Framework\DataObject;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\Directory\Write as DirectoryWrite;
 use Magento\Framework\Filesystem\File\Write;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\Translate\InlineInterface;
-use Magento\Framework\ZendEscaper;
 use Magento\Sitemap\Helper\Data;
 use Magento\Sitemap\Model\ItemProvider\ConfigReaderInterface;
 use Magento\Sitemap\Model\ItemProvider\ItemProviderInterface;
@@ -88,14 +85,6 @@ class SitemapTest extends \PHPUnit\Framework\TestCase
      * @var ConfigReaderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $configReaderMock;
-    /**
-     * @var Http|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $request;
-    /**
-     * @var Store|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $store;
 
     /**
      * @inheritdoc
@@ -154,12 +143,6 @@ class SitemapTest extends \PHPUnit\Framework\TestCase
 
         $this->configReaderMock = $this->getMockForAbstractClass(SitemapConfigReaderInterface::class);
         $this->itemProviderMock = $this->getMockForAbstractClass(ItemProviderInterface::class);
-        $this->request = $this->createMock(Http::class);
-        $this->store = $this->createPartialMock(Store::class, ['isFrontUrlSecure', 'getBaseUrl']);
-        $this->storeManagerMock = $this->createMock(StoreManagerInterface::class);
-        $this->storeManagerMock->expects($this->any())
-            ->method('getStore')
-            ->willReturn($this->store);
     }
 
     /**
@@ -493,14 +476,24 @@ class SitemapTest extends \PHPUnit\Framework\TestCase
 
         $model = $this->getModelMock(true);
 
-        $this->store->expects($this->atLeastOnce())
+        $storeMock = $this->getMockBuilder(Store::class)
+            ->setMethods(['isFrontUrlSecure', 'getBaseUrl'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $storeMock->expects($this->atLeastOnce())
             ->method('isFrontUrlSecure')
             ->willReturn(false);
 
-        $this->store->expects($this->atLeastOnce())
+        $storeMock->expects($this->atLeastOnce())
             ->method('getBaseUrl')
             ->with($this->isType('string'), false)
             ->willReturn('http://store.com/');
+
+        $this->storeManagerMock->expects($this->atLeastOnce())
+            ->method('getStore')
+            ->with(1)
+            ->willReturn($storeMock);
 
         return $model;
     }
@@ -549,7 +542,7 @@ class SitemapTest extends \PHPUnit\Framework\TestCase
                                     new DataObject(
                                         [
                                             'url' => $storeBaseMediaUrl . 'i/m/image1.png',
-                                            'caption' => 'Copyright © caption &trade; & > title < "'
+                                            'caption' => 'caption & > title < "'
                                         ]
                                     ),
                                     new DataObject(
@@ -606,10 +599,13 @@ class SitemapTest extends \PHPUnit\Framework\TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $this->storeManagerMock = $this->getMockBuilder(StoreManagerInterface::class)
+            ->setMethods(['getStore'])
+            ->getMockForAbstractClass();
+
         $objectManager = new ObjectManager($this);
         $escaper = $objectManager->getObject(\Magento\Framework\Escaper::class);
-        $this->setPrivatePropertyValue($escaper, 'escaper', $objectManager->getObject(ZendEscaper::class));
-        $this->setPrivatePropertyValue($escaper, 'translateInline', $this->createMock(InlineInterface::class));
+
         $constructArguments = $objectManager->getConstructArguments(
             Sitemap::class,
             [
@@ -621,8 +617,7 @@ class SitemapTest extends \PHPUnit\Framework\TestCase
                 'filesystem' => $this->filesystemMock,
                 'itemProvider' => $this->itemProviderMock,
                 'configReader' => $this->configReaderMock,
-                'escaper' => $escaper,
-                'request' => $this->request,
+                'escaper' => $escaper
             ]
         );
         $constructArguments['resource'] = null;
@@ -736,80 +731,5 @@ class SitemapTest extends \PHPUnit\Framework\TestCase
                 'http://store.com/store2/sitemaps/store2/sitemap.xml'
             ]
         ];
-    }
-
-    /**
-     * Check site URL getter
-     *
-     * @param string $storeBaseUrl
-     * @param string $baseDir
-     * @param string $documentRoot
-     * @dataProvider getDocumentRootFromBaseDirUrlDataProvider
-     */
-    public function testGetDocumentRootFromBaseDir(
-        string $storeBaseUrl,
-        string $baseDir,
-        ?string $documentRoot
-    ) {
-        $this->store->setCode('store');
-        $this->store->method('getBaseUrl')->willReturn($storeBaseUrl);
-        $this->directoryMock->method('getAbsolutePath')->willReturn($baseDir);
-        /** @var $model Sitemap */
-        $model = $this->getMockBuilder(Sitemap::class)
-            ->setMethods(['_construct'])
-            ->setConstructorArgs($this->getModelConstructorArgs())
-            ->getMock();
-
-        $method = new \ReflectionMethod($model, 'getDocumentRootFromBaseDir');
-        $method->setAccessible(true);
-        $this->assertSame($documentRoot, $method->invoke($model));
-    }
-
-    /**
-     * Provides test cases for document root testing
-     *
-     * @return array
-     */
-    public function getDocumentRootFromBaseDirUrlDataProvider(): array
-    {
-        return [
-            [
-                'http://magento.com/',
-                '/var/www',
-                '/var/www',
-            ],
-            [
-                'http://magento.com/usa',
-                '/var/www/usa',
-                '/var/www',
-            ],
-            [
-                'http://magento.com/usa/tx',
-                '/var/www/usa/tx',
-                '/var/www',
-            ],
-            'symlink <document root>/usa/txt -> /var/www/html' => [
-                'http://magento.com/usa/tx',
-                '/var/www/html',
-                null,
-            ],
-        ];
-    }
-
-    /**
-     * @param mixed $object
-     * @param string $attributeName
-     * @param string $value
-     */
-    private function setPrivatePropertyValue($object, $attributeName, $value): void
-    {
-        $attribute = new \ReflectionProperty($object, $attributeName);
-        if ($attribute->isPublic()) {
-            $object->$attributeName = $value;
-        } else {
-            $attribute->setAccessible(true);
-            $attribute->setValue($object, $value);
-            $attribute->setAccessible(false);
-        }
     }
 }

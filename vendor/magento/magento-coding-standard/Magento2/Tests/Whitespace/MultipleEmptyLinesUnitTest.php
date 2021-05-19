@@ -7,6 +7,9 @@ namespace Magento2\Tests\Whitespace;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
+/**
+ * Class MultipleEmptyLinesUnitTest
+ */
 class MultipleEmptyLinesUnitTest extends AbstractSniffUnitTest
 {
     /**

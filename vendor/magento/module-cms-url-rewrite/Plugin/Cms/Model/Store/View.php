@@ -72,7 +72,7 @@ class View
      */
     public function afterSave(ResourceStore $object, ResourceStore $result, AbstractModel $store): void
     {
-        if ($store->isObjectNew()) {
+        if ($store->isObjectNew() || $store->dataHasChangedFor('group_id')) {
             $this->urlPersist->replace(
                 $this->generateCmsPagesUrls((int)$store->getId())
             );

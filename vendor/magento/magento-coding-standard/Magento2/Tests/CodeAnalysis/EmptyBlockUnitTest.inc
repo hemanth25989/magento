@@ -74,5 +74,3 @@ if (true) {} elseif (false) {}
 function emptyFunction () { /*Empty function block*/ }
 
 function nonEmptyFunction () { return true; }
-
-function aroundEmptyFunction ($foo, $bar) { }

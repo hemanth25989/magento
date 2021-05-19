@@ -11,7 +11,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHe
 use Magento\Elasticsearch6\Model\Client\Elasticsearch;
 
 /**
- * Class ElasticsearchTest to test Elasticsearch 6
+ * Class ElasticsearchTest
  */
 class ElasticsearchTest extends \PHPUnit\Framework\TestCase
 {
@@ -430,7 +430,7 @@ class ElasticsearchTest extends \PHPUnit\Framework\TestCase
                                         'match' => 'price_*',
                                         'match_mapping_type' => 'string',
                                         'mapping' => [
-                                            'type' => 'double',
+                                            'type' => 'float',
                                             'store' => true,
                                         ],
                                     ],
@@ -452,18 +452,10 @@ class ElasticsearchTest extends \PHPUnit\Framework\TestCase
                                         'mapping' => [
                                             'type' => 'text',
                                             'index' => true,
-                                            'copy_to' => '_search',
+                                            'copy_to' => '_search'
                                         ],
                                     ],
-                                ],
-                                [
-                                    'integer_mapping' => [
-                                        'match_mapping_type' => 'long',
-                                        'mapping' => [
-                                            'type' => 'integer',
-                                        ],
-                                    ],
-                                ],
+                                ]
                             ],
                         ],
                     ],
@@ -508,7 +500,7 @@ class ElasticsearchTest extends \PHPUnit\Framework\TestCase
                                         'match' => 'price_*',
                                         'match_mapping_type' => 'string',
                                         'mapping' => [
-                                            'type' => 'double',
+                                            'type' => 'float',
                                             'store' => true,
                                         ],
                                     ],
@@ -530,18 +522,10 @@ class ElasticsearchTest extends \PHPUnit\Framework\TestCase
                                         'mapping' => [
                                             'type' => 'text',
                                             'index' => true,
-                                            'copy_to' => '_search',
+                                            'copy_to' => '_search'
                                         ],
                                     ],
-                                ],
-                                [
-                                    'integer_mapping' => [
-                                        'match_mapping_type' => 'long',
-                                        'mapping' => [
-                                            'type' => 'integer',
-                                        ],
-                                    ],
-                                ],
+                                ]
                             ],
                         ],
                     ],
@@ -605,7 +589,7 @@ class ElasticsearchTest extends \PHPUnit\Framework\TestCase
      */
     public function testQuery()
     {
-        $query = ['test phrase query'];
+        $query = 'test phrase query';
         $this->elasticsearchClientMock->expects($this->once())
             ->method('search')
             ->with($query)

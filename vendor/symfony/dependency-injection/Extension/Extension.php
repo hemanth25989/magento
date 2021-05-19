@@ -65,7 +65,7 @@ abstract class Extension implements ExtensionInterface, ConfigurationExtensionIn
      */
     public function getAlias()
     {
-        $className = static::class;
+        $className = \get_class($this);
         if ('Extension' != substr($className, -9)) {
             throw new BadMethodCallException('This extension does not follow the naming convention; you must overwrite the getAlias() method.');
         }
@@ -79,7 +79,7 @@ abstract class Extension implements ExtensionInterface, ConfigurationExtensionIn
      */
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
-        $class = static::class;
+        $class = \get_class($this);
 
         if (false !== strpos($class, "\0")) {
             return null; // ignore anonymous classes

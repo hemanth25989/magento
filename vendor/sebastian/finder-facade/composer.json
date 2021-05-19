@@ -13,27 +13,13 @@
     "support": {
         "issues": "https://github.com/sebastianbergmann/finder-facade/issues"
     },
-    "prefer-stable": true,
     "require": {
-        "php": "^7.1",
-        "theseer/fdomdocument": "^1.6",
-        "symfony/finder": "^2.3|^3.0|^4.0|^5.0"
-    },
-    "config": {
-        "platform": {
-            "php": "7.1.3"
-        },
-        "optimize-autoloader": true,
-        "sort-packages": true
+        "theseer/fdomdocument": "~1.3",
+        "symfony/finder": "~2.3|~3.0|~4.0"
     },
     "autoload": {
         "classmap": [
             "src/"
         ]
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.2"
-        }
     }
 }

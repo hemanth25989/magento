@@ -245,15 +245,4 @@ class FileInfo
 
         return $mediaDirectoryRelativeSubpath;
     }
-
-    /**
-     * Get file relative path to media directory
-     *
-     * @param string $filename
-     * @return string
-     */
-    public function getRelativePathToMediaDirectory(string $filename): string
-    {
-        return $this->getFilePath($filename);
-    }
 }

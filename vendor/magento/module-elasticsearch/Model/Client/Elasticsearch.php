@@ -42,10 +42,8 @@ class Elasticsearch implements ClientInterface
         $options = [],
         $elasticsearchClient = null
     ) {
-        if (empty($options['hostname'])
-            || ((!empty($options['enableAuth']) && ($options['enableAuth'] == 1))
-                && (empty($options['username']) || empty($options['password'])))
-        ) {
+        if (empty($options['hostname']) || ((!empty($options['enableAuth']) &&
+            ($options['enableAuth'] == 1)) && (empty($options['username']) || empty($options['password'])))) {
             throw new LocalizedException(
                 __('The search failed because of a search engine misconfiguration.')
             );
@@ -260,7 +258,7 @@ class Elasticsearch implements ClientInterface
                 $entityType => [
                     '_all' => [
                         'enabled' => true,
-                        'type' => 'string',
+                        'type' => 'string'
                     ],
                     'properties' => [],
                     'dynamic_templates' => [
@@ -270,7 +268,7 @@ class Elasticsearch implements ClientInterface
                                 'match_mapping' => 'string',
                                 'mapping' => [
                                     'type' => 'float',
-                                    'store' => true,
+                                    'store' => true
                                 ],
                             ],
                         ],
@@ -293,15 +291,7 @@ class Elasticsearch implements ClientInterface
                                     'index' => 'not_analyzed',
                                 ],
                             ],
-                        ],
-                        [
-                            'integer_mapping' => [
-                                'match_mapping_type' => 'long',
-                                'mapping' => [
-                                    'type' => 'integer',
-                                ],
-                            ],
-                        ],
+                        ]
                     ],
                 ],
             ],

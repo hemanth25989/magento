@@ -16,8 +16,6 @@ use Magento\FunctionalTestingFramework\Test\Parsers\TestDataParser;
 use Magento\FunctionalTestingFramework\Test\Util\ObjectExtensionUtil;
 use Magento\FunctionalTestingFramework\Test\Util\TestObjectExtractor;
 use Magento\FunctionalTestingFramework\Test\Util\AnnotationExtractor;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
-use PHP_CodeSniffer\Tokenizers\PHP;
 
 /**
  * Class TestObjectHandler
@@ -142,7 +140,7 @@ class TestObjectHandler implements ObjectHandlerInterface
         }
 
         $exceptionCollector = new ExceptionCollector();
-        foreach ($parsedTestArray as $testName => $testData) {
+        foreach ($parsedTestArray[TestObjectHandler::XML_ROOT] as $testName => $testData) {
             if (!is_array($testData)) {
                 continue;
             }

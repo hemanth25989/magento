@@ -12,9 +12,6 @@ use Magento\QuoteGraphQl\Model\Cart\Payment\AdditionalDataProviderInterface;
 
 /**
  * Format Braintree input into value expected when setting payment method
- *
- * @deprecated Starting from Magento 2.3.6 Braintree payment method core integration is deprecated
- * in favor of official payment integration available on the marketplace
  */
 class BraintreeDataProvider implements AdditionalDataProviderInterface
 {
@@ -34,6 +31,19 @@ class BraintreeDataProvider implements AdditionalDataProviderInterface
                 __('Required parameter "braintree" for "payment_method" is missing.')
             );
         }
+
+        if (!isset($args[self::PATH_ADDITIONAL_DATA]['payment_method_nonce'])) {
+            throw new GraphQlInputException(
+                __('Required parameter "payment_method_nonce" for "braintree" is missing.')
+            );
+        }
+
+        if (!isset($args[self::PATH_ADDITIONAL_DATA]['is_active_payment_token_enabler'])) {
+            throw new GraphQlInputException(
+                __('Required parameter "is_active_payment_token_enabler" for "braintree" is missing.')
+            );
+        }
+
         return $args[self::PATH_ADDITIONAL_DATA];
     }
 }

@@ -13,6 +13,9 @@ use Magento\Paypal\Model\SmartButtonConfig;
 use Magento\Framework\Locale\ResolverInterface;
 use Magento\Paypal\Model\ConfigFactory;
 
+/**
+ * Class SmartButtonConfigTest
+ */
 class SmartButtonConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -62,7 +65,6 @@ class SmartButtonConfigTest extends \PHPUnit\Framework\TestCase
      *
      * @param string $page
      * @param string $locale
-     * @param bool $isCustomize
      * @param string $disallowedFundings
      * @param string $layout
      * @param string $size
@@ -71,7 +73,6 @@ class SmartButtonConfigTest extends \PHPUnit\Framework\TestCase
      * @param string $color
      * @param string $installmentPeriodLabel
      * @param string $installmentPeriodLocale
-     * @param string $isPaypalGuestCheckoutEnabled
      * @param array $expected
      * @dataProvider getConfigDataProvider
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -88,19 +89,13 @@ class SmartButtonConfigTest extends \PHPUnit\Framework\TestCase
         string $color,
         string $installmentPeriodLabel,
         string $installmentPeriodLocale,
-        string $isPaypalGuestCheckoutEnabled,
         array $expected = []
     ) {
-        $this->localeResolverMock->method('getLocale')->willReturn($locale);
+        $this->localeResolverMock->expects($this->any())->method('getLocale')->willReturn($locale);
         $this->configMock->method('getValue')->will(
             $this->returnValueMap(
                 [
                     ['merchant_id', null, 'merchant'],
-                    [
-                        'solution_type',
-                        null,
-                        $isPaypalGuestCheckoutEnabled ? Config::EC_SOLUTION_TYPE_SOLE : Config::EC_SOLUTION_TYPE_MARK
-                    ],
                     ['sandbox_flag', null, true],
                     ['disable_funding_options', null, $disallowedFundings],
                     ["{$page}_page_button_customize", null, $isCustomize],

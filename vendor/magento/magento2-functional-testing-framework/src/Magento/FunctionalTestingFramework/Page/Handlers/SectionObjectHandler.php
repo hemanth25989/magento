@@ -10,8 +10,6 @@ use Magento\FunctionalTestingFramework\ObjectManager\ObjectHandlerInterface;
 use Magento\FunctionalTestingFramework\ObjectManagerFactory;
 use Magento\FunctionalTestingFramework\Page\Objects\ElementObject;
 use Magento\FunctionalTestingFramework\Page\Objects\SectionObject;
-use Magento\FunctionalTestingFramework\Test\Util\TestObjectExtractor;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 use Magento\FunctionalTestingFramework\XmlParser\SectionParser;
 use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 
@@ -75,21 +73,14 @@ class SectionObjectHandler implements ObjectHandlerInterface
                     $elementLocatorFunc = $elementData[SectionObjectHandler::LOCATOR_FUNCTION] ?? null;
                     $elementTimeout = $elementData[SectionObjectHandler::TIMEOUT] ?? null;
                     $elementParameterized = $elementData[SectionObjectHandler::PARAMETERIZED] ?? false;
-                    $elementDeprecated = $elementData[self::OBJ_DEPRECATED] ?? null;
-                    if ($elementDeprecated !== null) {
-                        LoggingUtil::getInstance()->getLogger(ElementObject::class)->deprecation(
-                            $elementDeprecated,
-                            ["elementName" => $elementName, "deprecatedElement" => $elementDeprecated]
-                        );
-                    }
+
                     $elements[$elementName] = new ElementObject(
                         $elementName,
                         $elementType,
                         $elementSelector,
                         $elementLocatorFunc,
                         $elementTimeout,
-                        $elementParameterized,
-                        $elementDeprecated
+                        $elementParameterized
                     );
                 }
             } catch (XmlException $exception) {
@@ -97,21 +88,7 @@ class SectionObjectHandler implements ObjectHandlerInterface
             }
 
             $filename = $sectionData[self::FILENAME] ?? null;
-            $sectionDeprecated = $sectionData[self::OBJ_DEPRECATED] ?? null;
-
-            if ($sectionDeprecated !== null) {
-                LoggingUtil::getInstance()->getLogger(SectionObject::class)->deprecation(
-                    $sectionDeprecated,
-                    ["sectionName" => $filename, "deprecatedSection" => $sectionDeprecated]
-                );
-            }
-
-            $this->sectionObjects[$sectionName] = new SectionObject(
-                $sectionName,
-                $elements,
-                $filename,
-                $sectionDeprecated
-            );
+            $this->sectionObjects[$sectionName] = new SectionObject($sectionName, $elements, $filename);
         }
     }
 

@@ -19,14 +19,13 @@ This idea is not new and Composer is strongly inspired by node's
 Suppose:
 
 1. You have a project that depends on a number of libraries.
-2. Some of those libraries depend on other libraries.
+1. Some of those libraries depend on other libraries.
 
 Composer:
 
 1. Enables you to declare the libraries you depend on.
-2. Finds out which versions of which packages can and need to be installed, and
+1. Finds out which versions of which packages can and need to be installed, and
    installs them (meaning it downloads them into your project).
-3. You can update all your dependencies in one command.
 
 See the [Basic usage](01-basic-usage.md) chapter for more details on declaring
 dependencies.
@@ -107,8 +106,7 @@ Linux distributions.
 > `mkdir -p /usr/local/bin`.
 
 > **Note:** For information on changing your PATH, please read the
-> [Wikipedia article](https://en.wikipedia.org/wiki/PATH_(variable)) and/or use
-> your search engine of choice.
+> [Wikipedia article](https://en.wikipedia.org/wiki/PATH_(variable)) and/or use Google.
 
 Now run `composer` in order to run Composer instead of `php composer.phar`.
 
@@ -141,7 +139,7 @@ C:\bin>echo @php "%~dp0composer.phar" %*>composer.bat
 Add the directory to your PATH environment variable if it isn't already.
 For information on changing your PATH variable, please see
 [this article](https://www.computerhope.com/issues/ch000549.htm) and/or
-use your search engine of choice.
+use Google.
 
 Close your current terminal. Test usage with a new terminal:
 

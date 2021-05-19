@@ -679,6 +679,7 @@ class Solver
          */
 
         $decisionQueue = array();
+        $decisionSupplementQueue = array();
         /**
          * @todo this makes $disableRules always false; determine the rationale and possibly remove dead code?
          */
@@ -686,6 +687,7 @@ class Solver
 
         $level = 1;
         $systemLevel = $level + 1;
+        $installedPos = 0;
 
         while (true) {
             if (1 === $level) {

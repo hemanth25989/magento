@@ -130,28 +130,12 @@ class ConsoleIO extends BaseIO
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function writeRaw($messages, $newline = true, $verbosity = self::NORMAL)
-    {
-        $this->doWrite($messages, $newline, false, $verbosity, true);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function writeErrorRaw($messages, $newline = true, $verbosity = self::NORMAL)
-    {
-        $this->doWrite($messages, $newline, true, $verbosity, true);
-    }
-
-    /**
      * @param array|string $messages
      * @param bool         $newline
      * @param bool         $stderr
      * @param int          $verbosity
      */
-    private function doWrite($messages, $newline, $stderr, $verbosity, $raw = false)
+    private function doWrite($messages, $newline, $stderr, $verbosity)
     {
         $sfVerbosity = $this->verbosityMap[$verbosity];
         if ($sfVerbosity > $this->output->getVerbosity()) {
@@ -163,14 +147,6 @@ class ConsoleIO extends BaseIO
         // see https://github.com/composer/composer/pull/4913
         if (OutputInterface::VERBOSITY_QUIET === 0) {
             $sfVerbosity = OutputInterface::OUTPUT_NORMAL;
-        }
-
-        if ($raw) {
-            if ($sfVerbosity === OutputInterface::OUTPUT_NORMAL) {
-                $sfVerbosity = OutputInterface::OUTPUT_RAW;
-            } else {
-                $sfVerbosity |= OutputInterface::OUTPUT_RAW;
-            }
         }
 
         if (null !== $this->startTime) {

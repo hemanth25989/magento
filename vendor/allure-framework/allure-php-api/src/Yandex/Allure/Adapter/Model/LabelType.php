@@ -4,7 +4,6 @@ namespace Yandex\Allure\Adapter\Model;
 
 class LabelType
 {
-    const ID = 'AS_ID';
     const FEATURE = 'feature';
     const STORY = 'story';
     const SEVERITY = 'severity';

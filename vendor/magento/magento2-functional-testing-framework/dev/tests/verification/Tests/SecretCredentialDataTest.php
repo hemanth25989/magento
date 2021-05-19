@@ -37,7 +37,7 @@ class SecretCredentialDataTestCest
         $createProductWithFieldOverridesUsingHardcodedData1Fields['price'] = "12.34";
 
         $I->comment("[createProductWithFieldOverridesUsingHardcodedData1] create '_defaultProduct' entity");
-        $I->createEntity(
+        PersistedObjectHandler::getInstance()->createEntity(
             "createProductWithFieldOverridesUsingHardcodedData1",
             "test",
             "_defaultProduct",
@@ -46,13 +46,13 @@ class SecretCredentialDataTestCest
         );
 
         $createProductWithFieldOverridesUsingSecretCredData1Fields['qty'] =
-            $I->getSecret("payment_authorizenet_trans_key");
+            CredentialStore::getInstance()->getSecret("payment_authorizenet_trans_key");
 
         $createProductWithFieldOverridesUsingSecretCredData1Fields['price'] =
-            $I->getSecret("carriers_dhl_account_eu");
+            CredentialStore::getInstance()->getSecret("carriers_dhl_account_eu");
 
         $I->comment("[createProductWithFieldOverridesUsingSecretCredData1] create '_defaultProduct' entity");
-        $I->createEntity(
+        PersistedObjectHandler::getInstance()->createEntity(
             "createProductWithFieldOverridesUsingSecretCredData1",
             "test",
             "_defaultProduct",
@@ -61,14 +61,14 @@ class SecretCredentialDataTestCest
         );
 
         $I->fillField("#username", "Hardcoded"); // stepKey: fillFieldUsingHardCodedData1
-        $I->fillSecretField("#username", $I->getSecret("carriers_dhl_id_eu"));
+        $I->fillSecretField("#username", CredentialStore::getInstance()->getSecret("carriers_dhl_id_eu"));
             // stepKey: fillFieldUsingSecretCredData1
         $magentoCliUsingHardcodedData1 = $I->magentoCLI("config:set cms/wysiwyg/enabled 0");
             // stepKey: magentoCliUsingHardcodedData1
         $I->comment($magentoCliUsingHardcodedData1);
 
         $magentoCliUsingSecretCredData1 = $I->magentoCLI("config:set cms/wysiwyg/enabled " .
-            $I->getSecret("payment_authorizenet_login"));
+            CredentialStore::getInstance()->getSecret("payment_authorizenet_login"));
             // stepKey: magentoCliUsingSecretCredData1
         $I->comment($magentoCliUsingSecretCredData1);
     }

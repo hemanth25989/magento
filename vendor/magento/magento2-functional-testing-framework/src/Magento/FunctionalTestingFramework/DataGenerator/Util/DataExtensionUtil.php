@@ -93,8 +93,7 @@ class DataExtensionUtil
             $newUniqueReferences,
             $newVarReferences,
             $entityObject->getParentName(),
-            $entityObject->getFilename(),
-            $entityObject->getDeprecated()
+            $entityObject->getFilename()
         );
         return $extendedEntity;
     }

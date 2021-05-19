@@ -11,7 +11,6 @@ use Magento\CatalogInventory\Model\Stock;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Sales\Model\ConfigInterface;
-use Magento\Wishlist\Model\ResourceModel\Item\Product\CollectionBuilderInterface;
 
 /**
  * Wishlist item collection
@@ -158,10 +157,6 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      * @var ConfigInterface
      */
     private $salesConfig;
-    /**
-     * @var CollectionBuilderInterface
-     */
-    private $productCollectionBuilder;
 
     /**
      * @param \Magento\Framework\Data\Collection\EntityFactory $entityFactory
@@ -183,8 +178,8 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      * @param \Magento\Framework\App\State $appState
      * @param \Magento\Framework\DB\Adapter\AdapterInterface $connection
      * @param TableMaintainer|null $tableMaintainer
-     * @param ConfigInterface|null $salesConfig
-     * @param CollectionBuilderInterface|null $productCollectionBuilder
+     * @param  ConfigInterface|null $salesConfig
+     *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -207,8 +202,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         \Magento\Framework\App\State $appState,
         \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
         TableMaintainer $tableMaintainer = null,
-        ConfigInterface $salesConfig = null,
-        ?CollectionBuilderInterface $productCollectionBuilder = null
+        ConfigInterface $salesConfig = null
     ) {
         $this->stockConfiguration = $stockConfiguration;
         $this->_adminhtmlSales = $adminhtmlSales;
@@ -225,8 +219,6 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
         $this->tableMaintainer = $tableMaintainer ?: ObjectManager::getInstance()->get(TableMaintainer::class);
         $this->salesConfig = $salesConfig ?: ObjectManager::getInstance()->get(ConfigInterface::class);
-        $this->productCollectionBuilder = $productCollectionBuilder
-            ?: ObjectManager::getInstance()->get(CollectionBuilderInterface::class);
     }
 
     /**
@@ -317,10 +309,12 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
             $productCollection->setVisibility($this->_productVisibility->getVisibleInSiteIds());
         }
 
-        $productCollection->addIdFilter($this->_productIds)
-            ->addAttributeToSelect($this->_wishlistConfig->getProductAttributes());
-
-        $productCollection = $this->productCollectionBuilder->build($this, $productCollection);
+        $productCollection->addPriceData()
+            ->addTaxPercents()
+            ->addIdFilter($this->_productIds)
+            ->addAttributeToSelect($this->_wishlistConfig->getProductAttributes())
+            ->addOptionsToResult()
+            ->addUrlRewrite();
 
         if ($this->_productSalable) {
             $productCollection = $this->_adminhtmlSales->applySalableProductTypesFilter($productCollection);

@@ -7,6 +7,9 @@ namespace Magento2\Tests\Security;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
+/**
+ * Class SuperglobalUnitTest
+ */
 class SuperglobalUnitTest extends AbstractSniffUnitTest
 {
     /**

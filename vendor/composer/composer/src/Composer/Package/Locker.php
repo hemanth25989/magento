@@ -19,7 +19,6 @@ use Composer\Util\ProcessExecutor;
 use Composer\Repository\ArrayRepository;
 use Composer\Package\Dumper\ArrayDumper;
 use Composer\Package\Loader\ArrayLoader;
-use Composer\Plugin\PluginInterface;
 use Composer\Util\Git as GitUtil;
 use Composer\IO\IOInterface;
 use Seld\JsonLint\ParsingException;
@@ -323,7 +322,6 @@ class Locker
         if ($platformOverrides) {
             $lock['platform-overrides'] = $platformOverrides;
         }
-        $lock['plugin-api-version'] = PluginInterface::PLUGIN_API_VERSION;
 
         if (empty($lock['packages']) && empty($lock['packages-dev']) && empty($lock['platform']) && empty($lock['platform-dev'])) {
             if ($this->lockFile->exists()) {

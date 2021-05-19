@@ -27,11 +27,9 @@ try {
 
 
 try {
-    $version = json_decode(file_get_contents(FW_BP . DIRECTORY_SEPARATOR . 'composer.json'), true);
-    $version = $version['version'];
     $application = new Symfony\Component\Console\Application();
     $application->setName('Magento Functional Testing Framework CLI');
-    $application->setVersion($version);
+    $application->setVersion('2.5.3');
     /** @var \Magento\FunctionalTestingFramework\Console\CommandListInterface $commandList */
     $commandList = new \Magento\FunctionalTestingFramework\Console\CommandList;
     foreach ($commandList->getCommands() as $command) {

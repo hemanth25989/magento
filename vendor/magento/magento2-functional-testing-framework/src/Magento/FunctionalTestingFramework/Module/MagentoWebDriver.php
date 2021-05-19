@@ -16,17 +16,12 @@ use Codeception\Exception\ModuleException;
 use Codeception\Util\Uri;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\CredentialStore;
 use Magento\FunctionalTestingFramework\DataGenerator\Persist\Curl\WebapiExecutor;
-use Magento\FunctionalTestingFramework\Util\Path\UrlFormatter;
+use Magento\FunctionalTestingFramework\Util\Protocol\CurlTransport;
 use Magento\FunctionalTestingFramework\Util\Protocol\CurlInterface;
 use Magento\FunctionalTestingFramework\Util\ConfigSanitizerUtil;
 use Yandex\Allure\Adapter\AllureException;
-use Magento\FunctionalTestingFramework\Util\Protocol\CurlTransport;
 use Yandex\Allure\Adapter\Support\AttachmentSupport;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use Facebook\WebDriver\Remote\RemoteWebDriver;
-use Facebook\WebDriver\Exception\WebDriverCurlException;
-use Magento\FunctionalTestingFramework\DataGenerator\Handlers\PersistedObjectHandler;
 
 /**
  * MagentoWebDriver module provides common Magento web actions through Selenium WebDriver.
@@ -47,18 +42,13 @@ use Magento\FunctionalTestingFramework\DataGenerator\Handlers\PersistedObjectHan
  * ```
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  */
 class MagentoWebDriver extends WebDriver
 {
     use AttachmentSupport;
 
-    const MAGENTO_CRON_INTERVAL = 60;
-    const MAGENTO_CRON_COMMAND = 'cron:run';
-
     /**
      * List of known magento loading masks by selector
-     *
      * @var array
      */
     public static $loadingMasksLocators = [
@@ -66,7 +56,7 @@ class MagentoWebDriver extends WebDriver
         '//div[contains(@class, "admin_data-grid-loading-mask")]',
         '//div[contains(@class, "admin__data-grid-loading-mask")]',
         '//div[contains(@class, "admin__form-loading-mask")]',
-        '//div[@data-role="spinner"]',
+        '//div[@data-role="spinner"]'
     ];
 
     /**
@@ -79,7 +69,7 @@ class MagentoWebDriver extends WebDriver
         'backend_name',
         'username',
         'password',
-        'browser',
+        'browser'
     ];
 
     /**
@@ -125,15 +115,7 @@ class MagentoWebDriver extends WebDriver
     private $jsErrors = [];
 
     /**
-     * Contains last execution times for Cron
-     *
-     * @var int[]
-     */
-    private $cronExecution = [];
-
-    /**
      * Sanitizes config, then initializes using parent.
-     *
      * @return void
      */
     public function _initialize()
@@ -157,7 +139,6 @@ class MagentoWebDriver extends WebDriver
 
     /**
      * Remap parent::_after, called in TestContextExtension
-     *
      * @param TestInterface $test
      * @return void
      */
@@ -168,10 +149,9 @@ class MagentoWebDriver extends WebDriver
 
     /**
      * Override parent::_after to do nothing.
-     *
+     * @return void
      * @param TestInterface $test
      * @SuppressWarnings(PHPMD)
-     * @return void
      */
     public function _after(TestInterface $test)
     {
@@ -181,9 +161,9 @@ class MagentoWebDriver extends WebDriver
     /**
      * Returns URL of a host.
      *
+     * @api
      * @return mixed
      * @throws ModuleConfigException
-     * @api
      */
     public function _getUrl()
     {
@@ -193,7 +173,6 @@ class MagentoWebDriver extends WebDriver
                 "Module connection failure. The URL for client can't bre retrieved"
             );
         }
-
         return $this->config['url'];
     }
 
@@ -201,8 +180,8 @@ class MagentoWebDriver extends WebDriver
      * Uri of currently opened page.
      *
      * @return string
-     * @throws ModuleException
      * @api
+     * @throws ModuleException
      */
     public function _getCurrentUri()
     {
@@ -210,7 +189,6 @@ class MagentoWebDriver extends WebDriver
         if ($url == 'about:blank') {
             throw new ModuleException($this, 'Current url is blank, no page was opened');
         }
-
         return Uri::retrieveUri($url);
     }
 
@@ -279,7 +257,6 @@ class MagentoWebDriver extends WebDriver
         if (!isset($matches[1])) {
             $this->fail("Nothing to grab. A regex parameter with a capture group is required. Ex: '/(foo)(bar)/'");
         }
-
         return $matches[1];
     }
 
@@ -349,13 +326,13 @@ class MagentoWebDriver extends WebDriver
      * @param string  $select
      * @param array   $options
      * @param boolean $requireAction
-     * @return void
      * @throws \Exception
+     * @return void
      */
     public function searchAndMultiSelectOption($select, array $options, $requireAction = false)
     {
-        $selectDropdown = $select . ' .action-select.admin__action-multiselect';
-        $selectSearchText = $select
+        $selectDropdown     = $select . ' .action-select.admin__action-multiselect';
+        $selectSearchText   = $select
             . ' .admin__action-multiselect-search-wrap>input[data-role="advanced-select-text"]';
         $selectSearchResult = $select . ' .admin__action-multiselect-label>span';
 
@@ -378,8 +355,8 @@ class MagentoWebDriver extends WebDriver
      * @param string   $selectSearchTextField
      * @param string   $selectSearchResult
      * @param string[] $options
-     * @return void
      * @throws \Exception
+     * @return void
      */
     public function selectMultipleOptions($selectSearchTextField, $selectSearchResult, array $options)
     {
@@ -416,8 +393,8 @@ class MagentoWebDriver extends WebDriver
      * Wait for all JavaScript to finish executing.
      *
      * @param integer $timeout
-     * @return void
      * @throws \Exception
+     * @return void
      */
     public function waitForPageLoad($timeout = null)
     {
@@ -432,8 +409,8 @@ class MagentoWebDriver extends WebDriver
      * Wait for all visible loading masks to disappear. Gets all elements by mask selector, then loops over them.
      *
      * @param integer $timeout
-     * @return void
      * @throws \Exception
+     * @return void
      */
     public function waitForLoadingMaskToDisappear($timeout = null)
     {
@@ -461,7 +438,6 @@ class MagentoWebDriver extends WebDriver
         $this->mResetLocale();
         $prefix = substr($money, 0, 1);
         $number = substr($money, 1);
-
         return ['prefix' => $prefix, 'number' => $number];
     }
 
@@ -474,7 +450,6 @@ class MagentoWebDriver extends WebDriver
     public function parseFloat($floatString)
     {
         $floatString = str_replace(',', '', $floatString);
-
         return floatval($floatString);
     }
 
@@ -496,7 +471,6 @@ class MagentoWebDriver extends WebDriver
 
     /**
      * Reset Locale setting.
-     *
      * @return void
      */
     public function mResetLocale()
@@ -511,7 +485,6 @@ class MagentoWebDriver extends WebDriver
 
     /**
      * Scroll to the Top of the Page.
-     *
      * @return void
      */
     public function scrollToTopOfPage()
@@ -520,27 +493,20 @@ class MagentoWebDriver extends WebDriver
     }
 
     /**
-     * Takes given $command and executes it against bin/magento or custom exposed entrypoint. Returns command output.
-     *
-     * @param string  $command
-     * @param integer $timeout
-     * @param string  $arguments
-     * @return string
-     *
+     * Takes given $command and executes it against exposed MTF CLI entry point. Returns response from server.
+     * @param string $command
+     * @param string $arguments
      * @throws TestFrameworkException
+     * @return string
      */
-    public function magentoCLI($command, $timeout = null, $arguments = null)
+    public function magentoCLI($command, $arguments = null)
     {
         // Remove index.php if it's present in url
         $baseUrl = rtrim(
             str_replace('index.php', '', rtrim($this->config['url'], '/')),
             '/'
         );
-
-        $apiURL = UrlFormatter::format(
-            $baseUrl . '/' . ltrim(getenv('MAGENTO_CLI_COMMAND_PATH'), '/'),
-            false
-        );
+        $apiURL = $baseUrl . '/' . ltrim(getenv('MAGENTO_CLI_COMMAND_PATH'), '/');
 
         $restExecutor = new WebapiExecutor();
         $executor = new CurlTransport();
@@ -549,8 +515,7 @@ class MagentoWebDriver extends WebDriver
             [
                 'token' => $restExecutor->getAuthToken(),
                 getenv('MAGENTO_CLI_COMMAND_PARAMETER') => $command,
-                'arguments' => $arguments,
-                'timeout'   => $timeout,
+                'arguments' => $arguments
             ],
             CurlInterface::POST,
             []
@@ -558,89 +523,14 @@ class MagentoWebDriver extends WebDriver
         $response = $executor->read();
         $restExecutor->close();
         $executor->close();
-
         return $response;
     }
 
     /**
-     * Executes Magento Cron keeping the interval (> 60 seconds between each run)
-     *
-     * @param string|null  $cronGroups
-     * @param integer|null $timeout
-     * @param string|null  $arguments
-     * @return string
-     */
-    public function magentoCron($cronGroups = null, $timeout = null, $arguments = null)
-    {
-        $cronGroups = explode(' ', $cronGroups);
-        return $this->executeCronjobs($cronGroups, $timeout, $arguments);
-    }
-
-    /**
-     * Updates last execution time for Cron
-     *
-     * @param array $cronGroups
-     * @return void
-     */
-    private function notifyCronFinished(array $cronGroups = [])
-    {
-        if (empty($cronGroups)) {
-            $this->cronExecution['*'] = time();
-        }
-
-        foreach ($cronGroups as $group) {
-            $this->cronExecution[$group] = time();
-        }
-    }
-
-    /**
-     * Returns last Cron execution time for specific cron or all crons
-     *
-     * @param array $cronGroups
-     * @return integer
-     */
-    private function getLastCronExecution(array $cronGroups = [])
-    {
-        if (empty($this->cronExecution)) {
-            return 0;
-        }
-
-        if (empty($cronGroups)) {
-            return (int)max($this->cronExecution);
-        }
-
-        $cronGroups = array_merge($cronGroups, ['*']);
-
-        return array_reduce($cronGroups, function ($lastExecution, $group) {
-            if (isset($this->cronExecution[$group]) && $this->cronExecution[$group] > $lastExecution) {
-                $lastExecution = $this->cronExecution[$group];
-            }
-
-            return (int)$lastExecution;
-        }, 0);
-    }
-
-    /**
-     * Returns time to wait for next run
-     *
-     * @param array   $cronGroups
-     * @param integer $cronInterval
-     * @return integer
-     */
-    private function getCronWait(array $cronGroups = [], int $cronInterval = self::MAGENTO_CRON_INTERVAL)
-    {
-        $nextRun = $this->getLastCronExecution($cronGroups) + $cronInterval;
-        $toNextRun = $nextRun - time();
-
-        return max(0, $toNextRun);
-    }
-
-    /**
      * Runs DELETE request to delete a Magento entity against the url given.
-     *
      * @param string $url
-     * @return string
      * @throws TestFrameworkException
+     * @return string
      */
     public function deleteEntityByUrl($url)
     {
@@ -648,7 +538,6 @@ class MagentoWebDriver extends WebDriver
         $executor->write($url, [], CurlInterface::DELETE, []);
         $response = $executor->read();
         $executor->close();
-
         return $response;
     }
 
@@ -658,8 +547,8 @@ class MagentoWebDriver extends WebDriver
      * @param string  $selector
      * @param string  $dependentSelector
      * @param boolean $visible
-     * @return void
      * @throws \Exception
+     * @return void
      */
     public function conditionalClick($selector, $dependentSelector, $visible)
     {
@@ -714,7 +603,6 @@ class MagentoWebDriver extends WebDriver
 
     /**
      * Sets current test to the given test, and resets test failure artifacts to null
-     *
      * @param TestInterface $test
      * @return void
      */
@@ -729,7 +617,6 @@ class MagentoWebDriver extends WebDriver
 
     /**
      * Override for codeception's default dragAndDrop to include offset options.
-     *
      * @param string  $source
      * @param string  $target
      * @param integer $xOffset
@@ -773,9 +660,6 @@ class MagentoWebDriver extends WebDriver
         // decrypted value
 
         $decryptedValue = CredentialStore::getInstance()->decryptSecretValue($value);
-        if ($decryptedValue === false) {
-            throw new TestFrameworkException("\nFailed to decrypt value {$value} for field {$field}\n");
-        }
         $this->fillField($field, $decryptedValue);
     }
 
@@ -784,21 +668,17 @@ class MagentoWebDriver extends WebDriver
      * The data is decrypted immediately prior to data creation to avoid exposure in console or log.
      *
      * @param string $command
-     * @param null   $timeout
      * @param null   $arguments
      * @throws TestFrameworkException
      * @return string
      */
-    public function magentoCLISecret($command, $timeout = null, $arguments = null)
+    public function magentoCLISecret($command, $arguments = null)
     {
         // to protect any secrets from being printed to console the values are executed only at the webdriver level as a
         // decrypted value
 
         $decryptedCommand = CredentialStore::getInstance()->decryptAllSecretsInString($command);
-        if ($decryptedCommand === false) {
-            throw new TestFrameworkException("\nFailed to decrypt magentoCLI command {$command}\n");
-        }
-        return $this->magentoCLI($decryptedCommand, $timeout, $arguments);
+        return $this->magentoCLI($decryptedCommand, $arguments);
     }
 
     /**
@@ -831,7 +711,6 @@ class MagentoWebDriver extends WebDriver
 
     /**
      * Function which saves a screenshot of the current stat of the browser
-     *
      * @return void
      */
     public function saveScreenshot()
@@ -851,13 +730,12 @@ class MagentoWebDriver extends WebDriver
      * Go to a page and wait for ajax requests to finish
      *
      * @param string $page
-     * @return void
      * @throws \Exception
+     * @return void
      */
     public function amOnPage($page)
     {
-        (0 === strpos($page, 'http')) ? parent::amOnUrl($page) : parent::amOnPage($page);
-
+        parent::amOnPage($page);
         $this->waitForPageLoad();
     }
 
@@ -865,8 +743,8 @@ class MagentoWebDriver extends WebDriver
      * Turn Readiness check on or off
      *
      * @param boolean $check
-     * @return void
      * @throws \Exception
+     * @return void
      */
     public function skipReadinessCheck($check)
     {
@@ -909,7 +787,6 @@ class MagentoWebDriver extends WebDriver
                 $errors .= "\n" . $jsError;
             }
         }
-
         return $errors;
     }
 
@@ -946,151 +823,5 @@ class MagentoWebDriver extends WebDriver
         $this->_saveScreenshot($screenName);
         $this->debug("Screenshot saved to $screenName");
         AllureHelper::addAttachmentToCurrentStep($screenName, 'Screenshot');
-    }
-
-    /**
-     * Create an entity
-     * TODO: move this function to MagentoActionProxies after MQE-1904
-     *
-     * @param string $key                 StepKey of the createData action.
-     * @param string $scope
-     * @param string $entity              Name of xml entity to create.
-     * @param array  $dependentObjectKeys StepKeys of other createData actions that are required.
-     * @param array  $overrideFields      Array of FieldName => Value of override fields.
-     * @param string $storeCode
-     * @return void
-     */
-    public function createEntity(
-        $key,
-        $scope,
-        $entity,
-        $dependentObjectKeys = [],
-        $overrideFields = [],
-        $storeCode = ''
-    ) {
-        PersistedObjectHandler::getInstance()->createEntity(
-            $key,
-            $scope,
-            $entity,
-            $dependentObjectKeys,
-            $overrideFields,
-            $storeCode
-        );
-    }
-
-    /**
-     * Retrieves and updates a previously created entity
-     * TODO: move this function to MagentoActionProxies after MQE-1904
-     *
-     * @param string $key                 StepKey of the createData action.
-     * @param string $scope
-     * @param string $updateEntity        Name of the static XML data to update the entity with.
-     * @param array  $dependentObjectKeys StepKeys of other createData actions that are required.
-     * @return void
-     */
-    public function updateEntity($key, $scope, $updateEntity, $dependentObjectKeys = [])
-    {
-        PersistedObjectHandler::getInstance()->updateEntity(
-            $key,
-            $scope,
-            $updateEntity,
-            $dependentObjectKeys
-        );
-    }
-
-    /**
-     * Performs GET on given entity and stores entity for use
-     * TODO: move this function to MagentoActionProxies after MQE-1904
-     *
-     * @param string  $key                 StepKey of getData action.
-     * @param string  $scope
-     * @param string  $entity              Name of XML static data to use.
-     * @param array   $dependentObjectKeys StepKeys of other createData actions that are required.
-     * @param string  $storeCode
-     * @param integer $index
-     * @return void
-     */
-    public function getEntity($key, $scope, $entity, $dependentObjectKeys = [], $storeCode = '', $index = null)
-    {
-        PersistedObjectHandler::getInstance()->getEntity(
-            $key,
-            $scope,
-            $entity,
-            $dependentObjectKeys,
-            $storeCode,
-            $index
-        );
-    }
-
-    /**
-     * Retrieves and deletes a previously created entity
-     * TODO: move this function to MagentoActionProxies after MQE-1904
-     *
-     * @param string $key   StepKey of the createData action.
-     * @param string $scope
-     * @return void
-     */
-    public function deleteEntity($key, $scope)
-    {
-        PersistedObjectHandler::getInstance()->deleteEntity($key, $scope);
-    }
-
-    /**
-     * Retrieves a field from an entity, according to key and scope given
-     * TODO: move this function to MagentoActionProxies after MQE-1904
-     *
-     * @param string $stepKey
-     * @param string $field
-     * @param string $scope
-     * @return string
-     */
-    public function retrieveEntityField($stepKey, $field, $scope)
-    {
-        return PersistedObjectHandler::getInstance()->retrieveEntityField($stepKey, $field, $scope);
-    }
-
-    /**
-     * Get encrypted value by key
-     * TODO: move this function to MagentoActionProxies after MQE-1904
-     *
-     * @param string $key
-     * @return string|null
-     * @throws TestFrameworkException
-     */
-    public function getSecret($key)
-    {
-        return CredentialStore::getInstance()->getSecret($key);
-    }
-
-    /**
-     * Waits proper amount of time to perform Cron execution
-     *
-     * @param array   $cronGroups
-     * @param integer $timeout
-     * @param string  $arguments
-     * @return string
-     * @throws TestFrameworkException
-     */
-    private function executeCronjobs($cronGroups, $timeout, $arguments): string
-    {
-        $cronGroups = array_filter($cronGroups);
-
-        $waitFor = $this->getCronWait($cronGroups);
-
-        if ($waitFor) {
-            $this->wait($waitFor);
-        }
-
-        $command = array_reduce($cronGroups, function ($command, $cronGroup) {
-            $command .= ' --group=' . $cronGroup;
-            return $command;
-        }, self::MAGENTO_CRON_COMMAND);
-        $timeStart = microtime(true);
-        $cronResult = $this->magentoCLI($command, $timeout, $arguments);
-        $timeEnd = microtime(true);
-
-        $this->notifyCronFinished($cronGroups);
-
-        return sprintf('%s (wait: %ss, execution: %ss)', $cronResult, $waitFor, round($timeEnd - $timeStart, 2));
     }
 }

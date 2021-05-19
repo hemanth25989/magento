@@ -66,22 +66,6 @@ abstract class BaseIO implements IOInterface, LoggerInterface
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function writeRaw($messages, $newline = true, $verbosity = self::NORMAL)
-    {
-        $this->write($messages, $newline, $verbosity);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function writeErrorRaw($messages, $newline = true, $verbosity = self::NORMAL)
-    {
-        $this->writeError($messages, $newline, $verbosity);
-    }
-
-    /**
      * Check for overwrite and set the authentication information for the repository.
      *
      * @param string $repositoryName The unique name of repository
@@ -116,7 +100,6 @@ abstract class BaseIO implements IOInterface, LoggerInterface
         $gitlabOauth = $config->get('gitlab-oauth') ?: array();
         $gitlabToken = $config->get('gitlab-token') ?: array();
         $httpBasic = $config->get('http-basic') ?: array();
-        $bearerToken = $config->get('bearer') ?: array();
 
         // reload oauth tokens from config if available
 
@@ -142,10 +125,6 @@ abstract class BaseIO implements IOInterface, LoggerInterface
         // reload http basic credentials from config if available
         foreach ($httpBasic as $domain => $cred) {
             $this->checkAndSetAuthentication($domain, $cred['username'], $cred['password']);
-        }
-
-        foreach ($bearerToken as $domain => $token) {
-            $this->checkAndSetAuthentication($domain, $token, 'bearer');
         }
 
         // setup process timeout

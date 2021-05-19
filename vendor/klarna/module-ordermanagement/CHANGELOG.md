@@ -1,20 +1,4 @@
 
-5.1.1 / 2020-07-31
-==================
-
-  * MAGE-2270 Add validation of notification requests
-
-5.1.0 / 2020-06-04
-==================
-
-  * MAGE-1840 Add ability to pass a reference in the capture and refund request
-  * MAGE-2160 Fix capture and refund visibility in the Klarna merchant portal
-
-5.0.8 / 2020-02-11
-==================
-
-  * MAGE-1624 Code cleanup for new Magento coding standards
-
 5.0.6 / 2019-08-02
 ==================
 
@@ -273,13 +257,13 @@
   * Update dependency requirements to 2.0
   * Move setting of correct OM to calling function
   * Change code to pull composer package version for UserAgent
-  * Change event prefix from kco to Klarna
+  * Change event prefix from kco to klarna
   * Refactor to allow reading order_id from request body when it isn't provided as query parameter
   * Update copyright years
   * Remove references to unused class
   * Change to allow KP for payment method
   * Change user-agent to report as OM instead of KCO_OM
-  * Change route URL from kco to Klarna to make more generic
+  * Change route URL from kco to klarna to make more generic
   * Fix call to getReservationId()
   * Relocate quote to kco module
   * Remove unneeded preference as it is handled in core module

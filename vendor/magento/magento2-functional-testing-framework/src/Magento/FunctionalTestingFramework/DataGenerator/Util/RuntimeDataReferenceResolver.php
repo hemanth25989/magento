@@ -9,7 +9,6 @@ namespace Magento\FunctionalTestingFramework\DataGenerator\Util;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\CredentialStore;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\DataObjectHandler;
 use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
 
 /**
@@ -24,7 +23,7 @@ class RuntimeDataReferenceResolver implements DataReferenceResolverInterface
      * @param string $originalDataEntity
      * @return array|false|string|null
      * @throws TestReferenceException
-     * @throws TestFrameworkException
+     * @throws \Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException
      */
     public function getDataReference(string $data, string $originalDataEntity)
     {
@@ -44,9 +43,6 @@ class RuntimeDataReferenceResolver implements DataReferenceResolverInterface
             case ActionObject::__CREDS:
                 $value = CredentialStore::getInstance()->getSecret($var);
                 $result = CredentialStore::getInstance()->decryptSecretValue($value);
-                if ($result === false) {
-                    throw new TestFrameworkException("\nFailed to decrypt value {$value}\n");
-                }
                 $result = str_replace($matches['reference'], $result, $data);
                 break;
             default:

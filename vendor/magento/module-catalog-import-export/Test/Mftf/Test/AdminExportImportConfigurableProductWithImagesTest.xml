@@ -153,9 +153,6 @@
             <actionGroup ref="resetProductGridToDefaultView" stepKey="resetProductGridColumnsInitial"/>
             <!-- Admin logout-->
             <actionGroup ref="logout" stepKey="adminLogout"/>
-
-            <!-- Reindex invalidated indices after product attribute has been created/deleted -->
-            <actionGroup ref="CliRunReindexUsingCronJobsActionGroup" stepKey="reindexInvalidatedIndices"/>
         </after>
 
         <!-- Go to System > Export -->
@@ -167,12 +164,9 @@
             <argument name="attributeData" value="$$createExportImportConfigurableProduct.sku$$"/>
         </actionGroup>
 
-        <!-- Run cron twice (To reduce the load and with introducing BIC cron runs have been removed) -->
-        <magentoCLI command="help" stepKey="runCronFirstTime"/>
-        <actionGroup ref="CliConsumerStartActionGroup" stepKey="runCronSecondTime">
-            <argument name="consumerName" value="exportProcessor"/>
-            <argument name="maxMessages" value="10"/>
-        </actionGroup>
+        <!-- Run cron twice -->
+        <magentoCLI command="cron:run" stepKey="runCronFirstTime"/>
+        <magentoCLI command="cron:run" stepKey="runCronSecondTime"/>
 
         <!-- Save exported file: file successfully downloaded -->
         <actionGroup ref="downloadFileByRowIndex" stepKey="downloadCreatedProducts">

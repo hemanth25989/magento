@@ -8,6 +8,9 @@ namespace Magento2\Tests\Security;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
+/**
+ * Class InsecureFunctionUnitTest
+ */
 class InsecureFunctionUnitTest extends AbstractSniffUnitTest
 {
     /**

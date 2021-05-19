@@ -7,7 +7,6 @@
 namespace Magento\FunctionalTestingFramework\DataGenerator\Persist\Curl;
 
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Util\Path\UrlFormatter;
 use Magento\FunctionalTestingFramework\Util\Protocol\CurlInterface;
 use Magento\FunctionalTestingFramework\Util\Protocol\CurlTransport;
 
@@ -76,32 +75,24 @@ class WebapiExecutor extends AbstractExecutor implements CurlInterface
     /**
      * Returns base URL for Magento Web API instance
      * @return string
-     * @throws TestFrameworkException
      */
     public function getBaseUrl(): string
     {
+        $baseUrl = parent::getBaseUrl();
+
         $webapiHost = getenv('MAGENTO_RESTAPI_SERVER_HOST');
         $webapiPort = getenv("MAGENTO_RESTAPI_SERVER_PORT");
         $webapiProtocol = getenv("MAGENTO_RESTAPI_SERVER_PROTOCOL");
 
-        if ($webapiHost && $webapiProtocol) {
-            $baseUrl = UrlFormatter::format(
-                sprintf('%s://%s', $webapiProtocol, $webapiHost),
-                false
-            );
-        } elseif ($webapiHost) {
-            $baseUrl = UrlFormatter::format(sprintf('%s', $webapiProtocol, $webapiHost), false);
-        }
-
-        if (!isset($baseUrl)) {
-            $baseUrl = rtrim(parent::getBaseUrl(), '/');
+        if ($webapiHost) {
+            $baseUrl = sprintf('%s://%s/', $webapiProtocol, $webapiHost);
         }
 
         if ($webapiPort) {
-            $baseUrl .= ':' . $webapiPort;
+            $baseUrl = rtrim($baseUrl, '/') . ':' . $webapiPort . '/';
         }
 
-        return $baseUrl . '/';
+        return $baseUrl;
     }
 
     /**
@@ -184,23 +175,22 @@ class WebapiExecutor extends AbstractExecutor implements CurlInterface
      * Builds and returns URL for request, appending storeCode if needed.
      * @param string $resource
      * @return string
-     * @throws TestFrameworkException
      */
     public function getFormattedUrl($resource)
     {
         $urlResult = $this->getBaseUrl() . 'rest/';
         if ($this->storeCode != null) {
-            $urlResult .= $this->storeCode . '/';
+            $urlResult .= $this->storeCode . "/";
         }
-        $urlResult .= trim($resource, '/');
+        $urlResult .= trim($resource, "/");
         return $urlResult;
     }
 
     /**
      * Return admin auth token.
      *
-     * @return string
      * @throws TestFrameworkException
+     * @return string
      */
     public function getAuthToken()
     {
